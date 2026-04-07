@@ -8,9 +8,12 @@
     "require": {
         "php": "^8.3",
         "bezhansalleh/filament-shield": "^4.2",
+        "codewithdennis/filament-select-tree": "^4.0",
         "filament/filament": "^5.4",
         "laravel/framework": "^13.0",
-        "laravel/tinker": "^3.0"
+        "laravel/passport": "^13.7",
+        "laravel/tinker": "^3.0",
+        "staudenmeir/laravel-adjacency-list": "^1.26"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
@@ -26,7 +29,10 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
-        }
+        },
+        "files": [
+            "bootstrap/helpers.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
