@@ -60,32 +60,27 @@ return new class extends Migration
             $table->index(['department_id']);
             $table->unique(['company_id', 'department_id', 'position_id'], name: 'oa_department_positions_c_id_d_id_p_id_unique');
         });
-        Schema::create('staffs', function (Blueprint $table) {
+        Schema::create('oa_employees', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->comment('名称');
+            $table->unsignedBigInteger('user_id')->nullable()->comment('关联用户ID');
+            $table->unsignedBigInteger('company_id')->nullable()->comment('企业ID');
+            $table->unsignedBigInteger('department_id')->nullable()->comment('部门ID');
+            $table->unsignedBigInteger('position_id')->nullable()->comment('职位ID');
+            $table->string('employee_no')->nullable()->comment('员工工号');
+            $table->string('real_name')->comment('姓名');
+            $table->string('avatar')->comment('头像');
             $table->string('email')->nullable()->comment('邮箱');
             $table->string('mobile')->nullable()->comment('手机号');
-            $table->string('password')->nullable();
-            $table->tinyInteger('gender')->nullable()->comment('性别：1-男；2-女');
             $table->tinyInteger('status')->default(1)->comment('状态');
-            $table->timestamps();
-            $table->softDeletes();
-            $table->comment('职员表');
-        });
-        Schema::create('staff_company_positions', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('company_id');
-            $table->unsignedBigInteger('department_id');
-            $table->unsignedBigInteger('position_id');
-            $table->unsignedBigInteger('staff_id');
-            $table->string('staff_no')->comment('员工工号');
-            $table->tinyInteger('status')->default(1)->comment('1在职 2离职 3试用期');
             $table->timestamp('entry_time')->nullable()->comment('加入时间');
             $table->timestamps();
-            $table->comment('企业职工关系表');
+            $table->softDeletes();
             $table->index(['company_id']);
+            $table->index(['department_id']);
             $table->index(['position_id']);
-            $table->index(['staff_id']);
+            $table->index(['user_id']);
+            $table->index(['entry_time']);
+            $table->comment('员工表');
         });
     }
 
@@ -94,8 +89,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('staff_company_positions');
-        Schema::dropIfExists('staffs');
+        Schema::dropIfExists('oa_employees');
         Schema::dropIfExists('oa_department_positions');
         Schema::dropIfExists('oa_positions');
         Schema::dropIfExists('oa_departments');
