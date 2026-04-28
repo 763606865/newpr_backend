@@ -99,7 +99,7 @@ return new class extends Migration
         Schema::create('oa_leave_balances', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('company_id')->comment('企业ID')->index();
-            $table->unsignedBigInteger('user_id')->comment('员工ID')->index();
+            $table->unsignedBigInteger('employee_id')->comment('员工ID')->index();
             $table->unsignedBigInteger('leave_type_id')->comment('假期类型ID')->index();
             $table->integer('year')->comment('归属年份(如2023)');
             $table->date('valid_start_date')->comment('有效期开始')->index();

@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'amap' => [
+        'web_key' => env('AMAP_WEB_API_KEY'),
+    ],
+
 ];

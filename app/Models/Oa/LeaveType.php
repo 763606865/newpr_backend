@@ -2,6 +2,7 @@
 
 namespace App\Models\Oa;
 
+use App\Enums\LeaveTypeDeductionType;
 use App\Models\Model;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
@@ -27,7 +28,7 @@ class LeaveType extends Model
     use SoftDeletes;
 
     protected $attributes = [
-        'deduction_type' => 1,
+        'deduction_type' => LeaveTypeDeductionType::Full->value,
         'unit_type' => 1,
         'min_duration' => 0.5,
         'need_attachment' => 0,
@@ -38,7 +39,7 @@ class LeaveType extends Model
     protected function casts(): array
     {
         return [
-            'deduction_type' => 'integer',
+            'deduction_type' => LeaveTypeDeductionType::class,
             'unit_type' => 'integer',
             'min_duration' => 'decimal:2',
             'need_attachment' => 'boolean',

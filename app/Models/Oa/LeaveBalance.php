@@ -3,7 +3,6 @@
 namespace App\Models\Oa;
 
 use App\Models\Model;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -12,7 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 #[Table('oa_leave_balances')]
 #[Fillable([
     'company_id',
-    'user_id',
+    'employee_id',
     'leave_type_id',
     'year',
     'valid_start_date',
@@ -48,9 +47,9 @@ class LeaveBalance extends Model
         return $this->belongsTo(Company::class, 'company_id');
     }
 
-    public function user(): BelongsTo
+    public function employee(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(Employee::class, 'employee_id');
     }
 
     public function leaveType(): BelongsTo

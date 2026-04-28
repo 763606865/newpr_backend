@@ -24,12 +24,7 @@ class LeaveTypesTable
                 TextColumn::make('name')->label('假期名称')->searchable(),
                 TextColumn::make('code')->label('假期编码')->searchable(),
                 TextColumn::make('deduction_type')
-                    ->label('扣薪类型')
-                    ->formatStateUsing(fn (mixed $state): string => match ((int) $state) {
-                        1 => '带薪',
-                        2 => '半薪',
-                        default => '无薪',
-                    }),
+                    ->label('扣薪类型'),
                 TextColumn::make('unit_type')
                     ->label('单位')
                     ->formatStateUsing(fn (mixed $state): string => ((int) $state) === 2 ? '小时' : '天'),

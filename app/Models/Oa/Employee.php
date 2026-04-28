@@ -56,4 +56,9 @@ class Employee extends Model
     {
         return $this->hasMany(AttendanceAssignment::class, 'employee_id');
     }
+
+    public function leaveBalances(): HasMany
+    {
+        return $this->hasMany(LeaveBalance::class, 'employee_id');
+    }
 }

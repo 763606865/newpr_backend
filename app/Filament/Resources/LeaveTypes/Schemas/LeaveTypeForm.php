@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\LeaveTypes\Schemas;
 
+use App\Enums\LeaveTypeDeductionType;
 use App\Models\Oa\Company;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -38,12 +39,8 @@ class LeaveTypeForm
                     ->maxLength(32),
                 Select::make('deduction_type')
                     ->label('扣薪类型')
-                    ->options([
-                        1 => '带薪',
-                        2 => '半薪',
-                        3 => '无薪',
-                    ])
-                    ->default(1)
+                    ->options(LeaveTypeDeductionType::class)
+                    ->default(LeaveTypeDeductionType::Full)
                     ->required(),
                 Select::make('unit_type')
                     ->label('请假单位')

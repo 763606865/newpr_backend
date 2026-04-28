@@ -7,19 +7,23 @@ use App\Models\Oa\Company;
 use App\Models\Oa\Department;
 use Carbon\Carbon;
 use Filament\Actions\Action;
+use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\TimePicker;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
+use Illuminate\Support\HtmlString;
 
 class AttendanceRuleForm
 {
     public static function configure(Schema $schema): Schema
     {
         $companies = Company::query()->pluck('name', 'id');
+        $amapWebKey = (string) config('services.amap.web_key', '');
 
         return $schema
             ->components([
@@ -263,6 +267,72 @@ class AttendanceRuleForm
                     ])
                     ->default(1)
                     ->required(),
+                Radio::make('extra.ip_enabled')
+                    ->label('IP限制')
+                    ->options([
+                        0 => '否',
+                        1 => '是',
+                    ])
+                    ->default(0)
+                    ->required(),
+                TextInput::make('extra.allowed_ips')
+                    ->label('允许的IP地址（逗号分隔）')
+                    ->live(onBlur: true)
+                    ->afterStateUpdated(function (mixed $state, Set $set): void {
+                        if (blank($state)) {
+                            $set('extra.allowed_ips', null);
+
+                            return;
+                        }
+                    }),
+                Radio::make('extra.device_enabled')
+                    ->label('设备限制')
+                    ->options([
+                        0 => '否',
+                        1 => '是',
+                    ])
+                    ->default(0)
+                    ->required(),
+                TextInput::make('extra.allowed_devices')
+                    ->label('允许的设备标识（逗号分隔）')
+                    ->live(onBlur: true)
+                    ->afterStateUpdated(function (mixed $state, Set $set): void {
+                        if (blank($state)) {
+                            $set('extra.allowed_devices', null);
+
+                            return;
+                        }
+                    }),
+                Radio::make('extra.face_recognition_enabled')
+                    ->label('人脸识别')
+                    ->options([
+                        0 => '否',
+                        1 => '是',
+                    ])
+                    ->default(0)
+                    ->required(),
+                Radio::make('extra.gps_enabled')
+                    ->label('GPS定位')
+                    ->options([
+                        0 => '否',
+                        1 => '是',
+                    ])
+                    ->default(0)
+                    ->required(),
+                TextInput::make('extra.allowed_gps_locations')
+                    ->label('允许的GPS位置（逗号分隔，格式：经度,纬度）')
+                    ->live(onBlur: true)
+                    ->afterStateUpdated(function (mixed $state, Set $set): void {
+                        if (blank($state)) {
+                            $set('extra.allowed_gps_locations', null);
+
+                            return;
+                        }
+                    }),
+                TextEntry::make('gps_map_picker')
+                    ->label('地图选点回填')
+                    ->hidden(fn (Get $get): bool => (int) ($get('extra.gps_enabled') ?? 0) !== 1)
+                    ->state(new HtmlString(amap_picker($amapWebKey))),
             ]);
     }
 
@@ -275,9 +345,7 @@ class AttendanceRuleForm
             return [0.0, false];
         }
 
-        $segments = is_string($segmentsState)
-            ? json_decode($segmentsState, true)
-            : $segmentsState;
+        $segments = is_string($segmentsState) ? json_decode($segmentsState, true) : $segmentsState;
 
         if (! is_array($segments)) {
             return [0.0, false];
