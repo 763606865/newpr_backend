@@ -3,11 +3,11 @@
 namespace App\Models\Oa;
 
 use App\Enums\CompanyStatus;
+use App\Models\Model;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Models\Model;
 
 #[Table('oa_companies')]
 #[Fillable(['name', 'credit_code', 'legal_person', 'contact_phone', 'address', 'status'])]
@@ -16,13 +16,11 @@ class Company extends Model
     use SoftDeletes;
 
     protected $attributes = [
-        'status' => CompanyStatus::Enabled
+        'status' => CompanyStatus::Enabled,
     ];
 
     /**
      * 部门
-     *
-     * @return HasMany
      */
     public function departments(): HasMany
     {
@@ -31,11 +29,41 @@ class Company extends Model
 
     /**
      * 职位
-     *
-     * @return HasMany
      */
     public function positions(): HasMany
     {
         return $this->hasMany(Position::class, 'company_id');
+    }
+
+    /**
+     * 假期类型
+     */
+    public function leaveTypes(): HasMany
+    {
+        return $this->hasMany(LeaveType::class, 'company_id');
+    }
+
+    /**
+     * 假期额度
+     */
+    public function leaveBalances(): HasMany
+    {
+        return $this->hasMany(LeaveBalance::class, 'company_id');
+    }
+
+    /**
+     * 考勤规则
+     */
+    public function attendanceRules(): HasMany
+    {
+        return $this->hasMany(AttendanceRule::class, 'company_id');
+    }
+
+    /**
+     * 考勤排班
+     */
+    public function attendanceSchedules(): HasMany
+    {
+        return $this->hasMany(AttendanceSchedule::class, 'company_id');
     }
 }

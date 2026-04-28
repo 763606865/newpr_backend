@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 #[Table('oa_employees')]
@@ -44,5 +45,15 @@ class Employee extends Model
     public function position(): BelongsTo
     {
         return $this->belongsTo(Position::class, 'position_id');
+    }
+
+    public function attendanceSchedules(): HasMany
+    {
+        return $this->hasMany(AttendanceSchedule::class, 'employee_id');
+    }
+
+    public function attendanceAssignments(): HasMany
+    {
+        return $this->hasMany(AttendanceAssignment::class, 'employee_id');
     }
 }

@@ -54,4 +54,12 @@ class Department extends Model
     {
         return 'parent_id';
     }
+
+    /**
+     * 考勤排班
+     */
+    public function attendanceSchedules(): HasMany
+    {
+        return $this->hasMany(AttendanceSchedule::class, 'department_id');
+    }
 }
