@@ -2,6 +2,10 @@
 
 namespace App\Models;
 
+use App\Enums\UserGender;
+use App\Enums\UserStatus;
+use App\Models\Oa\Company;
+use App\Models\Oa\Employee;
 use App\Models\Oa\LeaveBalance;
 use Database\Factories\UserFactory;
 use Filament\Models\Contracts\FilamentUser;
@@ -16,6 +20,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
+use Laravel\Passport\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
 /**
@@ -42,11 +47,11 @@ use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, HasRoles, Notifiable, SoftDeletes;
+    use HasApiTokens, HasFactory, HasRoles, Notifiable, SoftDeletes;
 
     protected $attributes = [
-        'status' => 'active',
-        'gender' => 0,
+        'status' => UserStatus::Active->value,
+        'gender' => UserGender::Unknown->value,
     ];
 
     protected static function booted(): void
@@ -66,7 +71,7 @@ class User extends Authenticatable implements FilamentUser
     protected function casts(): array
     {
         return [
-            'gender' => 'integer',
+            'gender' => UserGender::class,
             'last_login_at' => 'datetime',
             'password' => 'hashed',
         ];
@@ -96,7 +101,7 @@ class User extends Authenticatable implements FilamentUser
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return false;
+        return $this->hasRole('super-admin');
     }
 
     /**
@@ -105,5 +110,25 @@ class User extends Authenticatable implements FilamentUser
     public function leaveBalances(): HasMany
     {
         return $this->hasMany(LeaveBalance::class, 'user_id');
+    }
+
+    /**
+     * 员工信息
+     *
+     * @return HasMany
+     */
+    public function employees(): HasMany
+    {
+        return $this->hasMany(Employee::class, 'user_id');
+    }
+
+    /**
+     * 用户可访问的公司
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     */
+    public function companies(): \Illuminate\Database\Eloquent\Relations\HasManyThrough
+    {
+        return $this->hasManyThrough(Company::class, Employee::class, 'user_id', 'id', 'id', 'company_id');
     }
 }

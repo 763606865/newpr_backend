@@ -5,10 +5,16 @@ namespace App\Models\Oa;
 use App\Enums\CompanyStatus;
 use App\Models\Model;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Attributes\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @method static Builder enabled()
+ * @method static Builder disabled()
+ */
 #[Table('oa_companies')]
 #[Fillable(['name', 'credit_code', 'legal_person', 'contact_phone', 'address', 'status'])]
 class Company extends Model
@@ -65,5 +71,23 @@ class Company extends Model
     public function attendanceSchedules(): HasMany
     {
         return $this->hasMany(AttendanceSchedule::class, 'company_id');
+    }
+
+    /**
+     * 激活状态
+     */
+    #[Scope]
+    protected function enabled(Builder $query): void
+    {
+        $query->where($this->getTable() . '.status', '=', CompanyStatus::Enabled->value);
+    }
+
+    /**
+     * 禁用状态
+     */
+    #[Scope]
+    protected function disabled(Builder $query): void
+    {
+        $query->where($this->getTable() . '.status', '=', CompanyStatus::Disabled->value);
     }
 }

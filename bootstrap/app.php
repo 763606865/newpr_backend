@@ -17,9 +17,9 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-//        $exceptions->render(function (Exception $e) {
-//            if ($e instanceof Illuminate\Auth\AuthenticationException) {
-//                throw new UnauthenticatedException($e->getMessage());
-//            }
-//        });
+        $exceptions->render(function (Exception $e) {
+            if ($e instanceof Illuminate\Auth\AuthenticationException) {
+                throw new UnauthenticatedException($e->getMessage());
+            }
+        });
     })->create();

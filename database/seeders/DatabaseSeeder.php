@@ -23,5 +23,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->call(OaLeaveSeeder::class);
+        $this->call(RoleAndAdminSeeder::class);
+        $this->call(PassportPersonalAccessClientSeeder::class);
     }
 }

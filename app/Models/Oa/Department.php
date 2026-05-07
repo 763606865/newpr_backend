@@ -62,4 +62,14 @@ class Department extends Model
     {
         return $this->hasMany(AttendanceSchedule::class, 'department_id');
     }
+
+    /**
+     * 员工信息
+     *
+     * @return HasMany
+     */
+    public function employees(): HasMany
+    {
+        return $this->hasMany(Employee::class, 'department_id');
+    }
 }

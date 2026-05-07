@@ -2,6 +2,8 @@
 
 namespace App\Api\Controllers;
 
+use App\Resources\Oa\CommunicateResource;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -15,5 +17,25 @@ class HomeController extends Controller
     public function index(Request $request): \Illuminate\Contracts\View\View|\Illuminate\View\View
     {
         return view('welcome');
+    }
+
+    /**
+     * 通讯录
+     *
+     * GET /api/communicates
+     *
+     * @param Request $request
+     * @return JsonResponse
+     * @throws \Exception
+     */
+    public function communicates(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $companies = $request->user()->companies()->with([
+            'departments',
+            'departments.employees',
+            'departments.employees.position',
+        ])->enabled()->get();
+
+        return $this->success(new CommunicateResource($companies));
     }
 }
