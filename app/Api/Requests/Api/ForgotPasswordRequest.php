@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Api;
+namespace App\Api\Requests\Api;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -15,7 +15,7 @@ class ForgotPasswordRequest extends FormRequest
     }
 
     /**
-     * @return array<string, array<int, string|ValidationRule>>
+     * @return ValidationRule
      */
     public function rules(): array
     {

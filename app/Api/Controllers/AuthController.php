@@ -2,10 +2,10 @@
 
 namespace App\Api\Controllers;
 
-use App\Http\Requests\Api\EmailLoginRequest;
-use App\Http\Requests\Api\ForgotPasswordRequest;
-use App\Http\Requests\Api\PhoneLoginRequest;
-use App\Http\Requests\Api\SendVerificationCodeRequest;
+use App\Api\Requests\Api\EmailLoginRequest;
+use App\Api\Requests\Api\ForgotPasswordRequest;
+use App\Api\Requests\Api\PhoneLoginRequest;
+use App\Api\Requests\Api\SendVerificationCodeRequest;
 use App\Models\User;
 use App\Services\VerificationCodeService;
 use Illuminate\Http\JsonResponse;
