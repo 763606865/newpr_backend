@@ -39,12 +39,7 @@ class UsersTable
                     ->label('邮箱')
                     ->searchable(),
                 TextColumn::make('gender')
-                    ->label('性别')
-                    ->formatStateUsing(fn (?int $state): string => match ($state) {
-                        1 => '男',
-                        2 => '女',
-                        default => '未知',
-                    }),
+                    ->label('性别'),
                 TextColumn::make('status')
                     ->label('状态')
                     ->badge()

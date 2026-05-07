@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Employees\Tables;
 
 use App\Enums\AttendanceAssignmentCycleType;
+use App\Enums\EmployeeStatus;
 use App\Models\Oa\AttendanceRule;
 use App\Models\Oa\Employee;
 use App\Models\Oa\LeaveType;
@@ -39,11 +40,7 @@ class EmployeesTable
                 TextColumn::make('department.name')->label('所属部门')->toggleable(),
                 TextColumn::make('position.name')->label('所属岗位')->toggleable(),
                 TextColumn::make('mobile')->label('手机号')->searchable(),
-                TextColumn::make('status')
-                    ->label('状态')
-                    ->badge()
-                    ->formatStateUsing(fn (mixed $state): string => ((int) $state) === 1 ? '在职' : '离职')
-                    ->color(fn (mixed $state): string => ((int) $state) === 1 ? 'success' : 'gray'),
+                TextColumn::make('status')->label('状态')->badge()->color(fn (mixed $state): string => $state === EmployeeStatus::Active ? 'success' : 'gray'),
                 TextColumn::make('entry_time')->label('加入时间')->dateTime('Y-m-d H:i:s')->toggleable(),
                 TextColumn::make('created_at')->label('创建时间')->dateTime('Y-m-d H:i:s')->toggleable(),
             ])
@@ -62,10 +59,7 @@ class EmployeesTable
                     ->searchable(),
                 SelectFilter::make('status')
                     ->label('状态')
-                    ->options([
-                        1 => '在职',
-                        2 => '离职',
-                    ]),
+                    ->options(EmployeeStatus::class),
                 TrashedFilter::make(),
             ])
             ->recordActions([
