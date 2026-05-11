@@ -15,12 +15,12 @@ class PassportPersonalAccessClientSeeder extends Seeder
     {
         // Delete any existing personal access client to ensure clean state
         DB::table('oauth_clients')
-            ->where('name', 'Laravel Personal Access Client')
+            ->where('name', '=', '牛派C端')
             ->delete();
 
         DB::table('oauth_clients')->insert([
             'id' => Str::uuid(),
-            'name' => 'Laravel Personal Access Client',
+            'name' => '牛派C端',
             'secret' => Str::random(40),
             'provider' => 'users',
             'redirect_uris' => '',

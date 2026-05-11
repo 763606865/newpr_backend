@@ -2,10 +2,10 @@
 
 namespace App\Api\Controllers;
 
-use App\Api\Requests\Api\EmailLoginRequest;
-use App\Api\Requests\Api\ForgotPasswordRequest;
-use App\Api\Requests\Api\PhoneLoginRequest;
-use App\Api\Requests\Api\SendVerificationCodeRequest;
+use App\Api\Requests\EmailLoginRequest;
+use App\Api\Requests\ForgotPasswordRequest;
+use App\Api\Requests\PhoneLoginRequest;
+use App\Api\Requests\SendVerificationCodeRequest;
 use App\Models\User;
 use App\Services\VerificationCodeService;
 use Illuminate\Http\JsonResponse;
@@ -20,8 +20,6 @@ class AuthController extends Controller
      *
      * POST /api/auth/send-verification-code
      *
-     * @param SendVerificationCodeRequest $request
-     * @return JsonResponse
      * @throws \Exception
      */
     public function sendVerificationCode(SendVerificationCodeRequest $request): JsonResponse
@@ -59,9 +57,6 @@ class AuthController extends Controller
      * 手机号登录接口
      *
      * POST /api/auth/phone-login
-     *
-     * @param PhoneLoginRequest $request
-     * @return JsonResponse
      */
     public function phoneLogin(PhoneLoginRequest $request): JsonResponse
     {
@@ -85,9 +80,6 @@ class AuthController extends Controller
      * 邮箱登录接口
      *
      * POST /api/auth/email-login
-     *
-     * @param EmailLoginRequest $request
-     * @return JsonResponse
      */
     public function emailLogin(EmailLoginRequest $request): JsonResponse
     {
@@ -112,8 +104,6 @@ class AuthController extends Controller
      *
      * GET /api/auth/me
      *
-     * @param Request $request
-     * @return JsonResponse
      * @throws \Exception
      */
     public function me(Request $request): JsonResponse
@@ -131,8 +121,6 @@ class AuthController extends Controller
      *
      * POST /api/auth/logout
      *
-     * @param Request $request
-     * @return JsonResponse
      * @throws \Exception
      */
     public function logout(Request $request): JsonResponse

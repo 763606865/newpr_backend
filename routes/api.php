@@ -17,7 +17,9 @@ Route::middleware('auth:api')->group(function (): void {
     Route::post('/auth/logout', [AuthController::class, 'logout']);
 
     // 通讯录相关路由
-     Route::get('/communicates', [HomeController::class, 'communicates']);
+    Route::get('/communicates', [HomeController::class, 'communicates']);
+    // 菜单功能点相关路由
+    Route::get('/modules', [HomeController::class, 'modules']);
     // ==============================================================================
 });
 // ==============================================================================

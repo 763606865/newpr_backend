@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Api\Requests\Api;
+namespace App\Api\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class PhoneLoginRequest extends FormRequest
+class EmailLoginRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -17,7 +17,7 @@ class PhoneLoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'phone' => ['required', 'string', 'max:30'],
+            'email' => ['required', 'email:rfc,dns', 'max:100'],
             'code' => ['required', 'digits:6'],
         ];
     }

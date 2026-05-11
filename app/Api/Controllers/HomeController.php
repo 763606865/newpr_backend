@@ -3,6 +3,7 @@
 namespace App\Api\Controllers;
 
 use App\Resources\Oa\CommunicateResource;
+use App\Resources\Oa\ModuleResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -37,5 +38,24 @@ class HomeController extends Controller
         ])->enabled()->get();
 
         return $this->success(new CommunicateResource($companies));
+    }
+
+    /**
+     * 菜单功能点
+     *
+     * GET /api/modules
+     *
+     * @param Request $request
+     * @return JsonResponse
+     * @throws \Exception
+     */
+    public function modules(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $companies = $request->user()->companies()->with([
+            'currentPlan',
+            'companyPlans',
+            'shipCompanyPlans',
+        ])->get();
+        return $this->success(new ModuleResource($companies));
     }
 }
