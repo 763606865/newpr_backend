@@ -2,12 +2,20 @@
 
 namespace App\Services;
 
+use App\Libs\Facades\Jucai;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Random\RandomException;
 
 class VerificationCodeService extends Service
 {
+    /**
+     * 发送短信验证码
+     *
+     * @throws RandomException
+     */
     public function send(string $type, string $account, string $scene): array
     {
         $normalizedAccount = $this->normalizeAccount($type, $account);
@@ -43,6 +51,13 @@ class VerificationCodeService extends Service
 
     public function verify(string $type, string $account, string $scene, string $code, bool $forget = true): bool
     {
+        if (
+            config('app.env') !== 'production' &&
+            config('app.debug') &&
+            in_array($account, config('app.skip_accounts'), true)
+        ) {
+            return true;
+        }
         $normalizedAccount = $this->normalizeAccount($type, $account);
         $cacheKey = $this->buildCacheKey($type, $normalizedAccount, $scene);
         $payload = Cache::get($cacheKey);
@@ -60,6 +75,9 @@ class VerificationCodeService extends Service
         return $verified;
     }
 
+    /**
+     * @throws BindingResolutionException
+     */
     private function deliver(string $type, string $account, string $code, string $scene): void
     {
         if ($type === 'email') {
@@ -71,6 +89,22 @@ class VerificationCodeService extends Service
             );
 
             return;
+        }
+
+        if ($type === 'phone') {
+            $driver = config('sms.driver');
+            if ($driver === 'jucai') {
+                $config = config('sms.jucai');
+                Jucai::sms()->send($config, [
+                    'mobile' => $account,
+                    'signature' => '【中测高科人才测评】',
+                    'tpId' => config('sms.jucai.template_id'),
+                    'tpContent' => [
+                        'others' => $account,
+                        'valid_code' => $code
+                    ],
+                ]);
+            }
         }
 
         Log::info('auth_verification_code_sent', [

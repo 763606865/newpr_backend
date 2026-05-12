@@ -47,10 +47,7 @@ class AuthController extends Controller
             ]);
         }
 
-        return $this->success([
-            'expires_in' => $result['expires_in'],
-            'code' => $result['code'],
-        ]);
+        return $this->success();
     }
 
     /**

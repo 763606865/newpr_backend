@@ -123,4 +123,5 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'skip_accounts' => explode(',', env('APP_SKIP_ACCOUNTS', '')),
 ];
