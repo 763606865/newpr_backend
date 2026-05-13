@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\Positions\Schemas;
 
-use App\Models\Oa\Company;
+use App\Models\Company;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;

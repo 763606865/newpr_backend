@@ -7,7 +7,7 @@ use App\Filament\Resources\System\Menus\Pages\EditMenu;
 use App\Filament\Resources\System\Menus\Pages\ListMenus;
 use App\Filament\Resources\System\Menus\Schemas\MenuForm;
 use App\Filament\Resources\System\Menus\Tables\MenusTable;
-use App\Models\Oa\System\Menu;
+use App\Models\C\Menu;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;

@@ -7,6 +7,7 @@ use App\Api\Requests\ForgotPasswordRequest;
 use App\Api\Requests\PhoneLoginRequest;
 use App\Api\Requests\SendVerificationCodeRequest;
 use App\Models\User;
+use App\Services\UserService;
 use App\Services\VerificationCodeService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -28,16 +29,6 @@ class AuthController extends Controller
         $type = (string) $validated['type'];
         $account = (string) $validated['account'];
         $scene = (string) $validated['scene'];
-
-        $user = $this->findUserByType($type, $account);
-
-        if ($scene === 'login' && ! $user) {
-            return $this->error('用户不存在。', Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
-
-        if ($scene === 'forgot_password' && ! $user) {
-            return $this->error('用户不存在，无法重置密码。', Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
 
         $result = VerificationCodeService::make()->send($type, $account, $scene);
 
@@ -67,7 +58,9 @@ class AuthController extends Controller
         $user = User::query()->where('phone', $phone)->first();
 
         if (! $user) {
-            return $this->error('用户不存在。', Response::HTTP_UNPROCESSABLE_ENTITY);
+            $user = UserService::make()->register([
+                'phone' => $phone,
+            ]);
         }
 
         return $this->respondWithToken($request, $user);
@@ -90,7 +83,9 @@ class AuthController extends Controller
         $user = User::query()->where('email', $email)->first();
 
         if (! $user) {
-            return $this->error('用户不存在。', Response::HTTP_UNPROCESSABLE_ENTITY);
+            $user = UserService::make()->register([
+                'email' => $email,
+            ]);
         }
 
         return $this->respondWithToken($request, $user);
@@ -202,6 +197,7 @@ class AuthController extends Controller
             'department',
             'position',
         ]);
+
         return [
             'id' => $user->id,
             'uuid' => $user->uuid,

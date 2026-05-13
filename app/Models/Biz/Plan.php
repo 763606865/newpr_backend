@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Models\Oa\System;
+namespace App\Models\Biz;
 
 use App\Enums\SystemPlanStatus;
+use App\Models\C\Feature;
+use App\Models\CompanyPlan;
 use App\Models\Model;
-use App\Models\Oa\CompanyPlan;
-use App\Models\Oa\ShipCompanyPlan;
+use App\Models\ShipCompanyPlan;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -24,7 +25,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int $status 0=未开始 1=进行中 2=已完成 3=已取消
  * @property string|null $extra 其他扩展属性
  */
-#[Table('oa_sys_plans')]
+#[Table('biz_plans')]
 #[Fillable(['plan_name', 'plan_code', 'price', 'duration', 'sort', 'remark', 'status', 'extra'])]
 class Plan extends Model
 {
@@ -42,7 +43,7 @@ class Plan extends Model
      */
     public function features(): BelongsToMany
     {
-        return $this->belongsToMany(Feature::class, 'oa_sys_plan_features', 'plan_id', 'feature_id');
+        return $this->belongsToMany(Feature::class, PlanFeature::class, 'plan_id', 'feature_id');
     }
 
     /**

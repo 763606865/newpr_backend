@@ -2,8 +2,8 @@
 
 namespace App\Observers;
 
-use App\Models\Oa\Company;
-use App\Models\Oa\System\Plan;
+use App\Models\Biz\Plan;
+use App\Models\Company;
 use App\Services\SysPlanService;
 
 class CompanyObserver

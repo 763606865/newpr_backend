@@ -2,17 +2,17 @@
 
 namespace App\Filament\Resources\Employees\Schemas;
 
-use App\Models\Oa\Employee;
+use App\Models\Department;
+use App\Models\Employee;
+use App\Models\Position;
 use App\Models\User;
-use App\Models\Oa\Department;
-use App\Models\Oa\Position;
 use Filament\Actions\Action;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Schemas\Schema;
 use Filament\Schemas\Components\Utilities\Set;
+use Filament\Schemas\Schema;
 use Illuminate\Database\Eloquent\Builder;
 
 class EmployeesForm

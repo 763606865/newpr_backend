@@ -2,7 +2,7 @@
 
 namespace App\Resources\Oa;
 
-use App\Models\Oa\Company;
+use App\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -32,6 +32,7 @@ class ModuleResource extends JsonResource
                 'features' => $this->normalizeFeatures($shipCompanyPlan?->features ?? []),
             ];
         }
+
         return [
             'companies' => $companies,
         ];
@@ -58,6 +59,7 @@ class ModuleResource extends JsonResource
         }
         $sortArr = array_column($normalized, 'sort');
         array_multisort($sortArr, SORT_ASC, $normalized);
+
         return $normalized;
     }
 
@@ -71,6 +73,7 @@ class ModuleResource extends JsonResource
                 'code' => $feature['feature_code'] ?? null,
             ];
         }
+
         return $normalized;
     }
 }

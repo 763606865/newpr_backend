@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Models\Oa\Employee;
+use App\Models\Employee;
 use App\Observers\EmployeeObserver;
 use Filament\Forms\Components\Select;
 use Illuminate\Support\ServiceProvider;

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\AdminUser;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
@@ -14,16 +15,14 @@ class RoleAndAdminSeeder extends Seeder
     public function run(): void
     {
         // Create super-admin role if it doesn't exist
-        $role = Role::firstOrCreate(['name' => 'super-admin']);
+        $role = Role::firstOrCreate(['name' => 'super-admin', 'guard_name' => 'admin']);
 
         // Create admin user
-        $admin = User::firstOrCreate(
+        $admin = AdminUser::firstOrCreate(
             ['email' => 'admin@example.com'],
             [
                 'name' => 'Admin',
-                'phone' => '13800000000',
                 'password' => bcrypt('password'),
-                'status' => 'active',
             ]
         );
 

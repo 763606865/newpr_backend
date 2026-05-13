@@ -1,14 +1,13 @@
 <?php
 
-namespace App\Models\Oa;
+namespace App\Models;
 
-use App\Models\Model;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-#[Table('oa_positions')]
+#[Table('positions')]
 #[Fillable(['company_id', 'name', 'code', 'sort', 'remark'])]
 class Position extends Model
 {

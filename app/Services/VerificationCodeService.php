@@ -7,6 +7,7 @@ use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 use Random\RandomException;
 
 class VerificationCodeService extends Service
@@ -100,7 +101,7 @@ class VerificationCodeService extends Service
                     'signature' => '【中测高科人才测评】',
                     'tpId' => config('sms.jucai.template_id'),
                     'tpContent' => [
-                        'others' => $account,
+                        'others' => Str::mask($account, '*', 3, strlen($account)-4),
                         'valid_code' => $code
                     ],
                 ]);

@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Models\Oa\System;
+namespace App\Models\Biz;
 
+use App\Models\C\Feature;
 use App\Models\Model;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -13,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $plan_id 方案ID
  * @property int $feature_id 功能ID
  */
-#[Table('oa_sys_plan_features')]
+#[Table('biz_plan_c_features')]
 class PlanFeature extends Model
 {
     /**

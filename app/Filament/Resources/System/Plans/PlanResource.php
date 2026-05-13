@@ -7,7 +7,7 @@ use App\Filament\Resources\System\Plans\Pages\EditPlan;
 use App\Filament\Resources\System\Plans\Pages\ListPlans;
 use App\Filament\Resources\System\Plans\Schemas\PlanForm;
 use App\Filament\Resources\System\Plans\Tables\PlansTable;
-use App\Models\Oa\System\Plan;
+use App\Models\Biz\Plan;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;

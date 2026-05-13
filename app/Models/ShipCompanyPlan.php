@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Models\Oa;
+namespace App\Models;
 
-use App\Models\Oa\System\Plan;
+use App\Models\Biz\Plan;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Table('oa_ship_company_plans')]
+#[Table('ship_company_biz_plans')]
 #[Fillable(['company_id', 'plan_id', 'plan_name', 'plan_code', 'original_price', 'pay_amount', 'menus', 'features', 'quota', 'start_time', 'end_time', 'remark', 'extra'])]
 class ShipCompanyPlan extends Model
 {

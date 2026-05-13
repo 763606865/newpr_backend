@@ -3,8 +3,8 @@
 namespace App\Observers;
 
 use App\Enums\AttendanceAssignmentCycleType;
+use App\Models\Employee;
 use App\Models\Oa\AttendanceRule;
-use App\Models\Oa\Employee;
 
 class EmployeeObserver
 {

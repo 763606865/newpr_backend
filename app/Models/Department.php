@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Models\Oa;
+namespace App\Models;
 
-use App\Models\Model;
+use App\Models\Oa\AttendanceSchedule;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Staudenmeir\LaravelAdjacencyList\Eloquent\HasRecursiveRelationships;
 
-#[Table('oa_departments')]
+#[Table('departments')]
 #[Fillable(['company_id', 'parent_id', 'depth', 'name', 'type', 'sort', 'remark'])]
 class Department extends Model
 {

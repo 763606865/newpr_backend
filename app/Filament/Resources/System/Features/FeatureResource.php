@@ -7,7 +7,7 @@ use App\Filament\Resources\System\Features\Pages\EditFeature;
 use App\Filament\Resources\System\Features\Pages\ListFeatures;
 use App\Filament\Resources\System\Features\Schemas\FeatureForm;
 use App\Filament\Resources\System\Features\Tables\FeaturesTable;
-use App\Models\Oa\System\Feature;
+use App\Models\C\Feature;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;

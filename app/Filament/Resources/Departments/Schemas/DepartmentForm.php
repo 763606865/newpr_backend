@@ -3,7 +3,7 @@
 namespace App\Filament\Resources\Departments\Schemas;
 
 use App\Enums\DepartmentType;
-use App\Models\Oa\Company;
+use App\Models\Company;
 use CodeWithDennis\FilamentSelectTree\SelectTree;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Select;
@@ -16,6 +16,7 @@ class DepartmentForm
     public static function configure(Schema $schema): Schema
     {
         $companies = Company::query()->pluck('name', 'id');
+
         return $schema
             ->components([
                 Select::make('company_id')
@@ -29,7 +30,7 @@ class DepartmentForm
                     ->default(0)
                     ->searchable() // 开启搜索
                     ->enableBranchNode()
-                    ->afterStateHydrated(fn($c, $s) => $s && $c->state($s)),
+                    ->afterStateHydrated(fn ($c, $s) => $s && $c->state($s)),
                 Radio::make('type')
                     ->label('类型')
                     ->options(DepartmentType::class)

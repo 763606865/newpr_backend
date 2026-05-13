@@ -3,8 +3,8 @@
 namespace App\Filament\Resources\AttendanceRules\Schemas;
 
 use App\Enums\AttendanceRuleWorkType;
-use App\Models\Oa\Company;
-use App\Models\Oa\Department;
+use App\Models\Company;
+use App\Models\Department;
 use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Radio;

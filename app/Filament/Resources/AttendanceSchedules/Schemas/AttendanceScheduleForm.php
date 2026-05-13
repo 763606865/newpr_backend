@@ -4,10 +4,10 @@ namespace App\Filament\Resources\AttendanceSchedules\Schemas;
 
 use App\Enums\AttendanceRuleWorkType;
 use App\Enums\AttendanceScheduleStatus;
+use App\Models\Company;
+use App\Models\Department;
+use App\Models\Employee;
 use App\Models\Oa\AttendanceRule;
-use App\Models\Oa\Company;
-use App\Models\Oa\Department;
-use App\Models\Oa\Employee;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;

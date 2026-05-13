@@ -7,7 +7,7 @@ use App\Filament\Resources\Positions\Pages\EditPositions;
 use App\Filament\Resources\Positions\Pages\ListPositions;
 use App\Filament\Resources\Positions\Schemas\PositionsForm;
 use App\Filament\Resources\Positions\Tables\PositionsTable;
-use App\Models\Oa\Position;
+use App\Models\Position;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -27,7 +27,7 @@ class PositionsResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'position';
 
-    protected static string | UnitEnum | null $navigationGroup = '组织架构';
+    protected static string|UnitEnum|null $navigationGroup = '组织架构';
 
     public static function form(Schema $schema): Schema
     {

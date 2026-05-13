@@ -3,7 +3,7 @@
 namespace App\Filament\Resources\System\Menus\Schemas;
 
 use App\Enums\SystemMenuType;
-use App\Models\Oa\System\Menu;
+use App\Models\C\Menu;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;

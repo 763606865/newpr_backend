@@ -4,17 +4,17 @@ namespace App\Models;
 
 use App\Enums\UserGender;
 use App\Enums\UserStatus;
-use App\Models\Oa\Company;
-use App\Models\Oa\Employee;
 use App\Models\Oa\LeaveBalance;
 use Database\Factories\UserFactory;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
+use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -42,7 +42,8 @@ use Spatie\Permission\Traits\HasRoles;
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
  */
-#[Fillable(['name', 'nickname', 'phone', 'email', 'gender', 'password', 'status', 'last_login_ip', 'last_login_at'])]
+#[Table('users')]
+#[Fillable(['name', 'nickname', 'phone', 'email', 'gender', 'password', 'status', 'last_login_ip', 'last_login_at', 'extra'])]
 #[Hidden(['password'])]
 class User extends Authenticatable implements FilamentUser
 {
@@ -50,6 +51,9 @@ class User extends Authenticatable implements FilamentUser
     use HasApiTokens, HasFactory, HasRoles, Notifiable, SoftDeletes;
 
     protected $attributes = [
+        'email' => '',
+        'phone' => '',
+        'avatar' => '',
         'status' => UserStatus::Active->value,
         'gender' => UserGender::Unknown->value,
     ];
@@ -74,6 +78,7 @@ class User extends Authenticatable implements FilamentUser
             'gender' => UserGender::class,
             'last_login_at' => 'datetime',
             'password' => 'hashed',
+            'extra' => 'json',
         ];
     }
 
@@ -114,8 +119,6 @@ class User extends Authenticatable implements FilamentUser
 
     /**
      * 员工信息
-     *
-     * @return HasMany
      */
     public function employees(): HasMany
     {
@@ -124,10 +127,8 @@ class User extends Authenticatable implements FilamentUser
 
     /**
      * 用户可访问的公司
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
      */
-    public function companies(): \Illuminate\Database\Eloquent\Relations\HasManyThrough
+    public function companies(): HasManyThrough
     {
         return $this->hasManyThrough(Company::class, Employee::class, 'user_id', 'id', 'id', 'company_id');
     }

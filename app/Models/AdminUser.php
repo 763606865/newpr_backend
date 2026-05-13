@@ -4,20 +4,22 @@ namespace App\Models;
 
 use Database\Factories\UserFactory;
 use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
+use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
-use Filament\Panel;
 
-#[Fillable(['name', 'email', 'password'])]
+#[Table('admin_users')]
+#[Fillable(['name', 'email', 'password', 'email_verified_at'])]
 #[Hidden(['password', 'remember_token'])]
 class AdminUser extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable, HasRoles;
+    use HasFactory, HasRoles, Notifiable;
 
     /**
      * Get the attributes that should be cast.
@@ -28,16 +30,15 @@ class AdminUser extends Authenticatable implements FilamentUser
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
         ];
     }
 
     public function canAccessPanel(Panel $panel): bool
     {
         // 简单示例：所有已验证用户可访问
-//        return $this->hasVerifiedEmail();
+        //        return $this->hasVerifiedEmail();
 
         // 或结合权限：仅拥有角色的用户可访问
-         return $this->hasAnyRole(['super_admin', 'editor']);
+        return $this->hasAnyRole(['super-admin', 'editor']);
     }
 }

@@ -1,10 +1,13 @@
 <?php
 
-namespace App\Models\Oa;
+namespace App\Models;
 
 use App\Enums\CompanyStatus;
-use App\Models\Model;
-use App\Models\Oa\System\Plan;
+use App\Models\Biz\Plan;
+use App\Models\Oa\AttendanceRule;
+use App\Models\Oa\AttendanceSchedule;
+use App\Models\Oa\LeaveBalance;
+use App\Models\Oa\LeaveType;
 use App\Observers\CompanyObserver;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
@@ -20,7 +23,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static Builder enabled()
  * @method static Builder disabled()
  */
-#[Table('oa_companies')]
+#[Table('companies')]
 #[Fillable(['name', 'credit_code', 'legal_person', 'contact_phone', 'address', 'status'])]
 #[ObservedBy(CompanyObserver::class)]
 class Company extends Model

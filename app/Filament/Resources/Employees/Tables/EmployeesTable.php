@@ -4,8 +4,8 @@ namespace App\Filament\Resources\Employees\Tables;
 
 use App\Enums\AttendanceAssignmentCycleType;
 use App\Enums\EmployeeStatus;
+use App\Models\Employee;
 use App\Models\Oa\AttendanceRule;
-use App\Models\Oa\Employee;
 use App\Models\Oa\LeaveType;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;

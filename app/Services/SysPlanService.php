@@ -3,10 +3,10 @@
 namespace App\Services;
 
 use App\Enums\CompanyPlanStatus;
-use App\Models\Oa\Company;
-use App\Models\Oa\CompanyPlan;
-use App\Models\Oa\ShipCompanyPlan;
-use App\Models\Oa\System\Plan;
+use App\Models\Biz\Plan;
+use App\Models\Company;
+use App\Models\CompanyPlan;
+use App\Models\ShipCompanyPlan;
 use Carbon\Carbon;
 
 class SysPlanService extends Service
@@ -20,9 +20,10 @@ class SysPlanService extends Service
         /** @var null|CompanyPlan $currentPlan */
         $currentPlan = $company->companyPlans()->where('is_current', 1)->first();
 
-        if (!$currentPlan) {
+        if (! $currentPlan) {
             $this->bindNewPlan($company, $plan, $ship);
-            return ;
+
+            return;
         }
 
         // 续费相同套餐，延长时长
@@ -73,6 +74,7 @@ class SysPlanService extends Service
     {
         // 续时间
         $ship['surplus_days'] = Carbon::now()->diffInDays($oldPlan->end_time);
+
         return $ship;
     }
 }

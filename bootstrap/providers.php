@@ -6,8 +6,8 @@ use App\Providers\DbLogServerProvider;
 use App\Providers\Filament\AdminPanelProvider;
 
 return [
+    ServiceProvider::class,
     AppServiceProvider::class,
     DbLogServerProvider::class,
     AdminPanelProvider::class,
-    ServiceProvider::class,
 ];

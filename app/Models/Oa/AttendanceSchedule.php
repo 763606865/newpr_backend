@@ -3,6 +3,9 @@
 namespace App\Models\Oa;
 
 use App\Enums\AttendanceRuleWorkType;
+use App\Models\Company;
+use App\Models\Department;
+use App\Models\Employee;
 use App\Models\Model;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;

@@ -1,7 +1,9 @@
 <?php
 
-namespace App\Models\Oa\System;
+namespace App\Models\C;
 
+use App\Models\Biz\Plan;
+use App\Models\Biz\PlanFeature;
 use App\Models\Model;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
@@ -18,7 +20,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @property string|null $description 权限描述
  * @property int $status 0=禁用 1=启用
  */
-#[Table('oa_sys_features')]
+#[Table('c_features')]
 #[Fillable(['feature_name', 'feature_code', 'menu_id', 'description', 'status'])]
 class Feature extends Model
 {
@@ -42,7 +44,7 @@ class Feature extends Model
      */
     public function plans(): BelongsToMany
     {
-        return $this->belongsToMany(Plan::class, 'oa_sys_plan_features', 'feature_id', 'plan_id');
+        return $this->belongsToMany(Plan::class, PlanFeature::class, 'feature_id', 'plan_id');
     }
 
     /**

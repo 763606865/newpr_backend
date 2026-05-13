@@ -1,18 +1,19 @@
 <?php
 
-namespace App\Models\Oa;
+namespace App\Models;
 
 use App\Enums\EmployeeStatus;
-use App\Models\Model;
-use App\Models\User;
+use App\Models\Oa\AttendanceAssignment;
+use App\Models\Oa\AttendanceSchedule;
+use App\Models\Oa\LeaveBalance;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Attributes\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Str;
 
 /**
@@ -21,7 +22,7 @@ use Illuminate\Support\Str;
  * @property string $mobile_mask
  * @property string $email_mask
  */
-#[Table('oa_employees')]
+#[Table('employees')]
 #[Fillable(['user_id', 'company_id', 'department_id', 'position_id', 'employee_no', 'real_name', 'avatar', 'email', 'mobile', 'status', 'entry_time'])]
 class Employee extends Model
 {

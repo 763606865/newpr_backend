@@ -3,6 +3,7 @@
 namespace App\Models\Oa;
 
 use App\Enums\LeaveTypeDeductionType;
+use App\Models\Company;
 use App\Models\Model;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;

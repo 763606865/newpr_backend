@@ -7,7 +7,7 @@ use App\Filament\Resources\Departments\Pages\EditDepartment;
 use App\Filament\Resources\Departments\Pages\ListDepartments;
 use App\Filament\Resources\Departments\Schemas\DepartmentForm;
 use App\Filament\Resources\Departments\Tables\DepartmentsTable;
-use App\Models\Oa\Department;
+use App\Models\Department;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -27,7 +27,7 @@ class DepartmentResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'department';
 
-    protected static string | UnitEnum | null $navigationGroup = '组织架构';
+    protected static string|UnitEnum|null $navigationGroup = '组织架构';
 
     public static function form(Schema $schema): Schema
     {

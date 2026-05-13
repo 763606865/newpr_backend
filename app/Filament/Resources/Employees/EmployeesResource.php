@@ -7,7 +7,7 @@ use App\Filament\Resources\Employees\Pages\EditEmployees;
 use App\Filament\Resources\Employees\Pages\ListEmployees;
 use App\Filament\Resources\Employees\Schemas\EmployeesForm;
 use App\Filament\Resources\Employees\Tables\EmployeesTable;
-use App\Models\Oa\Employee;
+use App\Models\Employee;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;

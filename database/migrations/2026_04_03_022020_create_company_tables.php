@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('oa_companies', function (Blueprint $table) {
+        Schema::create('companies', function (Blueprint $table) {
             $table->id();
             $table->string('name')->comment('企业名称');
             $table->string('credit_code')->nullable()->comment('统一社会信用代码');
@@ -24,7 +24,7 @@ return new class extends Migration
             $table->unique(['credit_code']);
             $table->comment('企业主体表');
         });
-        Schema::create('oa_departments', function (Blueprint $table) {
+        Schema::create('departments', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('company_id');
             $table->unsignedBigInteger('parent_id')->default(0)->comment('上级部门ID');
@@ -38,7 +38,7 @@ return new class extends Migration
             $table->index(['company_id', 'parent_id']);
             $table->comment('企业部门架构表');
         });
-        Schema::create('oa_positions', function (Blueprint $table) {
+        Schema::create('positions', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('company_id');
             $table->string('name')->comment('名称');
@@ -50,7 +50,7 @@ return new class extends Migration
             $table->comment('企业职级表');
             $table->index(['company_id']);
         });
-        Schema::create('oa_department_positions', function (Blueprint $table) {
+        Schema::create('department_positions', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('company_id');
             $table->unsignedBigInteger('department_id');
@@ -58,9 +58,9 @@ return new class extends Migration
             $table->comment('部门职级表');
             $table->index(['company_id']);
             $table->index(['department_id']);
-            $table->unique(['company_id', 'department_id', 'position_id'], name: 'oa_department_positions_c_id_d_id_p_id_unique');
+            $table->unique(['company_id', 'department_id', 'position_id'], name: 'department_positions_c_id_d_id_p_id_unique');
         });
-        Schema::create('oa_employees', function (Blueprint $table) {
+        Schema::create('employees', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id')->nullable()->comment('关联用户ID');
             $table->unsignedBigInteger('company_id')->nullable()->comment('企业ID');
@@ -89,10 +89,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('oa_employees');
-        Schema::dropIfExists('oa_department_positions');
-        Schema::dropIfExists('oa_positions');
-        Schema::dropIfExists('oa_departments');
-        Schema::dropIfExists('oa_companies');
+        Schema::dropIfExists('employees');
+        Schema::dropIfExists('department_positions');
+        Schema::dropIfExists('positions');
+        Schema::dropIfExists('departments');
+        Schema::dropIfExists('companies');
     }
 };

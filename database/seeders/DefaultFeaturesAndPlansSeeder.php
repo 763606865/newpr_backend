@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\Oa\System\Feature;
-use App\Models\Oa\System\Menu;
-use App\Models\Oa\System\Plan;
+use App\Models\Biz\Plan;
+use App\Models\C\Feature;
+use App\Models\C\Menu;
 use Illuminate\Database\Seeder;
 
 class DefaultFeaturesAndPlansSeeder extends Seeder

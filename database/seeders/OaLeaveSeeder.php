@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Oa\Company;
+use App\Models\Company;
 use App\Models\Oa\LeaveBalance;
 use App\Models\Oa\LeaveType;
 use App\Models\User;

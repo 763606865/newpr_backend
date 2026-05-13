@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Models\Oa;
+namespace App\Models;
 
 use App\Enums\CompanyPlanStatus;
-use App\Models\Oa\System\Plan;
+use App\Models\Biz\Plan;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * Class CompanyPlan
  * @property CompanyPlanStatus $status
  */
-#[Table('oa_company_plans')]
+#[Table('company_biz_plans')]
 #[Fillable(['company_id', 'ship_id', 'plan_id', 'start_time', 'end_time', 'is_current', 'status', 'extra'])]
 class CompanyPlan extends Model
 {

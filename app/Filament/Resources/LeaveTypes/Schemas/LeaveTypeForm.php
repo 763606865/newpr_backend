@@ -3,7 +3,7 @@
 namespace App\Filament\Resources\LeaveTypes\Schemas;
 
 use App\Enums\LeaveTypeDeductionType;
-use App\Models\Oa\Company;
+use App\Models\Company;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Utilities\Get;
