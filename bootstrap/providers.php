@@ -1,13 +1,13 @@
 <?php
 
-use App\Libs\ThirdParty\Jucai\ServiceProvider;
 use App\Providers\AppServiceProvider;
 use App\Providers\DbLogServerProvider;
 use App\Providers\Filament\AdminPanelProvider;
 
 return [
-    ServiceProvider::class,
+    App\Libs\ThirdParty\Jucai\ServiceProvider::class,
     AppServiceProvider::class,
     DbLogServerProvider::class,
     AdminPanelProvider::class,
+    App\Libs\Oss\ServiceProvider::class
 ];

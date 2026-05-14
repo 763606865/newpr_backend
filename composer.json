@@ -7,6 +7,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.3",
+        "aliyuncs/oss-sdk-php": "^2.7",
         "bezhansalleh/filament-shield": "^4.2",
         "cheesegrits/filament-google-maps": "^5.0",
         "codewithdennis/filament-select-tree": "^4.0",

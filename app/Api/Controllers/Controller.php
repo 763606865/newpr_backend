@@ -35,4 +35,9 @@ abstract class Controller
         }
         return response()->json($rv);
     }
+
+    public function user()
+    {
+        return auth()->guard('api');
+    }
 }

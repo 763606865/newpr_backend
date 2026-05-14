@@ -1,6 +1,5 @@
 <?php
 
-use App\Exceptions\UnauthenticatedException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -22,10 +21,10 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->render(function (Throwable $e, $request) {
             if ($request->is('api/*')) {
                 if ($e instanceof AuthenticationException) {
-                    throw new UnauthenticatedException('Token expired or invalid.');
+                    throw new \App\Exceptions\UnauthenticatedException('Token expired or invalid.');
                 }
                 if ($e instanceof OAuthServerException) {
-                    throw new UnauthenticatedException('Token expired or invalid.');
+                    throw new \App\Exceptions\UnauthenticatedException('Token expired or invalid.');
                 }
             }
         });

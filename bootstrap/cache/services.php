@@ -59,6 +59,7 @@
     55 => 'App\\Providers\\AppServiceProvider',
     56 => 'App\\Providers\\DbLogServerProvider',
     57 => 'App\\Providers\\Filament\\AdminPanelProvider',
+    58 => 'App\\Libs\\Oss\\ServiceProvider',
   ),
   'eager' => 
   array (
@@ -105,6 +106,7 @@
     40 => 'App\\Providers\\AppServiceProvider',
     41 => 'App\\Providers\\DbLogServerProvider',
     42 => 'App\\Providers\\Filament\\AdminPanelProvider',
+    43 => 'App\\Libs\\Oss\\ServiceProvider',
   ),
   'deferred' => 
   array (
