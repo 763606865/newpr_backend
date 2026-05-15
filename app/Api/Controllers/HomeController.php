@@ -52,7 +52,7 @@ class HomeController extends Controller
     public function modules(Request $request): \Illuminate\Http\JsonResponse
     {
         $companies = $request->user()->companies()->with([
-            'currentPlan',
+            'currentPlans',
             'companyPlans',
             'shipCompanyPlans',
         ])->get();

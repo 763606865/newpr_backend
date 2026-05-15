@@ -8,7 +8,7 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -64,8 +64,11 @@ class BUser extends Authenticatable
     /**
      * 用户可访问的公司
      */
-    public function companies(): HasManyThrough
+    public function companies(): BelongsToMany
     {
-        return $this->hasManyThrough(Company::class, CompanyBUsers::class, 'b_user_id', 'id', 'id', 'company_id');
+        return $this->belongsToMany(Company::class, CompanyBUsers::class, 'b_user_id', 'company_id')
+            ->withPivot(['status', 'last_login_ip', 'last_login_at'])
+            ->wherePivot('status', '=', 1)
+            ->orderByPivot('last_login_at', 'desc');
     }
 }

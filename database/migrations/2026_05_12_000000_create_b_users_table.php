@@ -30,6 +30,8 @@ return new class extends Migration
             $table->unsignedBigInteger('company_id')->comment('企业ID');
             $table->unsignedBigInteger('b_user_id')->comment('用户ID');
             $table->tinyInteger('status')->default(1)->comment('状态');
+            $table->string('last_login_ip')->nullable()->comment('最后登录IP');
+            $table->timestamp('last_login_at')->nullable()->comment('最后登录时间');
             $table->timestamps();
         });
     }
