@@ -20,13 +20,14 @@ class ModuleResource extends JsonResource
         foreach ($this->resource as $company) {
             $companyPlan = $company->companyPlans->where('is_current', '=', 1)->first();
             $shipCompanyPlan = $company->shipCompanyPlans->where('id', $companyPlan->ship_id)->first();
+            $currentPlan = $company->currentPlans->first();
             $companies[] = [
                 'id' => $company->id,
                 'name' => $company->name,
                 'plan' => [
-                    'id' => $company->currentPlan?->id,
-                    'plan_name' => $company->currentPlan?->plan_name,
-                    'plan_code' => $company->currentPlan?->plan_code,
+                    'id' => $currentPlan?->id,
+                    'plan_name' => $currentPlan?->plan_name,
+                    'plan_code' => $currentPlan?->plan_code,
                 ],
                 'menus' => $this->normalizeMenus($shipCompanyPlan?->menus ?? []),
                 'features' => $this->normalizeFeatures($shipCompanyPlan?->features ?? []),

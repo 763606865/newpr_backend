@@ -123,8 +123,7 @@ class EmployeesForm
                     ->maxLength(60),
                 FileUpload::make('avatar')
                     ->label('头像地址')
-                    ->image()
-                    ->required(),
+                    ->image(),
                 TextInput::make('email')
                     ->label('邮箱')
                     ->email()

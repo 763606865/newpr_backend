@@ -1,9 +1,11 @@
 <?php
 
+use App\Exceptions\UnauthenticatedException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Middleware\HandleCors;
 use Laravel\Passport\Exceptions\OAuthServerException;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -13,18 +15,21 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         channels: __DIR__.'/../routes/channels.php',
         health: '/up',
+        then: function () {
+            Route::prefix('b')->group(base_path('routes/b.php'));
+        }
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->use([HandleCors::class]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->render(function (Throwable $e, $request) {
             if ($request->is('api/*')) {
                 if ($e instanceof AuthenticationException) {
-                    throw new \App\Exceptions\UnauthenticatedException('Token expired or invalid.');
+                    throw new UnauthenticatedException('Token expired or invalid.');
                 }
                 if ($e instanceof OAuthServerException) {
-                    throw new \App\Exceptions\UnauthenticatedException('Token expired or invalid.');
+                    throw new UnauthenticatedException('Token expired or invalid.');
                 }
             }
         });

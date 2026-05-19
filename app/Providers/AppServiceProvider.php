@@ -3,9 +3,11 @@
 namespace App\Providers;
 
 use App\Models\Employee;
+use App\Models\Token;
 use App\Observers\EmployeeObserver;
 use Filament\Forms\Components\Select;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Passport\Passport;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -27,6 +29,7 @@ class AppServiceProvider extends ServiceProvider
             $component->native(false);
         });
 
+        Passport::useTokenModel(Token::class);
         Employee::observe(EmployeeObserver::class);
     }
 }

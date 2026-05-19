@@ -87,7 +87,7 @@ return [
 
         'b_users' => [
             'driver' => 'eloquent',
-            'table' => BUser::class,
+            'model' => BUser::class,
         ],
     ],
 

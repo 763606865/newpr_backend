@@ -5,10 +5,9 @@ namespace App\Enums;
 use Filament\Support\Contracts\HasLabel;
 use Illuminate\Contracts\Support\Htmlable;
 
-enum CompanyStatus: int implements HasLabel
+enum CompanyBUserStatus: int implements HasLabel
 {
     case Disabled = 0;
-    case Auditing = 2;
     case Enabled = 1;
 
     public function getLabel(): string|null|Htmlable
@@ -16,7 +15,6 @@ enum CompanyStatus: int implements HasLabel
         return match ($this) {
             self::Disabled => '禁用',
             self::Enabled => '启用',
-            self::Auditing => '审批中',
         };
     }
 }

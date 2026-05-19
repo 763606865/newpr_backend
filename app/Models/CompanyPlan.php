@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * 公司套餐绑定记录
  * Class CompanyPlan
+ *
  * @property CompanyPlanStatus $status
  */
 #[Table('company_biz_plans')]
@@ -24,6 +25,7 @@ class CompanyPlan extends Model
         'end_time' => 'datetime',
         'is_current' => 'boolean',
         'extra' => 'array',
+        'status' => CompanyPlanStatus::class,
     ];
 
     public function company(): BelongsTo
@@ -50,8 +52,10 @@ class CompanyPlan extends Model
             $this->is_current = 0;
             $this->end_time = Carbon::now();
             $this->status = CompanyPlanStatus::Disabled;
+
             return $this->save();
         }
+
         return false;
     }
 }

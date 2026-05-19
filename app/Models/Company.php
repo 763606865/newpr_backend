@@ -8,15 +8,15 @@ use App\Models\Oa\AttendanceRule;
 use App\Models\Oa\AttendanceSchedule;
 use App\Models\Oa\LeaveBalance;
 use App\Models\Oa\LeaveType;
+use App\Models\Pivot\CompanyBUsers;
 use App\Observers\CompanyObserver;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
-use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -32,6 +32,10 @@ class Company extends Model
 
     protected $attributes = [
         'status' => CompanyStatus::Enabled,
+    ];
+
+    protected $casts = [
+        'status' => CompanyStatus::class,
     ];
 
     /**
@@ -101,24 +105,30 @@ class Company extends Model
     /**
      * 使用过的方案
      */
-    public function plans(): HasManyThrough
+    public function plans(): BelongsToMany
     {
-        return $this->hasManyThrough(Plan::class, CompanyPlan::class, 'company_id', 'id', 'id', 'plan_id');
+        return $this->belongsToMany(Plan::class, CompanyPlan::class, 'company_id', 'plan_id', 'id', 'id');
     }
 
     /**
      * 当前正在执行的方案
      */
-    public function currentPlan(): HasOneThrough
+    public function currentPlans(): BelongsToMany
     {
-        return $this->hasOneThrough(
-            Plan::class,
-            CompanyPlan::class,
-            'company_id',
-            'id',
-            'id',
-            'plan_id'
-        )->where('is_current', 1);
+        return $this->plans()
+            ->wherePivot('is_current', 1)
+            ->withPivot(['is_current', 'status', 'start_time', 'end_time']);
+    }
+
+    /**
+     * B端用户
+     */
+    public function bUsers(): BelongsToMany
+    {
+        return $this->belongsToMany(BUser::class, CompanyBUsers::class, 'company_id', 'b_user_id')
+            ->withPivot(['status', 'last_login_ip', 'last_login_at'])
+            ->wherePivot('status', 1)
+            ->orderByPivot('last_login_at', 'desc');
     }
 
     /**
