@@ -32,9 +32,9 @@ class BUserService extends Service
         $master = Carbon::parse($BUser->$priority)->diff($BUser1->$priority) > 0 ? $BUser : $BUser1;
     }
 
-    public function syncCompany(BUser $BUser, Company $company): void
+    public function attachCompany(BUser $BUser, Company $company): void
     {
-        $BUser->companies()->sync(
+        $BUser->companies()->attach(
             ids: [
                 $company->id,
             ]);

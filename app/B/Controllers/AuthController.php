@@ -4,6 +4,7 @@ namespace App\B\Controllers;
 
 use App\B\Requests\LoginRequest;
 use App\B\Requests\SendVerificationCodeRequest;
+use App\Exceptions\BadRequestException;
 use App\Models\BUser;
 use App\Models\Company;
 use App\Services\BUserService;
@@ -18,8 +19,6 @@ class AuthController extends Controller
      * 登录B端用户
      *
      * POST /b/auth/login
-     *
-     * @throws \Exception
      */
     public function login(LoginRequest $request): JsonResponse
     {
@@ -43,8 +42,10 @@ class AuthController extends Controller
 
     /**
      * 登出
+     *
+     * POST /b/auth/logout
      */
-    public function logout(Request $request)
+    public function logout(Request $request): JsonResponse
     {
         $request->user()->token()->revoke();
 
@@ -53,8 +54,12 @@ class AuthController extends Controller
 
     /**
      * 获取用户信息
+     *
+     * GET /b/auth/me
+     *
+     * @throws BadRequestException
      */
-    public function me(Request $request)
+    public function me(Request $request): JsonResponse
     {
         $user = $request->user();
 
@@ -81,6 +86,57 @@ class AuthController extends Controller
         }
 
         return $this->success();
+    }
+
+    /**
+     * 刷新token
+     *
+     * POST /b/auth/refresh-token
+     *
+     * @throws \Exception
+     */
+    public function refreshToken(Request $request): JsonResponse
+    {
+        /** @var BUser|null $user */
+        $user = $this->user();
+
+        $company = $this->company();
+
+        if ($request->filled('company_id')) {
+            $companyId = (int) $request->input('company_id');
+
+            if ($companyId <= 0) {
+                return $this->error('company_id 参数无效。', Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+
+            $company = $user->companies()->whereKey($companyId)->first();
+
+            if (! $company) {
+                return $this->error('无权切换到该企业。', Response::HTTP_FORBIDDEN);
+            }
+        }
+
+        $tokenResult = $user->createToken('b');
+
+        if ($company) {
+            $company->pivot->last_login_ip = (string) $request->ip();
+            $company->pivot->last_login_at = now();
+            $company->pivot->save();
+
+            if ($token = $tokenResult->getToken()) {
+                $token->responsible_type = Company::class;
+                $token->responsible_id = $company->id;
+                $token->save();
+            }
+        }
+
+        $user->token()?->revoke();
+
+        return $this->success([
+            'token_type' => 'Bearer',
+            'access_token' => $tokenResult->accessToken,
+            'user' => $this->userPayload($user, $company),
+        ]);
     }
 
     private function respondWithToken(Request $request, BUser $user): JsonResponse

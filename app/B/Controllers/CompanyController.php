@@ -3,6 +3,7 @@
 namespace App\B\Controllers;
 
 use App\B\Requests\CompanyRequest;
+use App\Models\Company;
 use App\Services\BUserService;
 use App\Services\CompanyService;
 use Illuminate\Http\JsonResponse;
@@ -25,18 +26,6 @@ class CompanyController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * GET /b/companies/create
-     *
-     * @throws \Exception
-     */
-    public function create(Request $request): JsonResponse
-    {
-        return $this->success();
-    }
-
-    /**
      * 企业入驻
      *
      * POST /b/companies
@@ -48,40 +37,52 @@ class CompanyController extends Controller
         $validated = $request->validated();
         $user = $this->user();
         $company = CompanyService::make()->create($validated);
-        BUserService::make()->syncCompany($user, $company);
+        BUserService::make()->attachCompany($user, $company);
 
         return $this->success($company);
     }
 
     /**
-     * Display the specified resource.
+     * 企业信息
+     *
+     * GET /b/companies/{id}
+     *
+     * @throws \Exception
      */
-    public function show(string $id)
+    public function show(Request $request, string $id): JsonResponse
     {
-        //
+        /** @var Company $company */
+        $company = Company::findOrFail($id);
+
+        return $this->success($company);
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * 企业信息
+     *
+     * GET /b/companies/{id}/edit
+     *
+     * @throws \Exception
      */
-    public function edit(string $id)
+    public function edit(Request $request, string $id): JsonResponse
     {
-        //
+        return $this->show($request, $id);
     }
 
     /**
-     * Update the specified resource in storage.
+     * 编辑企业
+     *
+     * PUT /b/companies/{id}
+     *
+     * @throws \Exception
      */
-    public function update(Request $request, string $id)
+    public function update(CompanyRequest $request, string $id): JsonResponse
     {
-        //
-    }
+        /** @var Company $company */
+        $company = Company::findOrFail($id);
+        $validated = $request->validated();
+        $company->fill($validated)->save();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return $this->success();
     }
 }

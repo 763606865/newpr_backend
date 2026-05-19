@@ -2,8 +2,10 @@
 
 namespace App\B\Requests;
 
+use App\Models\Company;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class CompanyRequest extends FormRequest
 {
@@ -22,9 +24,11 @@ class CompanyRequest extends FormRequest
      */
     public function rules(): array
     {
+        $companyTable = (new Company)->getTable();
+
         return [
             'name' => ['required', 'string', 'max:255'],
-            'credit_code' => ['required', 'string', 'max:255'],
+            'credit_code' => ['required', 'string', 'max:255', Rule::unique($companyTable, 'credit_code')->whereNull('deleted_at')->ignore($this->route('id'))],
             'legal_person' => ['required', 'string', 'max:255'],
             'contact_phone' => ['required', 'string', 'max:255'],
             'address' => ['nullable', 'string'],
