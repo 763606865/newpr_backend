@@ -3,6 +3,7 @@
 use App\B\Controllers\AuthController;
 use App\B\Controllers\CompanyController;
 use App\B\Controllers\DepartmentController;
+use App\B\Controllers\EmployeeController;
 use App\B\Controllers\PositionController;
 use Illuminate\Support\Facades\Route;
 
@@ -26,6 +27,25 @@ Route::middleware('auth:b')->group(function (): void {
 
     // 岗位管理
     Route::resource('positions', PositionController::class);
+    // ==============================================================================
+
+    // 职工管理
+    // 职工管理-列表
+    Route::get('/employees', [EmployeeController::class, 'index']);
+    // 职工管理-创建
+    Route::get('/employees/create', [EmployeeController::class, 'create']);
+    // 职工管理-用户远程搜索（避免全量下拉）
+    Route::get('/employees/search-users', [EmployeeController::class, 'searchUsers']);
+    // 职工管理-保存
+    Route::post('/employees', [EmployeeController::class, 'store']);
+    // 职工管理-详情
+    Route::get('/employees/{id}', [EmployeeController::class, 'show']);
+    // 职工管理-编辑页
+    Route::get('/employees/{id}/edit', [EmployeeController::class, 'edit']);
+    // 职工管理-编辑
+    Route::put('/employees/{id}', [EmployeeController::class, 'update']);
+    // 职工管理-删除
+    Route::delete('/employees/{id}', [EmployeeController::class, 'destroy']);
     // ==============================================================================
 });
 // ==============================================================================
