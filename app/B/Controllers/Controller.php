@@ -2,6 +2,8 @@
 
 namespace App\B\Controllers;
 
+use App\Exceptions\BadRequestException;
+use App\Exceptions\UnauthenticatedException;
 use App\Models\BUser;
 use App\Models\Company;
 use Illuminate\Http\JsonResponse;
@@ -39,11 +41,21 @@ abstract class Controller
 
     public function user(): ?BUser
     {
-        return auth()->guard('b')->user();
+        $user = auth()->guard('b')->user();
+        if (! $user) {
+            throw new UnauthenticatedException('Token Expired。');
+        }
+
+        return $user;
     }
 
     public function company(): ?Company
     {
-        return $this->user()->token()?->responsible;
+        $company = $this->user()->token()?->responsible;
+        if (! $company) {
+            throw new BadRequestException('未找到当前企业。');
+        }
+
+        return $company;
     }
 }
