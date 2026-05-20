@@ -29,5 +29,20 @@ class PassportPersonalAccessClientSeeder extends Seeder
             'created_at' => now(),
             'updated_at' => now(),
         ]);
+        DB::table('oauth_clients')
+            ->where('name', '=', '牛派B端')
+            ->delete();
+
+        DB::table('oauth_clients')->insert([
+            'id' => Str::uuid(),
+            'name' => '牛派B端',
+            'secret' => Str::random(40),
+            'provider' => 'b_users',
+            'redirect_uris' => '',
+            'grant_types' => json_encode(['personal_access']),
+            'revoked' => false,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
     }
 }

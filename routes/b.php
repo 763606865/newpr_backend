@@ -32,20 +32,6 @@ Route::middleware('auth:b')->group(function (): void {
     Route::resource('positions', PositionController::class);
     // ==============================================================================
 
-    // 考勤规则
-    Route::resource('attendance-rules', AttendanceRuleController::class);
-    // ==============================================================================
-
-    // 考勤记录
-    Route::get('/attendance-schedules', [AttendanceScheduleController::class, 'index']);
-    Route::get('/attendance-schedules/export', [AttendanceScheduleController::class, 'export']);
-    Route::get('/attendance-schedules/{id}', [AttendanceScheduleController::class, 'show']);
-    // ==============================================================================
-
-    // 假期类型
-    Route::resource('leave-types', LeaveTypeController::class);
-    // ==============================================================================
-
     // 职工管理
     // 职工管理-列表
     Route::get('/employees', [EmployeeController::class, 'index']);
@@ -64,5 +50,22 @@ Route::middleware('auth:b')->group(function (): void {
     // 职工管理-删除
     Route::delete('/employees/{id}', [EmployeeController::class, 'destroy']);
     // ==============================================================================
+
+    Route::middleware('biz-plan')->group(function (): void {
+
+        // 考勤规则
+        Route::resource('attendance-rules', AttendanceRuleController::class);
+        // ==============================================================================
+
+        // 考勤记录
+        Route::get('/attendance-schedules', [AttendanceScheduleController::class, 'index']);
+        Route::get('/attendance-schedules/export', [AttendanceScheduleController::class, 'export']);
+        Route::get('/attendance-schedules/{id}', [AttendanceScheduleController::class, 'show']);
+        // ==============================================================================
+
+        // 假期类型
+        Route::resource('leave-types', LeaveTypeController::class);
+        // ==============================================================================
+    });
 });
 // ==============================================================================

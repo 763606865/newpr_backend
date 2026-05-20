@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\C;
+namespace App\Models\Client;
 
 use App\Models\Biz\Plan;
 use App\Models\Biz\PlanFeature;
@@ -20,8 +20,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @property string|null $description 权限描述
  * @property int $status 0=禁用 1=启用
  */
-#[Table('c_features')]
-#[Fillable(['feature_name', 'feature_code', 'menu_id', 'description', 'status'])]
+#[Table('client_features')]
+#[Fillable(['client_id', 'feature_name', 'feature_code', 'menu_id', 'description', 'status'])]
 class Feature extends Model
 {
     protected function casts(): array

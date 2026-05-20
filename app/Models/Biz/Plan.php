@@ -3,7 +3,7 @@
 namespace App\Models\Biz;
 
 use App\Enums\SystemPlanStatus;
-use App\Models\C\Feature;
+use App\Models\Client\Feature;
 use App\Models\CompanyPlan;
 use App\Models\Model;
 use App\Models\ShipCompanyPlan;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\C;
+namespace App\Models\Client;
 
 use App\Enums\SystemMenuType;
 use App\Models\Model;
@@ -25,8 +25,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string|null $style 样式扩展属性
  * @property string|null $extra 其他扩展属性
  */
-#[Table('c_menus')]
-#[Fillable(['parent_id', 'menu_name', 'menu_code', 'menu_type', 'path', 'component', 'icon', 'sort', 'visible', 'style', 'extra'])]
+#[Table('client_menus')]
+#[Fillable(['client_id', 'parent_id', 'menu_name', 'menu_code', 'menu_type', 'path', 'component', 'icon', 'sort', 'visible', 'style', 'extra'])]
 class Menu extends Model
 {
     protected function casts(): array

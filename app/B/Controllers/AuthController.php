@@ -8,6 +8,7 @@ use App\Exceptions\BadRequestException;
 use App\Models\BUser;
 use App\Models\Company;
 use App\Services\BUserService;
+use App\Services\CompanyService;
 use App\Services\VerificationCodeService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -186,8 +187,34 @@ class AuthController extends Controller
             'avatar' => $user->avatar,
             'last_login_ip' => $user->last_login_ip,
             'last_login_at' => $user->last_login_at?->toDateTimeString(),
-            'current_company' => $company ?? null,
+            'current_company' => $this->companyPayload($company),
             'companies' => $companies,
+        ];
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    private function companyPayload(?Company $company): ?array
+    {
+        if (! $company) {
+            return null;
+        }
+        /** @var CompanyService $service */
+        $service = CompanyService::make();
+        $planArr = $service->getCurrentBizPlan($company);
+        $menus = array_values($planArr['menus'] ?? []);
+        $features = array_values($planArr['features'] ?? []);
+        unset($planArr['menus'], $planArr['features']);
+
+        return [
+            'id' => $company->id,
+            'name' => $company->name,
+            'status' => $company->status,
+            'address' => $company->address,
+            'menus' => $menus,
+            'plan' => $planArr,
+            'features' => $features,
         ];
     }
 }

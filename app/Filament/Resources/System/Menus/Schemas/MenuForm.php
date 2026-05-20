@@ -3,7 +3,8 @@
 namespace App\Filament\Resources\System\Menus\Schemas;
 
 use App\Enums\SystemMenuType;
-use App\Models\C\Menu;
+use App\Models\Client\Menu;
+use App\Services\PassportClientService;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -15,9 +16,25 @@ class MenuForm
     {
         return $schema
             ->components([
+                Select::make('client_id')
+                    ->label('客户端')
+                    ->required()
+                    ->options(fn (): array => PassportClientService::make()->options())
+                    ->searchable()
+                    ->preload(),
+
                 Select::make('parent_id')
                     ->label('父菜单')
-                    ->options(Menu::where('parent_id', 0)->pluck('menu_name', 'id'))
+                    ->options(fn (callable $get): array => Menu::query()
+                        ->where('parent_id', 0)
+                        ->when(
+                            filled($get('client_id')),
+                            fn ($query) => $query->where('client_id', (string) $get('client_id'))
+                        )
+                        ->orderBy('sort')
+                        ->orderBy('id')
+                        ->pluck('menu_name', 'id')
+                        ->toArray())
                     ->default(0)
                     ->placeholder('顶级菜单'),
 
