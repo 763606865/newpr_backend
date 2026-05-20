@@ -6,10 +6,6 @@
 - pnpm >= 10.33
 - PHP >= 8.5
 - Composer >= 2.9
-- MySQL >= 9.6
-- Redis >= 8.6
-- Laravel >= 13.3
-- Supervisor >= 4.2
 
 ## 快速初始化
 ### 1) 安装后端依赖
@@ -44,7 +40,7 @@ php artisan db:seed
 
 建议直接写入数据库创建管理员，并使用 `bcrypt` 进行密码加密。
 
-## 生成 Passport 客户端 @deprecated 已使用 `php artisan db:seed` 填充了基础数据，其中包括 Passport 客户端的创建，因此不再需要手动执行以下命令。
+## 生成 Passport 客户端
 ```bash
 php artisan passport:client --name="牛派B端" --provider=b_users --personal
 ```
@@ -52,41 +48,10 @@ php artisan passport:client --name="牛派B端" --provider=b_users --personal
 ## 前端（中台）
 ### 安装依赖
 ```bash
-pnpm install
+npm install
 ```
 
-### 启动filament
+### 启动开发模式
 ```bash
-pnpm build
-```
-
-## 队列（Horizon 模式）
-### 1) 安装 Horizon（仅首次）
-```bash
-php artisan horizon:install
-php artisan migrate
-```
-
-### 2) Supervisor 配置更新后刷新
-```bash
-supervisorctl reread
-supervisorctl update
-supervisorctl restart <your-horizon-program-name>:*
-supervisorctl status
-```
-
-### 3) 状态检查
-```bash
-php artisan horizon:status
-```
-
-> 已使用 Horizon 时，不建议再并行运行 `queue:work` 的常驻进程，避免消费链路混用。
-
-### 定时任务配置
-```bash
-crontab -e
-```
-
-```bash
-* * * * * cd /Users/zn/workspace/code/newpr_backend && php artisan schedule:run >> /dev/null 2>&1
+npm run dev
 ```
