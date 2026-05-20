@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\System\Menus\Tables;
 
 use App\Enums\SystemMenuType;
+use App\Services\PassportClientService;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -18,6 +19,11 @@ class MenusTable
     {
         return $table
             ->columns([
+                TextColumn::make('client_id')
+                    ->label('客户端')
+                    ->formatStateUsing(fn (?string $state): string => PassportClientService::make()->label($state))
+                    ->searchable(),
+
                 TextColumn::make('menu_name')
                     ->label('菜单名称')
                     ->searchable(),
@@ -54,6 +60,10 @@ class MenusTable
                 SelectFilter::make('menu_type')
                     ->label('菜单类型')
                     ->options(SystemMenuType::class),
+
+                SelectFilter::make('client_id')
+                    ->label('客户端')
+                    ->options(fn (): array => PassportClientService::make()->options()),
 
                 TernaryFilter::make('visible')
                     ->label('是否显示'),

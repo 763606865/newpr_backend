@@ -2,11 +2,13 @@
 
 namespace App\Filament\Resources\System\Features\Tables;
 
+use App\Services\PassportClientService;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 
@@ -16,6 +18,11 @@ class FeaturesTable
     {
         return $table
             ->columns([
+                TextColumn::make('client_id')
+                    ->label('客户端')
+                    ->formatStateUsing(fn (?string $state): string => PassportClientService::make()->label($state))
+                    ->searchable(),
+
                 TextColumn::make('feature_name')
                     ->label('功能名称')
                     ->searchable(),
@@ -41,6 +48,10 @@ class FeaturesTable
                     ->sortable(),
             ])
             ->filters([
+                SelectFilter::make('client_id')
+                    ->label('客户端')
+                    ->options(fn (): array => PassportClientService::make()->options()),
+
                 TernaryFilter::make('status')
                     ->label('状态'),
             ])

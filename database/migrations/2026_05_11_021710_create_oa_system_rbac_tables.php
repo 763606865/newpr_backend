@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('c_menus', static function (Blueprint $table) {
+        Schema::create('client_menus', static function (Blueprint $table) {
             $table->id();
+            $table->string('client_id', 36)->nullable()->comment('客户端ID');
             $table->unsignedBigInteger('parent_id')->default(0)->comment('父菜单ID 0=顶级');
             $table->string('menu_name', 50)->comment('菜单名称');
-            $table->string('menu_code', 100)->nullable()->comment('菜单唯一标识')->unique();
+            $table->string('menu_code', 100)->nullable()->comment('菜单唯一标识');
             $table->tinyInteger('menu_type')->default(1)->comment('1=菜单 2=按钮/权限点');
             $table->string('path', 255)->nullable()->comment('路由路径');
             $table->string('component', 255)->nullable()->comment('前端组件路径');
@@ -27,10 +28,11 @@ return new class extends Migration
             $table->timestamps();
             $table->comment('功能菜单表');
         });
-        Schema::create('c_features', static function (Blueprint $table) {
+        Schema::create('client_features', static function (Blueprint $table) {
             $table->id();
+            $table->string('client_id', 36)->nullable()->comment('客户端ID');
             $table->string('feature_name', 50)->comment('功能名称');
-            $table->string('feature_code', 100)->comment('功能唯一编码')->unique();
+            $table->string('feature_code', 100)->comment('功能唯一编码');
             $table->unsignedBigInteger('menu_id')->comment('所属菜单ID');
             $table->string('description', 255)->nullable()->comment('功能描述');
             $table->tinyInteger('status')->default(1)->comment('0=禁用 1=启用');
@@ -50,7 +52,7 @@ return new class extends Migration
             $table->timestamps();
             $table->comment('企业方案表');
         });
-        Schema::create('biz_plan_c_features', static function (Blueprint $table) {
+        Schema::create('biz_plan_client_features', static function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('plan_id')->comment('方案ID');
             $table->unsignedBigInteger('feature_id')->comment('功能ID');
@@ -97,9 +99,9 @@ return new class extends Migration
     {
         Schema::dropIfExists('ship_company_biz_plans');
         Schema::dropIfExists('company_biz_plans');
-        Schema::dropIfExists('biz_plan_c_features');
+        Schema::dropIfExists('biz_plan_client_features');
         Schema::dropIfExists('biz_plans');
-        Schema::dropIfExists('c_features');
-        Schema::dropIfExists('c_menus');
+        Schema::dropIfExists('client_features');
+        Schema::dropIfExists('client_menus');
     }
 };

@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\System\Features\Schemas;
 
+use App\Models\Client\Menu;
+use App\Services\PassportClientService;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -14,6 +16,13 @@ class FeatureForm
     {
         return $schema
             ->components([
+                Select::make('client_id')
+                    ->label('客户端')
+                    ->required()
+                    ->options(fn (): array => PassportClientService::make()->options())
+                    ->searchable()
+                    ->preload(),
+
                 TextInput::make('feature_name')
                     ->label('功能名称')
                     ->required()
@@ -27,7 +36,15 @@ class FeatureForm
 
                 Select::make('menu_id')
                     ->label('所属菜单')
-                    ->relationship('menu', 'menu_name')
+                    ->options(fn (callable $get): array => Menu::query()
+                        ->when(
+                            filled($get('client_id')),
+                            fn ($query) => $query->where('client_id', (string) $get('client_id'))
+                        )
+                        ->orderBy('sort')
+                        ->orderBy('id')
+                        ->pluck('menu_name', 'id')
+                        ->toArray())
                     ->required()
                     ->searchable(),
 
