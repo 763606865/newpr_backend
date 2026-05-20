@@ -231,9 +231,25 @@ class DefaultFeaturesAndPlansSeeder extends Seeder
             [
                 'client_id' => $client->id,
                 'feature_name' => '考勤管理',
-                'feature_code' => 'attendance',
-                'menu_id' => 0, // B端没有具体菜单
-                'description' => '企业信息管理功能',
+                'feature_code' => 'attendance_rules',
+                'menu_id' => Menu::query()->where('client_id', $client->id)->where('menu_code', '=', 'attendance_rules')->value('id'),
+                'description' => '考勤管理功能',
+                'status' => 1,
+            ],
+            [
+                'client_id' => $client->id,
+                'feature_name' => '考勤记录',
+                'feature_code' => 'attendance_records',
+                'menu_id' => Menu::query()->where('client_id', $client->id)->where('menu_code', '=', 'attendance_records')->value('id'),
+                'description' => '考勤记录功能',
+                'status' => 1,
+            ],
+            [
+                'client_id' => $client->id,
+                'feature_name' => '假期类型',
+                'feature_code' => 'attendance_leave_types',
+                'menu_id' => Menu::query()->where('client_id', $client->id)->where('menu_code', '=', 'attendance_leave_types')->value('id'),
+                'description' => '假期类型功能',
                 'status' => 1,
             ],
         ];
@@ -246,7 +262,7 @@ class DefaultFeaturesAndPlansSeeder extends Seeder
         }
 
         // 关联功能点到plan
-        $featureIds = Feature::whereIn('feature_code', ['attendance'])->pluck('id');
+        $featureIds = Feature::whereIn('feature_code', ['attendance_rules', 'attendance_records', 'attendance_leave_types'])->pluck('id');
         $plan->features()->attach($featureIds);
     }
 }
