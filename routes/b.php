@@ -1,9 +1,12 @@
 <?php
 
+use App\B\Controllers\AttendanceRuleController;
+use App\B\Controllers\AttendanceScheduleController;
 use App\B\Controllers\AuthController;
 use App\B\Controllers\CompanyController;
 use App\B\Controllers\DepartmentController;
 use App\B\Controllers\EmployeeController;
+use App\B\Controllers\LeaveTypeController;
 use App\B\Controllers\PositionController;
 use Illuminate\Support\Facades\Route;
 
@@ -27,6 +30,20 @@ Route::middleware('auth:b')->group(function (): void {
 
     // 岗位管理
     Route::resource('positions', PositionController::class);
+    // ==============================================================================
+
+    // 考勤规则
+    Route::resource('attendance-rules', AttendanceRuleController::class);
+    // ==============================================================================
+
+    // 考勤记录
+    Route::get('/attendance-schedules', [AttendanceScheduleController::class, 'index']);
+    Route::get('/attendance-schedules/export', [AttendanceScheduleController::class, 'export']);
+    Route::get('/attendance-schedules/{id}', [AttendanceScheduleController::class, 'show']);
+    // ==============================================================================
+
+    // 假期类型
+    Route::resource('leave-types', LeaveTypeController::class);
     // ==============================================================================
 
     // 职工管理
