@@ -3,6 +3,7 @@
 namespace App\B\Controllers;
 
 use App\B\Requests\PositionRequest;
+use App\Exceptions\BadRequestException;
 use App\Models\Employee;
 use App\Models\Position;
 use Illuminate\Database\Eloquent\Builder;
@@ -17,12 +18,14 @@ class PositionController extends Controller
      *
      * GET /b/positions
      *
+     * @param Request $request
+     * @return JsonResponse
      * @throws \Exception
      */
     public function index(Request $request): JsonResponse
     {
         $positions = $this->buildQuery($request)
-            ->paginate(max(1, min(100, (int) $request->input('per_page', 20))));
+            ->paginate((int) $request->input('per_page', 20));
 
         return $this->success($positions);
     }
@@ -32,6 +35,7 @@ class PositionController extends Controller
      *
      * GET /b/positions/create
      *
+     * @return JsonResponse
      * @throws \Exception
      */
     public function create(): JsonResponse
@@ -44,6 +48,9 @@ class PositionController extends Controller
      *
      * POST /b/positions
      *
+     * @param PositionRequest $request
+     * @return JsonResponse
+     * @throws BadRequestException
      * @throws \Exception
      */
     public function store(PositionRequest $request): JsonResponse
@@ -58,6 +65,8 @@ class PositionController extends Controller
      *
      * GET /b/positions/{id}
      *
+     * @param string $id
+     * @return JsonResponse
      * @throws \Exception
      */
     public function show(string $id): JsonResponse
@@ -76,6 +85,8 @@ class PositionController extends Controller
      *
      * GET /b/positions/{id}/edit
      *
+     * @param string $id
+     * @return JsonResponse
      * @throws \Exception
      */
     public function edit(string $id): JsonResponse
@@ -88,6 +99,9 @@ class PositionController extends Controller
      *
      * PUT /b/positions/{id}
      *
+     * @param PositionRequest $request
+     * @param string $id
+     * @return JsonResponse
      * @throws \Exception
      */
     public function update(PositionRequest $request, string $id): JsonResponse
@@ -108,6 +122,9 @@ class PositionController extends Controller
      *
      * DELETE /b/positions/{id}
      *
+     * @param string $id
+     * @return JsonResponse
+     * @throws BadRequestException
      * @throws \Exception
      */
     public function destroy(string $id): JsonResponse

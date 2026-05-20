@@ -7,6 +7,7 @@ use App\Exceptions\UnauthenticatedException;
 use App\Models\BUser;
 use App\Models\Company;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 abstract class Controller
 {
@@ -57,5 +58,10 @@ abstract class Controller
         }
 
         return $company;
+    }
+
+    public function getPerPage(Request $request): int
+    {
+        return max(1, min(100, (int) $request->input('per_page', 20)));
     }
 }

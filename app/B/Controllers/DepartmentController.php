@@ -17,7 +17,10 @@ class DepartmentController extends Controller
      *
      * GET /b/departments
      *
+     * @param Request $request
+     * @return JsonResponse
      * @throws BadRequestException
+     * @throws \Exception
      */
     public function index(Request $request): JsonResponse
     {
@@ -41,7 +44,10 @@ class DepartmentController extends Controller
      *
      * POST /b/departments
      *
+     * @param DepartmentRequest $request
+     * @return JsonResponse
      * @throws BadRequestException
+     * @throws \Exception
      */
     public function store(DepartmentRequest $request): JsonResponse
     {
@@ -58,6 +64,8 @@ class DepartmentController extends Controller
      *
      * GET /b/departments/{id}
      *
+     * @param string $id
+     * @return JsonResponse
      * @throws \Exception
      */
     public function show(string $id): JsonResponse
@@ -76,6 +84,8 @@ class DepartmentController extends Controller
      *
      * GET /b/departments/{id}/edit
      *
+     * @param string $id
+     * @return JsonResponse
      * @throws \Exception
      */
     public function edit(string $id): JsonResponse
@@ -88,6 +98,9 @@ class DepartmentController extends Controller
      *
      * PUT /b/departments/{id}
      *
+     * @param DepartmentRequest $request
+     * @param string $id
+     * @return JsonResponse
      * @throws \Exception
      */
     public function update(DepartmentRequest $request, string $id): JsonResponse
@@ -108,6 +121,8 @@ class DepartmentController extends Controller
      *
      * DELETE /b/departments/{id}
      *
+     * @param string $id
+     * @return JsonResponse
      * @throws \Exception
      */
     public function destroy(string $id): JsonResponse
