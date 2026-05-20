@@ -1,35 +1,57 @@
 # 项目准备
 
-## 环境准备
-- nodejs 25.8+
-- npm 11.11+
-- pnpm 10.33+
-- php 8.5+
-- composer 2.9+
+## 环境要求
+- Node.js >= 25.8
+- npm >= 11.11
+- pnpm >= 10.33
+- PHP >= 8.5
+- Composer >= 2.9
 
-## 项目初始化
-`composer install`
+## 快速初始化
+### 1) 安装后端依赖
+```bash
+composer install
+```
 
-## 生成密钥
-`php artisan key:generate`
+### 2) 生成应用密钥
+```bash
+php artisan key:generate
+```
 
-## 生成passport密钥
-`php artisan passport:keys --force`
+### 3) 生成 Passport 密钥
+```bash
+php artisan passport:keys --force
+```
 
-## 数据库准备
-`php artisan migrate`
+### 4) 执行数据库迁移
+```bash
+php artisan migrate
+```
 
-## 数据库填充
-`php artisan db:seed`
+### 5) 填充基础数据
+```bash
+php artisan db:seed
+```
 
-## 生成超级管理员
-`php artisan make:filament-user`
+## 管理员账号说明
+> `php artisan make:filament-user` 已弃用（本项目不建议使用）。
 
-## 生成客户端
-`php artisan passport:client --name=牛派B端 --provider=b_users --personal`
+该命令默认通过 `Hash::make` 注入密码，在当前项目中可能导致无法登录。
 
-## 中台项目构建
-`npm install`
+建议直接写入数据库创建管理员，并使用 `bcrypt` 进行密码加密。
 
-## 中台项目运行
-`npm run dev`
+## 生成 Passport 客户端
+```bash
+php artisan passport:client --name="牛派B端" --provider=b_users --personal
+```
+
+## 前端（中台）
+### 安装依赖
+```bash
+npm install
+```
+
+### 启动开发模式
+```bash
+npm run dev
+```

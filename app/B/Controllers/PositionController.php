@@ -5,7 +5,9 @@ namespace App\B\Controllers;
 use App\B\Requests\PositionRequest;
 use App\Models\Employee;
 use App\Models\Position;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class PositionController extends Controller
@@ -17,12 +19,10 @@ class PositionController extends Controller
      *
      * @throws \Exception
      */
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        $positions = $this->company()->positions()
-            ->orderBy('sort')
-            ->orderBy('id')
-            ->get();
+        $positions = $this->buildQuery($request)
+            ->paginate(max(1, min(100, (int) $request->input('per_page', 20))));
 
         return $this->success($positions);
     }
@@ -135,5 +135,33 @@ class PositionController extends Controller
     private function findPositionInCurrentCompany(string $id): ?Position
     {
         return $this->company()->positions()->whereKey($id)->first();
+    }
+
+    private function buildQuery(Request $request): mixed
+    {
+        $query = $this->company()->positions();
+
+        $keyword = trim((string) $request->input('keyword', ''));
+
+        $request->whenFilled('name', function ($name) use ($query): void {
+            $query->where('name', 'like', "%$name%");
+        });
+
+        $request->whenFilled('code', function ($code) use ($query): void {
+            $query->where('code', 'like', "%$code%");
+        });
+
+        if ($keyword !== '') {
+            $query->where(function (Builder $subQuery) use ($keyword): void {
+                $subQuery->where('name', 'like', "%{$keyword}%")
+                    ->orWhere('code', 'like', "%{$keyword}%");
+            });
+        }
+
+        $query
+            ->orderBy('sort')
+            ->orderBy('id');
+
+        return $query;
     }
 }

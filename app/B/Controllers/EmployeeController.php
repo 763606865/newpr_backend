@@ -26,7 +26,6 @@ class EmployeeController extends Controller
         $companyId = (int) $this->company()->id;
         $keyword = trim((string) $request->input('keyword', ''));
         $status = $request->input('status');
-        $perPage = max(1, min(100, (int) $request->input('per_page', 20)));
 
         $employees = Employee::query()
             ->where('company_id', $companyId)
@@ -50,7 +49,7 @@ class EmployeeController extends Controller
             })
             ->when($status !== null && $status !== '', fn ($query) => $query->where('status', (int) $status))
             ->orderByDesc('id')
-            ->paginate($perPage);
+            ->paginate((int) $request->input('per_page', 20));
 
         return $this->success($employees);
     }

@@ -63,7 +63,9 @@ class AuthController extends Controller
     {
         $user = $request->user();
 
-        return $this->success($this->userPayload($user, $this->company()));
+        $company = $user->token()?->responsible;
+
+        return $this->success($this->userPayload($user, $company));
     }
 
     /**
@@ -97,10 +99,9 @@ class AuthController extends Controller
      */
     public function refreshToken(Request $request): JsonResponse
     {
-        /** @var BUser|null $user */
-        $user = $this->user();
+        $user = $request->user();
 
-        $company = $this->company();
+        $company = $user->token()?->responsible;
 
         if ($request->filled('company_id')) {
             $companyId = (int) $request->input('company_id');
