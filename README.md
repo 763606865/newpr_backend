@@ -6,6 +6,10 @@
 - pnpm >= 10.33
 - PHP >= 8.5
 - Composer >= 2.9
+- MySQL >= 9.6
+- Redis >= 8.6
+- Laravel >= 13.3
+- Supervisor >= 4.2
 
 ## 快速初始化
 ### 1) 安装后端依赖
