@@ -44,7 +44,7 @@ php artisan db:seed
 
 建议直接写入数据库创建管理员，并使用 `bcrypt` 进行密码加密。
 
-## 生成 Passport 客户端
+## 生成 Passport 客户端 @deprecated 已使用 `php artisan db:seed` 填充了基础数据，其中包括 Passport 客户端的创建，因此不再需要手动执行以下命令。
 ```bash
 php artisan passport:client --name="牛派B端" --provider=b_users --personal
 ```
