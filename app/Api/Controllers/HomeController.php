@@ -2,20 +2,18 @@
 
 namespace App\Api\Controllers;
 
-use App\Resources\Oa\CommunicateResource;
+use App\Resources\Oa\CompanyResource;
 use App\Resources\Oa\ModuleResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class HomeController extends Controller
 {
     /**
      * GET /api/home
-     *
-     * @param Request $request
-     * @return \Illuminate\Contracts\View\View|\Illuminate\View\View
      */
-    public function index(Request $request): \Illuminate\Contracts\View\View|\Illuminate\View\View
+    public function index(Request $request): \Illuminate\Contracts\View\View|View
     {
         return view('welcome');
     }
@@ -25,19 +23,17 @@ class HomeController extends Controller
      *
      * GET /api/communicates
      *
-     * @param Request $request
-     * @return JsonResponse
      * @throws \Exception
      */
-    public function communicates(Request $request): \Illuminate\Http\JsonResponse
+    public function communicates(Request $request): JsonResponse
     {
-        $companies = $request->user()->companies()->with([
+        $company = $this->employee()->company()->with([
             'departments',
             'departments.employees',
             'departments.employees.position',
-        ])->enabled()->get();
+        ])->first();
 
-        return $this->success(new CommunicateResource($companies));
+        return $this->success(new CompanyResource($company));
     }
 
     /**
@@ -45,17 +41,16 @@ class HomeController extends Controller
      *
      * GET /api/modules
      *
-     * @param Request $request
-     * @return JsonResponse
      * @throws \Exception
      */
-    public function modules(Request $request): \Illuminate\Http\JsonResponse
+    public function modules(Request $request): JsonResponse
     {
-        $companies = $request->user()->companies()->with([
+        $company = $this->employee()->company()->with([
             'currentPlans',
             'companyPlans',
             'shipCompanyPlans',
-        ])->get();
-        return $this->success(new ModuleResource($companies));
+        ])->first();
+
+        return $this->success(new ModuleResource($company));
     }
 }

@@ -52,10 +52,41 @@ php artisan passport:client --name="牛派B端" --provider=b_users --personal
 ## 前端（中台）
 ### 安装依赖
 ```bash
-npm install
+pnpm install
 ```
 
-### 启动开发模式
+### 启动filament
 ```bash
-npm run dev
+pnpm build
+```
+
+## 队列（Horizon 模式）
+### 1) 安装 Horizon（仅首次）
+```bash
+php artisan horizon:install
+php artisan migrate
+```
+
+### 2) Supervisor 配置更新后刷新
+```bash
+supervisorctl reread
+supervisorctl update
+supervisorctl restart <your-horizon-program-name>:*
+supervisorctl status
+```
+
+### 3) 状态检查
+```bash
+php artisan horizon:status
+```
+
+> 已使用 Horizon 时，不建议再并行运行 `queue:work` 的常驻进程，避免消费链路混用。
+
+### 定时任务配置
+```bash
+crontab -e
+```
+
+```bash
+* * * * * cd /Users/zn/workspace/code/newpr_backend && php artisan schedule:run >> /dev/null 2>&1
 ```

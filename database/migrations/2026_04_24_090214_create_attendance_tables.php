@@ -78,6 +78,45 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
             $table->comment('考勤记录表');
+
+            $table->unique(['company_id', 'employee_id', 'date']);
+        });
+        Schema::create('oa_attendance_clock_logs', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('company_id')->comment('公司ID')->index();
+            $table->unsignedBigInteger('department_id')->comment('部门ID')->index();
+            $table->unsignedBigInteger('employee_id')->comment('员工ID')->index();
+            $table->unsignedBigInteger('attendance_rule_id')->nullable()->comment('考勤规则ID')->index();
+            $table->unsignedBigInteger('attendance_schedule_id')->nullable()->comment('考勤记录ID')->index();
+            $table->date('date')->comment('考勤归属日期')->index();
+            $table->dateTime('punch_time')->comment('实际打卡时间')->index();
+            $table->tinyInteger('punch_type')->default(1)->comment('打卡类型: 1-上班卡, 2-下班卡, 3-补卡, 4-系统修正');
+            $table->tinyInteger('clock_method')->default(1)->comment('打卡方式: 1-APP, 2-WEB, 3-管理员代打, 4-导入');
+            $table->tinyInteger('clock_result')->default(1)->comment('打卡结果: 1-有效, 2-无效, 3-超窗拒绝, 4-重复');
+            $table->tinyInteger('is_overnight')->default(0)->comment('是否跨天班次');
+            $table->string('timezone', 64)->nullable()->comment('时区标识');
+            $table->string('device_id', 128)->nullable()->comment('设备ID');
+            $table->string('device_name', 128)->nullable()->comment('设备名称');
+            $table->string('ip', 64)->nullable()->comment('客户端IP');
+            $table->string('user_agent', 255)->nullable()->comment('客户端UA');
+            $table->decimal('lng', 10, 7)->nullable()->comment('经度');
+            $table->decimal('lat', 10, 7)->nullable()->comment('纬度');
+            $table->string('address', 255)->nullable()->comment('打卡地址');
+            $table->integer('location_accuracy')->nullable()->comment('定位精度(米)');
+            $table->string('wifi_ssid', 128)->nullable()->comment('WiFi名称');
+            $table->string('wifi_bssid', 64)->nullable()->comment('WiFi BSSID');
+            $table->string('remark', 255)->nullable()->comment('备注');
+            $table->string('idempotency_key', 64)->nullable()->comment('幂等键')->unique();
+            $table->json('raw_payload')->nullable()->comment('原始请求快照');
+            $table->json('extra')->nullable()->comment('扩展字段，存储其他信息，如打卡地点、设备等');
+            $table->timestamps();
+            $table->softDeletes();
+
+            $table->index(['company_id', 'punch_time']);
+            $table->index(['employee_id', 'punch_time']);
+            $table->index(['date', 'employee_id']);
+
+            $table->comment('打卡日志表');
         });
         Schema::create('oa_leave_types', function (Blueprint $table) {
             $table->id();
@@ -122,6 +161,7 @@ return new class extends Migration
     {
         Schema::dropIfExists('oa_leave_balances');
         Schema::dropIfExists('oa_leave_types');
+        Schema::dropIfExists('oa_attendance_clock_logs');
         Schema::dropIfExists('oa_attendance_schedules');
         Schema::dropIfExists('oa_attendance_assignments');
         Schema::dropIfExists('oa_attendance_rules');
