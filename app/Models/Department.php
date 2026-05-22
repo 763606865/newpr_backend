@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Oa\AttendanceClockLog;
 use App\Models\Oa\AttendanceSchedule;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
@@ -64,9 +65,15 @@ class Department extends Model
     }
 
     /**
+     * 打卡日志
+     */
+    public function attendanceClockLogs(): HasMany
+    {
+        return $this->hasMany(AttendanceClockLog::class, 'department_id');
+    }
+
+    /**
      * 员工信息
-     *
-     * @return HasMany
      */
     public function employees(): HasMany
     {

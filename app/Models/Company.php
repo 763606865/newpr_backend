@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\CompanyStatus;
 use App\Models\Biz\Plan;
+use App\Models\Oa\AttendanceClockLog;
 use App\Models\Oa\AttendanceRule;
 use App\Models\Oa\AttendanceSchedule;
 use App\Models\Oa\LeaveBalance;
@@ -84,6 +85,14 @@ class Company extends Model
     public function attendanceSchedules(): HasMany
     {
         return $this->hasMany(AttendanceSchedule::class, 'company_id');
+    }
+
+    /**
+     * 打卡日志
+     */
+    public function attendanceClockLogs(): HasMany
+    {
+        return $this->hasMany(AttendanceClockLog::class, 'company_id');
     }
 
     /**

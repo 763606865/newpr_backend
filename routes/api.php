@@ -1,5 +1,6 @@
 <?php
 
+use App\Api\Controllers\AttendanceController;
 use App\Api\Controllers\AuthController;
 use App\Api\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
@@ -15,11 +16,25 @@ Route::post('/auth/forgot-password', [AuthController::class, 'forgotPassword']);
 Route::middleware('auth:api')->group(function (): void {
     Route::get('/auth/me', [AuthController::class, 'me']);
     Route::post('/auth/logout', [AuthController::class, 'logout']);
+    Route::post('/auth/refresh-token', [AuthController::class, 'refreshToken']);
 
     // 通讯录相关路由
     Route::get('/communicates', [HomeController::class, 'communicates']);
     // 菜单功能点相关路由
     Route::get('/modules', [HomeController::class, 'modules']);
+    // ==============================================================================
+
+    // 考勤相关
+    // 今日考勤
+    Route::get('/attendance/today', [AttendanceController::class, 'today']);
+    // 月度记录
+    Route::get('/attendance/records', [AttendanceController::class, 'records']);
+    // 日详情
+    Route::get('/attendance/records/{date}', [AttendanceController::class, 'show']);
+    // 月度统计
+    Route::get('/attendance/statistics', [AttendanceController::class, 'statistics']);
+    // 考勤打卡
+    Route::post('/attendance/clock', [AttendanceController::class, 'clock']);
     // ==============================================================================
 });
 // ==============================================================================

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\EmployeeStatus;
 use App\Models\Oa\AttendanceAssignment;
+use App\Models\Oa\AttendanceClockLog;
 use App\Models\Oa\AttendanceSchedule;
 use App\Models\Oa\LeaveBalance;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -19,6 +20,7 @@ use Illuminate\Support\Str;
 /**
  * @method static Builder active()
  * @method static Builder dismissed()
+ *
  * @property string $mobile_mask
  * @property string $email_mask
  */
@@ -42,8 +44,6 @@ class Employee extends Model
 
     /**
      * 脱敏手机号
-     *
-     * @return Attribute
      */
     protected function mobileMask(): Attribute
     {
@@ -54,8 +54,6 @@ class Employee extends Model
 
     /**
      * 脱敏邮箱
-     *
-     * @return Attribute
      */
     protected function emailMask(): Attribute
     {
@@ -94,6 +92,11 @@ class Employee extends Model
         return $this->hasMany(AttendanceAssignment::class, 'employee_id');
     }
 
+    public function attendanceClockLogs(): HasMany
+    {
+        return $this->hasMany(AttendanceClockLog::class, 'employee_id');
+    }
+
     public function leaveBalances(): HasMany
     {
         return $this->hasMany(LeaveBalance::class, 'employee_id');
@@ -105,7 +108,7 @@ class Employee extends Model
     #[Scope]
     protected function active(Builder $query): void
     {
-        $query->where($this->getTable() . '.status', '=', EmployeeStatus::Active->value);
+        $query->where($this->getTable().'.status', '=', EmployeeStatus::Active->value);
     }
 
     /**
@@ -114,6 +117,6 @@ class Employee extends Model
     #[Scope]
     public function dismissed(Builder $query): void
     {
-        $query->where($this->getTable() . '.status', '=', EmployeeStatus::Dismissed->value);
+        $query->where($this->getTable().'.status', '=', EmployeeStatus::Dismissed->value);
     }
 }

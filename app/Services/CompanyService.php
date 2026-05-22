@@ -4,13 +4,14 @@ namespace App\Services;
 
 use App\Enums\CompanyPlanStatus;
 use App\Enums\CompanyStatus;
+use App\Exceptions\BadRequestException;
 use App\Models\Company;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Passport\Client as PassportClient;
 
 class CompanyService extends Service
 {
-    public function create(array $params = [])
+    public function create(array $params = []): Company
     {
         $params['status'] = $this->getGuardName() === 'admin' ? CompanyStatus::Enabled : CompanyStatus::Auditing;
 
@@ -22,7 +23,16 @@ class CompanyService extends Service
 
     public function getCurrentBizPlan(Company $company): array
     {
-        $clientIds = $this->resolveCurrentClientIds();
+        return $this->getCurrentBizPlanData($company)->toArray();
+    }
+
+    public function getCurrentBizPlanData(Company $company): CurrentBizPlanData
+    {
+        $client = $this->resolveCurrentClient();
+
+        if (! $client) {
+            throw new BadRequestException('Client not set or not authenticated.');
+        }
 
         $currentCompanyPlan = $company->companyPlans()
             ->with(['ship'])
@@ -33,36 +43,39 @@ class CompanyService extends Service
 
         $shipCompanyPlan = $currentCompanyPlan?->ship;
 
-        $plan = null;
-        if ($shipCompanyPlan) {
-            $plan = [
-                'id' => $shipCompanyPlan->plan_id,
-                'name' => $shipCompanyPlan->plan_name,
-                'code' => $shipCompanyPlan->plan_code,
-                'start_time' => $shipCompanyPlan->start_time?->toDateTimeString(),
-                'end_time' => $shipCompanyPlan->end_time?->toDateTimeString(),
-                'menus' => $this->normalizeMenus($shipCompanyPlan?->menus ?? [], $clientIds),
-                'features' => $this->normalizeFeatures($shipCompanyPlan?->features ?? [], $clientIds),
-            ];
+        if (! $shipCompanyPlan) {
+            return CurrentBizPlanData::empty();
         }
 
-        return $plan ?? [];
+        return new CurrentBizPlanData(
+            id: $shipCompanyPlan->plan_id,
+            name: $shipCompanyPlan->plan_name,
+            code: $shipCompanyPlan->plan_code,
+            startTime: $shipCompanyPlan->start_time?->toDateTimeString(),
+            endTime: $shipCompanyPlan->end_time?->toDateTimeString(),
+            menus: $this->normalizeMenus($shipCompanyPlan->menus ?? [], $client),
+            features: $this->normalizeFeatures($shipCompanyPlan->features ?? [], $client),
+        );
     }
 
     /**
      * @param  array<int, array<string, mixed>>  $menus
-     * @param  array<int, string>  $clientIds
      * @return array<int, array<string, mixed>>
      */
-    private function normalizeMenus(array $menus, array $clientIds = []): array
+    private function normalizeMenus(array $menus, ?PassportClient $client): array
     {
+        if (! $client) {
+            return [];
+        }
+
         $normalized = [];
 
-        foreach ($menus as $menu) {
-            if (! empty($clientIds) && ! in_array((string) ($menu['client_id'] ?? ''), $clientIds, true)) {
-                continue;
-            }
+        $menus = array_values(array_filter(
+            $menus,
+            fn (mixed $item): bool => $this->belongsToClient($item, $client),
+        ));
 
+        foreach ($menus as $menu) {
             $normalized[] = [
                 'id' => $menu['id'] ?? null,
                 'client_id' => $menu['client_id'] ?? null,
@@ -88,17 +101,22 @@ class CompanyService extends Service
 
     /**
      * @param  array<int, array<string, mixed>>  $features
-     * @param  array<int, string>  $clientIds
      * @return array<int, array<string, mixed>>
      */
-    private function normalizeFeatures(array $features, array $clientIds = []): array
+    private function normalizeFeatures(array $features, ?PassportClient $client): array
     {
+        if (! $client) {
+            return [];
+        }
+
         $normalized = [];
 
+        $features = array_values(array_filter(
+            $features,
+            fn (mixed $feature): bool => $this->belongsToClient($feature, $client),
+        ));
+
         foreach ($features as $feature) {
-            if (! empty($clientIds) && ! in_array((string) ($feature['client_id'] ?? ''), $clientIds, true)) {
-                continue;
-            }
 
             $normalized[] = [
                 'id' => $feature['id'] ?? null,
@@ -111,24 +129,31 @@ class CompanyService extends Service
         return $normalized;
     }
 
-    /**
-     * @return array<int, string>
-     */
-    private function resolveCurrentClientIds(): array
+    private function belongsToClient(mixed $item, PassportClient $client): bool
+    {
+        if (! is_array($item)) {
+            return false;
+        }
+
+        if (! isset($item['client_id']) || blank($item['client_id'])) {
+            return false;
+        }
+
+        return (string) $item['client_id'] === (string) $client->id;
+    }
+
+    private function resolveCurrentClient(): ?PassportClient
     {
         $guardName = $this->resolveCurrentGuardName();
         $provider = (string) config("auth.guards.{$guardName}.provider", '');
 
         if ($provider === '') {
-            return [];
+            return null;
         }
 
         return PassportClient::query()
             ->where('provider', $provider)
-            ->pluck('id')
-            ->map(static fn ($id): string => (string) $id)
-            ->values()
-            ->all();
+            ->first();
     }
 
     private function resolveCurrentGuardName(): string

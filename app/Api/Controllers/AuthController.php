@@ -6,7 +6,9 @@ use App\Api\Requests\EmailLoginRequest;
 use App\Api\Requests\ForgotPasswordRequest;
 use App\Api\Requests\PhoneLoginRequest;
 use App\Api\Requests\SendVerificationCodeRequest;
+use App\Models\Employee;
 use App\Models\User;
+use App\Services\CompanyService;
 use App\Services\UserService;
 use App\Services\VerificationCodeService;
 use Illuminate\Http\JsonResponse;
@@ -104,7 +106,7 @@ class AuthController extends Controller
         $user = $request->user();
 
         return $this->success([
-            'user' => $this->userPayload($user),
+            'user' => $this->userPayload($user, $user->token()?->responsible),
         ]);
     }
 
@@ -148,6 +150,52 @@ class AuthController extends Controller
         return $this->success();
     }
 
+    /**
+     * 刷新token
+     *
+     * POST /api/auth/refresh-token
+     *
+     * @throws \Exception
+     */
+    public function refreshToken(Request $request): JsonResponse
+    {
+        $user = $request->user();
+
+        $employee = $user->token()?->responsible;
+
+        if ($request->filled('employee_id')) {
+            $employeeId = (int) $request->input('employee_id');
+
+            if ($employeeId <= 0) {
+                return $this->error('employee_id 参数无效。', Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+
+            $employee = $user->employees()->active()->whereKey($employeeId)->first();
+
+            if (! $employee) {
+                return $this->error('无权切换到该企业。', Response::HTTP_FORBIDDEN);
+            }
+        }
+
+        $tokenResult = $user->createToken('api');
+
+        if ($employee) {
+            if ($token = $tokenResult->getToken()) {
+                $token->responsible_type = Employee::class;
+                $token->responsible_id = $employee->id;
+                $token->save();
+            }
+        }
+
+        $user->token()?->revoke();
+
+        return $this->success([
+            'token_type' => 'Bearer',
+            'access_token' => $tokenResult->accessToken,
+            'user' => $this->userPayload($user, $employee),
+        ]);
+    }
+
     private function respondWithToken(Request $request, User $user): JsonResponse
     {
         $user->forceFill([
@@ -157,10 +205,20 @@ class AuthController extends Controller
 
         $tokenResult = $user->createToken('api');
 
+        $employee = $user->employees()->active()->with('company')->orderByDesc('entry_time')->first();
+
+        if ($employee) {
+            if ($token = $tokenResult->getToken()) {
+                $token->responsible_type = Employee::class;
+                $token->responsible_id = $employee->id;
+                $token->save();
+            }
+        }
+
         return $this->success([
             'token_type' => 'Bearer',
             'access_token' => $tokenResult->accessToken,
-            'user' => $this->userPayload($user),
+            'user' => $this->userPayload($user, $employee),
         ]);
     }
 
@@ -178,13 +236,13 @@ class AuthController extends Controller
     /**
      * @return array<string, mixed>
      */
-    private function userPayload(User $user): array
+    private function userPayload(User $user, ?Employee $employee): array
     {
         $employees = $user->employees()->active()->with([
             'company:id,name',
             'department:id,name',
             'position:id,name',
-        ])->get()->setVisible([
+        ])->orderByDesc('entry_time')->get()->setVisible([
             'id',
             'employee_no',
             'real_name',
@@ -209,7 +267,33 @@ class AuthController extends Controller
             'avatar' => $user->avatar,
             'last_login_ip' => $user->last_login_ip,
             'last_login_at' => $user->last_login_at?->toDateTimeString(),
+            'current_employee' => $this->employeePayload($employee),
             'employees' => $employees,
+        ];
+    }
+
+    private function employeePayload(?Employee $employee): ?array
+    {
+        if (! $employee) {
+            return null;
+        }
+        $company = $employee->company;
+        /** @var CompanyService $service */
+        $service = CompanyService::make();
+        $planData = $service->getCurrentBizPlanData($company);
+
+        return [
+            'id' => $employee->id,
+            'company' => $company->setVisible(['id', 'name']),
+            'employee_no' => $employee->employee_no,
+            'real_name' => $employee->real_name,
+            'avatar' => $employee->avatar,
+            'email' => $employee->email,
+            'mobile' => $employee->mobile,
+            'entry_time' => $employee->entry_time,
+            'menus' => $planData->menus,
+            'plan' => $planData->planPayload(),
+            'features' => $planData->features,
         ];
     }
 }

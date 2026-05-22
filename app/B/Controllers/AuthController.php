@@ -202,19 +202,16 @@ class AuthController extends Controller
         }
         /** @var CompanyService $service */
         $service = CompanyService::make();
-        $planArr = $service->getCurrentBizPlan($company);
-        $menus = array_values($planArr['menus'] ?? []);
-        $features = array_values($planArr['features'] ?? []);
-        unset($planArr['menus'], $planArr['features']);
+        $planData = $service->getCurrentBizPlanData($company);
 
         return [
             'id' => $company->id,
             'name' => $company->name,
             'status' => $company->status,
             'address' => $company->address,
-            'menus' => $menus,
-            'plan' => $planArr,
-            'features' => $features,
+            'menus' => $planData->menus,
+            'plan' => $planData->planPayload(),
+            'features' => $planData->features,
         ];
     }
 }
