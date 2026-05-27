@@ -2,8 +2,6 @@
 
 namespace App\Filament\Resources\AttendanceSchedules;
 
-use App\Filament\Resources\AttendanceSchedules\Pages\CreateAttendanceSchedule;
-use App\Filament\Resources\AttendanceSchedules\Pages\EditAttendanceSchedule;
 use App\Filament\Resources\AttendanceSchedules\Pages\ListAttendanceSchedules;
 use App\Filament\Resources\AttendanceSchedules\Schemas\AttendanceScheduleForm;
 use App\Filament\Resources\AttendanceSchedules\Tables\AttendanceSchedulesTable;
@@ -50,9 +48,22 @@ class AttendanceSchedulesResource extends Resource
     {
         return [
             'index' => ListAttendanceSchedules::route('/'),
-            'create' => CreateAttendanceSchedule::route('/create'),
-            'edit' => EditAttendanceSchedule::route('/{record}/edit'),
         ];
+    }
+
+    public static function canCreate(): bool
+    {
+        return false;
+    }
+
+    public static function canEdit(mixed $record): bool
+    {
+        return false;
+    }
+
+    public static function canDelete(mixed $record): bool
+    {
+        return false;
     }
 
     public static function getRecordRouteBindingEloquentQuery(): Builder
