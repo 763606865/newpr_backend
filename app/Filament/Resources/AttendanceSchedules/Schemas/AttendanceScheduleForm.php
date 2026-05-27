@@ -161,9 +161,6 @@ class AttendanceScheduleForm
                     ->integer()
                     ->minValue(0)
                     ->default(0),
-                Textarea::make('extra')
-                    ->label('扩展信息(JSON)')
-                    ->maxLength(1000),
             ]);
     }
 }
