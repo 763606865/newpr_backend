@@ -53,20 +53,24 @@ class UserIdentitySyncService
 
     public function bindHubIdentity(User $user, string $hubUserId, array $payload = []): UserIdentityBind
     {
-        $bind = UserIdentityBind::query()->updateOrCreate(
-            [
-                'bind_system' => self::HUB_SYSTEM,
-                'external_user_id' => $hubUserId,
-            ],
-            [
-                'user_id' => $user->id,
-                'external_app_code' => Arr::get($payload, 'external_app_code', 'hub'),
-                'external_union_id' => Arr::get($payload, 'external_union_id'),
-                'is_primary' => 1,
-                'status' => Arr::get($payload, 'bind_status', 1),
-                'extra' => Arr::get($payload, 'extra'),
-            ],
-        );
+        $bind = UserIdentityBind::query()
+            ->where('bind_system', self::HUB_SYSTEM)
+            ->where('external_user_id', $hubUserId)
+            ->first()
+            ?? new UserIdentityBind;
+
+        $bind->forceFill([
+            'bind_system' => self::HUB_SYSTEM,
+            'external_user_id' => $hubUserId,
+            'user_id' => $user->id,
+            'external_app_code' => Arr::get($payload, 'external_app_code', 'hub'),
+            'external_union_id' => Arr::get($payload, 'external_union_id'),
+            'is_primary' => 1,
+            'status' => Arr::get($payload, 'bind_status', 1),
+            'extra' => Arr::get($payload, 'extra'),
+        ]);
+
+        $bind->save();
 
         UserIdentityBind::query()
             ->where('user_id', $user->id)
