@@ -4,6 +4,7 @@ namespace App\Models\Cms;
 
 use App\Enums\CmsOpenTarget;
 use App\Enums\CmsStatus;
+use App\Models\Cast\AliyunOss;
 use App\Models\Model;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Scope;
@@ -63,6 +64,7 @@ class FriendLink extends Model
     protected function casts(): array
     {
         return [
+            'logo' => AliyunOss::class.':oss,public,3600',
             'target' => CmsOpenTarget::class,
             'start_at' => 'datetime',
             'end_at' => 'datetime',

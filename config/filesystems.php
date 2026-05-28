@@ -62,8 +62,8 @@ return [
 
         'oss' => [
             'driver' => 'oss',
-            'key' => env('OSS_ACCESS_KEY_ID'),
-            'secret' => env('OSS_ACCESS_KEY_SECRET'),
+            'access_key_id' => env('OSS_ACCESS_KEY_ID'),
+            'access_key_secret' => env('OSS_ACCESS_KEY_SECRET'),
             'region' => env('OSS_DEFAULT_REGION'),
             'bucket' => env('OSS_BUCKET'),
             'endpoint' => env('OSS_ENDPOINT'), // 例如: https://oss-cn-hangzhou.aliyuncs.com

@@ -3,6 +3,7 @@
 namespace App\Models\Cms;
 
 use App\Enums\CmsStatus;
+use App\Models\Cast\AliyunOss;
 use App\Models\Model;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Scope;
@@ -72,6 +73,8 @@ class SiteConfig extends Model
     protected function casts(): array
     {
         return [
+            'logo' => AliyunOss::class.':oss,public,3600',
+            'favicon' => AliyunOss::class.':oss,public,3600',
             'status' => CmsStatus::class,
             'theme_config' => 'array',
             'extra' => 'array',

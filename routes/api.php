@@ -2,6 +2,7 @@
 
 use App\Api\Controllers\AttendanceController;
 use App\Api\Controllers\AuthController;
+use App\Api\Controllers\FileUploadController;
 use App\Api\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
@@ -36,5 +37,11 @@ Route::middleware('auth:api')->group(function (): void {
     // 考勤打卡
     Route::post('/attendance/clock', [AttendanceController::class, 'clock']);
     // ==============================================================================
+
+    // 文件上传
+    Route::post('/upload', [FileUploadController::class, 'upload']);
+    Route::delete('/files', [FileUploadController::class, 'delete']);
+    // ==============================================================================
+
 });
 // ==============================================================================

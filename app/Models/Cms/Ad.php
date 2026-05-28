@@ -4,14 +4,18 @@ namespace App\Models\Cms;
 
 use App\Enums\CmsAdType;
 use App\Enums\CmsStatus;
+use App\Models\Cast\AliyunOss;
 use App\Models\Model;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Storage;
+use Throwable;
 
 /**
  * 门户广告表
@@ -22,6 +26,7 @@ use Illuminate\Support\Carbon;
  * @property string $title 广告标题
  * @property CmsAdType $type 广告类型
  * @property string|null $image 图片地址
+ * @property-read string|null $image_url 图片访问地址
  * @property string|null $text_content 文本内容
  * @property string|null $code_content 代码内容
  * @property string|null $link_url 跳转地址
@@ -69,6 +74,7 @@ class Ad extends Model
         return [
             'slot_id' => 'integer',
             'type' => CmsAdType::class,
+            'image' => AliyunOss::class.':oss,public,3600',
             'start_at' => 'datetime',
             'end_at' => 'datetime',
             'status' => CmsStatus::class,
@@ -80,6 +86,33 @@ class Ad extends Model
     public function slot(): BelongsTo
     {
         return $this->belongsTo(AdSlot::class, 'slot_id');
+    }
+
+    protected function imageUrl(): Attribute
+    {
+        return Attribute::make(
+            get: function (): ?string {
+                if (blank($this->image)) {
+                    return null;
+                }
+
+                $path = ltrim($this->image, '/');
+                $visibility = (string) config('filesystems.disks.oss.visibility', 'public');
+
+                try {
+                    if ($visibility === 'private') {
+                        return Storage::disk('oss')->temporaryUrl(
+                            $path,
+                            now()->addSeconds((int) config('filesystems.disks.oss.temporary_url_ttl', 3600)),
+                        );
+                    }
+
+                    return Storage::disk('oss')->url($path);
+                } catch (Throwable) {
+                    return $path;
+                }
+            },
+        );
     }
 
     #[Scope]

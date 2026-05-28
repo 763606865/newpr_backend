@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\EmployeeStatus;
+use App\Models\Cast\AliyunOss;
 use App\Models\Oa\AttendanceAssignment;
 use App\Models\Oa\AttendanceClockLog;
 use App\Models\Oa\AttendanceSchedule;
@@ -37,6 +38,7 @@ class Employee extends Model
     protected function casts(): array
     {
         return [
+            'avatar' => AliyunOss::class.':oss,public,3600',
             'status' => EmployeeStatus::class,
             'entry_time' => 'datetime',
         ];

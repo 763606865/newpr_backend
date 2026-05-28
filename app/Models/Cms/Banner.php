@@ -5,6 +5,7 @@ namespace App\Models\Cms;
 use App\Enums\CmsLinkType;
 use App\Enums\CmsOpenTarget;
 use App\Enums\CmsStatus;
+use App\Models\Cast\AliyunOss;
 use App\Models\Model;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Scope;
@@ -68,6 +69,7 @@ class Banner extends Model
     {
         return [
             'position_id' => 'integer',
+            'image' => AliyunOss::class.':oss,public,3600',
             'link_type' => CmsLinkType::class,
             'target' => CmsOpenTarget::class,
             'start_at' => 'datetime',

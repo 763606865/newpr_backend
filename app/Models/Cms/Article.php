@@ -3,6 +3,7 @@
 namespace App\Models\Cms;
 
 use App\Enums\CmsPublishStatus;
+use App\Models\Cast\AliyunOss;
 use App\Models\Model;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Scope;
@@ -86,6 +87,7 @@ class Article extends Model
     {
         return [
             'category_id' => 'integer',
+            'cover' => AliyunOss::class.':oss,public,3600',
             'is_top' => 'boolean',
             'is_recommend' => 'boolean',
             'status' => CmsPublishStatus::class,
