@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
+use App\Filament\Pages\Dashboard;
 use App\Models\AdminUser;
 use BezhanSalleh\FilamentShield\Resources\Roles\RoleResource;
-use Filament\Pages\Dashboard;
 use Filament\Widgets\AccountWidget;
 use Filament\Widgets\FilamentInfoWidget;
 

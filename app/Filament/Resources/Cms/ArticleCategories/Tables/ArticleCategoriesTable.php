@@ -29,6 +29,7 @@ class ArticleCategoriesTable
             ])
             ->filters([
                 CmsTable::statusFilter(CmsStatus::class),
+                CmsTable::quickDateRangeFilter('updated_at'),
                 CmsTable::dateRangeFilter('updated_at', '更新时间'),
                 TrashedFilter::make(),
             ])

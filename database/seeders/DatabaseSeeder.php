@@ -26,5 +26,6 @@ class DatabaseSeeder extends Seeder
         $this->call(PassportPersonalAccessClientSeeder::class);
         $this->call(DefaultFeaturesAndPlansSeeder::class);
         $this->call(OaLeaveSeeder::class);
+        $this->call();
     }
 }

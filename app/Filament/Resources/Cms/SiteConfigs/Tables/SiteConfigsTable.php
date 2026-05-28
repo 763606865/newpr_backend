@@ -22,7 +22,7 @@ class SiteConfigsTable
             ->columns([
                 TextColumn::make('id')->label('ID'),
                 TextColumn::make('site_code')->label('站点编码')->searchable(),
-                TextColumn::make('city_code')->label('城市编码')->placeholder('全站默认'),
+                CmsTable::cityColumn('city_code', '城市编码'),
                 TextColumn::make('name')->label('站点名称')->searchable(),
                 TextColumn::make('domain')->label('域名')->placeholder('-'),
                 CmsTable::enumBadge('status', '状态', CmsStatus::class, [1 => 'success', 0 => 'gray']),
@@ -31,6 +31,7 @@ class SiteConfigsTable
             ->filters([
                 CmsTable::cityFilter(),
                 CmsTable::statusFilter(CmsStatus::class),
+                CmsTable::quickDateRangeFilter('updated_at'),
                 CmsTable::dateRangeFilter('updated_at', '更新时间'),
                 TrashedFilter::make(),
             ])

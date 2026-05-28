@@ -5,6 +5,8 @@ namespace App\Models;
 use App\Enums\UserGender;
 use App\Enums\UserStatus;
 use App\Models\Oa\LeaveBalance;
+use App\Models\Rc\Resume;
+use App\Models\Rc\UserIdentityBind;
 use Database\Factories\UserFactory;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
@@ -15,6 +17,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -32,6 +35,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property string|null $nickname
  * @property string|null $phone
  * @property string|null $email
+ * @property string|null $hub_user_id
  * @property int $gender
  * @property string|null $avatar
  * @property string $password
@@ -43,7 +47,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property Carbon|null $deleted_at
  */
 #[Table('users')]
-#[Fillable(['name', 'nickname', 'phone', 'email', 'gender', 'password', 'status', 'last_login_ip', 'last_login_at', 'extra'])]
+#[Fillable(['name', 'nickname', 'phone', 'email', 'hub_user_id', 'gender', 'password', 'status', 'last_login_ip', 'last_login_at', 'extra'])]
 #[Hidden(['password'])]
 class User extends Authenticatable implements FilamentUser
 {
@@ -131,5 +135,45 @@ class User extends Authenticatable implements FilamentUser
     public function companies(): HasManyThrough
     {
         return $this->hasManyThrough(Company::class, Employee::class, 'user_id', 'id', 'id', 'company_id');
+    }
+
+    /**
+     * 候选人简历
+     */
+    public function resumes(): HasMany
+    {
+        return $this->hasMany(Resume::class, 'user_id');
+    }
+
+    /**
+     * 主简历
+     */
+    public function primaryResume(): HasOne
+    {
+        return $this->hasOne(Resume::class, 'user_id')->where('is_primary', 1);
+    }
+
+    /**
+     * 候选人档案（兼容方法，返回主简历）
+     */
+    public function candidateProfile(): HasOne
+    {
+        return $this->primaryResume();
+    }
+
+    /**
+     * 用户身份绑定
+     */
+    public function identityBinds(): HasMany
+    {
+        return $this->hasMany(UserIdentityBind::class, 'user_id');
+    }
+
+    /**
+     * 主身份绑定
+     */
+    public function primaryIdentityBind(): HasOne
+    {
+        return $this->hasOne(UserIdentityBind::class, 'user_id')->where('is_primary', 1);
     }
 }

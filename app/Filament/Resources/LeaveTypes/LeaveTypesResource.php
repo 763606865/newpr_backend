@@ -27,7 +27,7 @@ class LeaveTypesResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'name';
 
-    protected static string|UnitEnum|null $navigationGroup = '考勤管理';
+    protected static string|UnitEnum|null $navigationGroup = 'OA';
 
     public static function form(Schema $schema): Schema
     {

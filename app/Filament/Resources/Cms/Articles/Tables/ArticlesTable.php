@@ -23,7 +23,7 @@ class ArticlesTable
             ->columns([
                 TextColumn::make('id')->label('ID'),
                 TextColumn::make('category.name')->label('分类')->placeholder('-'),
-                TextColumn::make('city_code')->label('城市编码')->placeholder('全站'),
+                CmsTable::cityColumn(),
                 TextColumn::make('title')->label('标题')->searchable(),
                 CmsTable::enumBadge('status', '状态', CmsPublishStatus::class, [1 => 'gray', 2 => 'success', 3 => 'danger']),
                 IconColumn::make('is_top')->label('置顶')->boolean(),
@@ -34,6 +34,7 @@ class ArticlesTable
             ->filters([
                 CmsTable::cityFilter(),
                 CmsTable::statusFilter(CmsPublishStatus::class),
+                CmsTable::quickDateRangeFilter('published_at'),
                 CmsTable::dateRangeFilter('published_at', '发布时间'),
                 TrashedFilter::make(),
             ])

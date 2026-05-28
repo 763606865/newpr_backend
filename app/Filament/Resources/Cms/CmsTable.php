@@ -17,6 +17,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class CmsTable
 {
+    public static function cityColumn(string $column = 'city_code', string $label = '城市编码'): TextColumn
+    {
+        return TextColumn::make($column)
+            ->label($label)
+            ->formatStateUsing(fn (?string $state): string => filled($state) ? $state : '全站');
+    }
+
     public static function enumBadge(string $column, string $label, string $enumClass, array $colors = [], ?string $placeholder = null): TextColumn
     {
         return TextColumn::make($column)
@@ -84,6 +91,31 @@ class CmsTable
                         filled($data['until'] ?? null),
                         fn (Builder $subQuery): Builder => $subQuery->whereDate($column, '<=', $data['until']),
                     );
+            });
+    }
+
+    public static function quickDateRangeFilter(string $column, string $label = '快捷时间'): SelectFilter
+    {
+        return SelectFilter::make($column.'_quick_range')
+            ->label($label)
+            ->options([
+                'today' => '今天',
+                'last7' => '近7天',
+                'last30' => '近30天',
+                'month' => '本月',
+            ])
+            ->query(function (Builder $query, array $data) use ($column): Builder {
+                $value = $data['value'] ?? null;
+
+                return match ($value) {
+                    'today' => $query->whereDate($column, '=', now()->toDateString()),
+                    'last7' => $query->whereDate($column, '>=', now()->subDays(6)->toDateString()),
+                    'last30' => $query->whereDate($column, '>=', now()->subDays(29)->toDateString()),
+                    'month' => $query
+                        ->whereDate($column, '>=', now()->startOfMonth()->toDateString())
+                        ->whereDate($column, '<=', now()->endOfMonth()->toDateString()),
+                    default => $query,
+                };
             });
     }
 

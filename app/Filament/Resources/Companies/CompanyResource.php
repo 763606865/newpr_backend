@@ -25,7 +25,7 @@ class CompanyResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    protected static string|UnitEnum|null $navigationGroup = '组织架构';
+    protected static string|UnitEnum|null $navigationGroup = '后台管理';
 
     protected static ?string $recordTitleAttribute = 'company';
 

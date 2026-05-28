@@ -25,7 +25,7 @@ class PlanResource extends Resource
 
     protected static ?string $pluralModelLabel = '方案';
 
-    protected static string|UnitEnum|null $navigationGroup = '方案';
+    protected static string|UnitEnum|null $navigationGroup = '后台管理';
 
     public static function form(Schema $schema): Schema
     {

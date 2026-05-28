@@ -27,7 +27,7 @@ class PositionsResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'position';
 
-    protected static string|UnitEnum|null $navigationGroup = '组织架构';
+    protected static string|UnitEnum|null $navigationGroup = 'OA';
 
     public static function form(Schema $schema): Schema
     {

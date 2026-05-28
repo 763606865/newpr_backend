@@ -23,7 +23,7 @@ class AdsTable
             ->columns([
                 TextColumn::make('id')->label('ID'),
                 TextColumn::make('slot.name')->label('广告位')->placeholder('-'),
-                TextColumn::make('city_code')->label('城市编码')->placeholder('全站'),
+                CmsTable::cityColumn(),
                 TextColumn::make('title')->label('标题')->searchable(),
                 CmsTable::enumBadge('type', '类型', CmsAdType::class, [1 => 'primary', 2 => 'warning', 3 => 'gray']),
                 CmsTable::enumBadge('status', '状态', CmsStatus::class, [1 => 'success', 0 => 'gray']),
@@ -33,6 +33,7 @@ class AdsTable
             ->filters([
                 CmsTable::cityFilter(),
                 CmsTable::statusFilter(CmsStatus::class),
+                CmsTable::quickDateRangeFilter('updated_at'),
                 CmsTable::dateRangeFilter('updated_at', '更新时间'),
                 TrashedFilter::make(),
             ])

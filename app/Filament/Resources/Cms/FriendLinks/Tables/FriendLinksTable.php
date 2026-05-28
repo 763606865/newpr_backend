@@ -22,7 +22,7 @@ class FriendLinksTable
         return $table
             ->columns([
                 TextColumn::make('id')->label('ID'),
-                TextColumn::make('city_code')->label('城市编码')->placeholder('全站'),
+                CmsTable::cityColumn(),
                 TextColumn::make('name')->label('友链名称')->searchable(),
                 TextColumn::make('url')->label('地址')->limit(30),
                 CmsTable::enumBadge('target', '打开方式', CmsOpenTarget::class, [1 => 'primary', 2 => 'info']),
@@ -32,6 +32,7 @@ class FriendLinksTable
             ->filters([
                 CmsTable::cityFilter(),
                 CmsTable::statusFilter(CmsStatus::class),
+                CmsTable::quickDateRangeFilter('updated_at'),
                 CmsTable::dateRangeFilter('updated_at', '更新时间'),
                 TrashedFilter::make(),
             ])

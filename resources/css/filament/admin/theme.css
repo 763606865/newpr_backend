@@ -90,3 +90,26 @@
     color: rgb(255 255 255);
 }
 
+/* Dashboard polish: improve chart/KPI card hierarchy and visual depth. */
+.fi-page-dashboard .fi-wi-chart,
+.fi-page-dashboard .fi-wi-stats-overview-stat {
+    border: 1px solid rgb(226 232 240 / 0.8);
+    border-radius: 1rem;
+    box-shadow: 0 10px 30px rgb(15 23 42 / 0.06);
+}
+
+.fi-page-dashboard .fi-wi-chart {
+    background: linear-gradient(180deg, rgb(255 255 255) 0%, rgb(248 250 252) 100%);
+}
+
+.fi-page-dashboard .fi-wi-stats-overview-stat {
+    background: linear-gradient(180deg, rgb(255 255 255) 0%, rgb(249 250 251) 100%);
+}
+
+.dark .fi-page-dashboard .fi-wi-chart,
+.dark .fi-page-dashboard .fi-wi-stats-overview-stat {
+    border-color: rgb(51 65 85 / 0.9);
+    background: linear-gradient(180deg, rgb(15 23 42) 0%, rgb(30 41 59) 100%);
+    box-shadow: 0 12px 30px rgb(2 6 23 / 0.45);
+}
+

@@ -30,10 +30,15 @@ class AdSlotsTable
                 TextColumn::make('updated_at')->label('更新时间')->dateTime(),
             ])
             ->filters([
+                CmsTable::statusFilter(CmsStatus::class),
+                CmsTable::quickDateRangeFilter('updated_at'),
+                CmsTable::dateRangeFilter('updated_at', '更新时间'),
                 TrashedFilter::make(),
             ])
             ->recordActions([
                 EditAction::make(),
+                CmsTable::enableAction(),
+                CmsTable::disableAction(),
                 DeleteAction::make(),
             ])
             ->toolbarActions([

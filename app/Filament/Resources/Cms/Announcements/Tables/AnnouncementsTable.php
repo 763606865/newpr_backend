@@ -23,7 +23,7 @@ class AnnouncementsTable
         return $table
             ->columns([
                 TextColumn::make('id')->label('ID'),
-                TextColumn::make('city_code')->label('城市编码')->placeholder('全站'),
+                CmsTable::cityColumn(),
                 TextColumn::make('title')->label('公告标题')->searchable(),
                 CmsTable::enumBadge('type', '类型', CmsAnnouncementType::class, [1 => 'primary', 2 => 'warning', 3 => 'info']),
                 CmsTable::enumBadge('status', '状态', CmsPublishStatus::class, [1 => 'gray', 2 => 'success', 3 => 'danger']),
@@ -34,6 +34,7 @@ class AnnouncementsTable
             ->filters([
                 CmsTable::cityFilter(),
                 CmsTable::statusFilter(CmsPublishStatus::class),
+                CmsTable::quickDateRangeFilter('published_at'),
                 CmsTable::dateRangeFilter('published_at', '发布时间'),
                 TrashedFilter::make(),
             ])
