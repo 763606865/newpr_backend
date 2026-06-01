@@ -12,6 +12,7 @@ class OaLeaveSeeder extends Seeder
 {
     public function run(): void
     {
+        /** @var Company $company */
         $company = Company::query()->first();
         $employee = $company->employees()->first();
 

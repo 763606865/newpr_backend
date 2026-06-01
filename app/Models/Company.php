@@ -141,6 +141,16 @@ class Company extends Model
     }
 
     /**
+     * 员工
+     *
+     * @return HasMany
+     */
+    public function employees(): HasMany
+    {
+        return $this->hasMany(Employee::class, 'company_id');
+    }
+
+    /**
      * 激活状态
      */
     #[Scope]
