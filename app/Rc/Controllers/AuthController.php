@@ -2,9 +2,8 @@
 
 namespace App\Rc\Controllers;
 
+use App\Enums\RcIdentityStatus;
 use App\Enums\RcIdentityType;
-use App\Models\Company;
-use App\Models\Rc\Resume;
 use App\Models\Rc\UserIdentity;
 use App\Models\User;
 use App\Rc\Requests\EmailLoginRequest;
@@ -16,8 +15,10 @@ use App\Services\VerificationCodeService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
+use Laravel\Passport\PersonalAccessTokenFactory;
+use Laravel\Passport\PersonalAccessTokenResult;
 
 class AuthController extends Controller
 {
@@ -162,16 +163,54 @@ class AuthController extends Controller
      */
     public function refreshToken(Request $request): JsonResponse
     {
+        /** @var User $user */
         $user = $request->user();
 
-        $tokenResult = $user->createToken('rc');
+        $validated = validator($request->all(), [
+            'identity_type' => ['required', Rule::enum(RcIdentityType::class)],
+        ])->validate();
+
+        $identityType = RcIdentityType::from((int) $validated['identity_type']);
+
+        $isFirstIdentity = ! $user->identities()->exists();
+
+        /** @var UserIdentity $identity */
+        $identity = $user->identities()->firstOrCreate(
+            ['identity_type' => $identityType->value],
+            [
+                'identity_name' => $identityType->getLabel() ?? '身份',
+                'is_default' => $isFirstIdentity ? 1 : 0,
+                'status' => RcIdentityStatus::Enabled->value,
+            ],
+        );
+
+        $tokenResult = $this->createRcToken($user);
+
+        if ($token = $tokenResult->getToken()) {
+            $token->responsible_type = UserIdentity::class;
+            $token->responsible_id = $identity->id;
+            $token->save();
+        }
+
+        if ($identity->is_default !== 1) {
+            $user->identities()
+                ->whereKey($identity->id)
+                ->update(['is_default' => 1]);
+
+            $user->identities()
+                ->whereKeyNot($identity->id)
+                ->where('is_default', 1)
+                ->update(['is_default' => 0]);
+
+            $identity->forceFill(['is_default' => 1]);
+        }
 
         $user->token()?->revoke();
 
         return $this->success([
             'token_type' => 'Bearer',
             'access_token' => $tokenResult->accessToken,
-            'user' => $this->userPayload($user, $user->token()?->responsible),
+            'user' => $this->userPayload($user, $identity),
         ]);
     }
 
@@ -182,7 +221,7 @@ class AuthController extends Controller
             'last_login_at' => now(),
         ])->save();
 
-        $tokenResult = $user->createToken('rc');
+        $tokenResult = $this->createRcToken($user);
 
         $userIdentity = $user->defaultIdentity()->first();
 
@@ -212,12 +251,36 @@ class AuthController extends Controller
             ->first();
     }
 
+    private function createRcToken(User $user): PersonalAccessTokenResult
+    {
+        return app(PersonalAccessTokenFactory::class)->make(
+            $user->getAuthIdentifier(),
+            'rc',
+            [],
+            'rc_users',
+        );
+    }
+
     /**
      * @return array<string, mixed>
      */
     private function userPayload(User $user, ?UserIdentity $userIdentity): array
     {
-        $identityContext = $this->buildIdentityContext($user, $userIdentity);
+        $identities = $user->identities()
+            ->withBasicInfoFlags()
+            ->orderByDesc('is_default')
+            ->orderBy('id')
+            ->get()
+            ->each(static function (UserIdentity $identity): void {
+                $identity->append('has_basic_info');
+            });
+
+        $currentIdentity = null;
+
+        if ($userIdentity instanceof UserIdentity) {
+            $currentIdentity = $identities->firstWhere('id', $userIdentity->id)
+                ?? $userIdentity->append('has_basic_info');
+        }
 
         return [
             'id' => $user->id,
@@ -230,158 +293,8 @@ class AuthController extends Controller
             'avatar' => $user->avatar,
             'last_login_ip' => $user->last_login_ip,
             'last_login_at' => $user->last_login_at?->toDateTimeString(),
-            'current_identity' => $userIdentity,
-            'resume' => $identityContext['resume'],
-            'companies' => $identityContext['companies'],
-            'school' => $identityContext['school'],
-            'city_code' => $identityContext['city_code'],
-            'next_action' => $identityContext['next_action'],
-            'can_publish_job' => $identityContext['can_publish_job'],
+            'current_identity' => $currentIdentity,
+            'identities' => $identities,
         ];
-    }
-
-    /**
-     * @return array{
-     *     resume: array<string, mixed>|null,
-     *     companies: array<int, array<string, mixed>>|null,
-     *     school: array<string, mixed>|null,
-     *     city_code: string|null,
-     *     next_action: string|null,
-     *     can_publish_job: bool
-     * }
-     */
-    private function buildIdentityContext(User $user, ?UserIdentity $identity): array
-    {
-        $resume = null;
-        $companies = null;
-        $school = null;
-        $cityCode = null;
-        $nextAction = null;
-        $canPublishJob = false;
-
-        if (! $identity instanceof UserIdentity) {
-            return [
-                'resume' => null,
-                'companies' => null,
-                'school' => null,
-                'city_code' => null,
-                'next_action' => 'choose_identity',
-                'can_publish_job' => false,
-            ];
-        }
-
-        $identityType = $identity->identity_type instanceof RcIdentityType
-            ? $identity->identity_type
-            : RcIdentityType::tryFrom((int) $identity->identity_type);
-
-        return match ($identityType) {
-            RcIdentityType::JobSeeker => (function () use ($user): array {
-                $primaryResume = $user->primaryResume()
-                    ->select(['id', 'title', 'status', 'updated_at'])
-                    ->first();
-
-                $fallbackResume = $primaryResume
-                    ?? $user->resumes()
-                        ->select(['id', 'title', 'status', 'updated_at'])
-                        ->orderByDesc('updated_at')
-                        ->first();
-
-                $resumePayload = $fallbackResume instanceof Resume
-                    ? [
-                        'id' => $fallbackResume->id,
-                        'title' => $fallbackResume->title,
-                        'status' => $fallbackResume->status,
-                        'updated_at' => $fallbackResume->updated_at?->toDateTimeString(),
-                    ]
-                    : null;
-
-                return [
-                    'resume' => $resumePayload,
-                    'companies' => null,
-                    'school' => null,
-                    'city_code' => null,
-                    'next_action' => $resumePayload ? null : 'fill_resume',
-                    'can_publish_job' => false,
-                ];
-            })(),
-            RcIdentityType::Recruiter => (function () use ($identity): array {
-                $companiesQuery = Company::query()
-                    ->select(['id', 'name'])
-                    ->when(
-                        filled($identity->company_id),
-                        fn ($query) => $query->whereKey((int) $identity->company_id),
-                    );
-
-                $companyPayload = $companiesQuery->get()->map(fn (Company $company): array => [
-                    'id' => $company->id,
-                    'name' => $company->name,
-                ])->values()->all();
-
-                if ($companyPayload === []) {
-                    $companyPayload = null;
-                }
-
-                return [
-                    'resume' => null,
-                    'companies' => $companyPayload,
-                    'school' => null,
-                    'city_code' => null,
-                    'next_action' => $companyPayload ? null : 'bind_company',
-                    'can_publish_job' => $companyPayload !== null,
-                ];
-            })(),
-            RcIdentityType::CampusManager => (function () use ($identity): array {
-                $schoolName = (string) ($identity->organization_name ?? Arr::get($identity->extra ?? [], 'school_name', ''));
-                $schoolCode = Arr::get($identity->extra ?? [], 'school_code');
-
-                $schoolPayload = filled($schoolName) || filled($schoolCode)
-                    ? [
-                        'name' => $schoolName !== '' ? $schoolName : null,
-                        'code' => is_string($schoolCode) && $schoolCode !== '' ? $schoolCode : null,
-                    ]
-                    : null;
-
-                return [
-                    'resume' => null,
-                    'companies' => null,
-                    'school' => $schoolPayload,
-                    'city_code' => null,
-                    'next_action' => $schoolPayload ? null : 'bind_school',
-                    'can_publish_job' => false,
-                ];
-            })(),
-            RcIdentityType::GovernmentManager => (function () use ($identity): array {
-                $resolvedCityCode = Arr::get($identity->extra ?? [], 'city_code');
-
-                if (! is_string($resolvedCityCode) || $resolvedCityCode === '') {
-                    $resolvedCityCode = null;
-                }
-
-                return [
-                    'resume' => null,
-                    'companies' => null,
-                    'school' => null,
-                    'city_code' => $resolvedCityCode,
-                    'next_action' => $resolvedCityCode ? null : 'bind_city',
-                    'can_publish_job' => false,
-                ];
-            })(),
-            RcIdentityType::Headhunter => [
-                'resume' => null,
-                'companies' => null,
-                'school' => null,
-                'city_code' => null,
-                'next_action' => null,
-                'can_publish_job' => true,
-            ],
-            default => [
-                'resume' => null,
-                'companies' => null,
-                'school' => null,
-                'city_code' => null,
-                'next_action' => 'choose_identity',
-                'can_publish_job' => false,
-            ],
-        };
     }
 }

@@ -7,9 +7,13 @@ use App\Enums\RcIdentityType;
 use App\Models\Model;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Attributes\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 
 /**
@@ -29,6 +33,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at 更新时间
  * @property Carbon|null $deleted_at 删除时间
  * @property-read User $user 所属用户
+ * @property-read bool $has_basic_info 是否包含基础信息
  */
 #[Table('rc_user_identities')]
 #[Fillable([
@@ -66,5 +71,87 @@ class UserIdentity extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    #[Scope]
+    protected function withBasicInfoFlags(Builder $query): void
+    {
+        $query->select($this->getTable().'.*')
+            ->selectRaw(
+                'exists (select 1 from rc_resumes where rc_resumes.user_id = '.$this->getTable().'.user_id and rc_resumes.deleted_at is null) as jobseeker_has_resume'
+            )
+            ->selectRaw(
+                'case when '.$this->getTable().'.identity_type = ? then exists (select 1 from rc_resumes where rc_resumes.user_id = '.$this->getTable().'.user_id and rc_resumes.deleted_at is null) else 0 end as has_basic_info_cached',
+                [RcIdentityType::JobSeeker->value]
+            );
+    }
+
+    protected function hasBasicInfo(): Attribute
+    {
+        return Attribute::make(
+            get: function (mixed $value, array $attributes): bool {
+                $identityType = $this->identity_type;
+
+                if (! $identityType instanceof RcIdentityType) {
+                    return false;
+                }
+
+                return match ($identityType) {
+                    RcIdentityType::JobSeeker => $this->resolveJobSeekerHasBasicInfo($attributes),
+                    RcIdentityType::Recruiter => ! empty($this->company_id),
+                    RcIdentityType::CampusManager => $this->resolveCampusManagerHasBasicInfo($attributes),
+                    RcIdentityType::GovernmentManager => $this->resolveGovernmentManagerHasBasicInfo($attributes),
+                    RcIdentityType::Headhunter => true,
+                };
+            },
+        );
+    }
+
+    /**
+     * @param  array<string, mixed>  $attributes
+     */
+    private function resolveJobSeekerHasBasicInfo(array $attributes): bool
+    {
+        if (Arr::exists($attributes, 'has_basic_info_cached')) {
+            return (bool) $attributes['has_basic_info_cached'];
+        }
+
+        if (Arr::exists($attributes, 'jobseeker_has_resume')) {
+            return (bool) $attributes['jobseeker_has_resume'];
+        }
+
+        return Resume::query()
+            ->where('user_id', $this->user_id)
+            ->exists();
+    }
+
+    /**
+     * @param  array<string, mixed>  $attributes
+     */
+    private function resolveCampusManagerHasBasicInfo(array $attributes): bool
+    {
+        if (Arr::exists($attributes, 'campus_has_school')) {
+            return (bool) $attributes['campus_has_school'];
+        }
+
+        $extra = is_array($this->extra) ? $this->extra : [];
+
+        return filled(Arr::get($extra, 'school_id')) || filled(Arr::get($extra, 'school_code'));
+    }
+
+    /**
+     * @param  array<string, mixed>  $attributes
+     */
+    private function resolveGovernmentManagerHasBasicInfo(array $attributes): bool
+    {
+        if (Arr::exists($attributes, 'government_has_area')) {
+            return (bool) $attributes['government_has_area'];
+        }
+
+        $extra = is_array($this->extra) ? $this->extra : [];
+
+        return filled(Arr::get($extra, 'province_code'))
+            || filled(Arr::get($extra, 'city_code'))
+            || filled(Arr::get($extra, 'district_code'));
     }
 }
