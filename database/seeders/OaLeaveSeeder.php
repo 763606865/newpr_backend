@@ -13,9 +13,9 @@ class OaLeaveSeeder extends Seeder
     public function run(): void
     {
         $company = Company::query()->first();
-        $user = User::query()->first();
+        $employee = $company->employees()->first();
 
-        if (! $company || ! $user) {
+        if (! $company || ! $employee) {
             return;
         }
 
@@ -38,7 +38,7 @@ class OaLeaveSeeder extends Seeder
         LeaveBalance::query()->firstOrCreate(
             [
                 'company_id' => $company->id,
-                'user_id' => $user->id,
+                'employee_id' => $employee->id,
                 'leave_type_id' => $leaveType->id,
                 'year' => (int) now()->format('Y'),
             ],
