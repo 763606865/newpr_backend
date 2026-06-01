@@ -7,6 +7,7 @@ use App\Models\Model;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Attributes\Table;
+use Illuminate\Database\Eloquent\Attributes\Visible;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -32,6 +33,15 @@ use Illuminate\Support\Carbon;
  */
 #[Table('cms_article_tags')]
 #[Fillable(['name', 'slug', 'status', 'sort'])]
+#[Visible([
+    'id',
+    'name',
+    'slug',
+    'status',
+    'sort',
+    'created_at',
+    'updated_at',
+])]
 class ArticleTag extends Model
 {
     use SoftDeletes;

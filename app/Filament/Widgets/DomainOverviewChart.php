@@ -28,7 +28,7 @@ use App\Models\Rc\Interview;
 use App\Models\Rc\Job;
 use App\Models\Rc\Offer;
 use App\Models\Rc\Resume;
-use App\Models\Rc\UserIdentityBind;
+use App\Models\Rc\UserIdentity;
 use App\Models\User;
 use Filament\Widgets\ChartWidget;
 use Spatie\Permission\Models\Permission;
@@ -88,7 +88,7 @@ class DomainOverviewChart extends ChartWidget
             Application::class,
             Interview::class,
             Offer::class,
-            UserIdentityBind::class,
+            UserIdentity::class,
         ];
 
         return [

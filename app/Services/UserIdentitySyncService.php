@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\Rc\UserIdentityBind;
+use App\Models\Rc\UserIdentity;
 use App\Models\User;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
@@ -51,13 +51,13 @@ class UserIdentitySyncService
         });
     }
 
-    public function bindHubIdentity(User $user, string $hubUserId, array $payload = []): UserIdentityBind
+    public function bindHubIdentity(User $user, string $hubUserId, array $payload = []): UserIdentity
     {
-        $bind = UserIdentityBind::query()
+        $bind = UserIdentity::query()
             ->where('bind_system', self::HUB_SYSTEM)
             ->where('external_user_id', $hubUserId)
             ->first()
-            ?? new UserIdentityBind;
+            ?? new UserIdentity;
 
         $bind->forceFill([
             'bind_system' => self::HUB_SYSTEM,
@@ -72,7 +72,7 @@ class UserIdentitySyncService
 
         $bind->save();
 
-        UserIdentityBind::query()
+        UserIdentity::query()
             ->where('user_id', $user->id)
             ->where('id', '!=', $bind->id)
             ->update(['is_primary' => 0]);

@@ -10,6 +10,7 @@ use App\Models\Model;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Attributes\Table;
+use Illuminate\Database\Eloquent\Attributes\Visible;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -42,6 +43,7 @@ use Illuminate\Support\Carbon;
  * @property-read Collection<int, Menu> $children 子级菜单
  *
  * @method static Builder enabled()
+ * @method static Builder shown()
  */
 #[Table('cms_menus')]
 #[Fillable([
@@ -59,6 +61,25 @@ use Illuminate\Support\Carbon;
     'start_at',
     'end_at',
     'extra',
+])]
+#[Visible([
+    'id',
+    'parent_id',
+    'name',
+    'code',
+    'link_type',
+    'link_url',
+    'icon',
+    'image',
+    'target',
+    'is_show',
+    'status',
+    'sort',
+    'start_at',
+    'end_at',
+    'extra',
+    'created_at',
+    'updated_at',
 ])]
 class Menu extends Model
 {
@@ -102,6 +123,14 @@ class Menu extends Model
     #[Scope]
     protected function enabled(Builder $query): void
     {
+        // 仅查询已启用的菜单状态。
         $query->where($this->getTable().'.status', '=', CmsStatus::Enabled->value);
+    }
+
+    #[Scope]
+    protected function shown(Builder $query): void
+    {
+        // 仅查询前台展示的菜单（is_show = 1）。
+        $query->where($this->getTable().'.is_show', '=', true);
     }
 }

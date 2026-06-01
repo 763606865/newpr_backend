@@ -8,6 +8,7 @@ use App\Models\Model;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Attributes\Table;
+use Illuminate\Database\Eloquent\Attributes\Visible;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
@@ -58,6 +59,27 @@ use Illuminate\Support\Carbon;
     'sort',
     'extra',
 ])]
+#[Visible([
+    'id',
+    'city_code',
+    'title',
+    'sub_title',
+    'link_url',
+    'type',
+    'source_name',
+    'source_url',
+    'summary',
+    'content',
+    'published_at',
+    'start_at',
+    'end_at',
+    'is_top',
+    'status',
+    'sort',
+    'extra',
+    'created_at',
+    'updated_at',
+])]
 class Announcement extends Model
 {
     use SoftDeletes;
@@ -73,9 +95,9 @@ class Announcement extends Model
     {
         return [
             'type' => CmsAnnouncementType::class,
-            'published_at' => 'datetime',
-            'start_at' => 'datetime',
-            'end_at' => 'datetime',
+            'published_at' => 'datetime:Y-m-d H:i:s',
+            'start_at' => 'datetime:Y-m-d H:i:s',
+            'end_at' => 'datetime:Y-m-d H:i:s',
             'is_top' => 'boolean',
             'status' => CmsPublishStatus::class,
             'sort' => 'integer',

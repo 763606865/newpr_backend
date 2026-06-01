@@ -9,6 +9,7 @@ use App\Models\Model;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Attributes\Table;
+use Illuminate\Database\Eloquent\Attributes\Visible;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -58,6 +59,25 @@ use Throwable;
     'status',
     'sort',
     'extra',
+])]
+#[Visible([
+    'id',
+    'slot_id',
+    'city_code',
+    'title',
+    'type',
+    'image',
+    'image_url',
+    'text_content',
+    'code_content',
+    'link_url',
+    'start_at',
+    'end_at',
+    'status',
+    'sort',
+    'extra',
+    'created_at',
+    'updated_at',
 ])]
 class Ad extends Model
 {

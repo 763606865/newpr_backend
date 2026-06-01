@@ -56,6 +56,10 @@ return [
             'driver' => 'passport',
             'provider' => 'b_users',
         ],
+        'rc' => [
+            'driver' => 'passport',
+            'provider' => 'rc_users',
+        ],
     ],
 
     /*
@@ -88,6 +92,11 @@ return [
         'b_users' => [
             'driver' => 'eloquent',
             'model' => BUser::class,
+        ],
+
+        'rc_users' => [
+            'driver' => 'eloquent',
+            'model' => User::class,
         ],
     ],
 

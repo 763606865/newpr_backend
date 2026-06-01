@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\Rc\UserIdentityBinds\Schemas;
+namespace App\Filament\Resources\Rc\UserIdentities\Schemas;
 
 use App\Enums\RcIdentityStatus;
 use App\Enums\RcIdentityType;
@@ -9,7 +9,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
-class UserIdentityBindForm
+class UserIdentityForm
 {
     public static function configure(Schema $schema): Schema
     {

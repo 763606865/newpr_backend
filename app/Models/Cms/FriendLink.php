@@ -9,6 +9,7 @@ use App\Models\Model;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Attributes\Table;
+use Illuminate\Database\Eloquent\Attributes\Visible;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
@@ -50,6 +51,23 @@ use Illuminate\Support\Carbon;
     'status',
     'sort',
     'extra',
+])]
+#[Visible([
+    'id',
+    'city_code',
+    'name',
+    'url',
+    'logo',
+    'target',
+    'rel',
+    'description',
+    'start_at',
+    'end_at',
+    'status',
+    'sort',
+    'extra',
+    'created_at',
+    'updated_at',
 ])]
 class FriendLink extends Model
 {

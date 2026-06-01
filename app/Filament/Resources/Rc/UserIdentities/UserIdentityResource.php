@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Filament\Resources\Rc\UserIdentityBinds;
+namespace App\Filament\Resources\Rc\UserIdentities;
 
-use App\Filament\Resources\Rc\UserIdentityBinds\Pages\EditUserIdentityBind;
-use App\Filament\Resources\Rc\UserIdentityBinds\Pages\ListUserIdentityBinds;
-use App\Filament\Resources\Rc\UserIdentityBinds\Schemas\UserIdentityBindForm;
-use App\Filament\Resources\Rc\UserIdentityBinds\Tables\UserIdentityBindsTable;
-use App\Models\Rc\UserIdentityBind;
+use App\Filament\Resources\Rc\UserIdentities\Pages\EditUserIdentity;
+use App\Filament\Resources\Rc\UserIdentities\Pages\ListUserIdentities;
+use App\Filament\Resources\Rc\UserIdentities\Schemas\UserIdentityForm;
+use App\Filament\Resources\Rc\UserIdentities\Tables\UserIdentitiesTable;
+use App\Models\Rc\UserIdentity;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -16,9 +16,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use UnitEnum;
 
-class UserIdentityBindResource extends Resource
+class UserIdentityResource extends Resource
 {
-    protected static ?string $model = UserIdentityBind::class;
+    protected static ?string $model = UserIdentity::class;
 
     protected static ?string $label = '身份绑定';
 
@@ -30,12 +30,12 @@ class UserIdentityBindResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        return UserIdentityBindForm::configure($schema);
+        return UserIdentityForm::configure($schema);
     }
 
     public static function table(Table $table): Table
     {
-        return UserIdentityBindsTable::configure($table);
+        return UserIdentitiesTable::configure($table);
     }
 
     public static function getRelations(): array
@@ -48,8 +48,8 @@ class UserIdentityBindResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => ListUserIdentityBinds::route('/'),
-            'edit' => EditUserIdentityBind::route('/{record}/edit'),
+            'index' => ListUserIdentities::route('/'),
+            'edit' => EditUserIdentity::route('/{record}/edit'),
         ];
     }
 

@@ -49,6 +49,11 @@ php artisan db:seed
 php artisan passport:client --name="牛派B端" --provider=b_users --personal
 ```
 
+## 生成 Rc 客户端
+```bash
+php artisan passport:client --name="招聘C端" --provider=rc_users --personal
+```
+
 ## 前端（中台）
 ### 安装依赖
 ```bash
@@ -89,4 +94,9 @@ crontab -e
 
 ```bash
 * * * * * cd /Users/zn/workspace/code/newpr_backend && php artisan schedule:run >> /dev/null 2>&1
+```
+
+### 从京东导入areas数据
+```bash
+php artisan pca:refreshData -d jd
 ```

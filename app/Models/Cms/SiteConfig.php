@@ -8,6 +8,7 @@ use App\Models\Model;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Attributes\Table;
+use Illuminate\Database\Eloquent\Attributes\Visible;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
@@ -61,6 +62,29 @@ use Illuminate\Support\Carbon;
     'status',
     'theme_config',
     'extra',
+])]
+#[Visible([
+    'id',
+    'site_code',
+    'city_code',
+    'name',
+    'short_name',
+    'domain',
+    'logo',
+    'favicon',
+    'slogan',
+    'icp_no',
+    'public_security_no',
+    'service_phone',
+    'service_email',
+    'seo_title',
+    'seo_keywords',
+    'seo_description',
+    'status',
+    'theme_config',
+    'extra',
+    'created_at',
+    'updated_at',
 ])]
 class SiteConfig extends Model
 {

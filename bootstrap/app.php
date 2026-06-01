@@ -18,6 +18,8 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
         then: function () {
             Route::prefix('b')->group(base_path('routes/b.php'));
+            Route::prefix('cms')->group(base_path('routes/cms.php'));
+            Route::prefix('rc')->group(base_path('routes/rc.php'));
         }
     )
     ->withMiddleware(function (Middleware $middleware): void {

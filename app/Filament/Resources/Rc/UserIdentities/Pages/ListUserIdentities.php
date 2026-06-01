@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Filament\Resources\Rc\UserIdentityBinds\Pages;
+namespace App\Filament\Resources\Rc\UserIdentities\Pages;
 
 use App\Enums\RcIdentityType;
-use App\Filament\Resources\Rc\UserIdentityBinds\UserIdentityBindResource;
+use App\Filament\Resources\Rc\UserIdentities\UserIdentityResource;
 use App\Filament\Resources\Rc\Widgets\RcResourceStats;
-use App\Models\Rc\UserIdentityBind;
+use App\Models\Rc\UserIdentity;
 use Filament\Resources\Pages\ListRecords;
 
-class ListUserIdentityBinds extends ListRecords
+class ListUserIdentities extends ListRecords
 {
-    protected static string $resource = UserIdentityBindResource::class;
+    protected static string $resource = UserIdentityResource::class;
 
     protected function getHeaderActions(): array
     {
@@ -21,7 +21,7 @@ class ListUserIdentityBinds extends ListRecords
     {
         return [
             RcResourceStats::make([
-                'modelClass' => UserIdentityBind::class,
+                'modelClass' => UserIdentity::class,
                 'todayColumn' => 'created_at',
                 'todayLabel' => '今日新增绑定',
                 'statusCards' => [

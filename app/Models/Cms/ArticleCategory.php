@@ -8,6 +8,7 @@ use App\Models\Model;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Attributes\Table;
+use Illuminate\Database\Eloquent\Attributes\Visible;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -37,6 +38,18 @@ use Illuminate\Support\Carbon;
  */
 #[Table('cms_article_categories')]
 #[Fillable(['parent_id', 'name', 'slug', 'cover', 'description', 'status', 'sort'])]
+#[Visible([
+    'id',
+    'parent_id',
+    'name',
+    'slug',
+    'cover',
+    'description',
+    'status',
+    'sort',
+    'created_at',
+    'updated_at',
+])]
 class ArticleCategory extends Model
 {
     use SoftDeletes;

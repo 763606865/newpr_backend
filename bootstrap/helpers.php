@@ -1,16 +1,38 @@
 <?php
 
-if (!function_exists('tree')) {
-    function tree(array $data = [], string $parent_column = 'parent_id'): array
-    {
-        return collect($data)->where($parent_column, 0)->map(function ($item) use ($parent_column, $data) {
-            $item['children'] = collect($data)->where($parent_column, $item['id'])->values();
-            return $item;
-        })->toArray();
+use Illuminate\Http\JsonResponse;
+
+if (! function_exists('tree')) {
+    /**
+     * @param  array<int, array<string, mixed>>  $data
+     * @return array<int, array<string, mixed>>
+     */
+    function tree(
+        array $data = [],
+        string $parent_column = 'parent_id',
+        string $id_column = 'id',
+        int|string $root_parent_id = 0,
+    ): array {
+        $grouped = collect($data)->groupBy(
+            fn (array $item): string => (string) ($item[$parent_column] ?? $root_parent_id),
+        );
+
+        $build = function (int|string $parentId) use (&$build, $grouped, $id_column): array {
+            return collect($grouped->get((string) $parentId, []))
+                ->map(function (array $item) use (&$build, $id_column): array {
+                    $item['children'] = $build($item[$id_column] ?? 0);
+
+                    return $item;
+                })
+                ->values()
+                ->all();
+        };
+
+        return $build($root_parent_id);
     }
 }
 
-if (!function_exists('generation')) {
+if (! function_exists('generation')) {
     function generation(array $data = [])
     {
         foreach ($data as $value) {
@@ -19,7 +41,7 @@ if (!function_exists('generation')) {
     }
 }
 
-if (!function_exists('generation_random_string')) {
+if (! function_exists('generation_random_string')) {
     function generation_random_string(int $length = 1): string
     {
         $result = '';
@@ -27,19 +49,20 @@ if (!function_exists('generation_random_string')) {
         for ($index = 0; $index < $length; $index++) {
             $result .= $chars[random_int(0, strlen($chars) - 1)];
         }
+
         return $result;
     }
 }
 
-if (!function_exists('api_response')) {
+if (! function_exists('api_response')) {
     /**
      * @throws Exception
      */
-    function api_response($data = null, $status = 200, array $headers = [], $options = 0): \Illuminate\Http\JsonResponse
+    function api_response($data = null, $status = 200, array $headers = [], $options = 0): JsonResponse
     {
         $now = microtime(true);
         if ($data === null) {
-            $data = (object)[];
+            $data = (object) [];
         }
         $rv = [
             'code' => $status,
@@ -49,39 +72,34 @@ if (!function_exists('api_response')) {
                 'response_time' => $now - LARAVEL_START,
             ],
         ];
+
         return response()->json($rv, $status, $headers, $options);
     }
 }
 
-if (!function_exists('is_url')) {
+if (! function_exists('is_url')) {
     /**
      * @throws Exception
      */
     function is_url(string $url): bool
     {
-        return str_contains($url, "http");
+        return str_contains($url, 'http');
     }
 }
 
-if (!function_exists('is_phone_number')) {
+if (! function_exists('is_phone_number')) {
     /**
      * 判断是否为手机号
-     *
-     * @param $value
-     * @return bool
      */
     function is_phone_number($value): bool
     {
-        return (bool)preg_match('/^(1)\d{10}$/', $value);
+        return (bool) preg_match('/^(1)\d{10}$/', $value);
     }
 }
 
-if (!function_exists('amap_picker')) {
+if (! function_exists('amap_picker')) {
     /**
      * 返回高德地图坐标拾取器的URL地址
-     *
-     * @param string $amapWebKey
-     * @return string
      */
     function amap_picker(string $amapWebKey): string
     {

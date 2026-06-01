@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\Rc\UserIdentityBinds\Tables;
+namespace App\Filament\Resources\Rc\UserIdentities\Tables;
 
 use App\Enums\RcIdentityStatus;
 use App\Enums\RcIdentityType;
@@ -13,7 +13,7 @@ use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
-class UserIdentityBindsTable
+class UserIdentitiesTable
 {
     public static function configure(Table $table): Table
     {

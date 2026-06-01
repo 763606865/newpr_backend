@@ -6,6 +6,7 @@ use App\Enums\CmsAnnouncementType;
 use App\Enums\CmsPublishStatus;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\KeyValue;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -26,7 +27,9 @@ class AnnouncementForm
                 TextInput::make('source_name')->label('来源名称'),
                 TextInput::make('source_url')->label('来源地址'),
                 Textarea::make('summary')->label('摘要')->rows(3),
-                Textarea::make('content')->label('正文')->rows(6),
+                RichEditor::make('content')
+                    ->label('正文')
+                    ->columnSpanFull(),
                 DateTimePicker::make('published_at')->label('发布时间'),
                 DateTimePicker::make('start_at')->label('生效开始时间'),
                 DateTimePicker::make('end_at')->label('生效结束时间'),

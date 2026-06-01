@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Filament\Resources\Rc\UserIdentityBinds\Pages;
+namespace App\Filament\Resources\Rc\UserIdentities\Pages;
 
-use App\Filament\Resources\Rc\UserIdentityBinds\UserIdentityBindResource;
+use App\Filament\Resources\Rc\UserIdentities\UserIdentityResource;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ForceDeleteAction;
 use Filament\Actions\RestoreAction;
 use Filament\Resources\Pages\EditRecord;
 
-class EditUserIdentityBind extends EditRecord
+class EditUserIdentity extends EditRecord
 {
-    protected static string $resource = UserIdentityBindResource::class;
+    protected static string $resource = UserIdentityResource::class;
 
     protected function getHeaderActions(): array
     {

@@ -6,6 +6,7 @@ use App\Enums\CmsArticleContentType;
 use App\Models\Model;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
+use Illuminate\Database\Eloquent\Attributes\Visible;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 
@@ -23,6 +24,15 @@ use Illuminate\Support\Carbon;
  */
 #[Table('cms_article_contents')]
 #[Fillable(['article_id', 'content', 'content_type', 'extra'])]
+#[Visible([
+    'id',
+    'article_id',
+    'content',
+    'content_type',
+    'extra',
+    'created_at',
+    'updated_at',
+])]
 class ArticleContent extends Model
 {
     protected $attributes = [

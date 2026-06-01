@@ -5,6 +5,7 @@ namespace App\Models\Cms;
 use App\Models\Model;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
+use Illuminate\Database\Eloquent\Attributes\Visible;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 
@@ -21,6 +22,13 @@ use Illuminate\Support\Carbon;
  */
 #[Table('cms_article_tag_relations')]
 #[Fillable(['article_id', 'tag_id'])]
+#[Visible([
+    'id',
+    'article_id',
+    'tag_id',
+    'created_at',
+    'updated_at',
+])]
 class ArticleTagRelation extends Model
 {
     protected function casts(): array

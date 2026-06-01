@@ -6,7 +6,7 @@ use App\Enums\UserGender;
 use App\Enums\UserStatus;
 use App\Models\Oa\LeaveBalance;
 use App\Models\Rc\Resume;
-use App\Models\Rc\UserIdentityBind;
+use App\Models\Rc\UserIdentity;
 use Database\Factories\UserFactory;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
@@ -162,18 +162,18 @@ class User extends Authenticatable implements FilamentUser
     }
 
     /**
-     * 用户身份绑定
+     * 用户身份列表
      */
-    public function identityBinds(): HasMany
+    public function identities(): HasMany
     {
-        return $this->hasMany(UserIdentityBind::class, 'user_id');
+        return $this->hasMany(UserIdentity::class, 'user_id');
     }
 
     /**
-     * 主身份绑定
+     * 主身份
      */
-    public function primaryIdentityBind(): HasOne
+    public function defaultIdentity(): HasOne
     {
-        return $this->hasOne(UserIdentityBind::class, 'user_id')->where('is_primary', 1);
+        return $this->hasOne(UserIdentity::class, 'user_id')->where('is_default', 1);
     }
 }

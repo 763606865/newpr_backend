@@ -4,7 +4,7 @@ namespace Tests\Feature\Rc;
 
 use App\Filament\Resources\Rc\Interviews\InterviewResource;
 use App\Filament\Resources\Rc\Offers\OfferResource;
-use App\Filament\Resources\Rc\UserIdentityBinds\UserIdentityBindResource;
+use App\Filament\Resources\Rc\UserIdentities\UserIdentityResource;
 use Filament\Support\Icons\Heroicon;
 use ReflectionClass;
 use Tests\TestCase;
@@ -25,7 +25,7 @@ class RcResourceMaintenanceModeTest extends TestCase
 
     public function test_create_page_classes_are_removed_for_maintenance_mode(): void
     {
-        $this->assertFalse(class_exists('App\\Filament\\Resources\\Rc\\UserIdentityBinds\\Pages\\CreateUserIdentityBind'));
+        $this->assertFalse(class_exists('App\\Filament\\Resources\\Rc\\UserIdentities\\Pages\\CreateUserIdentity'));
         $this->assertFalse(class_exists('App\\Filament\\Resources\\Rc\\Interviews\\Pages\\CreateInterview'));
         $this->assertFalse(class_exists('App\\Filament\\Resources\\Rc\\Offers\\Pages\\CreateOffer'));
     }
@@ -51,7 +51,7 @@ class RcResourceMaintenanceModeTest extends TestCase
     private function resourceClasses(): array
     {
         return [
-            UserIdentityBindResource::class => 40,
+            UserIdentityResource::class => 40,
             InterviewResource::class => 50,
             OfferResource::class => 60,
         ];

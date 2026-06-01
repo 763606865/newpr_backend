@@ -8,6 +8,7 @@ use App\Models\Model;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Attributes\Table;
+use Illuminate\Database\Eloquent\Attributes\Visible;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -35,6 +36,19 @@ use Illuminate\Support\Carbon;
  */
 #[Table('cms_ad_slots')]
 #[Fillable(['name', 'code', 'type', 'width', 'height', 'status', 'sort', 'remark'])]
+#[Visible([
+    'id',
+    'name',
+    'code',
+    'type',
+    'width',
+    'height',
+    'status',
+    'sort',
+    'remark',
+    'created_at',
+    'updated_at',
+])]
 class AdSlot extends Model
 {
     use SoftDeletes;

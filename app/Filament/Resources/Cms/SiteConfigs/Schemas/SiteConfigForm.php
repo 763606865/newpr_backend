@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Cms\SiteConfigs\Schemas;
 
 use App\Enums\CmsStatus;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -20,8 +21,22 @@ class SiteConfigForm
                 TextInput::make('name')->label('站点名称')->required(),
                 TextInput::make('short_name')->label('站点简称'),
                 TextInput::make('domain')->label('站点域名'),
-                TextInput::make('logo')->label('Logo'),
-                TextInput::make('favicon')->label('Favicon'),
+                FileUpload::make('logo')
+                    ->label('Logo')
+                    ->image()
+                    ->disk('oss')
+                    ->directory('site-config')
+                    ->visibility(config('filesystems.disks.oss.visibility', 'public'))
+                    ->formatStateUsing(static fn (mixed $state): ?string => self::normalizeOssPath($state))
+                    ->maxSize(10240), // 10MB
+                FileUpload::make('favicon')
+                    ->label('Favicon')
+                    ->image()
+                    ->disk('oss')
+                    ->directory('site-config')
+                    ->visibility(config('filesystems.disks.oss.visibility', 'public'))
+                    ->formatStateUsing(static fn (mixed $state): ?string => self::normalizeOssPath($state))
+                    ->maxSize(2048), // 2MB
                 TextInput::make('slogan')->label('Slogan'),
                 TextInput::make('icp_no')->label('ICP备案号'),
                 TextInput::make('public_security_no')->label('公安备案号'),
@@ -34,5 +49,28 @@ class SiteConfigForm
                 KeyValue::make('theme_config')->label('主题配置'),
                 KeyValue::make('extra')->label('扩展配置'),
             ]);
+    }
+
+    private static function normalizeOssPath(mixed $state): ?string
+    {
+        if (blank($state)) {
+            return null;
+        }
+
+        if (is_array($state)) {
+            $state = array_values($state)[0] ?? null;
+        }
+
+        if (! is_string($state) || $state === '') {
+            return null;
+        }
+
+        if (str_starts_with($state, 'http://') || str_starts_with($state, 'https://')) {
+            $path = parse_url($state, PHP_URL_PATH);
+
+            return is_string($path) ? ltrim($path, '/') : null;
+        }
+
+        return ltrim($state, '/');
     }
 }
