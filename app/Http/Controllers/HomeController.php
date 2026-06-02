@@ -141,6 +141,7 @@ class HomeController extends Controller
     public function position(Request $request): JsonResponse
     {
         $positions = Position::query()
+            ->whereNotIn('code', ['115pumPa', '11fv7tR']) // 过滤掉【不限岗位】
             ->orderBy('sort')
             ->orderBy('id')
             ->get();
