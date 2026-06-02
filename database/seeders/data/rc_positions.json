@@ -1,0 +1,1566 @@
+[
+  {
+    "id": 6978,
+    "value": "115pumPa",
+    "parentid": 0,
+    "label": "不限",
+    "note": "''",
+    "children": [
+      {
+        "id": 6979,
+        "value": "11fv7tR",
+        "parentid": 6978,
+        "label": "不限职位",
+        "note": "''",
+        "children": null
+      }
+    ]
+  },
+  {
+    "id": 2605,
+    "value": "117a91T",
+    "parentid": 0,
+    "label": "销售/商务拓展",
+    "note": "",
+    "children": [
+      {
+        "id": 2624,
+        "value": "115oBXHb",
+        "parentid": 2605,
+        "label": "销售顾问",
+        "note": "",
+        "children": [
+          {
+            "id": 3063,
+            "value": "114dFk6e",
+            "parentid": 2624,
+            "label": "大客户代表/顾问",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3064,
+            "value": "114ALzUt",
+            "parentid": 2624,
+            "label": "电话销售/顾问",
+            "note": "",
+            "children": null
+          }
+        ]
+      },
+      {
+        "id": 2625,
+        "value": "112GcW37",
+        "parentid": 2605,
+        "label": "商务拓展",
+        "note": "",
+        "children": [
+          {
+            "id": 3071,
+            "value": "115uoksk",
+            "parentid": 2625,
+            "label": "渠道专员/助理",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3072,
+            "value": "116yLXya",
+            "parentid": 2625,
+            "label": "渠道经理/主管",
+            "note": "",
+            "children": null
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 2606,
+    "value": "1138Z1hy",
+    "parentid": 0,
+    "label": "人事/行政/财务/法务/党建/纪检",
+    "note": "",
+    "children": [
+      {
+        "id": 2627,
+        "value": "1152Q99h",
+        "parentid": 2606,
+        "label": "人事",
+        "note": "",
+        "children": [
+          {
+            "id": 3092,
+            "value": "1173wKQq",
+            "parentid": 2627,
+            "label": "人力资源专员/助理",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3093,
+            "value": "1152WwMg",
+            "parentid": 2627,
+            "label": "人力资源经理/主管",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3094,
+            "value": "113HYzpw",
+            "parentid": 2627,
+            "label": "人力资源总监",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3095,
+            "value": "114nCDpA",
+            "parentid": 2627,
+            "label": "人力资源VP/CHO",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3096,
+            "value": "113yvynC",
+            "parentid": 2627,
+            "label": "人力资源业务合作伙伴专员/助理（HRBP）",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3097,
+            "value": "114qrSc3",
+            "parentid": 2627,
+            "label": "招聘专员/助理",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3098,
+            "value": "116brtUk",
+            "parentid": 2627,
+            "label": "招聘经理/主管",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3099,
+            "value": "1132xuEw",
+            "parentid": 2627,
+            "label": "绩效考核专员/助理",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3100,
+            "value": "119gXAK",
+            "parentid": 2627,
+            "label": "绩效考核经理/主管",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3101,
+            "value": "116V5qho",
+            "parentid": 2627,
+            "label": "薪酬福利专员/助理",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3102,
+            "value": "113jewHs",
+            "parentid": 2627,
+            "label": "培训经理/主管",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3103,
+            "value": "116oRE4p",
+            "parentid": 2627,
+            "label": "员工关系管理/顾问",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3104,
+            "value": "114y3ZbV",
+            "parentid": 2627,
+            "label": "企业文化管理/顾问",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3105,
+            "value": "1161xj3M",
+            "parentid": 2627,
+            "label": "社保管理/顾问",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3106,
+            "value": "114B7zdF",
+            "parentid": 2627,
+            "label": "组织发展（OD）管理/顾问",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3107,
+            "value": "113vzjoj",
+            "parentid": 2627,
+            "label": "人事信息系统(HRIS)管理/顾问",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3108,
+            "value": "115E1ZyD",
+            "parentid": 2627,
+            "label": "人事测评管理/顾问",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3109,
+            "value": "112t3Z7v",
+            "parentid": 2627,
+            "label": "工会管理/顾问",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3110,
+            "value": "115S8cn9",
+            "parentid": 2627,
+            "label": "培训专员/助理",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3111,
+            "value": "117YVAtu",
+            "parentid": 2627,
+            "label": "企业培训师/讲师",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3112,
+            "value": "113LJR3Y",
+            "parentid": 2627,
+            "label": "猎头顾问",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3113,
+            "value": "1148Kb2Y",
+            "parentid": 2627,
+            "label": "薪酬福利经理/主管",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3114,
+            "value": "11npoaE",
+            "parentid": 2627,
+            "label": "绩效考核总监",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3115,
+            "value": "116GrU5Q",
+            "parentid": 2627,
+            "label": "人力资源业务合作伙伴经理/主管（HRBP）",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3116,
+            "value": "112WyvbN",
+            "parentid": 2627,
+            "label": "人力资源业务合作伙伴总监（HRBP）",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3117,
+            "value": "1154yop3",
+            "parentid": 2627,
+            "label": "薪酬福利总监",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3118,
+            "value": "112wdygZ",
+            "parentid": 2627,
+            "label": "培训总监",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 4809,
+            "value": "1147bnH4",
+            "parentid": 2627,
+            "label": "首席人力资源官（CHO）",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 4810,
+            "value": "113g1QxH",
+            "parentid": 2627,
+            "label": "招聘总监",
+            "note": "",
+            "children": null
+          }
+        ]
+      },
+      {
+        "id": 2628,
+        "value": "1141xe7R",
+        "parentid": 2606,
+        "label": "财务",
+        "note": "",
+        "children": [
+          {
+            "id": 3119,
+            "value": "116MRgEr",
+            "parentid": 2628,
+            "label": "出纳专员/助理",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3120,
+            "value": "114QLn9b",
+            "parentid": 2628,
+            "label": "财务专员/助理",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3121,
+            "value": "113f8bap",
+            "parentid": 2628,
+            "label": "财务经理/主管",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3122,
+            "value": "112XJ6mN",
+            "parentid": 2628,
+            "label": "财务总监",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3123,
+            "value": "113nGxon",
+            "parentid": 2628,
+            "label": "会计专员/助理",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3124,
+            "value": "115arWKV",
+            "parentid": 2628,
+            "label": "会计经理/主管",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3125,
+            "value": "113HEZTg",
+            "parentid": 2628,
+            "label": "总账会计专员/助理",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3126,
+            "value": "116cAxXy",
+            "parentid": 2628,
+            "label": "成本会计专员/助理",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3127,
+            "value": "114MFvE3",
+            "parentid": 2628,
+            "label": "成本经理/主管",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3128,
+            "value": "112KEZpF",
+            "parentid": 2628,
+            "label": "成本管理/总监",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3129,
+            "value": "1166vCSe",
+            "parentid": 2628,
+            "label": "注册会计师",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3130,
+            "value": "11BtZKA",
+            "parentid": 2628,
+            "label": "固定资产会计专员/助理",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3131,
+            "value": "113789Ji",
+            "parentid": 2628,
+            "label": "审计专员/助理",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3132,
+            "value": "112Y9m4S",
+            "parentid": 2628,
+            "label": "审计经理/主管",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3133,
+            "value": "114FMSMS",
+            "parentid": 2628,
+            "label": "税务专员/助理",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3134,
+            "value": "114gx4R5",
+            "parentid": 2628,
+            "label": "资金专员/助理",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3135,
+            "value": "112sP7B6",
+            "parentid": 2628,
+            "label": "资产管理/顾问",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3136,
+            "value": "1121vtYq",
+            "parentid": 2628,
+            "label": "资金管理/顾问",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3137,
+            "value": "1169yWPV",
+            "parentid": 2628,
+            "label": "财务分析专员/助理",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3138,
+            "value": "117SE1tv",
+            "parentid": 2628,
+            "label": "财务管理/顾问",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3139,
+            "value": "1171pz9R",
+            "parentid": 2628,
+            "label": "核销员",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3140,
+            "value": "1124CPAN",
+            "parentid": 2628,
+            "label": "首席财务官CFO",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3141,
+            "value": "11691Wmq",
+            "parentid": 2628,
+            "label": "财务分析总监",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3142,
+            "value": "112aj2om",
+            "parentid": 2628,
+            "label": "财务分析经理/主管",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3143,
+            "value": "117D3fgp",
+            "parentid": 2628,
+            "label": "税务总监",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3144,
+            "value": "117EV62T",
+            "parentid": 2628,
+            "label": "税务经理/主管",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3145,
+            "value": "115QwPhN",
+            "parentid": 2628,
+            "label": "统计员",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3146,
+            "value": "113AUjpX",
+            "parentid": 2628,
+            "label": "统计管理/顾问",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3147,
+            "value": "11Ve8us",
+            "parentid": 2628,
+            "label": "投融资管理/顾问",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3148,
+            "value": "1178fmBQ",
+            "parentid": 2628,
+            "label": "风控员",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3149,
+            "value": "116hxAAc",
+            "parentid": 2628,
+            "label": "风控管理/顾问",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3150,
+            "value": "116gqgos",
+            "parentid": 2628,
+            "label": "结算员",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3151,
+            "value": "115JgZLg",
+            "parentid": 2628,
+            "label": "结算管理/顾问",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3152,
+            "value": "112CVzm9",
+            "parentid": 2628,
+            "label": "会计总监",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3153,
+            "value": "116Z3QqZ",
+            "parentid": 2628,
+            "label": "出纳经理/主管",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3154,
+            "value": "117EZayv",
+            "parentid": 2628,
+            "label": "出纳总监",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3155,
+            "value": "115hegnY",
+            "parentid": 2628,
+            "label": "总账会计经理/主管",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3156,
+            "value": "112w3ahg",
+            "parentid": 2628,
+            "label": "总账会计总监",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3157,
+            "value": "112qeoho",
+            "parentid": 2628,
+            "label": "成本会计经理/主管",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3158,
+            "value": "116sUAfs",
+            "parentid": 2628,
+            "label": "成本会计总监",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3159,
+            "value": "115U25Ft",
+            "parentid": 2628,
+            "label": "成本专员/主管",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3160,
+            "value": "116GSErm",
+            "parentid": 2628,
+            "label": "成本总监",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3161,
+            "value": "115JL6cJ",
+            "parentid": 2628,
+            "label": "固定资产会计经理/主管",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3162,
+            "value": "1163WfYF",
+            "parentid": 2628,
+            "label": "固定资产会计总监",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3163,
+            "value": "112q61wi",
+            "parentid": 2628,
+            "label": "审计总监",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3164,
+            "value": "1158wJ5B",
+            "parentid": 2628,
+            "label": "资金经理/主管",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3165,
+            "value": "112QwYdA",
+            "parentid": 2628,
+            "label": "资金总监",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3166,
+            "value": "117YLkqp",
+            "parentid": 2628,
+            "label": "核销管理/顾问",
+            "note": "",
+            "children": null
+          }
+        ]
+      },
+      {
+        "id": 2629,
+        "value": "1178B7MJ",
+        "parentid": 2606,
+        "label": "行政",
+        "note": "",
+        "children": [
+          {
+            "id": 3167,
+            "value": "116grujm",
+            "parentid": 2629,
+            "label": "行政专员/助理",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3168,
+            "value": "117Lmr3U",
+            "parentid": 2629,
+            "label": "行政经理/主管/办公室主任",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3169,
+            "value": "116cbFbD",
+            "parentid": 2629,
+            "label": "行政总监",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3170,
+            "value": "11ptLEq",
+            "parentid": 2629,
+            "label": "销售专员/助理",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3171,
+            "value": "11Hqt1Q",
+            "parentid": 2629,
+            "label": "销售经理/主管",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3172,
+            "value": "112iewvS",
+            "parentid": 2629,
+            "label": "后勤专员/助理",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3173,
+            "value": "116vFfgG",
+            "parentid": 2629,
+            "label": "党工团干事",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3174,
+            "value": "1151pQD8",
+            "parentid": 2629,
+            "label": "销售总监",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3175,
+            "value": "115E8s2C",
+            "parentid": 2629,
+            "label": "后勤经理/主管/办公室主任",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3176,
+            "value": "115rQuLJ",
+            "parentid": 2629,
+            "label": "后勤总监",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3177,
+            "value": "1132teLN",
+            "parentid": 2629,
+            "label": "党工团管理/顾问",
+            "note": "",
+            "children": null
+          }
+        ]
+      },
+      {
+        "id": 2630,
+        "value": "116Fut9D",
+        "parentid": 2606,
+        "label": "合规风控/法务/律师",
+        "note": "",
+        "children": [
+          {
+            "id": 3178,
+            "value": "114tAi32",
+            "parentid": 2630,
+            "label": "法务专员/助理",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3179,
+            "value": "116P9AhS",
+            "parentid": 2630,
+            "label": "法务经理/主管",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3180,
+            "value": "115qf4c1",
+            "parentid": 2630,
+            "label": "法务总监",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3181,
+            "value": "115WY2e7",
+            "parentid": 2630,
+            "label": "法律顾问",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3182,
+            "value": "114Tu3Te",
+            "parentid": 2630,
+            "label": "风控员",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3183,
+            "value": "116DxHVb",
+            "parentid": 2630,
+            "label": "合规稽查员",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3184,
+            "value": "11Bxbxv",
+            "parentid": 2630,
+            "label": "民事律师",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3185,
+            "value": "1112Fby",
+            "parentid": 2630,
+            "label": "律师助理",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3186,
+            "value": "115sgfp6",
+            "parentid": 2630,
+            "label": "企业律师/合规顾问",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3187,
+            "value": "115VtYEb",
+            "parentid": 2630,
+            "label": "事务所律师",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3188,
+            "value": "114yNbWQ",
+            "parentid": 2630,
+            "label": "诉讼律师",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3189,
+            "value": "112SHH2b",
+            "parentid": 2630,
+            "label": "知识产权/专利顾问/代理人",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3190,
+            "value": "113hYpLA",
+            "parentid": 2630,
+            "label": "专利律师",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3191,
+            "value": "114VDbDc",
+            "parentid": 2630,
+            "label": "司法鉴定员",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3192,
+            "value": "117M4URJ",
+            "parentid": 2630,
+            "label": "法医",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3193,
+            "value": "117Rzokm",
+            "parentid": 2630,
+            "label": "合规稽查管理/顾问",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3194,
+            "value": "112HmTsQ",
+            "parentid": 2630,
+            "label": "司法鉴定管理/顾问",
+            "note": "",
+            "children": null
+          }
+        ]
+      },
+      {
+        "id": 2631,
+        "value": "117P96V3",
+        "parentid": 2606,
+        "label": "档案管理",
+        "note": "",
+        "children": [
+          {
+            "id": 3195,
+            "value": "115Cdx6W",
+            "parentid": 2631,
+            "label": "档案管理",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3196,
+            "value": "116RjXxA",
+            "parentid": 2631,
+            "label": "合同管理",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3197,
+            "value": "1133R72G",
+            "parentid": 2631,
+            "label": "图书管理",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3198,
+            "value": "11r5XqX",
+            "parentid": 2631,
+            "label": "资料管理",
+            "note": "",
+            "children": null
+          }
+        ]
+      },
+      {
+        "id": 2632,
+        "value": "114kVygm",
+        "parentid": 2606,
+        "label": "文员/助理",
+        "note": "",
+        "children": [
+          {
+            "id": 3199,
+            "value": "119YSN2",
+            "parentid": 2632,
+            "label": "秘书/文员",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3201,
+            "value": "1136EZff",
+            "parentid": 2632,
+            "label": "录入员",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3202,
+            "value": "112UVkzE",
+            "parentid": 2632,
+            "label": "订单处理员",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3203,
+            "value": "112J6Fus",
+            "parentid": 2632,
+            "label": "统计员",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3204,
+            "value": "112EXANv",
+            "parentid": 2632,
+            "label": "合约专员",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3205,
+            "value": "112aX49Q",
+            "parentid": 2632,
+            "label": "IT技术文员/助理",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3206,
+            "value": "1152Qqq5",
+            "parentid": 2632,
+            "label": "文档/资料管理",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 3207,
+            "value": "11296DJi",
+            "parentid": 2632,
+            "label": "司机",
+            "note": "",
+            "children": null
+          },
+          {
+            "id": 4811,
+            "value": "11gC9j8",
+            "parentid": 2632,
+            "label": "前台",
+            "note": "",
+            "children": null
+          }
+        ]
+      },
+      {
+        "id": 11433,
+        "value": "114Z6A9v",
+        "parentid": 2606,
+        "label": "党建/纪检",
+        "note": "''",
+        "children": [
+          {
+            "id": 11436,
+            "value": "11756a2v",
+            "parentid": 11433,
+            "label": "信访案管岗",
+            "note": "''",
+            "children": null
+          },
+          {
+            "id": 11437,
+            "value": "116scEa9",
+            "parentid": 11433,
+            "label": "监督检查岗",
+            "note": "''",
+            "children": null
+          },
+          {
+            "id": 11438,
+            "value": "113pbTA2",
+            "parentid": 11433,
+            "label": "审查调查岗",
+            "note": "''",
+            "children": null
+          },
+          {
+            "id": 11439,
+            "value": "116VbJty",
+            "parentid": 11433,
+            "label": "综合监督岗",
+            "note": "''",
+            "children": null
+          },
+          {
+            "id": 11440,
+            "value": "11VqiHL",
+            "parentid": 11433,
+            "label": "政治监督岗",
+            "note": "''",
+            "children": null
+          },
+          {
+            "id": 11441,
+            "value": "116CTGFK",
+            "parentid": 11433,
+            "label": "问题线索处置岗",
+            "note": "''",
+            "children": null
+          },
+          {
+            "id": 11442,
+            "value": "112VaDWN",
+            "parentid": 11433,
+            "label": "信访举报岗",
+            "note": "''",
+            "children": null
+          },
+          {
+            "id": 11443,
+            "value": "115Niurk",
+            "parentid": 11433,
+            "label": "案件监督管理岗",
+            "note": "''",
+            "children": null
+          },
+          {
+            "id": 11444,
+            "value": "116ymYee",
+            "parentid": 11433,
+            "label": "案件审理岗",
+            "note": "''",
+            "children": null
+          },
+          {
+            "id": 11445,
+            "value": "115f8XAH",
+            "parentid": 11433,
+            "label": "党建研究岗",
+            "note": "''",
+            "children": null
+          },
+          {
+            "id": 11450,
+            "value": "117JKFqJ",
+            "parentid": 11433,
+            "label": "基层党建岗",
+            "note": "''",
+            "children": null
+          },
+          {
+            "id": 11451,
+            "value": "116atbwm",
+            "parentid": 11433,
+            "label": "党员教育管理岗",
+            "note": "''",
+            "children": null
+          },
+          {
+            "id": 11452,
+            "value": "112mJ1o8",
+            "parentid": 11433,
+            "label": "党风廉政建设岗",
+            "note": "''",
+            "children": null
+          },
+          {
+            "id": 11453,
+            "value": "116Q3RAq",
+            "parentid": 11433,
+            "label": "宣传工作岗",
+            "note": "''",
+            "children": null
+          },
+          {
+            "id": 11454,
+            "value": "113GgRrU",
+            "parentid": 11433,
+            "label": "品牌文化岗",
+            "note": "''",
+            "children": null
+          },
+          {
+            "id": 11455,
+            "value": "11bEaT9",
+            "parentid": 11433,
+            "label": "社会工作岗",
+            "note": "''",
+            "children": null
+          },
+          {
+            "id": 11456,
+            "value": "11czWov",
+            "parentid": 11433,
+            "label": "团青工作岗",
+            "note": "''",
+            "children": null
+          },
+          {
+            "id": 11457,
+            "value": "11ZkupX",
+            "parentid": 11433,
+            "label": "统战工作岗",
+            "note": "''",
+            "children": null
+          },
+          {
+            "id": 11458,
+            "value": "1132MJsj",
+            "parentid": 11433,
+            "label": "社会责任岗",
+            "note": "''",
+            "children": null
+          },
+          {
+            "id": 11460,
+            "value": "116PWnay",
+            "parentid": 11433,
+            "label": "其它相关岗位",
+            "note": "''",
+            "children": null
+          }
+        ]
+      }
+    ]   },
+   {
+     "id": 2607,
+     "value": "113nmV1c",
+     "parentid": 0,
+     "label": "互联网/通信及硬件",
+     "note": "",
+     "children": [
+       {
+         "id": 2633,
+         "value": "113seuuq",
+         "parentid": 2607,
+         "label": "软件研发",
+         "note": "",
+         "children": [
+           {
+             "id": 2635,
+             "value": "112AeksX",
+             "parentid": 2633,
+             "label": "PHP工程师",
+             "note": "",
+             "children": null
+           },
+           {
+             "id": 3214,
+             "value": "113bPtE1",
+             "parentid": 2633,
+             "label": "Python工程师",
+             "note": "",
+             "children": null
+           },
+           {
+             "id": 3215,
+             "value": "115VSNkh",
+             "parentid": 2633,
+             "label": ".NET工程师",
+             "note": "",
+             "children": null
+           },
+           {
+             "id": 3216,
+             "value": "117RTJCL",
+             "parentid": 2633,
+             "label": "C语言工程师",
+             "note": "",
+             "children": null
+           },
+           {
+             "id": 3217,
+             "value": "1165xmNy",
+             "parentid": 2633,
+             "label": "C#工程师",
+             "note": "",
+             "children": null
+           },
+           {
+             "id": 3218,
+             "value": "1177EVen",
+             "parentid": 2633,
+             "label": "C++工程师",
+             "note": "",
+             "children": null
+           },
+           {
+             "id": 3219,
+             "value": "1136s98Y",
+             "parentid": 2633,
+             "label": "Delphi工程师",
+             "note": "",
+             "children": null
+           },
+           {
+             "id": 3220,
+             "value": "113ZiaTp",
+             "parentid": 2633,
+             "label": "Erlang工程师",
+             "note": "",
+             "children": null
+           },
+           {
+             "id": 3221,
+             "value": "114eAf2V",
+             "parentid": 2633,
+             "label": "GIS工程师",
+             "note": "",
+             "children": null
+           },
+           {
+             "id": 3222,
+             "value": "114pRanR",
+             "parentid": 2633,
+             "label": "Golang工程师",
+             "note": "",
+             "children": null
+           },
+           {
+             "id": 3223,
+             "value": "1157dcub",
+             "parentid": 2633,
+             "label": "mano工程师",
+             "note": "",
+             "children": null
+           },
+           {
+             "id": 3224,
+             "value": "11gkUfu",
+             "parentid": 2633,
+             "label": "Node.js工程师",
+             "note": "",
+             "children": null
+           },
+           {
+             "id": 3225,
+             "value": "1134KBm9",
+             "parentid": 2633,
+             "label": "Perl工程师",
+             "note": "",
+             "children": null
+           },
+           {
+             "id": 3226,
+             "value": "113D9JiB",
+             "parentid": 2633,
+             "label": "Ruby工程师",
+             "note": "",
+             "children": null
+           },
+           {
+             "id": 3227,
+             "value": "114c4ugW",
+             "parentid": 2633,
+             "label": "VB工程师",
+             "note": "",
+             "children": null
+           },
+           {
+             "id": 3228,
+             "value": "115uD61F",
+             "parentid": 2633,
+             "label": "架构师",
+             "note": "",
+             "children": null
+           },
+           {
+             "id": 3229,
+             "value": "115SpUaq",
+             "parentid": 2633,
+             "label": "全栈工程师",
+             "note": "",
+             "children": null
+           },
+           {
+             "id": 3230,
+             "value": "112Lrck9",
+             "parentid": 2633,
+             "label": "嵌入式软件开发",
+             "note": "",
+             "children": null
+           },
+           {
+             "id": 3231,
+             "value": "113f4oTi",
+             "parentid": 2633,
+             "label": "脚本开发",
+             "note": "",
+             "children": null
+           },
+           {
+             "id": 3232,
+             "value": "115q1JBF",
+             "parentid": 2633,
+             "label": "需求分析工程师",
+             "note": "",
+             "children": null
+           },
+           {
+             "id": 3233,
+             "value": "116zdBAc",
+             "parentid": 2633,
+             "label": "配置管理工程师",
+             "note": "",
+             "children": null
+           },
+           {
+             "id": 3234,
+             "value": "11SdCi3",
+             "parentid": 2633,
+             "label": "系统集成工程师",
+             "note": "",
+             "children": null
+           },
+           {
+             "id": 3235,
+             "value": "116M4h8q",
+             "parentid": 2633,
+             "label": "云计算",
+             "note": "",
+             "children": null
+           },
+           {
+             "id": 3236,
+             "value": "117MdeXh",
+             "parentid": 2633,
+             "label": "语音/视频/图形开发",
+             "note": "",
+             "children": null
+           },
+           {
+             "id": 3237,
+             "value": "114bGpAy",
+             "parentid": 2633,
+             "label": "ERP技术/应用",
+             "note": "",
+             "children": null
+           },
+           {
+             "id": 3238,
+             "value": "1172vnrM",
+             "parentid": 2633,
+             "label": "研发经理",
+             "note": "",
+             "children": null
+           },
+           {
+             "id": 3239,
+             "value": "117JLSQH",
+             "parentid": 2633,
+             "label": "研发总监/顾问",
+             "note": "",
+             "children": null
+           },
+           {
+             "id": 3240,
+             "value": "117Lo8CY",
+             "parentid": 2633,
+             "label": "高级软件研发工程师",
+             "note": "",
+             "children": null
+           },
+           {
+             "id": 3241,
+             "value": "117XsEBs",
+             "parentid": 2633,
+             "label": "软件研发工程师",
+             "note": "",
+             "children": null
+           },
+           {
+             "id": 3242,
+             "value": "115SLhtB",
+             "parentid": 2633,
+             "label": "软件研发总监",
+             "note": "",
+             "children": null
+           },
+           {
+             "id": 3243,
+             "value": "116MRFsS",
+             "parentid": 2633,
+             "label": "游戏研发工程师",
+             "note": "",
+             "children": null
+           },
+           {
+             "id": 3244,
+             "value": "1173QPYg",
+             "parentid": 2633,
+             "label": "高级游戏研发工程师",
+             "note": "",
+             "children": null
+           },
+           {
+             "id": 3245,
+             "value": "1168CC5u",
+             "parentid": 2633,
+             "label": "游戏研发总监",
+             "note": "",
+             "children": null
+           },
+           {
+             "id": 3246,
+             "value": "112PTCyP",
+             "parentid": 2633,
+             "label": "仿真应用工程师",
+             "note": "",
+             "children": null
+           },
+           {
+             "id": 3247,
+             "value": "113AXRbC",
+             "parentid": 2633,
+             "label": "爬虫研发工程师",
+             "note": "",
+             "children": null
+           },
+           {
+             "id": 3248,
+             "value": "115zf2oK",
+             "parentid": 2633,
+             "label": "高级研发经理",
+             "note": "",
+             "children": null
+           },
+           {
+             "id": 4812,
+             "value": "1167cQns",
+             "parentid": 2633,
+             "label": "Java工程师",
+             "note": "",
+             "children": null
+           }
+         ]
+       }
+     ]   }
+]

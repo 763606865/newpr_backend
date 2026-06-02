@@ -2,6 +2,8 @@
 
 namespace App\Rc\Controllers;
 
+use App\Exceptions\UnauthenticatedException;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 
 abstract class Controller
@@ -33,5 +35,15 @@ abstract class Controller
         }
 
         return response()->json($rv);
+    }
+
+    public function user(): ?User
+    {
+        $user = auth()->guard('rc')->user();
+        if (! $user) {
+            throw new UnauthenticatedException('Token Expired。');
+        }
+
+        return $user;
     }
 }

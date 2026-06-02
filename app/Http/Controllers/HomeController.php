@@ -8,7 +8,11 @@ use App\Models\Cms\BannerPosition;
 use App\Models\Cms\FriendLink;
 use App\Models\Cms\Menu;
 use App\Models\Cms\SiteConfig;
+use App\Models\Rc\Industry;
+use App\Models\Rc\Position;
 use App\Resources\Cms\CmsMenuCollection;
+use App\Resources\Rc\RcIndustryResource;
+use App\Resources\Rc\RcPositionResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -17,7 +21,7 @@ class HomeController extends Controller
     /**
      * 首页内容
      *
-     * GET /home
+     * GET /cms/home
      *
      * @throws \Exception
      */
@@ -74,7 +78,7 @@ class HomeController extends Controller
     /**
      * 首页公告简介（最多 10 条）
      *
-     * GET /home/announcements
+     * GET /cms/home/announcements
      *
      * @throws \Exception
      */
@@ -124,6 +128,48 @@ class HomeController extends Controller
             'banner_position' => $bannerPosition?->makeVisible(['banners']),
             'ad_slot' => $adSlot->makeVisible(['ads']),
             'announcements' => $announcements,
+        ]);
+    }
+
+    /**
+     * 首页岗位信息
+     *
+     * GET /cms/home/rc/positions
+     *
+     * @throws \Exception
+     */
+    public function position(Request $request): JsonResponse
+    {
+        $positions = Position::query()
+            ->orderBy('sort')
+            ->orderBy('id')
+            ->get();
+
+        $payloads = RcPositionResource::collection($positions)->resolve($request);
+
+        return api_response([
+            'positions' => tree($payloads),
+        ]);
+    }
+
+    /**
+     * 首页行业信息
+     *
+     * GET /cms/home/rc/industries
+     *
+     * @throws \Exception
+     */
+    public function industry(Request $request): JsonResponse
+    {
+        $industries = Industry::query()
+            ->orderBy('sort')
+            ->orderBy('id')
+            ->get();
+
+        $payloads = RcIndustryResource::collection($industries)->resolve($request);
+
+        return api_response([
+            'industries' => tree($payloads),
         ]);
     }
 }

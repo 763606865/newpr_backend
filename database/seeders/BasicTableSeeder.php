@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Area;
 use App\Models\School;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Database\Seeder;
 
 class BasicTableSeeder extends Seeder
@@ -14,7 +15,7 @@ class BasicTableSeeder extends Seeder
      */
     public function run(): void
     {
-        //        $this->initAreas();
+        $this->initAreas();
         $this->initSchools();
     }
 
@@ -575,7 +576,9 @@ class BasicTableSeeder extends Seeder
 
         foreach (collect($areas)->chunk(100) as $chunk) {
             $chunk->each(function ($item) {
-                Area::query()->create($item);
+                Area::query()->firstOrCreate([
+                    'code' => $item['code'],
+                ], $item);
             });
         }
     }
@@ -588,9 +591,19 @@ class BasicTableSeeder extends Seeder
         $data = $this->getFullSchoolData(Carbon::now());
 
         foreach (array_chunk($data, 500) as $chunk) {
-            School::query()->insert($chunk);
-        }
+            foreach ($chunk as $item) {
+                try {
+                    if (School::query()->where('school_code', $item['school_code'])->orWhere('name', $item['name'])->exists()) {
+                        continue;
+                    }
+                    School::query()->create($item);
+                } catch (Exception $e) {
+                    dd($item);
 
+                    continue;
+                }
+            }
+        }
     }
 
     /**
@@ -2011,42 +2024,42 @@ class BasicTableSeeder extends Seeder
             ['school_code' => '4142010529', 'name' => '武汉文理学院', 'province' => '湖北省', 'city' => '武汉市', 'area' => '', 'address' => '', 'competent_dept' => '湖北省教育厅', 'type' => '本科', 'remark' => '民办', 'created_at' => $now, 'updated_at' => $now],
             ['school_code' => '4142010530', 'name' => '湖北科技职业学院', 'province' => '湖北省', 'city' => '武汉市', 'area' => '', 'address' => '', 'competent_dept' => '湖北省教育厅', 'type' => '专科', 'remark' => '民办', 'created_at' => $now, 'updated_at' => $now],
             ['school_code' => '4142010531', 'name' => '湖北商务职业学院', 'province' => '湖北省', 'city' => '武汉市', 'area' => '', 'address' => '', 'competent_dept' => '湖北省教育厅', 'type' => '专科', 'remark' => '民办', 'created_at' => $now, 'updated_at' => $now],
-            ['4143010530', 'name' => '中南大学', 'province' => '湖南省', 'city' => '长沙市', 'area' => '', 'address' => '', 'competent_dept' => '教育部', 'type' => '本科', 'remark' => '', 'created_at' => $now, 'updated_at' => $now],
-            ['4143010531', 'name' => '湖南大学', 'province' => '湖南省', 'city' => '长沙市', 'area' => '', 'address' => '', 'competent_dept' => '教育部', 'type' => '本科', 'remark' => '', 'created_at' => $now, 'updated_at' => $now],
-            ['4143010532', 'name' => '湖南师范大学', 'province' => '湖南省', 'city' => '长沙市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省', 'type' => '本科', 'remark' => '', 'created_at' => $now],
-            ['4143010533', 'name' => '湘潭大学', 'province' => '湖南省', 'city' => '湘潭市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省', 'type' => '本科', 'remark' => '', 'created_at' => $now, 'updated_at' => $now],
-            ['4143010534', 'name' => '吉首大学', 'province' => '湖南省', 'city' => '吉首市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省', 'type' => '本科', 'remark' => '', 'created_at' => $now, 'updated_at' => $now],
-            ['4143010535', 'name' => '湖南科技大学', 'province' => '湖南省', 'city' => '湘潭市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省', 'type' => '本科', 'remark' => '', 'created_at' => $now, 'updated_at' => $now],
-            ['4143010536', 'name' => '中南林业科技大学', 'province' => '湖南省', 'city' => '长沙市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省', 'type' => '本科', 'remark' => '', 'created_at' => $now, 'updated_at' => $now],
-            ['4143010537', 'name' => '湖南农业大学', 'province' => '湖南省', 'city' => '长沙市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省', 'type' => '本科', 'remark' => '', 'created_at' => $now, 'updated_at' => $now],
-            ['4143010538', 'name' => '湖南中医药大学', 'province' => '湖南省', 'city' => '长沙市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省', 'type' => '本科', 'remark' => '', 'created_at' => $now, 'updated_at' => $now],
-            ['4143010539', 'name' => '湖南理工学院', 'province' => '湖南省', 'city' => '岳阳市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省', 'type' => '本科', 'remark' => '', 'created_at' => $now, 'updated_at' => $now],
-            ['4143010540', 'name' => '湖南工业大学', 'province' => '湖南省', 'city' => '株洲市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省', 'type' => '本科', 'remark' => '', 'created_at' => $now, 'updated_at' => $now],
-            ['4143010541', 'name' => '衡阳师范学院', 'province' => '湖南省', 'city' => '衡阳市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省', 'type' => '本科', 'remark' => '', 'created_at' => $now, 'updated_at' => $now],
-            ['4143010542', 'name' => '邵阳学院', 'province' => '湖南省', 'city' => '邵阳市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省', 'type' => '本科', 'remark' => '', 'created_at' => $now, 'updated_at' => $now],
-            ['4143010543', 'name' => '怀化学院', 'province' => '湖南省', 'city' => '怀化市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省', 'type' => '本科', 'remark' => '', 'created_at' => $now, 'updated_at' => $now],
-            ['4143010544', 'name' => '湖南文理学院', 'province' => '湖南省', 'city' => '常德市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省', 'type' => '本科', 'remark' => '', 'created_at' => $now, 'updated_at' => $now],
-            ['4143010545', 'name' => '湖南科技学院', 'province' => '湖南省', 'city' => '永州市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省', 'type' => '本科', 'remark' => '', 'created_at' => $now, 'updated_at' => $now],
-            ['4143010546', 'name' => '湖南城市学院', 'province' => '湖南省', 'city' => '益阳市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省', 'type' => '本科', 'remark' => '', 'created_at' => $now, 'updated_at' => $now],
-            ['4143010547', 'name' => '湖南工程学院', 'province' => '湖南省', 'city' => '湘潭市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省', 'type' => '本科', 'remark' => '', 'created_at' => $now, 'updated_at' => $now],
-            ['4143010548', 'name' => '湖南商学院', 'province' => '湖南省', 'city' => '长沙市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省', 'type' => '本科', 'remark' => '', 'created_at' => $now, 'updated_at' => $now],
-            ['4143010549', 'name' => '长沙学院', 'province' => '湖南省', 'city' => '长沙市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省', 'type' => '本科', 'remark' => '', 'created_at' => $now, 'updated_at' => $now],
-            ['4143010550', 'name' => '湖南第一师范学院', 'province' => '湖南省', 'city' => '长沙市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省', 'type' => '本科', 'remark' => '', 'created_at' => $now, 'updated_at' => $now],
-            ['4143010551', 'name' => '长沙理工大学', 'province' => '湖南省', 'city' => '长沙市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省', 'type' => '本科', 'remark' => '', 'created_at' => $now],
-            ['4143010552', 'name' => '南华大学', 'province' => '湖南省', 'city' => '衡阳市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省', 'type' => '本科', 'remark' => '', 'created_at' => $now, 'updated_at' => $now],
-            ['4143010553', 'name' => '湖南警察学院', 'province' => '湖南省', 'city' => '长沙市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省', 'type' => '本科', 'remark' => '', 'created_at' => $now, 'updated_at' => $now],
-            ['4143012651', 'name' => '长沙医学院', 'province' => '湖南省', 'city' => '长沙市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省教育厅', 'type' => '本科', 'remark' => '民办', 'created_at' => $now, 'updated_at' => $now],
-            ['4143012652', 'name' => '湖南涉外经济学院', 'province' => '湖南省', 'city' => '长沙市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省教育厅', 'type' => '本科', 'remark' => '民办', 'created_at' => $now, 'updated_at' => $now],
-            ['4143012653', 'name' => '湘潭理工学院', 'province' => '湖南省', 'city' => '湘潭市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省教育厅', 'type' => '本科', 'remark' => '民办', 'created_at' => $now, 'updated_at' => $now],
-            ['4143012654', 'name' => '湖南应用技术学院', 'province' => '湖南省', 'city' => '常德市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省教育厅', 'type' => '本科', 'remark' => '民办', 'created_at' => $now, 'updated_at' => $now],
-            ['4143012655', 'name' => '湖南信息学院', 'province' => '湖南省', 'city' => '长沙市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省教育厅', 'type' => '本科', 'remark' => '民办', 'created_at' => $now, 'updated_at' => $now],
-            ['4143012656', 'name' => '湖南交通工程学院', 'province' => '湖南省', 'city' => '衡阳市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省教育厅', 'type' => '本科', 'remark' => '民办', 'created_at' => $now, 'updated_at' => $now],
-            ['4143012657', 'name' => '湖南科技职业学院', 'province' => '湖南省', 'city' => '长沙市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省教育厅', 'type' => '专科', 'remark' => '民办', 'created_at' => $now, 'updated_at' => $now],
-            ['4143012658', 'name' => '湖南商务职业学院', 'province' => '湖南省', 'city' => '长沙市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省教育厅', 'type' => '专科', 'remark' => '民办', 'created_at' => $now, 'updated_at' => $now],
-            ['4143012659', 'name' => '湖南交通职业学院', 'province' => '湖南省', 'city' => '衡阳市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省教育厅', 'type' => '专科', 'remark' => '民办', 'created_at' => $now, 'updated_at' => $now],
-            ['4143012660', 'name' => '湖南信息职业学院', 'province' => '湖南省', 'city' => '长沙市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省教育厅', 'type' => '专科', 'remark' => '民办', 'created_at' => $now, 'updated_at' => $now],
-            ['4143012661', 'name' => '湖南工业职业技术学院', 'province' => '湖南省', 'city' => '株洲市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省教育厅', 'type' => '专科', 'remark' => '民办', 'created_at' => $now, 'updated_at' => $now],
-            ['4143012662', 'name' => '湖南水利水电职业技术学院', 'province' => '湖南省', 'city' => '长沙市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省教育厅', 'type' => '专科', 'remark' => '民办', 'created_at' => $now, 'updated_at' => $now],
+            ['school_code' => '4143010530', 'name' => '中南大学', 'province' => '湖南省', 'city' => '长沙市', 'area' => '', 'address' => '', 'competent_dept' => '教育部', 'type' => '本科', 'remark' => '', 'created_at' => $now, 'updated_at' => $now],
+            ['school_code' => '4143010531', 'name' => '湖南大学', 'province' => '湖南省', 'city' => '长沙市', 'area' => '', 'address' => '', 'competent_dept' => '教育部', 'type' => '本科', 'remark' => '', 'created_at' => $now, 'updated_at' => $now],
+            ['school_code' => '4143010532', 'name' => '湖南师范大学', 'province' => '湖南省', 'city' => '长沙市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省', 'type' => '本科', 'remark' => '', 'created_at' => $now],
+            ['school_code' => '4143010533', 'name' => '湘潭大学', 'province' => '湖南省', 'city' => '湘潭市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省', 'type' => '本科', 'remark' => '', 'created_at' => $now, 'updated_at' => $now],
+            ['school_code' => '4143010534', 'name' => '吉首大学', 'province' => '湖南省', 'city' => '吉首市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省', 'type' => '本科', 'remark' => '', 'created_at' => $now, 'updated_at' => $now],
+            ['school_code' => '4143010535', 'name' => '湖南科技大学', 'province' => '湖南省', 'city' => '湘潭市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省', 'type' => '本科', 'remark' => '', 'created_at' => $now, 'updated_at' => $now],
+            ['school_code' => '4143010536', 'name' => '中南林业科技大学', 'province' => '湖南省', 'city' => '长沙市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省', 'type' => '本科', 'remark' => '', 'created_at' => $now, 'updated_at' => $now],
+            ['school_code' => '4143010537', 'name' => '湖南农业大学', 'province' => '湖南省', 'city' => '长沙市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省', 'type' => '本科', 'remark' => '', 'created_at' => $now, 'updated_at' => $now],
+            ['school_code' => '4143010538', 'name' => '湖南中医药大学', 'province' => '湖南省', 'city' => '长沙市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省', 'type' => '本科', 'remark' => '', 'created_at' => $now, 'updated_at' => $now],
+            ['school_code' => '4143010539', 'name' => '湖南理工学院', 'province' => '湖南省', 'city' => '岳阳市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省', 'type' => '本科', 'remark' => '', 'created_at' => $now, 'updated_at' => $now],
+            ['school_code' => '4143010540', 'name' => '湖南工业大学', 'province' => '湖南省', 'city' => '株洲市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省', 'type' => '本科', 'remark' => '', 'created_at' => $now, 'updated_at' => $now],
+            ['school_code' => '4143010541', 'name' => '衡阳师范学院', 'province' => '湖南省', 'city' => '衡阳市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省', 'type' => '本科', 'remark' => '', 'created_at' => $now, 'updated_at' => $now],
+            ['school_code' => '4143010542', 'name' => '邵阳学院', 'province' => '湖南省', 'city' => '邵阳市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省', 'type' => '本科', 'remark' => '', 'created_at' => $now, 'updated_at' => $now],
+            ['school_code' => '4143010543', 'name' => '怀化学院', 'province' => '湖南省', 'city' => '怀化市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省', 'type' => '本科', 'remark' => '', 'created_at' => $now, 'updated_at' => $now],
+            ['school_code' => '4143010544', 'name' => '湖南文理学院', 'province' => '湖南省', 'city' => '常德市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省', 'type' => '本科', 'remark' => '', 'created_at' => $now, 'updated_at' => $now],
+            ['school_code' => '4143010545', 'name' => '湖南科技学院', 'province' => '湖南省', 'city' => '永州市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省', 'type' => '本科', 'remark' => '', 'created_at' => $now, 'updated_at' => $now],
+            ['school_code' => '4143010546', 'name' => '湖南城市学院', 'province' => '湖南省', 'city' => '益阳市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省', 'type' => '本科', 'remark' => '', 'created_at' => $now, 'updated_at' => $now],
+            ['school_code' => '4143010547', 'name' => '湖南工程学院', 'province' => '湖南省', 'city' => '湘潭市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省', 'type' => '本科', 'remark' => '', 'created_at' => $now, 'updated_at' => $now],
+            ['school_code' => '4143010548', 'name' => '湖南商学院', 'province' => '湖南省', 'city' => '长沙市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省', 'type' => '本科', 'remark' => '', 'created_at' => $now, 'updated_at' => $now],
+            ['school_code' => '4143010549', 'name' => '长沙学院', 'province' => '湖南省', 'city' => '长沙市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省', 'type' => '本科', 'remark' => '', 'created_at' => $now, 'updated_at' => $now],
+            ['school_code' => '4143010550', 'name' => '湖南第一师范学院', 'province' => '湖南省', 'city' => '长沙市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省', 'type' => '本科', 'remark' => '', 'created_at' => $now, 'updated_at' => $now],
+            ['school_code' => '4143010551', 'name' => '长沙理工大学', 'province' => '湖南省', 'city' => '长沙市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省', 'type' => '本科', 'remark' => '', 'created_at' => $now],
+            ['school_code' => '4143010552', 'name' => '南华大学', 'province' => '湖南省', 'city' => '衡阳市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省', 'type' => '本科', 'remark' => '', 'created_at' => $now, 'updated_at' => $now],
+            ['school_code' => '4143010553', 'name' => '湖南警察学院', 'province' => '湖南省', 'city' => '长沙市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省', 'type' => '本科', 'remark' => '', 'created_at' => $now, 'updated_at' => $now],
+            ['school_code' => '4143012651', 'name' => '长沙医学院', 'province' => '湖南省', 'city' => '长沙市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省教育厅', 'type' => '本科', 'remark' => '民办', 'created_at' => $now, 'updated_at' => $now],
+            ['school_code' => '4143012652', 'name' => '湖南涉外经济学院', 'province' => '湖南省', 'city' => '长沙市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省教育厅', 'type' => '本科', 'remark' => '民办', 'created_at' => $now, 'updated_at' => $now],
+            ['school_code' => '4143012653', 'name' => '湘潭理工学院', 'province' => '湖南省', 'city' => '湘潭市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省教育厅', 'type' => '本科', 'remark' => '民办', 'created_at' => $now, 'updated_at' => $now],
+            ['school_code' => '4143012654', 'name' => '湖南应用技术学院', 'province' => '湖南省', 'city' => '常德市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省教育厅', 'type' => '本科', 'remark' => '民办', 'created_at' => $now, 'updated_at' => $now],
+            ['school_code' => '4143012655', 'name' => '湖南信息学院', 'province' => '湖南省', 'city' => '长沙市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省教育厅', 'type' => '本科', 'remark' => '民办', 'created_at' => $now, 'updated_at' => $now],
+            ['school_code' => '4143012656', 'name' => '湖南交通工程学院', 'province' => '湖南省', 'city' => '衡阳市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省教育厅', 'type' => '本科', 'remark' => '民办', 'created_at' => $now, 'updated_at' => $now],
+            ['school_code' => '4143012657', 'name' => '湖南科技职业学院', 'province' => '湖南省', 'city' => '长沙市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省教育厅', 'type' => '专科', 'remark' => '民办', 'created_at' => $now, 'updated_at' => $now],
+            ['school_code' => '4143012658', 'name' => '湖南商务职业学院', 'province' => '湖南省', 'city' => '长沙市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省教育厅', 'type' => '专科', 'remark' => '民办', 'created_at' => $now, 'updated_at' => $now],
+            ['school_code' => '4143012659', 'name' => '湖南交通职业学院', 'province' => '湖南省', 'city' => '衡阳市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省教育厅', 'type' => '专科', 'remark' => '民办', 'created_at' => $now, 'updated_at' => $now],
+            ['school_code' => '4143012660', 'name' => '湖南信息职业学院', 'province' => '湖南省', 'city' => '长沙市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省教育厅', 'type' => '专科', 'remark' => '民办', 'created_at' => $now, 'updated_at' => $now],
+            ['school_code' => '4143012661', 'name' => '湖南工业职业技术学院', 'province' => '湖南省', 'city' => '株洲市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省教育厅', 'type' => '专科', 'remark' => '民办', 'created_at' => $now, 'updated_at' => $now],
+            ['school_code' => '4143012662', 'name' => '湖南水利水电职业技术学院', 'province' => '湖南省', 'city' => '长沙市', 'area' => '', 'address' => '', 'competent_dept' => '湖南省教育厅', 'type' => '专科', 'remark' => '民办', 'created_at' => $now, 'updated_at' => $now],
             ['school_code' => '4144010554', 'name' => '中山大学', 'province' => '广东省', 'city' => '广州市', 'area' => '', 'address' => '', 'competent_dept' => '教育部', 'type' => '本科', 'remark' => '', 'created_at' => $now, 'updated_at' => $now],
             ['school_code' => '4144010555', 'name' => '华南理工大学', 'province' => '广东省', 'city' => '广州市', 'area' => '', 'address' => '', 'competent_dept' => '教育部', 'type' => '本科', 'remark' => '', 'created_at' => $now, 'updated_at' => $now],
             ['school_code' => '4144010556', 'name' => '暨南大学', 'province' => '广东省', 'city' => '广州市', 'area' => '', 'address' => '', 'competent_dept' => '中央统战部', 'type' => '本科', 'remark' => '', 'created_at' => $now, 'updated_at' => $now],
@@ -2098,7 +2111,7 @@ class BasicTableSeeder extends Seeder
             ['school_code' => '4144013183', 'name' => '深圳北理莫斯科大学', 'province' => '广东省', 'city' => '深圳市', 'area' => '', 'address' => '', 'competent_dept' => '广东省教育厅', 'type' => '本科', 'remark' => '中外合作办学', 'created_at' => $now, 'updated_at' => $now],
             ['school_code' => '4144013184', 'name' => '深圳清华大学研究院', 'province' => '广东省', 'city' => '深圳市', 'area' => '', 'address' => '', 'competent_dept' => '广东省教育厅', 'type' => '本科', 'remark' => '中外合作办学', 'created_at' => $now, 'updated_at' => $now],
             ['school_code' => '4145010601', 'name' => '广西大学', 'province' => '广西壮族自治区', 'city' => '南宁市', 'area' => '', 'address' => '', 'competent_dept' => '广西壮族自治区', 'type' => '本科', 'remark' => '', 'created_at' => $now, 'updated_at' => $now],
-            ['school_code' => '4145010602', 'name' => '广西科技大学', 'province' => '广西壮族自治区', 'city' => '柳州市', 'area' => '', 'address' => '', 'competent_dept' => '广西壮族自治区', 'type' => '本科', 'remark', 'created_at' => $now, 'updated_at' => $now],
+            ['school_code' => '4145010602', 'name' => '广西科技大学', 'province' => '广西壮族自治区', 'city' => '柳州市', 'area' => '', 'address' => '', 'competent_dept' => '广西壮族自治区', 'type' => '本科', 'remark' => '', 'created_at' => $now, 'updated_at' => $now],
             ['school_code' => '4145010603', 'name' => '桂林电子科技大学', 'province' => '广西壮族自治区', 'city' => '桂林市', 'area' => '', 'address' => '', 'competent_dept' => '广西壮族自治区', 'type' => '本科', 'remark' => '', 'created_at' => $now, 'updated_at' => $now],
             ['school_code' => '4145010604', 'name' => '桂林理工大学', 'province' => '广西壮族自治区', 'city' => '桂林市', 'area' => '', 'address' => '', 'competent_dept' => '广西壮族自治区', 'type' => '本科', 'remark' => '', 'created_at' => $now, 'updated_at' => $now],
             ['school_code' => '4145010605', 'name' => '广西医科大学', 'province' => '广西壮族自治区', 'city' => '南宁市', 'area' => '', 'address' => '', 'competent_dept' => '广西壮族自治区', 'type' => '本科', 'remark' => '', 'created_at' => $now, 'updated_at' => $now],

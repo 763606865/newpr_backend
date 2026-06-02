@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Models\Company;
 use App\Models\Oa\LeaveBalance;
 use App\Models\Oa\LeaveType;
-use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class OaLeaveSeeder extends Seeder
@@ -14,7 +13,7 @@ class OaLeaveSeeder extends Seeder
     {
         /** @var Company $company */
         $company = Company::query()->first();
-        $employee = $company->employees()->first();
+        $employee = $company?->employees()->first();
 
         if (! $company || ! $employee) {
             return;

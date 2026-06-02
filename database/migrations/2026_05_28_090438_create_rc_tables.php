@@ -34,6 +34,43 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id')->comment('关联用户ID')->index();
             $table->string('resume_no', 64)->comment('简历编号');
             $table->string('title')->comment('简历名称');
+
+            // 基础个人信息
+            $table->string('full_name', 50)->index()->comment('姓名');
+            $table->tinyInteger('gender')->default(0)->comment('性别');
+            $table->char('id_card', 18)->nullable()->comment('身份证号');
+            $table->string('nation', 20)->default('汉族')->comment('民族');
+            // 出生信息
+            $table->date('birth_date')->nullable()->comment('完整出生日期（格式：YYYY-MM-DD）');
+            $table->char('birth_month', 7)->nullable()->comment('出生年月（格式：YYYY-MM）');
+            $table->unsignedTinyInteger('age')->nullable()->comment('年龄');
+            // 身份与婚姻信息
+            $table->tinyInteger('marital_status')->default(0)->comment('婚姻状况:0-未知，1-未婚，2-已婚，3-离异，4-丧偶');
+            $table->string('political_status', 20)->default('群众')->comment('政治面貌');
+            $table->string('native_place', 100)->nullable()->comment('籍贯（完整省市区）');
+            $table->tinyInteger('current_identity')->default(0)->comment('当前身份:职场人, 学生，待业，0-其他');
+            // 工作信息
+            $table->date('work_start_date')->nullable()->comment('参加工作日期（用于计算工作年限）');
+            $table->unsignedTinyInteger('work_years')->nullable()->comment('工作年限（年）');
+            $table->string('current_salary', 50)->nullable()->comment('当前/期望薪资');
+            $table->string('salary_remark', 200)->nullable()->comment('薪资备注（如20K·14薪、税前/税后等）');
+            $table->string('recruit_source', 100)->nullable()->comment('招聘信息获取来源');
+            // 筛选冗余字段（用于提升简历列表检索效率）
+            $table->tinyInteger('highest_education_level')->nullable()->comment('最高学历: 1-高中/中专, 2-专科, 3-本科, 4-硕士, 5-博士, 6-其他');
+            $table->tinyInteger('is_fresh_graduate')->default(0)->comment('是否应届生: 1-是, 0-否');
+            $table->decimal('expected_salary_min', 10, 2)->nullable()->comment('期望薪资下限');
+            $table->decimal('expected_salary_max', 10, 2)->nullable()->comment('期望薪资上限');
+            $table->tinyInteger('expected_salary_unit')->default(1)->comment('期望薪资单位: 1-月, 2-日, 3-时');
+            // 地址信息
+            $table->string('household_register', 100)->nullable()->comment('户口所在地（精简版，如省-市）');
+            $table->string('household_register_detail', 200)->nullable()->comment('户口所在地详细地址（省-市-区县）');
+            $table->string('current_residence_city', 100)->nullable()->comment('现居住城市（省-市-区县）');
+            $table->string('current_city_code', 32)->nullable()->comment('现居住城市编码');
+            $table->string('current_residence_detail', 200)->nullable()->comment('现居住地详细地址');
+            $table->string('residence_country', 50)->default('中国')->comment('现居住国家/地区');
+            // 联系方式
+            $table->string('phone', 20)->index()->comment('联系电话');
+            $table->string('email', 100)->index()->comment('电子邮箱');
             $table->tinyInteger('source_type')->default(1)->comment('来源类型: 1-上传, 2-解析, 3-手工创建, 4-导入');
             $table->string('file_url')->nullable()->comment('简历文件地址');
             $table->string('file_name')->nullable()->comment('简历文件名称');
@@ -45,8 +82,15 @@ return new class extends Migration
             $table->json('extra')->nullable()->comment('扩展字段');
             $table->timestamps();
             $table->softDeletes();
+            $table->index('id_card');
             $table->index(['user_id', 'is_primary']);
             $table->index(['user_id', 'status']);
+            $table->index('age');
+            $table->index('work_years');
+            $table->index('highest_education_level');
+            $table->index('is_fresh_graduate');
+            $table->index(['expected_salary_min', 'expected_salary_max']);
+            $table->index('current_city_code');
             $table->unique(['user_id', 'resume_no'], name: 'rc_resumes_user_id_resume_no_unique');
             $table->comment('招聘简历表');
         });

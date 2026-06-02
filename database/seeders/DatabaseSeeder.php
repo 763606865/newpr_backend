@@ -27,5 +27,7 @@ class DatabaseSeeder extends Seeder
         $this->call(DefaultFeaturesAndPlansSeeder::class);
         $this->call(OaLeaveSeeder::class);
         $this->call(BasicTableSeeder::class);
+        $this->call(RcIndustrySeeder::class);
+        $this->call(RcPositionSeeder::class);
     }
 }
