@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\Employee;
 use App\Models\Token;
 use App\Observers\EmployeeObserver;
+use App\Services\MetaService;
 use Filament\Actions\Exports\Models\Export;
 use Filament\Forms\Components\Select;
 use Illuminate\Support\ServiceProvider;
@@ -17,7 +18,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(MetaService::class);
     }
 
     /**

@@ -29,24 +29,12 @@ class ResumeController extends Controller
         /** @var User $user */
         $user = $this->user();
 
-        $pageSize = max(1, min(100, $request->integer('page_size', 15)));
-
-        $resumes = Resume::query()
-            ->where('user_id', $user->id)
-            ->orderByDesc('is_primary')
+        $resumes = $user->resumes()->orderByDesc('is_primary')
             ->orderByDesc('updated_at')
             ->orderByDesc('id')
-            ->paginate($pageSize);
+            ->paginate($this->getPerPage($request));
 
-        return $this->success([
-            'resumes' => RcResumeResource::collection($resumes->items())->resolve($request),
-            'pagination' => [
-                'current_page' => $resumes->currentPage(),
-                'per_page' => $resumes->perPage(),
-                'total' => $resumes->total(),
-                'last_page' => $resumes->lastPage(),
-            ],
-        ]);
+        return $this->success($resumes);
     }
 
     /**
@@ -69,9 +57,7 @@ class ResumeController extends Controller
             return $this->error('简历不存在。', Response::HTTP_NOT_FOUND);
         }
 
-        return $this->success([
-            'resume' => (new RcResumeResource($resume))->resolve($request),
-        ]);
+        return $this->success((new RcResumeResource($resume))->resolve($request));
     }
 
     /**
@@ -90,19 +76,25 @@ class ResumeController extends Controller
 
         $resume = DB::transaction(function () use ($payload, $user): Resume {
             $isPrimary = (int) ($payload['is_primary'] ?? 0) === 1;
+            $sourceType = isset($payload['source_type'])
+                ? RcResumeSourceType::from((int) $payload['source_type'])
+                : RcResumeSourceType::Manual;
+            $status = isset($payload['status'])
+                ? RcResumeStatus::from((int) $payload['status'])
+                : RcResumeStatus::Normal;
             $hasPrimaryResume = Resume::query()
                 ->where('user_id', $user->id)
                 ->where('is_primary', 1)
                 ->exists();
 
-            $resume = Resume::query()->create([
-                ...$payload,
-                'user_id' => $user->id,
-                'resume_no' => $this->generateResumeNo($user->id),
-                'source_type' => (int) ($payload['source_type'] ?? RcResumeSourceType::Manual->value),
-                'status' => (int) ($payload['status'] ?? RcResumeStatus::Normal->value),
-                'is_primary' => ($isPrimary || ! $hasPrimaryResume) ? 1 : 0,
-            ]);
+            $resume = new Resume;
+            $resume->fill($payload);
+            $resume->user_id = $user->id;
+            $resume->resume_no = $this->generateResumeNo($user->id);
+            $resume->source_type = $sourceType;
+            $resume->status = $status;
+            $resume->is_primary = ($isPrimary || ! $hasPrimaryResume) ? 1 : 0;
+            $resume->save();
 
             if ($resume->is_primary === 1) {
                 Resume::query()
@@ -115,9 +107,7 @@ class ResumeController extends Controller
             return $resume;
         });
 
-        return $this->success([
-            'resume' => (new RcResumeResource($resume->fresh()))->resolve($request),
-        ]);
+        return $this->success((new RcResumeResource($resume->fresh()))->resolve($request));
     }
 
     /**
@@ -150,11 +140,11 @@ class ResumeController extends Controller
             }
 
             if (array_key_exists('status', $payload)) {
-                $resume->status = (int) $payload['status'];
+                $resume->status = RcResumeStatus::from((int) $payload['status']);
             }
 
             if (array_key_exists('source_type', $payload)) {
-                $resume->source_type = (int) $payload['source_type'];
+                $resume->source_type = RcResumeSourceType::from((int) $payload['source_type']);
             }
 
             $resume->save();
@@ -168,9 +158,7 @@ class ResumeController extends Controller
             }
         });
 
-        return $this->success([
-            'resume' => (new RcResumeResource($resume->fresh()))->resolve($request),
-        ]);
+        return $this->success((new RcResumeResource($resume->fresh()))->resolve($request));
     }
 
     private function generateResumeNo(int $userId): string

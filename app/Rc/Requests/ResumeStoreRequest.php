@@ -21,12 +21,11 @@ class ResumeStoreRequest extends FormRequest
         return [
             'title' => ['required', 'string', 'max:255'],
             'full_name' => ['required', 'string', 'max:50'],
+            'avatar' => ['nullable', 'string', 'max:255'],
             'gender' => ['nullable', 'integer', 'min:0', 'max:2'],
             'id_card' => ['nullable', 'string', 'size:18'],
             'nation' => ['nullable', 'string', 'max:20'],
             'birth_date' => ['nullable', 'date'],
-            'birth_month' => ['nullable', 'date_format:Y-m'],
-            'age' => ['nullable', 'integer', 'min:0', 'max:120'],
             'marital_status' => ['nullable', 'integer', 'min:0', 'max:4'],
             'political_status' => ['nullable', 'string', 'max:20'],
             'native_place' => ['nullable', 'string', 'max:100'],

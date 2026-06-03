@@ -6,6 +6,7 @@ use App\Models\Area;
 use App\Models\Rc\Industry;
 use App\Models\Rc\Position;
 use App\Models\User;
+use App\Services\MetaService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -17,12 +18,15 @@ class MetaControllerTest extends TestCase
     {
         parent::setUp();
 
+        config(['cache.default' => 'array']);
+        app(MetaService::class)->forgetAll();
+
         if (! defined('LARAVEL_START')) {
             define('LARAVEL_START', microtime(true));
         }
     }
 
-    public function test_index_returns_cities_industries_and_positions(): void
+    public function test_index_returns_areas_industries_and_positions(): void
     {
         $user = User::factory()->create();
         $this->seedMetaData();
@@ -34,26 +38,31 @@ class MetaControllerTest extends TestCase
         $response
             ->assertOk()
             ->assertJsonPath('code', 200)
-            ->assertJsonPath('data.cities.0.name', 'Province A')
-            ->assertJsonPath('data.cities.0.children.0.name', 'City A')
+            ->assertJsonPath('data.areas.0.name', 'Province A')
+            ->assertJsonPath('data.areas.0.children.0.name', 'City A')
             ->assertJsonPath('data.industries.0.name', 'Internet/IT')
             ->assertJsonPath('data.positions.0.name', 'Engineering');
+
+        $this->assertSame([
+            '000001' => 'Province A',
+            '000001001' => 'City A',
+        ], app(MetaService::class)->getAreaNameMap());
     }
 
-    public function test_cities_endpoint_returns_city_tree(): void
+    public function test_areas_endpoint_returns_area_tree(): void
     {
         $user = User::factory()->create();
         $this->seedAreas();
 
         $response = $this
             ->actingAs($user, 'rc')
-            ->getJson('/rc/meta/cities');
+            ->getJson('/rc/meta/areas');
 
         $response
             ->assertOk()
             ->assertJsonPath('code', 200)
-            ->assertJsonPath('data.cities.0.name', 'Province A')
-            ->assertJsonPath('data.cities.0.children.0.name', 'City A');
+            ->assertJsonPath('data.areas.0.name', 'Province A')
+            ->assertJsonPath('data.areas.0.children.0.name', 'City A');
     }
 
     public function test_industries_endpoint_returns_tree(): void

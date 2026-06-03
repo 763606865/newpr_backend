@@ -40,6 +40,7 @@ return new class extends Migration
             $table->tinyInteger('gender')->default(0)->comment('性别');
             $table->char('id_card', 18)->nullable()->comment('身份证号');
             $table->string('nation', 20)->default('汉族')->comment('民族');
+            $table->string('avatar')->nullable()->comment('头像');
             // 出生信息
             $table->date('birth_date')->nullable()->comment('完整出生日期（格式：YYYY-MM-DD）');
             $table->char('birth_month', 7)->nullable()->comment('出生年月（格式：YYYY-MM）');

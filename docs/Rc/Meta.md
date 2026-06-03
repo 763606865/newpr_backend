@@ -11,19 +11,19 @@
 
 ## 公共数据结构
 
-### 城市对象（Area）
+### 地区对象（Area）
 
-城市接口统一使用 `RcAreaResource` 输出，树结构字段如下：
+地区接口统一使用 `RcAreaResource` 输出，树结构字段如下：
 
 | 字段 | 类型 | 说明 |
 |------|------|------|
-| `id` | int | 城市 ID |
+| `id` | int | 地区 ID |
 | `code` | string | 行政区划代码 |
 | `parent_code` | string\|null | 父级行政区划代码 |
-| `name` | string | 城市名称 |
+| `name` | string | 地区名称 |
 | `level` | int | 层级，`1`省、`2`市、`3`区县 |
 | `type` | string\|null | 类型 |
-| `children` | array | 子级城市 |
+| `children` | array | 子级地区 |
 
 ### 常用行业对象（Industry）
 
@@ -59,7 +59,7 @@
 
 - 接口：`GET /rc/meta`
 - 鉴权：Bearer Token（`auth:rc`）
-- 描述：一次性返回简历填写所需的城市、行业、职位元数据
+- 描述：一次性返回简历填写所需的地区、行业、职位元数据
 
 ### 成功响应示例
 
@@ -67,7 +67,7 @@
 {
   "code": 200,
   "data": {
-    "cities": [
+    "areas": [
       {
         "id": 1,
         "code": "000001",
@@ -140,18 +140,18 @@
 
 ### 规则
 
-- `cities`：来自 `areas` 表
+- `areas`：来自 `areas` 表
 - `industries`：来自 `rc_industries` 表
 - `positions`：来自 `rc_positions` 表
 - 所有树结构均通过 `tree()` 生成
 
 ---
 
-## 2) 城市元数据
+## 2) 地区元数据
 
-- 接口：`GET /rc/meta/cities`
+- 接口：`GET /rc/meta/areas`
 - 鉴权：Bearer Token（`auth:rc`）
-- 描述：仅返回城市树，用于简历居住城市、户口所在地等选择
+- 描述：仅返回地区树，用于简历居住城市、户口所在地等选择
 
 ### 成功响应示例
 
@@ -159,7 +159,7 @@
 {
   "code": 200,
   "data": {
-    "cities": [
+    "areas": [
       {
         "id": 1,
         "code": "000001",
@@ -193,7 +193,7 @@
 - 数据来源：`areas`
 - 排序：按 `level asc, code asc`
 - 使用 `RcAreaResource` 序列化
-- 顶层节点为省级数据，子级依次为市、区县
+- 顶层节点为省级数据，子级依次为市、区县（按 `parent_code`/`code` 组树）
 
 ---
 
@@ -301,7 +301,7 @@
 
 - 简历创建页建议优先调用 `GET /rc/meta`
 - 如果页面只需要单一字典，可分别调用：
-  - `GET /rc/meta/cities`
+  - `GET /rc/meta/areas`
   - `GET /rc/meta/industries`
   - `GET /rc/meta/positions`
 - 后续“填写简历”接口也可复用这份元数据结构，避免前端重复实现树转换逻辑

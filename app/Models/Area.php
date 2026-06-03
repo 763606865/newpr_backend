@@ -3,7 +3,9 @@
 namespace App\Models;
 
 use App\Enums\AreaLevel;
+use App\Observers\AreaMetaObserver;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -32,6 +34,7 @@ use Illuminate\Support\Carbon;
     'level',
     'type',
 ])]
+#[ObservedBy(AreaMetaObserver::class)]
 class Area extends Model
 {
     protected function casts(): array

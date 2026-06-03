@@ -25,6 +25,7 @@ class RcResumeResource extends JsonResource
             'resume_no' => $this->resource->resume_no,
             'title' => $this->resource->title,
             'full_name' => $this->resource->full_name,
+            'avatar' => $this->resource->avatar,
             'gender' => $this->resource->gender,
             'id_card' => $this->resource->id_card,
             'nation' => $this->resource->nation,

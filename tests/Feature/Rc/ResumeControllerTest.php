@@ -45,10 +45,10 @@ class ResumeControllerTest extends TestCase
         $response
             ->assertOk()
             ->assertJsonPath('code', 200)
-            ->assertJsonPath('data.pagination.total', 2)
-            ->assertJsonPath('data.resumes.0.id', $primaryResume->id);
+            ->assertJsonPath('data.total', 2)
+            ->assertJsonPath('data.data.0.id', $primaryResume->id);
 
-        $this->assertSame('Second Resume', $response->json('data.resumes.1.title'));
+        $this->assertSame('Second Resume', $response->json('data.data.1.title'));
     }
 
     public function test_show_returns_not_found_when_resume_does_not_belong_to_user(): void
@@ -75,6 +75,7 @@ class ResumeControllerTest extends TestCase
         $payload = [
             'title' => 'New Resume',
             'full_name' => 'Test User',
+            'avatar' => 'uploads/rc/avatar/2026/06/03/example.jpg',
             'phone' => '13800000000',
             'email' => 'resume@example.com',
             'is_primary' => 0,
@@ -87,14 +88,40 @@ class ResumeControllerTest extends TestCase
         $response
             ->assertOk()
             ->assertJsonPath('code', 200)
-            ->assertJsonPath('data.resume.title', 'New Resume')
-            ->assertJsonPath('data.resume.is_primary', 1)
-            ->assertJsonPath('data.resume.source_type', 3);
+            ->assertJsonPath('data.title', 'New Resume')
+            ->assertJsonPath('data.avatar', 'uploads/rc/avatar/2026/06/03/example.jpg')
+            ->assertJsonPath('data.is_primary', 1)
+            ->assertJsonPath('data.source_type', 3);
 
         $this->assertDatabaseHas('rc_resumes', [
             'user_id' => $user->id,
             'title' => 'New Resume',
+            'avatar' => 'uploads/rc/avatar/2026/06/03/example.jpg',
             'is_primary' => 1,
+        ]);
+    }
+
+    public function test_update_can_update_avatar(): void
+    {
+        $user = User::factory()->create();
+        $resume = $this->createResume($user, [
+            'avatar' => 'uploads/rc/avatar/2026/06/03/old.jpg',
+        ]);
+
+        $response = $this
+            ->actingAs($user, 'rc')
+            ->putJson('/rc/resumes/'.$resume->id, [
+                'avatar' => 'uploads/rc/avatar/2026/06/03/new.jpg',
+            ]);
+
+        $response
+            ->assertOk()
+            ->assertJsonPath('code', 200)
+            ->assertJsonPath('data.avatar', 'uploads/rc/avatar/2026/06/03/new.jpg');
+
+        $this->assertDatabaseHas('rc_resumes', [
+            'id' => $resume->id,
+            'avatar' => 'uploads/rc/avatar/2026/06/03/new.jpg',
         ]);
     }
 
@@ -121,9 +148,9 @@ class ResumeControllerTest extends TestCase
         $response
             ->assertOk()
             ->assertJsonPath('code', 200)
-            ->assertJsonPath('data.resume.id', $targetResume->id)
-            ->assertJsonPath('data.resume.title', 'Updated Resume')
-            ->assertJsonPath('data.resume.is_primary', 1);
+            ->assertJsonPath('data.id', $targetResume->id)
+            ->assertJsonPath('data.title', 'Updated Resume')
+            ->assertJsonPath('data.is_primary', 1);
 
         $this->assertDatabaseHas('rc_resumes', [
             'id' => $targetResume->id,

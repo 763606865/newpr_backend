@@ -58,7 +58,6 @@ return new class extends Migration
             $table->json('extra')->nullable()->comment('扩展字段');
             $table->timestamps();
             $table->softDeletes();
-            $table->unique('resume_id');
             $table->comment('简历求职意向表');
         });
 

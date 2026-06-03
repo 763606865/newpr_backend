@@ -21,6 +21,7 @@ class ResumeUpdateRequest extends FormRequest
         return [
             'title' => ['sometimes', 'required', 'string', 'max:255'],
             'full_name' => ['sometimes', 'required', 'string', 'max:50'],
+            'avatar' => ['sometimes', 'nullable', 'string', 'max:255'],
             'gender' => ['sometimes', 'nullable', 'integer', 'min:0', 'max:2'],
             'id_card' => ['sometimes', 'nullable', 'string', 'size:18'],
             'nation' => ['sometimes', 'nullable', 'string', 'max:20'],

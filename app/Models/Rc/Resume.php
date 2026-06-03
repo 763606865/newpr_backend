@@ -2,8 +2,14 @@
 
 namespace App\Models\Rc;
 
+use App\Enums\RcCurrentIdentity;
+use App\Enums\RcEducationLevel;
+use App\Enums\RcMaritalStatus;
 use App\Enums\RcResumeSourceType;
 use App\Enums\RcResumeStatus;
+use App\Enums\RcSalaryUnit;
+use App\Enums\UserGender;
+use App\Models\Cast\AliyunOss;
 use App\Models\Model;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -24,6 +30,7 @@ use Illuminate\Support\Carbon;
  * @property string $title 简历名称
  * @property int $source_type 来源类型
  * @property string|null $full_name 姓名
+ * @property string|null $avatar 头像
  * @property int $gender 性别
  * @property string|null $id_card 身份证号
  * @property string $nation 民族
@@ -68,6 +75,7 @@ use Illuminate\Support\Carbon;
     'resume_no',
     'title',
     'full_name',
+    'avatar',
     'gender',
     'id_card',
     'nation',
@@ -120,17 +128,18 @@ class Resume extends Model
     {
         return [
             'user_id' => 'integer',
-            'gender' => 'integer',
+            'avatar' => AliyunOss::class.':oss,public,3600',
+            'gender' => UserGender::class,
             'age' => 'integer',
-            'marital_status' => 'integer',
-            'current_identity' => 'integer',
+            'marital_status' => RcMaritalStatus::class,
+            'current_identity' => RcCurrentIdentity::class,
             'work_start_date' => 'date',
             'work_years' => 'integer',
-            'highest_education_level' => 'integer',
+            'highest_education_level' => RcEducationLevel::class,
             'is_fresh_graduate' => 'integer',
             'expected_salary_min' => 'decimal:2',
             'expected_salary_max' => 'decimal:2',
-            'expected_salary_unit' => 'integer',
+            'expected_salary_unit' => RcSalaryUnit::class,
             'source_type' => RcResumeSourceType::class,
             'is_primary' => 'integer',
             'status' => RcResumeStatus::class,
@@ -147,6 +156,21 @@ class Resume extends Model
     public function applications(): HasMany
     {
         return $this->hasMany(Application::class, 'resume_id');
+    }
+
+    public function intentions(): HasMany
+    {
+        return $this->hasMany(ResumeIntention::class, 'resume_id');
+    }
+
+    public function works(): HasMany
+    {
+        return $this->hasMany(ResumeWork::class, 'resume_id');
+    }
+
+    public function educations(): HasMany
+    {
+        return $this->hasMany(ResumeEducation::class, 'resume_id');
     }
 
     public function talentPoolMembers(): HasMany

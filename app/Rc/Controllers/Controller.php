@@ -5,6 +5,7 @@ namespace App\Rc\Controllers;
 use App\Exceptions\UnauthenticatedException;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 abstract class Controller
 {
@@ -45,5 +46,10 @@ abstract class Controller
         }
 
         return $user;
+    }
+
+    public function getPerPage(Request $request): int
+    {
+        return max(1, min(100, (int) $request->input('per_page', 15)));
     }
 }

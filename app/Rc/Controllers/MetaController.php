@@ -2,17 +2,14 @@
 
 namespace App\Rc\Controllers;
 
-use App\Models\Area;
-use App\Models\Rc\Industry;
-use App\Models\Rc\Position;
-use App\Resources\Rc\RcAreaResource;
-use App\Resources\Rc\RcIndustryResource;
-use App\Resources\Rc\RcPositionResource;
+use App\Services\MetaService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class MetaController extends Controller
 {
+    public function __construct(private readonly MetaService $metaService) {}
+
     /**
      * 简历填写元数据汇总
      *
@@ -23,23 +20,23 @@ class MetaController extends Controller
     public function index(Request $request): JsonResponse
     {
         return $this->success([
-            'cities' => $this->citiesPayload($request),
-            'industries' => $this->industriesPayload($request),
-            'positions' => $this->positionsPayload($request),
+            'areas' => $this->areasPayload(),
+            'industries' => $this->industriesPayload(),
+            'positions' => $this->positionsPayload(),
         ]);
     }
 
     /**
      * 城市元数据
      *
-     * GET /rc/meta/cities
+     * GET /rc/meta/areas
      *
      * @throws \Exception
      */
-    public function cities(Request $request): JsonResponse
+    public function areas(Request $request): JsonResponse
     {
         return $this->success([
-            'cities' => $this->citiesPayload($request),
+            'areas' => $this->areasPayload(),
         ]);
     }
 
@@ -53,7 +50,7 @@ class MetaController extends Controller
     public function industries(Request $request): JsonResponse
     {
         return $this->success([
-            'industries' => $this->industriesPayload($request),
+            'industries' => $this->industriesPayload(),
         ]);
     }
 
@@ -67,51 +64,31 @@ class MetaController extends Controller
     public function positions(Request $request): JsonResponse
     {
         return $this->success([
-            'positions' => $this->positionsPayload($request),
+            'positions' => $this->positionsPayload(),
         ]);
     }
 
     /**
      * @return array<int, array<string, mixed>>
      */
-    private function citiesPayload(Request $request): array
+    private function areasPayload(): array
     {
-        $areas = Area::query()
-            ->orderBy('level')
-            ->orderBy('code')
-            ->get();
-
-        return tree(
-            RcAreaResource::collection($areas)->resolve($request),
-            'parent_code',
-            'code',
-            '',
-        );
+        return $this->metaService->getAreasTree();
     }
 
     /**
      * @return array<int, array<string, mixed>>
      */
-    private function industriesPayload(Request $request): array
+    private function industriesPayload(): array
     {
-        $industries = Industry::query()
-            ->orderBy('sort')
-            ->orderBy('id')
-            ->get();
-
-        return tree(RcIndustryResource::collection($industries)->resolve($request));
+        return $this->metaService->getIndustriesTree();
     }
 
     /**
      * @return array<int, array<string, mixed>>
      */
-    private function positionsPayload(Request $request): array
+    private function positionsPayload(): array
     {
-        $positions = Position::query()
-            ->orderBy('sort')
-            ->orderBy('id')
-            ->get();
-
-        return tree(RcPositionResource::collection($positions)->resolve($request));
+        return $this->metaService->getPositionsTree();
     }
 }

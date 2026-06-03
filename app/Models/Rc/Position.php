@@ -3,7 +3,9 @@
 namespace App\Models\Rc;
 
 use App\Models\Model;
+use App\Observers\Rc\PositionMetaObserver;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -34,6 +36,7 @@ use Illuminate\Support\Carbon;
     'sort',
     'extra',
 ])]
+#[ObservedBy(PositionMetaObserver::class)]
 class Position extends Model
 {
     use SoftDeletes;
