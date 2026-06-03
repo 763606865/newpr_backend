@@ -93,4 +93,16 @@ class AliyunOss implements CastsAttributes, SerializesCastableAttributes
             return $path;
         }
     }
+
+    /**
+     * 将 OSS 相对路径转为可访问 URL（供 API 展示字段使用）。
+     */
+    public function toDisplayUrl(?string $path): ?string
+    {
+        if (! is_string($path) || $path === '') {
+            return null;
+        }
+
+        return $this->serialize(new class extends Model {}, 'path', ltrim($path, '/'), ['path' => $path]);
+    }
 }

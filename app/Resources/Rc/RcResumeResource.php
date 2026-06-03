@@ -3,11 +3,14 @@
 namespace App\Resources\Rc;
 
 use App\Models\Rc\Resume;
+use App\Resources\Concerns\SerializesOssAttributes;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class RcResumeResource extends JsonResource
 {
+    use SerializesOssAttributes;
+
     /**
      * Transform the resource into an array.
      *
@@ -19,13 +22,16 @@ class RcResumeResource extends JsonResource
             return (array) $this->resource;
         }
 
+        $avatar = $this->ossAttributePair('avatar');
+
         return [
             'id' => $this->resource->id,
             'user_id' => $this->resource->user_id,
             'resume_no' => $this->resource->resume_no,
             'title' => $this->resource->title,
             'full_name' => $this->resource->full_name,
-            'avatar' => $this->resource->avatar,
+            'avatar' => $avatar['path'],
+            'display_avatar' => $avatar['display'],
             'gender' => $this->resource->gender,
             'id_card' => $this->resource->id_card,
             'nation' => $this->resource->nation,

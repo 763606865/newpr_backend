@@ -12,14 +12,18 @@ use App\Enums\UserGender;
 use App\Models\Cast\AliyunOss;
 use App\Models\Model;
 use App\Models\User;
+use App\Services\MetaService;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Concerns\HasEvents;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 
 /**
  * 招聘简历表
@@ -98,7 +102,6 @@ use Illuminate\Support\Carbon;
     'expected_salary_unit',
     'household_register',
     'household_register_detail',
-    'current_residence_city',
     'current_city_code',
     'current_residence_detail',
     'residence_country',
@@ -116,13 +119,105 @@ use Illuminate\Support\Carbon;
 ])]
 class Resume extends Model
 {
-    use SoftDeletes;
+    use HasEvents, SoftDeletes;
 
     protected $attributes = [
-        'source_type' => RcResumeSourceType::Upload,
-        'is_primary' => 0,
+        'source_type' => RcResumeSourceType::Manual,
+        'is_primary' => 1,
         'status' => RcResumeStatus::Normal,
     ];
+
+    protected static function booted(): void
+    {
+        static::creating(function (self $resume): void {
+            if (blank($resume->resume_no)) {
+                $resume->resume_no = static::generateUniqueResumeNo((int) $resume->user_id);
+            }
+        });
+
+        static::saving(function (self $resume): void {
+            $resume->syncDerivedAttributes();
+        });
+    }
+
+    /**
+     * 根据已填写字段补全衍生数据（年龄、出生年月、工作年限等）。
+     */
+    protected function syncDerivedAttributes(): void
+    {
+        $this->syncAgeFromBirthDate();
+        $this->syncBirthMonthFromBirthDate();
+        $this->syncWorkYearsFromWorkStartDate();
+        $this->syncCurrentResidenceCityFromCode();
+    }
+
+    protected function syncCurrentResidenceCityFromCode(): void
+    {
+        if (! $this->isDirty('current_city_code')) {
+            return;
+        }
+
+        if (blank($this->current_city_code)) {
+            $this->current_residence_city = null;
+
+            return;
+        }
+
+        $this->current_residence_city = MetaService::make()->getCityFullName((string) $this->current_city_code);
+    }
+
+    protected function syncAgeFromBirthDate(): void
+    {
+        if (blank($this->birth_date)) {
+            return;
+        }
+
+        if ($this->isDirty('age') && $this->age !== null) {
+            return;
+        }
+
+        if ($this->age !== null && ! $this->isDirty('birth_date')) {
+            return;
+        }
+
+        $this->age = min(max((int) Carbon::parse($this->birth_date)->age, 0), 120);
+    }
+
+    protected function syncBirthMonthFromBirthDate(): void
+    {
+        if (blank($this->birth_date)) {
+            return;
+        }
+
+        if ($this->isDirty('birth_month') && filled($this->birth_month)) {
+            return;
+        }
+
+        if (filled($this->birth_month) && ! $this->isDirty('birth_date')) {
+            return;
+        }
+
+        $this->birth_month = Carbon::parse($this->birth_date)->format('Y-m');
+    }
+
+    protected function syncWorkYearsFromWorkStartDate(): void
+    {
+        if (blank($this->work_start_date)) {
+            return;
+        }
+
+        if ($this->isDirty('work_years') && $this->work_years !== null) {
+            return;
+        }
+
+        if ($this->work_years !== null && ! $this->isDirty('work_start_date')) {
+            return;
+        }
+
+        $years = (int) Carbon::parse($this->work_start_date)->diffInYears(Carbon::now());
+
+        $this->work_years = min(max($years, 0), 80);
+    }
 
     protected function casts(): array
     {
@@ -133,7 +228,6 @@ class Resume extends Model
             'age' => 'integer',
             'marital_status' => RcMaritalStatus::class,
             'current_identity' => RcCurrentIdentity::class,
-            'work_start_date' => 'date',
             'work_years' => 'integer',
             'highest_education_level' => RcEducationLevel::class,
             'is_fresh_graduate' => 'integer',
@@ -146,6 +240,22 @@ class Resume extends Model
             'parsed_data' => 'array',
             'extra' => 'array',
         ];
+    }
+
+    protected function birthDate(): Attribute
+    {
+        return Attribute::make(
+            get: fn (?string $value): ?string => filled($value) ? Carbon::parse($value)->format('Y-m-d') : null,
+            set: fn (mixed $value): ?string => filled($value) ? Carbon::parse($value)->format('Y-m-d') : null,
+        );
+    }
+
+    protected function workStartDate(): Attribute
+    {
+        return Attribute::make(
+            get: fn (?string $value): ?string => filled($value) ? Carbon::parse($value)->format('Y-m-d') : null,
+            set: fn (mixed $value): ?string => filled($value) ? Carbon::parse($value)->format('Y-m-d') : null,
+        );
     }
 
     public function user(): BelongsTo
@@ -213,5 +323,14 @@ class Resume extends Model
     protected function withWorkYearsBetween(Builder $query, int $minYears, int $maxYears): void
     {
         $query->whereBetween($this->getTable().'.work_years', [$minYears, $maxYears]);
+    }
+
+    protected static function generateUniqueResumeNo(int $userId): string
+    {
+        do {
+            $resumeNo = 'RC'.now()->format('YmdHis').strtoupper(Str::random(6));
+        } while (static::query()->where('user_id', $userId)->where('resume_no', $resumeNo)->exists());
+
+        return $resumeNo;
     }
 }

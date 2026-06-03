@@ -17,6 +17,8 @@ class MetaService extends Service
 
     private const AREAS_MAP_CACHE_KEY = 'rc:meta:areas:map';
 
+    private const AREAS_INDEX_CACHE_KEY = 'rc:meta:areas:index';
+
     private const INDUSTRIES_TREE_CACHE_KEY = 'rc:meta:industries:tree';
 
     private const POSITIONS_TREE_CACHE_KEY = 'rc:meta:positions:tree';
@@ -56,6 +58,59 @@ class MetaService extends Service
     }
 
     /**
+     * @return array<string, array{name: string, parent_code: string|null, level: int}>
+     */
+    public function getAreaIndex(): array
+    {
+        return Cache::rememberForever(self::AREAS_INDEX_CACHE_KEY, function (): array {
+            return Area::query()
+                ->orderBy('level')
+                ->orderBy('code')
+                ->get()
+                ->mapWithKeys(fn (Area $area): array => [
+                    $area->code => [
+                        'name' => $area->name,
+                        'parent_code' => $area->parent_code,
+                        'level' => $area->level->value,
+                    ],
+                ])
+                ->all();
+        });
+    }
+
+    /**
+     * 根据市级区划 code 解析完整地名（如：中国江西省南昌市）。
+     */
+    public function getCityFullName(string $cityCode): ?string
+    {
+        $index = $this->getAreaIndex();
+
+        if (! isset($index[$cityCode])) {
+            return null;
+        }
+
+        $names = [];
+        $code = $cityCode;
+
+        while (isset($index[$code]) && $code !== '000000') {
+            $names[] = $index[$code]['name'];
+            $parentCode = $index[$code]['parent_code'];
+
+            if (blank($parentCode) || $parentCode === '000000') {
+                break;
+            }
+
+            $code = $parentCode;
+        }
+
+        if ($names === []) {
+            return null;
+        }
+
+        return '中国'.implode('', array_reverse($names));
+    }
+
+    /**
      * @return array<int, array<string, mixed>>
      */
     public function getIndustriesTree(): array
@@ -89,6 +144,7 @@ class MetaService extends Service
     {
         Cache::forget(self::AREAS_TREE_CACHE_KEY);
         Cache::forget(self::AREAS_MAP_CACHE_KEY);
+        Cache::forget(self::AREAS_INDEX_CACHE_KEY);
     }
 
     public function forgetIndustries(): void

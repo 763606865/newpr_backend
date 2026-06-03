@@ -31,7 +31,7 @@ class ResumeIntentionUpsertRequest extends FormRequest
             'salary_min' => ['sometimes', 'nullable', 'numeric', 'min:0'],
             'salary_max' => ['sometimes', 'nullable', 'numeric', 'min:0'],
             'salary_unit' => ['sometimes', 'nullable', Rule::enum(RcSalaryUnit::class)],
-            'available_date' => ['sometimes', 'nullable', 'date'],
+            'available_date' => ['sometimes', 'nullable', 'date_format:Y-m-d'],
             'extra' => ['sometimes', 'nullable', 'array'],
         ];
     }

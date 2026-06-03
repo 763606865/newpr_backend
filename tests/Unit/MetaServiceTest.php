@@ -21,6 +21,36 @@ class MetaServiceTest extends TestCase
         app(MetaService::class)->forgetAll();
     }
 
+    public function test_it_resolves_city_full_name_from_city_code(): void
+    {
+        Area::query()->delete();
+        Area::query()->insert([
+            [
+                'name' => '江西省',
+                'code' => '360000',
+                'parent_code' => '000000',
+                'level' => 1,
+                'type' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => '南昌市',
+                'code' => '360100',
+                'parent_code' => '360000',
+                'level' => 2,
+                'type' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ]);
+
+        app(MetaService::class)->forgetAreas();
+
+        $this->assertSame('中国江西省南昌市', app(MetaService::class)->getCityFullName('360100'));
+        $this->assertNull(app(MetaService::class)->getCityFullName('999999'));
+    }
+
     public function test_it_builds_cached_areas_tree_and_code_name_map(): void
     {
         Area::query()->create([
