@@ -20,6 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
             Route::prefix('b')->group(base_path('routes/b.php'));
             Route::prefix('cms')->group(base_path('routes/cms.php'));
             Route::prefix('rc')->group(base_path('routes/rc.php'));
+            Route::prefix('sapi')->group(base_path('routes/sapi.php'));
         }
     )
     ->withMiddleware(function (Middleware $middleware): void {

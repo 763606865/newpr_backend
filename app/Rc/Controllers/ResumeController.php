@@ -4,6 +4,7 @@ namespace App\Rc\Controllers;
 
 use App\Models\Rc\Resume;
 use App\Models\User;
+use App\Rc\Requests\ResumeAttachmentStoreRequest;
 use App\Rc\Requests\ResumeStoreRequest;
 use App\Rc\Requests\ResumeUpdateRequest;
 use App\Resources\Rc\RcResumeResource;
@@ -139,5 +140,34 @@ class ResumeController extends Controller
         });
 
         return $this->success((new RcResumeResource($resume->fresh()))->resolve($request));
+    }
+
+    /**
+     * 上传简历附件
+     *
+     * POST /rc/resumes/{id}/attachment
+     *
+     * @throws \Exception
+     */
+    public function uploadAttachment(ResumeAttachmentStoreRequest $request, int $id): JsonResponse
+    {
+        /** @var User $user */
+        $user = $this->user();
+
+        $resume = Resume::query()
+            ->where('user_id', $user->id)
+            ->find($id);
+
+        if (! $resume instanceof Resume) {
+            return $this->error('简历不存在。', Response::HTTP_NOT_FOUND);
+        }
+
+        try {
+            $resume = ResumeService::make()->attachFile($resume, $request->file('file'));
+        } catch (\Throwable $exception) {
+            return $this->error('简历附件上传失败: '.$exception->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return $this->success((new RcResumeResource($resume))->resolve($request));
     }
 }

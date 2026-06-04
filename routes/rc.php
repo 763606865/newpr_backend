@@ -38,6 +38,7 @@ Route::middleware('auth:rc')->group(function (): void {
     Route::get('/resumes/{id}/educations/{educationId}', [ResumeEducationController::class, 'show'])->whereNumber('id')->whereNumber('educationId');
     Route::post('/resumes', [ResumeController::class, 'store']);
     Route::put('/resumes/{id}', [ResumeController::class, 'update'])->whereNumber('id');
+    Route::post('/resumes/{id}/attachment', [ResumeController::class, 'uploadAttachment'])->whereNumber('id');
     Route::post('/resumes/{id}/intentions', [ResumeIntentionController::class, 'store'])->whereNumber('id');
     Route::post('/resumes/{id}/works', [ResumeWorkController::class, 'store'])->whereNumber('id');
     Route::post('/resumes/{id}/educations', [ResumeEducationController::class, 'store'])->whereNumber('id');

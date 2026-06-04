@@ -37,6 +37,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at 更新时间
  * @property Carbon|null $deleted_at 删除时间
  *
+ * @method static Builder createdBetween(?string $from, ?string $to)
  * @method static Builder forCity(?string $cityCode)
  * @method static Builder enabled()
  */
@@ -103,6 +104,18 @@ class Announcement extends Model
             'sort' => 'integer',
             'extra' => 'array',
         ];
+    }
+
+    #[Scope]
+    protected function createdBetween(Builder $query, ?string $from, ?string $to): void
+    {
+        if (filled($from)) {
+            $query->where($this->getTable().'.created_at', '>=', $from);
+        }
+
+        if (filled($to)) {
+            $query->where($this->getTable().'.created_at', '<=', $to);
+        }
     }
 
     #[Scope]

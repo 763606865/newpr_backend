@@ -224,6 +224,7 @@ class Resume extends Model
         return [
             'user_id' => 'integer',
             'avatar' => AliyunOss::class.':oss,public,3600',
+            'file_url' => AliyunOss::class.':oss,public,3600',
             'gender' => UserGender::class,
             'age' => 'integer',
             'marital_status' => RcMaritalStatus::class,

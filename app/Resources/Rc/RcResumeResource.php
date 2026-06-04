@@ -23,6 +23,7 @@ class RcResumeResource extends JsonResource
         }
 
         $avatar = $this->ossAttributePair('avatar');
+        $file = $this->ossAttributePair('file_url');
 
         return [
             'id' => $this->resource->id,
@@ -61,7 +62,8 @@ class RcResumeResource extends JsonResource
             'phone' => $this->resource->phone,
             'email' => $this->resource->email,
             'source_type' => $this->resource->source_type?->value ?? $this->resource->source_type,
-            'file_url' => $this->resource->file_url,
+            'file_url' => $file['path'],
+            'display_file_url' => $file['display'],
             'file_name' => $this->resource->file_name,
             'file_ext' => $this->resource->file_ext,
             'text_content' => $this->resource->text_content,
