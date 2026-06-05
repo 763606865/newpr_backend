@@ -155,7 +155,7 @@ class DefaultFeaturesAndPlansSeeder extends Seeder
 
         // 关联功能点到plan
         $featureIds = Feature::whereIn('feature_code', ['attendance_checkin', 'oa_approval'])->pluck('id');
-        $plan->features()->attach($featureIds);
+        $plan->features()->sync($featureIds);
     }
 
     protected function createBMenuFeatures(Client $client, Plan $plan): void
@@ -263,6 +263,6 @@ class DefaultFeaturesAndPlansSeeder extends Seeder
 
         // 关联功能点到plan
         $featureIds = Feature::whereIn('feature_code', ['attendance_rules', 'attendance_records', 'attendance_leave_types'])->pluck('id');
-        $plan->features()->attach($featureIds);
+        $plan->features()->sync($featureIds);
     }
 }

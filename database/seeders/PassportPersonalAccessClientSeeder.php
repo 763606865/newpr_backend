@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Laravel\Passport\Client;
 
 class PassportPersonalAccessClientSeeder extends Seeder
 {
@@ -38,6 +39,19 @@ class PassportPersonalAccessClientSeeder extends Seeder
             'name' => '牛派B端',
             'secret' => Str::random(40),
             'provider' => 'b_users',
+            'redirect_uris' => '',
+            'grant_types' => json_encode(['personal_access']),
+            'revoked' => false,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        Client::query()->firstOrCreate([
+            'name' => '招聘C端',
+            'provider' => 'rc_users',
+        ], [
+            'id' => Str::uuid(),
+            'secret' => Str::random(40),
             'redirect_uris' => '',
             'grant_types' => json_encode(['personal_access']),
             'revoked' => false,
