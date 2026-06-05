@@ -1,4 +1,18 @@
 <?php return array (
+  'babenkoivan/elastic-client' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Elastic\\Client\\ServiceProvider',
+    ),
+  ),
+  'babenkoivan/elastic-scout-driver' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Elastic\\ScoutDriver\\ServiceProvider',
+    ),
+  ),
   'bezhansalleh/filament-plugin-essentials' => 
   array (
     'providers' => 
@@ -170,6 +184,13 @@
     'providers' => 
     array (
       0 => 'Laravel\\Roster\\RosterServiceProvider',
+    ),
+  ),
+  'laravel/scout' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Laravel\\Scout\\ScoutServiceProvider',
     ),
   ),
   'laravel/sentinel' => 

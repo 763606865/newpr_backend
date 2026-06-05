@@ -143,6 +143,38 @@ class JobControllerTest extends TestCase
         ]);
     }
 
+    public function test_index_filters_jobs_by_keyword(): void
+    {
+        [$user, $company] = $this->createRecruiterContext();
+
+        Job::query()->create(array_merge($this->validJobAttributes(), [
+            'company_id' => $company->id,
+            'code' => 'JOB-KEYWORD-001',
+            'title' => 'Java 后端工程师',
+            'description' => '熟悉分布式系统',
+        ]));
+
+        Job::query()->create(array_merge($this->validJobAttributes(), [
+            'company_id' => $company->id,
+            'code' => 'JOB-KEYWORD-002',
+            'title' => '产品经理',
+            'description' => '负责需求分析',
+            'extra' => [
+                'keywords' => ['产品规划'],
+                'show_headcount' => true,
+            ],
+        ]));
+
+        $response = $this
+            ->actingAs($user, 'rc')
+            ->getJson('/rc/jobs?keyword=Java');
+
+        $response
+            ->assertOk()
+            ->assertJsonPath('data.total', 1)
+            ->assertJsonPath('data.data.0.title', 'Java 后端工程师');
+    }
+
     public function test_index_only_returns_current_company_jobs(): void
     {
         [$user, $company] = $this->createRecruiterContext();

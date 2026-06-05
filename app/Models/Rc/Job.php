@@ -9,12 +9,14 @@ use App\Models\Company;
 use App\Models\Department;
 use App\Models\Model;
 use App\Models\User;
+use App\Support\ScoutQuery;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
+use Laravel\Scout\Searchable;
 
 /**
  * 招聘职位表
@@ -79,7 +81,7 @@ use Illuminate\Support\Carbon;
 ])]
 class Job extends Model
 {
-    use SoftDeletes;
+    use Searchable, SoftDeletes;
 
     protected $attributes = [
         'employment_type' => RcJobEmploymentType::FullTime,
@@ -132,5 +134,84 @@ class Job extends Model
     public function applications(): HasMany
     {
         return $this->hasMany(Application::class, 'job_id');
+    }
+
+    public function searchableAs(): string
+    {
+        return 'rc_jobs';
+    }
+
+    public function shouldBeSearchable(): bool
+    {
+        return ! $this->trashed();
+    }
+
+    public function isPubliclySearchable(): bool
+    {
+        $status = $this->status instanceof RcJobStatus
+            ? $this->status
+            : RcJobStatus::tryFrom((int) $this->status);
+
+        if ($status !== RcJobStatus::Published) {
+            return false;
+        }
+
+        if ($this->expired_at === null) {
+            return true;
+        }
+
+        $expiredAt = ScoutQuery::timestamp($this->expired_at);
+
+        return $expiredAt === null || $expiredAt >= now()->getTimestamp();
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toSearchableArray(): array
+    {
+        $this->loadMissing(['company', 'position']);
+
+        $extra = $this->extra ?? [];
+        $keywords = collect($extra['keywords'] ?? [])
+            ->filter(static fn (mixed $keyword): bool => filled($keyword))
+            ->map(static fn (mixed $keyword): string => trim((string) $keyword))
+            ->values()
+            ->all();
+
+        return [
+            'company_id' => (int) $this->company_id,
+            'company_name' => $this->company?->name,
+            'department_id' => $this->department_id !== null ? (int) $this->department_id : null,
+            'position_code' => $this->position_code,
+            'position_name' => $this->position?->name,
+            'code' => $this->code,
+            'title' => $this->title,
+            'employment_type' => $this->employment_type instanceof RcJobEmploymentType
+                ? $this->employment_type->value
+                : (int) $this->employment_type,
+            'city_code' => $this->city_code,
+            'workplace' => $this->workplace,
+            'salary_min' => $this->salary_min !== null ? (float) $this->salary_min : null,
+            'salary_max' => $this->salary_max !== null ? (float) $this->salary_max : null,
+            'salary_unit' => $this->salary_unit instanceof RcSalaryUnit
+                ? $this->salary_unit->value
+                : (int) $this->salary_unit,
+            'experience_min' => $this->experience_min,
+            'experience_max' => $this->experience_max,
+            'education_level' => $this->education_level,
+            'headcount' => (int) $this->headcount,
+            'description' => $this->description,
+            'requirement' => $this->requirement,
+            'benefit' => $this->benefit,
+            'keywords' => implode(' ', $keywords),
+            'status' => $this->status instanceof RcJobStatus
+                ? $this->status->value
+                : (int) $this->status,
+            'is_public' => $this->isPubliclySearchable() ? 1 : 0,
+            'published_at' => ScoutQuery::timestamp($this->published_at),
+            'expired_at' => ScoutQuery::timestamp($this->expired_at),
+            'updated_at' => ScoutQuery::timestamp($this->getAttributes()['updated_at'] ?? null),
+        ];
     }
 }

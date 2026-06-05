@@ -13,6 +13,7 @@ use App\Models\Cast\AliyunOss;
 use App\Models\Model;
 use App\Models\User;
 use App\Services\MetaService;
+use App\Support\ScoutQuery;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Attributes\Table;
@@ -24,6 +25,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
+use Laravel\Scout\Searchable;
 
 /**
  * 招聘简历表
@@ -119,7 +121,7 @@ use Illuminate\Support\Str;
 ])]
 class Resume extends Model
 {
-    use HasEvents, SoftDeletes;
+    use HasEvents, Searchable, SoftDeletes;
 
     protected $attributes = [
         'source_type' => RcResumeSourceType::Manual,
@@ -333,5 +335,68 @@ class Resume extends Model
         } while (static::query()->where('user_id', $userId)->where('resume_no', $resumeNo)->exists());
 
         return $resumeNo;
+    }
+
+    public function searchableAs(): string
+    {
+        return 'rc_resumes';
+    }
+
+    public function shouldBeSearchable(): bool
+    {
+        if ($this->trashed()) {
+            return false;
+        }
+
+        $status = $this->status instanceof RcResumeStatus
+            ? $this->status
+            : RcResumeStatus::tryFrom((int) $this->status);
+
+        return $status === RcResumeStatus::Normal;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toSearchableArray(): array
+    {
+        $this->loadMissing(['works', 'educations', 'intentions']);
+
+        return [
+            'user_id' => (int) $this->user_id,
+            'resume_no' => $this->resume_no,
+            'title' => $this->title,
+            'full_name' => $this->full_name,
+            'text_content' => $this->text_content,
+            'gender' => $this->gender instanceof UserGender
+                ? $this->gender->value
+                : (int) $this->gender,
+            'age' => $this->age,
+            'work_years' => $this->work_years,
+            'highest_education_level' => $this->highest_education_level instanceof RcEducationLevel
+                ? $this->highest_education_level->value
+                : $this->highest_education_level,
+            'is_fresh_graduate' => (int) $this->is_fresh_graduate,
+            'expected_salary_min' => $this->expected_salary_min !== null ? (float) $this->expected_salary_min : null,
+            'expected_salary_max' => $this->expected_salary_max !== null ? (float) $this->expected_salary_max : null,
+            'current_city_code' => $this->current_city_code,
+            'current_residence_city' => $this->current_residence_city,
+            'status' => $this->status instanceof RcResumeStatus
+                ? $this->status->value
+                : (int) $this->status,
+            'is_primary' => (int) $this->is_primary,
+            'company_names' => $this->works->pluck('company_name')->filter()->implode(' '),
+            'positions' => $this->works->pluck('position')->filter()->implode(' '),
+            'work_descriptions' => $this->works->pluck('description')->filter()->implode(' '),
+            'school_names' => $this->educations->pluck('school_name')->filter()->implode(' '),
+            'majors' => $this->educations->pluck('major')->filter()->implode(' '),
+            'expected_city_codes' => $this->intentions
+                ->pluck('expected_city_code')
+                ->filter()
+                ->unique()
+                ->values()
+                ->all(),
+            'updated_at' => ScoutQuery::timestamp($this->getAttributes()['updated_at'] ?? null),
+        ];
     }
 }

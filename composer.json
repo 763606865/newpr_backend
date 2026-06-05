@@ -8,6 +8,7 @@
     "require": {
         "php": "^8.3",
         "aliyuncs/oss-sdk-php": "^2.7",
+        "babenkoivan/elastic-scout-driver": "^6.0",
         "bezhansalleh/filament-shield": "^4.2",
         "cheesegrits/filament-google-maps": "^5.0",
         "codewithdennis/filament-select-tree": "^4.0",
@@ -15,6 +16,7 @@
         "laravel/framework": "^13.0",
         "laravel/horizon": "^5.47",
         "laravel/passport": "^13.7",
+        "laravel/scout": "^11.2",
         "laravel/tinker": "^3.0",
         "staudenmeir/laravel-adjacency-list": "^1.26"
     },

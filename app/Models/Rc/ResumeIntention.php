@@ -6,6 +6,7 @@ use App\Enums\RcEmploymentType;
 use App\Enums\RcResumeJobStatus;
 use App\Enums\RcSalaryUnit;
 use App\Models\Model;
+use App\Models\Rc\Concerns\SyncsResumeSearchIndex;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -30,7 +31,7 @@ use Illuminate\Support\Carbon;
 ])]
 class ResumeIntention extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, SyncsResumeSearchIndex;
 
     protected $attributes = [
         'job_status' => RcResumeJobStatus::OpenToOpportunity,

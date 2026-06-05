@@ -8,6 +8,7 @@ use App\Models\Company;
 use App\Models\Rc\Job;
 use App\Models\Rc\UserIdentity;
 use App\Models\User;
+use App\Support\ScoutQuery;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
@@ -42,6 +43,10 @@ class RcJobService extends Service
      */
     public function paginateForCompany(Company $company, int $perPage, array $filters = []): LengthAwarePaginator
     {
+        if (filled($filters['keyword'] ?? null)) {
+            return $this->searchForCompany($company, $perPage, $filters);
+        }
+
         $query = Job::query()
             ->where('company_id', $company->id)
             ->with(['position'])
@@ -56,16 +61,30 @@ class RcJobService extends Service
             $query->where('employment_type', (int) $filters['employment_type']);
         }
 
-        if (filled($filters['keyword'] ?? null)) {
-            $keyword = (string) $filters['keyword'];
-            $query->where(function ($subQuery) use ($keyword): void {
-                $subQuery
-                    ->where('title', 'like', '%'.$keyword.'%')
-                    ->orWhere('code', 'like', '%'.$keyword.'%');
-            });
+        return $query->paginate($perPage);
+    }
+
+    /**
+     * @param  array<string, mixed>  $filters
+     * @return LengthAwarePaginator<int, Job>
+     */
+    private function searchForCompany(Company $company, int $perPage, array $filters): LengthAwarePaginator
+    {
+        $builder = Job::search(ScoutQuery::escape((string) $filters['keyword']))
+            ->where('company_id', $company->id);
+
+        if (filled($filters['status'] ?? null)) {
+            $builder->where('status', (int) $filters['status']);
         }
 
-        return $query->paginate($perPage);
+        if (filled($filters['employment_type'] ?? null)) {
+            $builder->where('employment_type', (int) $filters['employment_type']);
+        }
+
+        return $builder
+            ->orderBy('updated_at', 'desc')
+            ->query(fn ($query) => $query->with(['position']))
+            ->paginate($perPage);
     }
 
     public function create(User $user, Company $company, array $payload): Job

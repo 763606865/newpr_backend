@@ -15,11 +15,11 @@ enum RcJobEmploymentType: int implements HasLabel
     public function getLabel(): ?string
     {
         return match ($this) {
-            self::FullTime => '全职',
-            self::PartTime => '兼职',
-            self::Internship => '实习',
-            self::Campus => '校招',
-            self::Outsource => '外包',
+            self::FullTime => '社招全职',
+            self::PartTime => '兼职招聘',
+            self::Internship => '实习生招聘',
+            self::Campus => '应届校园招聘',
+            self::Outsource => '派遣外包',
         };
     }
 }

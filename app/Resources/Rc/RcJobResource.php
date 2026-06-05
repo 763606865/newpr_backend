@@ -57,6 +57,13 @@ class RcJobResource extends JsonResource
             'updated_at' => $this->resource->updated_at,
         ];
 
+        if ($this->resource->relationLoaded('company') && $this->resource->company) {
+            $data['company'] = [
+                'id' => $this->resource->company->id,
+                'name' => $this->resource->company->name,
+            ];
+        }
+
         if ($this->resource->relationLoaded('position') && $this->resource->position) {
             $data['position'] = (new RcPositionResource($this->resource->position))->resolve($request);
         }

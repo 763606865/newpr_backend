@@ -2,7 +2,6 @@
 
 namespace App\Rc\Requests\Concerns;
 
-use App\Enums\AreaLevel;
 use App\Enums\RcEducationLevel;
 use App\Enums\RcJobEmploymentType;
 use App\Enums\RcJobStatus;
@@ -41,7 +40,7 @@ trait JobRequestRules
                 'nullable',
                 'string',
                 'max:32',
-                Rule::exists('areas', 'code')->where('level', AreaLevel::City->value),
+                Rule::exists('areas', 'code'),
             ],
             'workplace' => ['nullable', 'string', 'max:255'],
             'headcount' => ['nullable', 'integer', 'min:1', 'max:9999'],
