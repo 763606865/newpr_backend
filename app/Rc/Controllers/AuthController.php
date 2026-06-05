@@ -9,14 +9,15 @@ use App\Models\User;
 use App\Rc\Requests\EmailLoginRequest;
 use App\Rc\Requests\ForgotPasswordRequest;
 use App\Rc\Requests\PhoneLoginRequest;
+use App\Rc\Requests\RefreshTokenRequest;
 use App\Rc\Requests\SendVerificationCodeRequest;
+use App\Services\RcIdentityOrganizationService;
 use App\Services\UserService;
 use App\Services\VerificationCodeService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rule;
 use Laravel\Passport\PersonalAccessTokenFactory;
 use Laravel\Passport\PersonalAccessTokenResult;
 
@@ -115,6 +116,25 @@ class AuthController extends Controller
     }
 
     /**
+     * 当前身份下已绑定的全部机构
+     *
+     * GET /rc/auth/organizations
+     */
+    public function organizations(Request $request): JsonResponse
+    {
+        /** @var User $user */
+        $user = $request->user();
+        $service = RcIdentityOrganizationService::make();
+        $currentIdentity = $service->resolveCurrentIdentity($user);
+
+        if (! $currentIdentity instanceof UserIdentity) {
+            return $this->error('请先切换身份。', Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        return $this->success($service->listForIdentity($user, $currentIdentity));
+    }
+
+    /**
      * 退出登录
      *
      * POST /rc/auth/logout
@@ -161,28 +181,33 @@ class AuthController extends Controller
      *
      * @throws \Exception
      */
-    public function refreshToken(Request $request): JsonResponse
+    public function refreshToken(RefreshTokenRequest $request): JsonResponse
     {
         /** @var User $user */
         $user = $request->user();
+        $validated = $request->validated();
 
-        $validated = validator($request->all(), [
-            'identity_type' => ['required', Rule::enum(RcIdentityType::class)],
-        ])->validate();
+        if (array_key_exists('identity_id', $validated)) {
+            /** @var UserIdentity $identity */
+            $identity = $user->identities()->findOrFail((int) $validated['identity_id']);
 
-        $identityType = RcIdentityType::from((int) $validated['identity_type']);
+            if ($identity->status !== RcIdentityStatus::Enabled) {
+                return $this->error('该身份已停用。', Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+        } else {
+            $identityType = RcIdentityType::from((int) $validated['identity_type']);
+            $isFirstIdentity = ! $user->identities()->exists();
 
-        $isFirstIdentity = ! $user->identities()->exists();
-
-        /** @var UserIdentity $identity */
-        $identity = $user->identities()->firstOrCreate(
-            ['identity_type' => $identityType->value],
-            [
-                'identity_name' => $identityType->getLabel() ?? '身份',
-                'is_default' => $isFirstIdentity ? 1 : 0,
-                'status' => RcIdentityStatus::Enabled->value,
-            ],
-        );
+            /** @var UserIdentity $identity */
+            $identity = $user->identities()->firstOrCreate(
+                ['identity_type' => $identityType->value],
+                [
+                    'identity_name' => $identityType->getLabel() ?? '身份',
+                    'is_default' => $isFirstIdentity ? 1 : 0,
+                    'status' => RcIdentityStatus::Enabled->value,
+                ],
+            );
+        }
 
         $tokenResult = $this->createRcToken($user);
 
@@ -192,18 +217,7 @@ class AuthController extends Controller
             $token->save();
         }
 
-        if ($identity->is_default !== 1) {
-            $user->identities()
-                ->whereKey($identity->id)
-                ->update(['is_default' => 1]);
-
-            $user->identities()
-                ->whereKeyNot($identity->id)
-                ->where('is_default', 1)
-                ->update(['is_default' => 0]);
-
-            $identity->forceFill(['is_default' => 1]);
-        }
+        $this->setDefaultIdentity($user, $identity);
 
         $user->token()?->revoke();
 
@@ -212,6 +226,24 @@ class AuthController extends Controller
             'access_token' => $tokenResult->accessToken,
             'user' => $this->userPayload($user, $identity),
         ]);
+    }
+
+    private function setDefaultIdentity(User $user, UserIdentity $identity): void
+    {
+        if ($identity->is_default === 1) {
+            return;
+        }
+
+        $user->identities()
+            ->whereKey($identity->id)
+            ->update(['is_default' => 1]);
+
+        $user->identities()
+            ->whereKeyNot($identity->id)
+            ->where('is_default', 1)
+            ->update(['is_default' => 0]);
+
+        $identity->forceFill(['is_default' => 1]);
     }
 
     private function respondWithToken(Request $request, User $user): JsonResponse
@@ -224,6 +256,7 @@ class AuthController extends Controller
         $tokenResult = $this->createRcToken($user);
 
         $userIdentity = $user->defaultIdentity()->first();
+        $userIdentity->load('organization');
 
         if ($userIdentity) {
             if ($token = $tokenResult->getToken()) {
@@ -267,19 +300,20 @@ class AuthController extends Controller
     private function userPayload(User $user, ?UserIdentity $userIdentity): array
     {
         $identities = $user->identities()
+            ->with('organization')
             ->withBasicInfoFlags()
             ->orderByDesc('is_default')
             ->orderBy('id')
             ->get()
             ->each(static function (UserIdentity $identity): void {
-                $identity->append('has_basic_info');
+                $identity->append(['has_basic_info']);
             });
 
         $currentIdentity = null;
 
         if ($userIdentity instanceof UserIdentity) {
             $currentIdentity = $identities->firstWhere('id', $userIdentity->id)
-                ?? $userIdentity->append('has_basic_info');
+                ?? $userIdentity->append(['has_basic_info'])->makeVisible(['organization']);
         }
 
         return [

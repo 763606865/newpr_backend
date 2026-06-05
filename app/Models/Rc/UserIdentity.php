@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
@@ -21,7 +22,8 @@ use Illuminate\Support\Carbon;
  *
  * @property int $id 主键ID
  * @property int $user_id 本地用户ID
- * @property int|null $company_id 企业ID
+ * @property string|null $organization_type 所属机构类型（多态）
+ * @property int|null $organization_id 所属机构ID（多态）
  * @property int $identity_type 身份类型
  * @property string $identity_name 身份名称
  * @property string|null $organization_name 所属机构名称
@@ -33,12 +35,14 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at 更新时间
  * @property Carbon|null $deleted_at 删除时间
  * @property-read User $user 所属用户
+ * @property-read \Illuminate\Database\Eloquent\Model|null $organization 所属机构（多态）
  * @property-read bool $has_basic_info 是否包含基础信息
  */
 #[Table('rc_user_identities')]
 #[Fillable([
     'user_id',
-    'company_id',
+    'organization_type',
+    'organization_id',
     'identity_type',
     'identity_name',
     'organization_name',
@@ -60,7 +64,7 @@ class UserIdentity extends Model
     {
         return [
             'user_id' => 'integer',
-            'company_id' => 'integer',
+            'organization_id' => 'integer',
             'identity_type' => RcIdentityType::class,
             'is_default' => 'integer',
             'status' => RcIdentityStatus::class,
@@ -71,6 +75,11 @@ class UserIdentity extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function organization(): MorphTo
+    {
+        return $this->morphTo();
     }
 
     #[Scope]
@@ -98,9 +107,9 @@ class UserIdentity extends Model
 
                 return match ($identityType) {
                     RcIdentityType::JobSeeker => $this->resolveJobSeekerHasBasicInfo($attributes),
-                    RcIdentityType::Recruiter => ! empty($this->company_id),
-                    RcIdentityType::CampusManager => $this->resolveCampusManagerHasBasicInfo($attributes),
-                    RcIdentityType::GovernmentManager => $this->resolveGovernmentManagerHasBasicInfo($attributes),
+                    RcIdentityType::Recruiter,
+                    RcIdentityType::CampusManager,
+                    RcIdentityType::GovernmentManager => filled($this->organization_id),
                     RcIdentityType::Headhunter => true,
                 };
             },
@@ -123,35 +132,5 @@ class UserIdentity extends Model
         return Resume::query()
             ->where('user_id', $this->user_id)
             ->exists();
-    }
-
-    /**
-     * @param  array<string, mixed>  $attributes
-     */
-    private function resolveCampusManagerHasBasicInfo(array $attributes): bool
-    {
-        if (Arr::exists($attributes, 'campus_has_school')) {
-            return (bool) $attributes['campus_has_school'];
-        }
-
-        $extra = is_array($this->extra) ? $this->extra : [];
-
-        return filled(Arr::get($extra, 'school_id')) || filled(Arr::get($extra, 'school_code'));
-    }
-
-    /**
-     * @param  array<string, mixed>  $attributes
-     */
-    private function resolveGovernmentManagerHasBasicInfo(array $attributes): bool
-    {
-        if (Arr::exists($attributes, 'government_has_area')) {
-            return (bool) $attributes['government_has_area'];
-        }
-
-        $extra = is_array($this->extra) ? $this->extra : [];
-
-        return filled(Arr::get($extra, 'province_code'))
-            || filled(Arr::get($extra, 'city_code'))
-            || filled(Arr::get($extra, 'district_code'));
     }
 }

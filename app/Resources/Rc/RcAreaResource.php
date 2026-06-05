@@ -9,8 +9,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
 class RcAreaResource extends JsonResource
 {
     /**
-     * Transform the resource into an array.
-     *
      * @return array<string, mixed>
      */
     public function toArray(Request $request): array
@@ -21,11 +19,13 @@ class RcAreaResource extends JsonResource
 
         return [
             'id' => $this->resource->id,
+            'name' => $this->resource->name,
             'code' => $this->resource->code,
             'parent_code' => $this->resource->parent_code,
-            'name' => $this->resource->name,
-            'level' => $this->resource->level?->value ?? $this->resource->level,
+            'level' => $this->resource->level?->value,
             'type' => $this->resource->type,
+            'created_at' => $this->resource->created_at,
+            'updated_at' => $this->resource->updated_at,
         ];
     }
 }

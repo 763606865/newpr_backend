@@ -17,7 +17,8 @@ class UserIdentityForm
             ->components([
                 TextInput::make('id')->label('ID')->disabled()->dehydrated(false),
                 TextInput::make('user_id')->label('用户ID')->disabled()->dehydrated(false),
-                TextInput::make('company_id')->label('企业ID')->disabled()->dehydrated(false),
+                TextInput::make('organization_type')->label('机构类型')->disabled()->dehydrated(false),
+                TextInput::make('organization_id')->label('机构ID')->disabled()->dehydrated(false),
                 Select::make('identity_type')
                     ->label('身份类型')
                     ->options(RcIdentityType::class)

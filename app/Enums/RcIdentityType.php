@@ -22,4 +22,17 @@ enum RcIdentityType: int implements HasLabel
             self::Headhunter => '猎头',
         };
     }
+
+    /**
+     * 该身份类型绑定的机构多态类型（无机构绑定的身份返回 null）。
+     */
+    public function organizationMorphType(): ?string
+    {
+        return match ($this) {
+            self::Recruiter => 'company',
+            self::CampusManager => 'school',
+            self::GovernmentManager => 'area',
+            default => null,
+        };
+    }
 }

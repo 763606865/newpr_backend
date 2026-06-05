@@ -2,11 +2,15 @@
 
 namespace Tests\Feature\Rc;
 
+use App\Enums\CompanyStatus;
 use App\Enums\RcIdentityStatus;
 use App\Enums\RcIdentityType;
+use App\Models\Company;
+use App\Models\Rc\UserIdentity;
 use App\Models\Token;
 use App\Models\User;
 use App\Rc\Controllers\AuthController;
+use App\Rc\Requests\RefreshTokenRequest;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -93,10 +97,9 @@ class AuthRefreshTokenTest extends TestCase
         $userMock = Mockery::mock($user)->makePartial();
         $userMock->shouldReceive('token')->once()->andReturn($oldToken);
 
-        $request = Request::create('/rc/auth/refresh-token', 'POST', [
+        $request = $this->makeRefreshTokenRequest([
             'identity_type' => RcIdentityType::Headhunter->value,
-        ]);
-        $request->setUserResolver(static fn () => $userMock);
+        ], $userMock);
 
         $controller = new AuthController;
         $response = $controller->refreshToken($request);
@@ -147,15 +150,11 @@ class AuthRefreshTokenTest extends TestCase
         $factoryMock->shouldReceive('make')->never();
         $this->app->instance(PersonalAccessTokenFactory::class, $factoryMock);
 
-        $request = Request::create('/rc/auth/refresh-token', 'POST', [
-            'identity_type' => 999,
-        ]);
-        $request->setUserResolver(static fn () => $userMock);
-
         $this->expectException(ValidationException::class);
 
-        $controller = new AuthController;
-        $controller->refreshToken($request);
+        $this->makeRefreshTokenRequest([
+            'identity_type' => 999,
+        ], $userMock);
     }
 
     public function test_refreshed_rc_token_can_access_rc_guarded_route(): void
@@ -194,5 +193,143 @@ class AuthRefreshTokenTest extends TestCase
 
         $meResponse->assertOk();
         $this->assertSame($user->id, $meResponse->json('data.user.id'));
+    }
+
+    public function test_refresh_token_switches_identity_by_id(): void
+    {
+        app(ClientRepository::class)->createPersonalAccessGrantClient('RC Test', 'rc_users');
+
+        $user = User::factory()->create();
+        $companyA = Company::query()->create([
+            'name' => '甲公司',
+            'credit_code' => '91360100MA0000000A',
+            'status' => CompanyStatus::Enabled,
+        ]);
+        $companyB = Company::query()->create([
+            'name' => '乙公司',
+            'credit_code' => '91360100MA0000000B',
+            'status' => CompanyStatus::Enabled,
+        ]);
+
+        $identityA = UserIdentity::query()->create([
+            'user_id' => $user->id,
+            'organization_type' => 'company',
+            'organization_id' => $companyA->id,
+            'organization_name' => $companyA->name,
+            'identity_type' => RcIdentityType::Recruiter,
+            'identity_name' => '招聘方',
+            'is_default' => 1,
+            'status' => RcIdentityStatus::Enabled,
+        ]);
+
+        $identityB = UserIdentity::query()->create([
+            'user_id' => $user->id,
+            'organization_type' => 'company',
+            'organization_id' => $companyB->id,
+            'organization_name' => $companyB->name,
+            'identity_type' => RcIdentityType::Recruiter,
+            'identity_name' => '招聘方',
+            'is_default' => 0,
+            'status' => RcIdentityStatus::Enabled,
+        ]);
+
+        $bootstrapToken = app(PersonalAccessTokenFactory::class)->make(
+            $user->getAuthIdentifier(),
+            'rc-bootstrap',
+            [],
+            'rc_users',
+        )->accessToken;
+
+        $response = $this
+            ->withHeaders([
+                'Authorization' => 'Bearer '.$bootstrapToken,
+            ])
+            ->postJson('/rc/auth/refresh-token', [
+                'identity_id' => $identityB->id,
+            ]);
+
+        $response
+            ->assertOk()
+            ->assertJsonPath('data.user.current_identity.id', $identityB->id)
+            ->assertJsonPath('data.user.current_identity.organization_id', $companyB->id);
+
+        $this->assertDatabaseHas('rc_user_identities', [
+            'id' => $identityB->id,
+            'is_default' => 1,
+        ]);
+        $this->assertDatabaseHas('rc_user_identities', [
+            'id' => $identityA->id,
+            'is_default' => 0,
+        ]);
+    }
+
+    public function test_refresh_token_rejects_disabled_identity_by_id(): void
+    {
+        app(ClientRepository::class)->createPersonalAccessGrantClient('RC Test', 'rc_users');
+
+        $user = User::factory()->create();
+        $identity = UserIdentity::query()->create([
+            'user_id' => $user->id,
+            'identity_type' => RcIdentityType::Recruiter,
+            'identity_name' => '招聘方',
+            'is_default' => 1,
+            'status' => RcIdentityStatus::Disabled,
+        ]);
+
+        $bootstrapToken = app(PersonalAccessTokenFactory::class)->make(
+            $user->getAuthIdentifier(),
+            'rc',
+            [],
+            'rc_users',
+        )->accessToken;
+
+        $this
+            ->withHeaders([
+                'Authorization' => 'Bearer '.$bootstrapToken,
+            ])
+            ->postJson('/rc/auth/refresh-token', [
+                'identity_id' => $identity->id,
+            ])
+            ->assertOk()
+            ->assertJsonPath('code', 422)
+            ->assertJsonPath('message', '该身份已停用。');
+    }
+
+    public function test_refresh_token_requires_identity_id_or_identity_type(): void
+    {
+        app(ClientRepository::class)->createPersonalAccessGrantClient('RC Test', 'rc_users');
+
+        $user = User::factory()->create();
+        $bootstrapToken = app(PersonalAccessTokenFactory::class)->make(
+            $user->getAuthIdentifier(),
+            'rc',
+            [],
+            'rc_users',
+        )->accessToken;
+
+        $this
+            ->withHeaders([
+                'Authorization' => 'Bearer '.$bootstrapToken,
+            ])
+            ->postJson('/rc/auth/refresh-token', [])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors(['identity_id', 'identity_type']);
+    }
+
+    /**
+     * @param  array<string, mixed>  $payload
+     */
+    private function makeRefreshTokenRequest(array $payload, User $user): RefreshTokenRequest
+    {
+        $base = Request::create('/rc/auth/refresh-token', 'POST', $payload);
+        $base->setUserResolver(static fn () => $user);
+
+        $request = RefreshTokenRequest::createFrom($base);
+        $request->setContainer($this->app);
+        $request->setRedirector($this->app->make('redirect'));
+        $request->setUserResolver(static fn () => $user);
+        $request->validateResolved();
+
+        return $request;
     }
 }

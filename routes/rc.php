@@ -1,6 +1,7 @@
 <?php
 
 use App\Rc\Controllers\AuthController;
+use App\Rc\Controllers\CompanyController;
 use App\Rc\Controllers\HomeController;
 use App\Rc\Controllers\MetaController;
 use App\Rc\Controllers\ResumeController;
@@ -19,15 +20,21 @@ Route::post('/auth/email-login', [AuthController::class, 'emailLogin']);
 Route::post('/auth/forgot-password', [AuthController::class, 'forgotPassword']);
 
 Route::middleware('auth:rc')->group(function (): void {
+    // 认证相关
     Route::post('/auth/refresh-token', [AuthController::class, 'refreshToken']);
     Route::post('/auth/logout', [AuthController::class, 'logout']);
     Route::get('/auth/me', [AuthController::class, 'me']);
+    Route::get('/auth/organizations', [AuthController::class, 'organizations']);
+    // ==============================================================================
 
+    // 元数据
     Route::get('/meta', [MetaController::class, 'index']);
     Route::get('/meta/areas', [MetaController::class, 'areas']);
     Route::get('/meta/industries', [MetaController::class, 'industries']);
     Route::get('/meta/positions', [MetaController::class, 'positions']);
+    // ==============================================================================
 
+    // 求职者-简历
     Route::get('/resumes', [ResumeController::class, 'index']);
     Route::get('/resumes/{id}', [ResumeController::class, 'show'])->whereNumber('id');
     Route::get('/resumes/{id}/intentions', [ResumeIntentionController::class, 'index'])->whereNumber('id');
@@ -48,7 +55,16 @@ Route::middleware('auth:rc')->group(function (): void {
     Route::delete('/resumes/{id}/intentions/{intentionId}', [ResumeIntentionController::class, 'destroy'])->whereNumber('id')->whereNumber('intentionId');
     Route::delete('/resumes/{id}/works/{workId}', [ResumeWorkController::class, 'destroy'])->whereNumber('id')->whereNumber('workId');
     Route::delete('/resumes/{id}/educations/{educationId}', [ResumeEducationController::class, 'destroy'])->whereNumber('id')->whereNumber('educationId');
+    // ==============================================================================
 
+    // 招聘方-企业
+    Route::get('/companies/lookup', [CompanyController::class, 'lookup']);
+    Route::post('/companies/bind', [CompanyController::class, 'bind']);
+    Route::post('/companies', [CompanyController::class, 'store']);
+    // ==============================================================================
+
+    // 工具功能
     Route::post('/upload', [UploadController::class, 'upload']);
     Route::delete('/files', [UploadController::class, 'destroy']);
+    // ==============================================================================
 });

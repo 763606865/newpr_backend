@@ -16,16 +16,18 @@ use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Collection;
 
 /**
  * @method static Builder enabled()
  * @method static Builder disabled()
  */
 #[Table('companies')]
-#[Fillable(['name', 'credit_code', 'legal_person', 'contact_phone', 'address', 'status'])]
+#[Fillable(['parent_id', 'depth', 'name', 'credit_code', 'legal_person', 'contact_phone', 'address', 'status'])]
 #[ObservedBy(CompanyObserver::class)]
 class Company extends Model
 {
@@ -36,8 +38,69 @@ class Company extends Model
     ];
 
     protected $casts = [
+        'parent_id' => 'integer',
+        'depth' => 'integer',
         'status' => CompanyStatus::class,
     ];
+
+    /**
+     * 上级企业（集团总部）
+     */
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(self::class, 'parent_id');
+    }
+
+    /**
+     * 下级企业（子公司）
+     */
+    public function children(): HasMany
+    {
+        return $this->hasMany(self::class, 'parent_id');
+    }
+
+    /**
+     * 当前企业及所有下级子公司 ID（含自身）。
+     *
+     * @return Collection<int, int>
+     */
+    public function descendantAndSelfIds(): Collection
+    {
+        $ids = collect([$this->id]);
+        $frontier = collect([$this->id]);
+
+        while ($frontier->isNotEmpty()) {
+            $children = self::query()
+                ->whereIn('parent_id', $frontier->all())
+                ->pluck('id');
+
+            $newIds = $children->diff($ids);
+            if ($newIds->isEmpty()) {
+                break;
+            }
+
+            $ids = $ids->merge($newIds);
+            $frontier = $newIds;
+        }
+
+        return $ids->values();
+    }
+
+    /**
+     * 企业证件
+     */
+    public function licenses(): HasMany
+    {
+        return $this->hasMany(CompanyLicense::class, 'company_id');
+    }
+
+    /**
+     * 企业联系人/股东
+     */
+    public function contacts(): HasMany
+    {
+        return $this->hasMany(CompanyContact::class, 'company_id');
+    }
 
     /**
      * 部门
@@ -142,8 +205,6 @@ class Company extends Model
 
     /**
      * 员工
-     *
-     * @return HasMany
      */
     public function employees(): HasMany
     {

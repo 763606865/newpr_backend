@@ -21,7 +21,8 @@ class UserIdentitiesTable
             ->columns([
                 TextColumn::make('id')->label('ID')->sortable(),
                 TextColumn::make('user_id')->label('用户ID')->sortable(),
-                TextColumn::make('company_id')->label('企业ID')->placeholder('-')->sortable(),
+                TextColumn::make('organization_type')->label('机构类型')->placeholder('-'),
+                TextColumn::make('organization_id')->label('机构ID')->placeholder('-')->sortable(),
                 TextColumn::make('identity_type')
                     ->label('身份类型')
                     ->badge()

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('rc_user_identities', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id')->comment('关联用户ID')->index();
-            $table->unsignedBigInteger('company_id')->nullable()->comment('所属企业ID')->index();
+            $table->nullableMorphs('organization', 'rc_user_identities_organization_index');
             $table->tinyInteger('identity_type')->comment('身份类型: 1-求职者, 2-招聘方, 3-校招负责人, 4-政府机构负责人, 5-猎头')->index();
             $table->string('identity_name', 50)->comment('身份名称');
             $table->string('organization_name')->nullable()->comment('所属机构名称');
@@ -25,7 +25,7 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
             $table->index(['user_id', 'identity_type']);
-            $table->index(['company_id', 'identity_type']);
+            $table->index(['organization_type', 'organization_id', 'identity_type'], 'rc_user_identities_org_identity_index');
             $table->comment('招聘用户身份表');
         });
 

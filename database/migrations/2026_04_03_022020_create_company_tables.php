@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('companies', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('parent_id')->nullable()->comment('上级企业ID（集团总部/独立企业为 null，子公司指向集团）')->index();
+            $table->unsignedTinyInteger('depth')->default(1)->comment('集团层级深度（1=集团根或独立企业）');
             $table->string('name')->comment('企业名称');
             $table->string('credit_code')->nullable()->comment('统一社会信用代码');
             $table->string('legal_person')->nullable()->comment('法人姓名');
@@ -22,6 +24,7 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
             $table->unique(['credit_code']);
+            $table->index(['parent_id', 'status']);
             $table->comment('企业主体表');
         });
         Schema::create('departments', function (Blueprint $table) {
