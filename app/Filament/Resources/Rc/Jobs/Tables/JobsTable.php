@@ -21,6 +21,8 @@ class JobsTable
                 TextColumn::make('id')->label('ID'),
                 TextColumn::make('company.name')->label('企业')->placeholder('-')->searchable(),
                 TextColumn::make('code')->label('职位编码')->searchable(),
+                TextColumn::make('position_code')->label('岗位编码')->placeholder('-')->searchable(),
+                TextColumn::make('position.name')->label('常用职位')->placeholder('-'),
                 TextColumn::make('title')->label('职位名称')->searchable(),
                 TextColumn::make('city_code')->label('城市编码')->placeholder('-'),
                 TextColumn::make('workplace')->label('工作地点')->placeholder('-'),

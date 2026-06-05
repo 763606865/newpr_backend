@@ -100,6 +100,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('company_id')->comment('企业ID')->index();
             $table->unsignedBigInteger('department_id')->nullable()->comment('部门ID')->index();
+            $table->string('position_code')->nullable()->comment('岗位编码')->index();
             $table->unsignedBigInteger('creator_user_id')->nullable()->comment('创建人用户ID')->index();
             $table->string('code', 64)->comment('职位编码');
             $table->string('title')->comment('职位名称');

@@ -3,6 +3,7 @@
 use App\Rc\Controllers\AuthController;
 use App\Rc\Controllers\CompanyController;
 use App\Rc\Controllers\HomeController;
+use App\Rc\Controllers\JobController;
 use App\Rc\Controllers\MetaController;
 use App\Rc\Controllers\ResumeController;
 use App\Rc\Controllers\ResumeEducationController;
@@ -61,6 +62,17 @@ Route::middleware('auth:rc')->group(function (): void {
     Route::get('/companies/lookup', [CompanyController::class, 'lookup']);
     Route::post('/companies/bind', [CompanyController::class, 'bind']);
     Route::post('/companies', [CompanyController::class, 'store']);
+    // ==============================================================================
+
+    // 招聘方-职位
+    Route::get('/jobs', [JobController::class, 'index']);
+    Route::post('/jobs', [JobController::class, 'store']);
+    Route::get('/jobs/{id}', [JobController::class, 'show'])->whereNumber('id');
+    Route::put('/jobs/{id}', [JobController::class, 'update'])->whereNumber('id');
+    Route::delete('/jobs/{id}', [JobController::class, 'destroy'])->whereNumber('id');
+    Route::post('/jobs/{id}/publish', [JobController::class, 'publish'])->whereNumber('id');
+    Route::post('/jobs/{id}/pause', [JobController::class, 'pause'])->whereNumber('id');
+    Route::post('/jobs/{id}/close', [JobController::class, 'close'])->whereNumber('id');
     // ==============================================================================
 
     // 工具功能

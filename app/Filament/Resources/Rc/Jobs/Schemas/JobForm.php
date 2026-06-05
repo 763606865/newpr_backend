@@ -23,6 +23,7 @@ class JobForm
                 TextInput::make('department_id')->label('部门ID')->disabled()->dehydrated(false),
                 TextInput::make('creator_user_id')->label('创建人ID')->disabled()->dehydrated(false),
                 TextInput::make('code')->label('职位编码')->disabled()->dehydrated(false),
+                TextInput::make('position_code')->label('岗位编码')->maxLength(255),
                 TextInput::make('title')->label('职位名称')->disabled()->dehydrated(false),
                 TextInput::make('city_code')->label('城市编码')->maxLength(32),
                 TextInput::make('workplace')->label('工作地点'),

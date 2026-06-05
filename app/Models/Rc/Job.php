@@ -22,6 +22,7 @@ use Illuminate\Support\Carbon;
  * @property int $id 主键ID
  * @property int $company_id 企业ID
  * @property int|null $department_id 部门ID
+ * @property string|null $position_code 岗位编码（关联 rc_positions.code）
  * @property int|null $creator_user_id 创建人用户ID
  * @property string $code 职位编码
  * @property string $title 职位名称
@@ -47,12 +48,14 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $deleted_at 删除时间
  * @property-read Company $company 所属企业
  * @property-read Department|null $department 所属部门
+ * @property-read Position|null $position 常用职位（字典）
  * @property-read User|null $creator 创建人
  */
 #[Table('rc_jobs')]
 #[Fillable([
     'company_id',
     'department_id',
+    'position_code',
     'creator_user_id',
     'code',
     'title',
@@ -114,6 +117,11 @@ class Job extends Model
     public function department(): BelongsTo
     {
         return $this->belongsTo(Department::class, 'department_id');
+    }
+
+    public function position(): BelongsTo
+    {
+        return $this->belongsTo(Position::class, 'position_code', 'code');
     }
 
     public function creator(): BelongsTo
