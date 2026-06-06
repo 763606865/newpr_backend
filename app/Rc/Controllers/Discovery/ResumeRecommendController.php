@@ -2,13 +2,13 @@
 
 namespace App\Rc\Controllers\Discovery;
 
-use App\Discovery\Recommendation\RcResumeRecommendationService;
 use App\Discovery\Recommendation\ResumeRecommendationContext;
 use App\Models\Company;
 use App\Models\Rc\Resume;
 use App\Rc\Controllers\Controller;
-use App\Resources\Rc\RcResumeResource;
+use App\Resources\Rc\RcResumePreviewResource;
 use App\Services\RcJobService;
+use App\Services\RcResumeRecommendationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -41,7 +41,7 @@ class ResumeRecommendController extends Controller
 
         $paginator = $result['paginator'];
         $paginator->getCollection()->transform(
-            static fn (Resume $resume): array => (new RcResumeResource($resume))->resolve($request),
+            static fn (Resume $resume): array => (new RcResumePreviewResource($resume))->resolve($request),
         );
 
         $payload = $paginator->toArray();

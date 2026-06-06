@@ -256,7 +256,7 @@ class AuthController extends Controller
         $tokenResult = $this->createRcToken($user);
 
         $userIdentity = $user->defaultIdentity()->first();
-        $userIdentity->load('organization');
+        $userIdentity?->load('organization');
 
         if ($userIdentity) {
             if ($token = $tokenResult->getToken()) {

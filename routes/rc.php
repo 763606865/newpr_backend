@@ -1,9 +1,12 @@
 <?php
 
+use App\Rc\Controllers\ApplicationController;
 use App\Rc\Controllers\AuthController;
 use App\Rc\Controllers\CompanyController;
+use App\Rc\Controllers\Discovery\JobDetailController;
 use App\Rc\Controllers\Discovery\JobRecommendController;
 use App\Rc\Controllers\Discovery\JobSearchController;
+use App\Rc\Controllers\Discovery\ResumeDetailController;
 use App\Rc\Controllers\Discovery\ResumeRecommendController;
 use App\Rc\Controllers\Discovery\ResumeSearchController;
 use App\Rc\Controllers\HomeController;
@@ -24,8 +27,9 @@ Route::post('/auth/phone-login', [AuthController::class, 'phoneLogin']);
 Route::post('/auth/email-login', [AuthController::class, 'emailLogin']);
 Route::post('/auth/forgot-password', [AuthController::class, 'forgotPassword']);
 
-// Discovery - 职位推荐（可选登录）
+// Discovery - 职位推荐 / 详情（可选登录）
 Route::get('/talent/jobs/recommend', [JobRecommendController::class, 'index']);
+Route::get('/talent/jobs/{id}', [JobDetailController::class, 'show'])->whereNumber('id');
 
 Route::middleware('auth:rc')->group(function (): void {
     // 认证相关
@@ -69,6 +73,13 @@ Route::middleware('auth:rc')->group(function (): void {
     Route::get('/talent/jobs', [JobSearchController::class, 'index']);
     // ==============================================================================
 
+    // 投递（求职者 / 招聘方）
+    Route::get('/applications', [ApplicationController::class, 'index']);
+    Route::post('/applications', [ApplicationController::class, 'store']);
+    Route::get('/applications/{id}', [ApplicationController::class, 'show'])->whereNumber('id');
+    Route::post('/applications/{id}/withdraw', [ApplicationController::class, 'withdraw'])->whereNumber('id');
+    // ==============================================================================
+
     // 招聘方-企业
     Route::get('/companies/lookup', [CompanyController::class, 'lookup']);
     Route::post('/companies/bind', [CompanyController::class, 'bind']);
@@ -86,8 +97,9 @@ Route::middleware('auth:rc')->group(function (): void {
     Route::post('/jobs/{id}/close', [JobController::class, 'close'])->whereNumber('id');
     // ==============================================================================
 
-    // Discovery - 简历推荐 / 搜索
+    // Discovery - 简历推荐 / 详情 / 搜索
     Route::get('/talent/resumes/recommend', [ResumeRecommendController::class, 'index']);
+    Route::get('/talent/resumes/{id}', [ResumeDetailController::class, 'show'])->whereNumber('id');
     Route::get('/talent/resumes', [ResumeSearchController::class, 'index']);
     // ==============================================================================
 

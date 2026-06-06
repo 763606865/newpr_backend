@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Discovery\Recommendation;
+namespace App\Services;
 
+use App\Discovery\Recommendation\JobRecommendationContext;
+use App\Discovery\Recommendation\JobRecommendationCriteria;
+use App\Discovery\Recommendation\JobRecommendationCriteriaResolver;
 use App\Models\Rc\Job;
-use App\Services\RcJobSearchService;
-use App\Services\Service;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class RcJobRecommendationService extends Service

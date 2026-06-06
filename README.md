@@ -10,6 +10,7 @@
 - Redis >= 8.6
 - Laravel >= 13.3
 - Supervisor >= 4.2
+- ElasticSearch >= 9.0
 
 ## 快速初始化
 ### 1) 安装后端依赖
@@ -96,7 +97,17 @@ crontab -e
 * * * * * cd /Users/zn/workspace/code/newpr_backend && php artisan schedule:run >> /dev/null 2>&1
 ```
 
-### 从京东导入areas数据
+### ElasticSearch 数据初始化索引
 ```bash
-php artisan pca:refreshData -d jd
+# 1. 创建索引
+php artisan scout:index "App\Models\Rc\Resume"
+php artisan scout:index "App\Models\Rc\Job"
+
+# 2. 全量导入数据
+php artisan scout:import "App\Models\Rc\Resume"
+php artisan scout:import "App\Models\Rc\Job"
+
+# 3. 更新索引
+php artisan scout:flush "App\Models\Rc\Resume"
+php artisan scout:flush "App\Models\Rc\Job"
 ```

@@ -5,7 +5,7 @@ namespace App\Rc\Controllers\Discovery;
 use App\Models\Company;
 use App\Models\Rc\Resume;
 use App\Rc\Controllers\Controller;
-use App\Resources\Rc\RcResumeResource;
+use App\Resources\Rc\RcResumePreviewResource;
 use App\Services\RcJobService;
 use App\Services\RcResumeSearchService;
 use Illuminate\Http\JsonResponse;
@@ -40,7 +40,7 @@ class ResumeSearchController extends Controller
         );
 
         $paginator->getCollection()->transform(
-            static fn (Resume $resume): array => (new RcResumeResource($resume))->resolve($request),
+            static fn (Resume $resume): array => (new RcResumePreviewResource($resume))->resolve($request),
         );
 
         return $this->success($paginator);

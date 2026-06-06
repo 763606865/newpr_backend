@@ -3,11 +3,11 @@
 namespace App\Rc\Controllers\Discovery;
 
 use App\Discovery\Recommendation\JobRecommendationContext;
-use App\Discovery\Recommendation\RcJobRecommendationService;
 use App\Models\Rc\Job;
 use App\Models\User;
 use App\Rc\Controllers\Controller;
 use App\Resources\Rc\RcJobResource;
+use App\Services\RcJobRecommendationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 

@@ -2,7 +2,6 @@
 
 namespace App\Rc\Requests\Concerns;
 
-use App\Enums\AreaLevel;
 use Illuminate\Validation\Rule;
 
 trait ValidatesCityAreaCodes
@@ -29,7 +28,7 @@ trait ValidatesCityAreaCodes
             'nullable',
             'string',
             'max:'.$maxLength,
-            Rule::exists('areas', 'code')->where('level', AreaLevel::City->value),
+            Rule::exists('areas', 'code'),
         ]));
 
         return $rules;

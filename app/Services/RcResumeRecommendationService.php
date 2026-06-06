@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Discovery\Recommendation;
+namespace App\Services;
 
+use App\Discovery\Recommendation\ResumeRecommendationContext;
+use App\Discovery\Recommendation\ResumeRecommendationCriteria;
+use App\Discovery\Recommendation\ResumeRecommendationCriteriaResolver;
 use App\Models\Rc\Resume;
-use App\Services\RcResumeSearchService;
-use App\Services\Service;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class RcResumeRecommendationService extends Service
