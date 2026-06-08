@@ -17,7 +17,7 @@ jobs:
         username: ${{ secrets.ALIYUN_USER }}
         key: ${{ secrets.ALIYUN_SSH_KEY }}
         # 超时时间（防止小服务器卡顿）
-        timeout: 360
+        timeout: 120
         script: |
           set -euo pipefail
           # ==============================================
