@@ -1,0 +1,63 @@
+name: Auto-DevOps-Aliyun
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  laravel-tests:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
+      with:
+        php-version: '8.5'
+    - uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.ALIYUN_HOST }}
+        username: ${{ secrets.ALIYUN_USER }}
+        key: ${{ secrets.ALIYUN_SSH_KEY }}
+        # 超时时间（防止小服务器卡顿）
+        timeout: 120
+        script: |
+          # ==============================================
+          # 【你只需要修改这一行：你的项目实际目录】
+          PROJECT_DIR="/var/www/newpr_backend"
+          # ==============================================
+
+          # 进入项目目录
+          cd $PROJECT_DIR
+
+          # 拉取最新代码（保留本地修改，不会覆盖你的 .env 等配置）
+          git pull origin main --rebase
+
+          # ==================== PHP 项目必备命令 ====================
+          # 如果是 Laravel / ThinkPHP 等框架，取消下面对应命令的注释即可
+
+          # 1. 安装依赖（Composer）
+          composer install --no-dev --optimize-autoloader
+
+          # 2. Laravel 专用：缓存配置、路由（上线必须执行）
+          php artisan optimize:clear
+          php artisan optimize
+
+          # 3. 数据库迁移（安全模式，上线慎用，取消注释前请确认）
+          php artisan migrate --force
+
+          # 4. 给目录权限（PHP 必须）
+          chmod -R 755 .
+          chown -R www-data:www-data .
+
+          # 5. 重启 PHP-FPM（低配服务器也毫无压力）
+          systemctl restart php-fpm
+
+          # 6. 重启 supervisor
+          supervisorctl reread
+          supervisorctl update
+          supervisorctl restart all
+
+          # 部署完成
+          echo "✅ 部署成功！阿里云ECS项目已更新上线"
