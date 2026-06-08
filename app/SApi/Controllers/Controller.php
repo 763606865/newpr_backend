@@ -4,6 +4,7 @@ namespace App\SApi\Controllers;
 
 use App\Exceptions\SApiUnauthorizedException;
 use App\Models\SApi\Client;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -52,5 +53,37 @@ abstract class Controller
     protected function getPerPage(Request $request, int $default = 15, int $max = 100): int
     {
         return max(1, min($max, (int) $request->input('per_page', $default)));
+    }
+
+    /**
+     * @param  array<string, mixed>  $validated
+     */
+    protected function applyCreatedBetween(Builder $query, array $validated, ?string $table = null): void
+    {
+        $table ??= $query->getModel()->getTable();
+
+        if (filled($validated['created_from'] ?? null)) {
+            $query->where($table.'.created_at', '>=', $validated['created_from']);
+        }
+
+        if (filled($validated['created_to'] ?? null)) {
+            $query->where($table.'.created_at', '<=', $validated['created_to']);
+        }
+    }
+
+    /**
+     * @param  array<string, mixed>  $validated
+     */
+    protected function applyUpdatedBetween(Builder $query, array $validated, ?string $table = null): void
+    {
+        $table ??= $query->getModel()->getTable();
+
+        if (filled($validated['updated_from'] ?? null)) {
+            $query->where($table.'.updated_at', '>=', $validated['updated_from']);
+        }
+
+        if (filled($validated['updated_to'] ?? null)) {
+            $query->where($table.'.updated_at', '<=', $validated['updated_to']);
+        }
     }
 }
