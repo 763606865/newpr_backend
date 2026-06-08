@@ -50,7 +50,10 @@ class ListCompanies extends ListRecords
             ])
             ->requiresConfirmation()
             ->action(function (array $data): void {
-                BatchRebindCompanyPlansJob::dispatch((int) $data['plan_id']);
+                BatchRebindCompanyPlansJob::dispatch(
+                    (int) $data['plan_id'],
+                    auth('admin')->id(),
+                );
 
                 Notification::make()
                     ->title('批量重绑任务已提交')

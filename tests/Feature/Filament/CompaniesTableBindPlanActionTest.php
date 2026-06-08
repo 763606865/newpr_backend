@@ -43,10 +43,11 @@ class CompaniesTableBindPlanActionTest extends TestCase
 
         $recordActions = $component->instance()->getTable()->getRecordActions();
 
-        $this->assertCount(3, $recordActions);
+        $this->assertCount(4, $recordActions);
         $this->assertSame('bindPlan', $recordActions[1]->getName());
-        $this->assertInstanceOf(ActionGroup::class, $recordActions[2]);
-        $this->assertSame('更多', $recordActions[2]->getLabel());
+        $this->assertSame('operationLogs', $recordActions[2]->getName());
+        $this->assertInstanceOf(ActionGroup::class, $recordActions[3]);
+        $this->assertSame('更多', $recordActions[3]->getLabel());
     }
 
     public function test_bind_plan_action_creates_company_plan(): void

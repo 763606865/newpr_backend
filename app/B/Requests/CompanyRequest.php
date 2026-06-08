@@ -28,7 +28,7 @@ class CompanyRequest extends FormRequest
 
         return [
             'name' => ['required', 'string', 'max:255'],
-            'credit_code' => ['required', 'string', 'max:255', Rule::unique($companyTable, 'credit_code')->whereNull('deleted_at')->ignore($this->route('id'))],
+            'credit_code' => ['required', 'string', 'max:255', Rule::unique($companyTable, 'credit_code')->whereNull('deleted_at')->ignore($this->route('company') ?? $this->route('id'))],
             'legal_person' => ['required', 'string', 'max:255'],
             'contact_phone' => ['required', 'string', 'max:255'],
             'address' => ['nullable', 'string'],

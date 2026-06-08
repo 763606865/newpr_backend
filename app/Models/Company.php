@@ -57,7 +57,9 @@ class Company extends Model
      */
     public function operationLogs(): HasMany
     {
-        return $this->hasMany(CompanyOperationLog::class, 'company_id');
+        return $this->hasMany(CompanyOperationLog::class, 'company_id')
+            ->with('operator')
+            ->latest('created_at');
     }
 
     /**

@@ -107,6 +107,63 @@ class CompanyOperationLogServiceTest extends TestCase
         $this->assertTrue($log->operator->is($bUser));
     }
 
+    public function test_paginate_for_company_returns_twenty_logs_per_page(): void
+    {
+        $company = $this->createCompany();
+        $service = CompanyOperationLogService::make();
+
+        for ($index = 1; $index <= 25; $index++) {
+            $service->record(
+                company: $company,
+                action: CompanyOperationAction::Updated,
+                summary: '日志-'.$index,
+            );
+        }
+
+        $firstPage = $service->paginateForCompany($company, page: 1);
+        $secondPage = $service->paginateForCompany($company, page: 2);
+
+        $this->assertSame(25, $firstPage->total());
+        $this->assertCount(20, $firstPage->items());
+        $this->assertCount(5, $secondPage->items());
+        $this->assertSame(2, $firstPage->lastPage());
+    }
+
+    public function test_query_for_company_filters_by_action_operator_and_date(): void
+    {
+        $company = $this->createCompany();
+        $admin = AdminUser::query()->create([
+            'name' => '运营管理员',
+            'email' => 'ops-filter@example.com',
+            'password' => bcrypt('password'),
+        ]);
+        $service = CompanyOperationLogService::make();
+
+        $service->record(
+            company: $company,
+            action: CompanyOperationAction::Created,
+            operator: $admin,
+        );
+        $service->record(
+            company: $company,
+            action: CompanyOperationAction::PlanRefreshed,
+        );
+
+        $adminLogs = $service->queryForCompany($company, [
+            'operator' => 'admin_user:'.$admin->id,
+        ])->get();
+
+        $this->assertCount(1, $adminLogs);
+        $this->assertSame(CompanyOperationAction::Created, $adminLogs->first()->action);
+
+        $systemLogs = $service->queryForCompany($company, [
+            'operator' => 'system',
+        ])->get();
+
+        $this->assertCount(1, $systemLogs);
+        $this->assertSame(CompanyOperationAction::PlanRefreshed, $systemLogs->first()->action);
+    }
+
     private function createCompany(): Company
     {
         return Company::query()->create([

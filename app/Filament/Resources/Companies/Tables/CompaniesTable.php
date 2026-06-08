@@ -6,8 +6,10 @@ use App\Enums\CompanyPlanStatus;
 use App\Enums\CompanyStatus;
 use App\Enums\SystemPlanStatus;
 use App\Filament\Resources\Companies\CompanyResource;
+use App\Filament\Resources\Companies\Schemas\CompanyOperationLogsSchema;
 use App\Models\Biz\Plan;
 use App\Models\Company;
+use App\Services\CompanyOperationLogService;
 use App\Services\SysPlanService;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
@@ -84,10 +86,12 @@ class CompaniesTable
             ->recordActions([
                 static::actionAudit(),
                 static::actionBindPlan(),
+                static::actionOperationLogs(),
                 ActionGroup::make([
                     static::actionRefreshPlan(),
                     EditAction::make(),
-                    DeleteAction::make(),
+                    DeleteAction::make()
+                        ->after(fn (Company $record) => CompanyOperationLogService::make()->recordDeleted($record)),
                 ])->label('更多'),
             ])
             ->toolbarActions([
@@ -106,6 +110,21 @@ class CompaniesTable
         }
 
         return CompanyStatus::tryFrom((int) $state);
+    }
+
+    private static function actionOperationLogs(): Action
+    {
+        return Action::make('operationLogs')
+            ->label('日志')
+            ->icon('heroicon-o-clipboard-document-list')
+            ->color('gray')
+            ->authorize(fn (Company $record): bool => CompanyResource::canView($record))
+            ->modalHeading(fn (Company $record): string => sprintf('操作日志 - %s', $record->name))
+            ->modalDescription('查看该企业的运营操作记录。')
+            ->modalSubmitAction(false)
+            ->modalCancelActionLabel('关闭')
+            ->modalWidth('5xl')
+            ->schema(CompanyOperationLogsSchema::components());
     }
 
     private static function actionAudit(): Action
@@ -136,7 +155,15 @@ class CompaniesTable
                     ->color('success')
                     ->authorize(fn (Company $record): bool => CompanyResource::canEdit($record))
                     ->action(function (Company $record): void {
-                        $record->update(['status' => CompanyStatus::Enabled]);
+                        $beforeStatus = self::resolveCompanyStatus($record->status) ?? CompanyStatus::Auditing;
+                        $adminId = auth('admin')->id();
+
+                        $record->update([
+                            'status' => CompanyStatus::Enabled,
+                            'auditor_id' => $adminId,
+                        ]);
+
+                        CompanyOperationLogService::make()->recordAuditApproved($record->fresh(), $beforeStatus);
                     })
                     ->successNotificationTitle('已通过该企业入驻申请')
                     ->cancelParentActions(),
@@ -145,7 +172,15 @@ class CompaniesTable
                     ->color('danger')
                     ->authorize(fn (Company $record): bool => CompanyResource::canEdit($record))
                     ->action(function (Company $record): void {
-                        $record->update(['status' => CompanyStatus::Disabled]);
+                        $beforeStatus = self::resolveCompanyStatus($record->status) ?? CompanyStatus::Auditing;
+                        $adminId = auth('admin')->id();
+
+                        $record->update([
+                            'status' => CompanyStatus::Disabled,
+                            'auditor_id' => $adminId,
+                        ]);
+
+                        CompanyOperationLogService::make()->recordAuditRejected($record->fresh(), $beforeStatus);
                     })
                     ->successNotificationTitle('已拒绝该企业入驻申请')
                     ->cancelParentActions(),
@@ -196,6 +231,8 @@ class CompaniesTable
             ])
             ->action(function (Company $record, array $data): void {
                 $plan = Plan::query()->findOrFail((int) $data['plan_id']);
+                $logService = CompanyOperationLogService::make();
+                $beforePlan = $logService->snapshotCurrentPlan($record);
 
                 $ship = [];
 
@@ -208,6 +245,12 @@ class CompaniesTable
                 }
 
                 SysPlanService::make()->resolve($record, $plan, $ship);
+
+                $afterPlan = $logService->snapshotCurrentPlan($record->fresh());
+
+                if (is_array($afterPlan)) {
+                    $logService->recordPlanBound($record->fresh(), $beforePlan, $afterPlan, $ship);
+                }
             })
             ->successNotificationTitle('套餐绑定成功');
     }
@@ -231,10 +274,17 @@ class CompaniesTable
             ))
             ->modalSubmitActionLabel('确认刷新')
             ->action(function (Company $record): void {
-                SysPlanService::make()->refreshCurrentPlan(
-                    $record,
-                    '刷新套餐：'.now()->toDateTimeString(),
-                );
+                $logService = CompanyOperationLogService::make();
+                $beforePlan = $logService->snapshotCurrentPlan($record);
+                $remark = '刷新套餐：'.now()->toDateTimeString();
+
+                SysPlanService::make()->refreshCurrentPlan($record, $remark);
+
+                $afterPlan = $logService->snapshotCurrentPlan($record->fresh());
+
+                if (is_array($afterPlan)) {
+                    $logService->recordPlanRefreshed($record->fresh(), $beforePlan, $afterPlan, $remark);
+                }
             })
             ->successNotificationTitle('套餐已刷新');
     }

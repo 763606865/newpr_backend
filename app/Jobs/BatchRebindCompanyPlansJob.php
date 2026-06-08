@@ -2,8 +2,10 @@
 
 namespace App\Jobs;
 
+use App\Models\AdminUser;
 use App\Models\Biz\Plan;
 use App\Models\Company;
+use App\Services\CompanyOperationLogService;
 use App\Services\SysPlanService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -24,15 +26,23 @@ class BatchRebindCompanyPlansJob implements ShouldQueue
 
     public int $timeout = 600;
 
-    public function __construct(public readonly int $planId) {}
+    public function __construct(
+        public readonly int $planId,
+        public readonly ?int $operatorId = null,
+    ) {}
 
-    public function handle(SysPlanService $sysPlanService): void
-    {
+    public function handle(
+        SysPlanService $sysPlanService,
+        CompanyOperationLogService $logService,
+    ): void {
         $plan = Plan::query()->findOrFail($this->planId);
         $companyIds = $sysPlanService->companyIdsWithCurrentPlan($this->planId);
         $remark = '批量重绑：'.now()->toDateTimeString();
         $successCount = 0;
         $failedCount = 0;
+        $operator = $this->operatorId
+            ? AdminUser::query()->find($this->operatorId)
+            : null;
 
         foreach ($companyIds as $companyId) {
             $company = Company::query()->find($companyId);
@@ -44,7 +54,20 @@ class BatchRebindCompanyPlansJob implements ShouldQueue
             }
 
             try {
+                $beforePlan = $logService->snapshotCurrentPlan($company);
                 $sysPlanService->refreshCurrentPlan($company, $remark);
+                $afterPlan = $logService->snapshotCurrentPlan($company->fresh());
+
+                if (is_array($afterPlan)) {
+                    $logService->recordPlanBatchRebound(
+                        $company->fresh(),
+                        $beforePlan,
+                        $afterPlan,
+                        $this->planId,
+                        $operator,
+                    );
+                }
+
                 $successCount++;
             } catch (Throwable $exception) {
                 $failedCount++;

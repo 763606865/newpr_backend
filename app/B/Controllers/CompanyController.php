@@ -5,6 +5,7 @@ namespace App\B\Controllers;
 use App\B\Requests\CompanyRequest;
 use App\Models\Company;
 use App\Services\BUserService;
+use App\Services\CompanyOperationLogService;
 use App\Services\CompanyService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -37,6 +38,11 @@ class CompanyController extends Controller
         $validated = $request->validated();
         $user = $this->user();
         $company = CompanyService::make()->create($validated);
+
+        if ($company->wasRecentlyCreated) {
+            CompanyOperationLogService::make()->recordCreatedFromRequest($company, $request);
+        }
+
         BUserService::make()->attachCompany($user, $company);
 
         return $this->success($company);
@@ -80,8 +86,11 @@ class CompanyController extends Controller
     {
         /** @var Company $company */
         $company = Company::findOrFail($id);
+        $logService = CompanyOperationLogService::make();
+        $before = $logService->snapshotCompanyAttributes($company);
         $validated = $request->validated();
         $company->fill($validated)->save();
+        $logService->recordCompanyAttributesChanged($company, $before, $request);
 
         return $this->success();
     }

@@ -40,8 +40,6 @@ class DepartmentsTable
                         return str_repeat('|- ', $level).$state;
                     }),
                 SelectColumn::make('type')->options(DepartmentType::class)->label('类型')->disabled(),
-                TextColumn::make('created_at')->label('创建时间')->dateTime('Y-m-d H:i:s')->toggleable(),
-                TextColumn::make('updated_at')->label('更新时间')->dateTime('Y-m-d H:i:s')->toggleable(),
             ])
             ->filters([
                 TrashedFilter::make(),
