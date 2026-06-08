@@ -54,16 +54,16 @@ jobs:
           chown -R www-data:www-data storage bootstrap/cache
           chmod -R ug+rwx storage bootstrap/cache
 
-          # 7. 优雅重启队列
+          # 7. 优雅重启队列（Supervisor 会自动拉起，见 .supervisor/newpr-backend-horizon.conf）
           php artisan horizon:terminate || true
 
           # 8. 重启 PHP-FPM
           sudo systemctl restart php8.5-fpm
 
-          # 9. 重启 Horizon
+          # 9. 确保 Horizon 进程运行（程序名 = newpr-backend-horizon，不是 horizon）
           sudo supervisorctl reread
-          sudo supervisorctl update
-          sudo supervisorctl restart horizon:*
+          sudo supervisorctl update || true
+          sudo supervisorctl restart newpr-backend-horizon:* || sudo supervisorctl start newpr-backend-horizon:* || true
 
           # 部署完成
           echo "✅ 部署成功！阿里云ECS项目已更新上线"
