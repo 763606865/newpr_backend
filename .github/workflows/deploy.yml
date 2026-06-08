@@ -11,10 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
-      with:
-        php-version: '8.5'
-    - uses: appleboy/ssh-action@master
+    - uses: appleboy/ssh-action@v1.2.0
       with:
         host: ${{ secrets.ALIYUN_HOST }}
         username: ${{ secrets.ALIYUN_USER }}
@@ -40,31 +37,33 @@ jobs:
           # 1. 安装依赖（Composer）
           composer install --no-dev --optimize-autoloader --no-interaction
 
-          # 2. Laravel 专用：缓存配置、路由（上线必须执行）
+          # 2. 前端构建（Filament 需要 Vite 产物）
+          pnpm install && pnpm build
+
+          # 3. 静态资源链接（已存在则跳过）
+          php artisan storage:link || true
+
+          # 4. Laravel 专用：缓存配置、路由（上线必须执行）
           php artisan optimize:clear
           php artisan optimize
 
-          # 3. 数据库迁移（安全模式，上线慎用，取消注释前请确认）
+          # 5. 数据库迁移
           php artisan migrate --force
 
-          # 4. 给目录权限（PHP 必须）
-          chmod -R 755 .
+          # 6. 目录权限
           chown -R www-data:www-data storage bootstrap/cache
           chmod -R ug+rwx storage bootstrap/cache
 
-          # 5. 重启 PHP-FPM（低配服务器也毫无压力）
-          systemctl restart php8.5-fpm
+          # 7. 优雅重启队列
+          php artisan horizon:terminate || true
 
-          # 6. 重启 supervisor
-          supervisorctl reread
-          supervisorctl update
-          supervisorctl restart horizon:*
+          # 8. 重启 PHP-FPM
+          sudo systemctl restart php8.5-fpm
 
-          # 7. 前端部署
-          pnpm install && pnpm build
-
-          # 8. 静态资源分配
-          php artisan storage:link
+          # 9. 重启 Horizon
+          sudo supervisorctl reread
+          sudo supervisorctl update
+          sudo supervisorctl restart horizon:*
 
           # 部署完成
           echo "✅ 部署成功！阿里云ECS项目已更新上线"
