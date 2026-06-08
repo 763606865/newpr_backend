@@ -16,8 +16,8 @@ jobs:
         host: ${{ secrets.ALIYUN_HOST }}
         username: ${{ secrets.ALIYUN_USER }}
         key: ${{ secrets.ALIYUN_SSH_KEY }}
-        # 超时时间（防止小服务器卡顿）
-        timeout: 120
+        # 超时时间（Go duration 格式，必须带单位：s/m/h）
+        timeout: 10m
         script: |
           set -euo pipefail
           # ==============================================
