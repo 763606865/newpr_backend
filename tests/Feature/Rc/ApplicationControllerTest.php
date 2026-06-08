@@ -21,6 +21,7 @@ use App\Models\Rc\UserIdentity;
 use App\Models\Token;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Passport\ClientRepository;
 use Laravel\Passport\PersonalAccessTokenFactory;
 use Tests\TestCase;
@@ -227,14 +228,8 @@ class ApplicationControllerTest extends TestCase
             ->rcPostJson($user, $jobSeekerIdentity, '/rc/applications', ['job_id' => $job->id])
             ->json('data.id');
 
-        $withdrawResponse = $this
-            ->rcPostJson($user, $recruiterIdentity, '/rc/applications/'.$applicationId.'/withdraw');
-
-        if ($withdrawResponse->json('code') !== 422) {
-            fwrite(STDERR, json_encode($withdrawResponse->json(), JSON_UNESCAPED_UNICODE).PHP_EOL);
-        }
-
-        $withdrawResponse
+        $this
+            ->rcPostJson($user, $recruiterIdentity, '/rc/applications/'.$applicationId.'/withdraw')
             ->assertOk()
             ->assertJsonPath('code', 422)
             ->assertJsonPath('message', '请先切换为求职者身份。');
@@ -296,14 +291,8 @@ class ApplicationControllerTest extends TestCase
 
         $applicationId = $applyResponse->json('data.id');
 
-        $listResponse = $this
-            ->rcGetJson($recruiter, $recruiterIdentity, '/rc/applications?job_id='.$job->id);
-
-        if ($listResponse->json('data.data.0.candidate.full_name') !== '候选人甲') {
-            fwrite(STDERR, json_encode($listResponse->json('data.data.0'), JSON_UNESCAPED_UNICODE).PHP_EOL);
-        }
-
-        $listResponse
+        $this
+            ->rcGetJson($recruiter, $recruiterIdentity, '/rc/applications?job_id='.$job->id)
             ->assertOk()
             ->assertJsonPath('data.total', 1)
             ->assertJsonPath('data.data.0.candidate.full_name', '候选人甲')
@@ -416,6 +405,8 @@ class ApplicationControllerTest extends TestCase
      */
     private function rcGetJson(User $user, ?UserIdentity $identity, string $uri)
     {
+        $this->resetRcAuth();
+
         return $this
             ->withHeader('Authorization', 'Bearer '.$this->rcBearerToken($user, $identity))
             ->getJson($uri);
@@ -426,9 +417,16 @@ class ApplicationControllerTest extends TestCase
      */
     private function rcPostJson(User $user, ?UserIdentity $identity, string $uri, array $data = [])
     {
+        $this->resetRcAuth();
+
         return $this
             ->withHeader('Authorization', 'Bearer '.$this->rcBearerToken($user, $identity))
             ->postJson($uri, $data);
+    }
+
+    private function resetRcAuth(): void
+    {
+        Auth::forgetGuards();
     }
 
     private function rcBearerToken(User $user, ?UserIdentity $identity): string

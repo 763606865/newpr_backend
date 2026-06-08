@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enums\CompanyPlanStatus;
+use App\Exceptions\BadRequestException;
 use App\Models\Biz\Plan;
 use App\Models\Client\Feature;
 use App\Models\Client\Menu;
@@ -36,6 +37,49 @@ class SysPlanService extends Service
         // 更换不同套餐，暂停当前，绑定新套餐
         $currentPlan->transitionToDisabled();
         $this->bindNewPlan($company, $plan, $ship);
+    }
+
+    public function refreshCurrentPlan(Company $company, ?string $remark = null): void
+    {
+        /** @var null|CompanyPlan $currentPlan */
+        $currentPlan = $company->companyPlans()
+            ->where('is_current', 1)
+            ->where('status', CompanyPlanStatus::Enabled)
+            ->with('ship')
+            ->first();
+
+        if (! $currentPlan) {
+            throw new BadRequestException('企业未绑定可用套餐。');
+        }
+
+        $plan = Plan::query()->findOrFail($currentPlan->plan_id);
+
+        $ship = [];
+
+        if ($currentPlan->ship) {
+            $ship['pay_amount'] = $currentPlan->ship->pay_amount;
+
+            if (filled($remark)) {
+                $ship['remark'] = $remark;
+            }
+        }
+
+        $this->resolve($company, $plan, $ship);
+    }
+
+    /**
+     * @return Collection<int, int>
+     */
+    public function companyIdsWithCurrentPlan(int $planId): Collection
+    {
+        return Company::query()
+            ->whereHas('companyPlans', function ($query) use ($planId): void {
+                $query
+                    ->where('is_current', 1)
+                    ->where('status', CompanyPlanStatus::Enabled)
+                    ->where('plan_id', $planId);
+            })
+            ->pluck('id');
     }
 
     private function bindNewPlan(Company $company, Plan $plan, array $ship): void

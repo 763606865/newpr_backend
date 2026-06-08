@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\AdminUser;
 use App\Models\Area;
+use App\Models\BUser;
 use App\Models\Company;
 use App\Models\Employee;
 use App\Models\School;
@@ -34,6 +36,8 @@ class AppServiceProvider extends ServiceProvider
             'company' => Company::class,
             'school' => School::class,
             'area' => Area::class,
+            'admin_user' => AdminUser::class,
+            'b_user' => BUser::class,
         ]);
 
         Select::configureUsing(static function (Select $component): void {

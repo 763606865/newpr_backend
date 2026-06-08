@@ -27,7 +27,7 @@ use Illuminate\Support\Collection;
  * @method static Builder disabled()
  */
 #[Table('companies')]
-#[Fillable(['parent_id', 'depth', 'name', 'credit_code', 'legal_person', 'contact_phone', 'address', 'status'])]
+#[Fillable(['auditor_id', 'parent_id', 'depth', 'name', 'credit_code', 'legal_person', 'contact_phone', 'address', 'status'])]
 #[ObservedBy(CompanyObserver::class)]
 class Company extends Model
 {
@@ -38,10 +38,27 @@ class Company extends Model
     ];
 
     protected $casts = [
+        'auditor_id' => 'integer',
         'parent_id' => 'integer',
         'depth' => 'integer',
         'status' => CompanyStatus::class,
     ];
+
+    /**
+     * 审批人
+     */
+    public function auditor(): BelongsTo
+    {
+        return $this->belongsTo(AdminUser::class, 'auditor_id');
+    }
+
+    /**
+     * 运营操作日志
+     */
+    public function operationLogs(): HasMany
+    {
+        return $this->hasMany(CompanyOperationLog::class, 'company_id');
+    }
 
     /**
      * 上级企业（集团总部）

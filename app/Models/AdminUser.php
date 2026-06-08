@@ -39,6 +39,6 @@ class AdminUser extends Authenticatable implements FilamentUser
         //        return $this->hasVerifiedEmail();
 
         // 或结合权限：仅拥有角色的用户可访问
-        return $this->hasAnyRole(['super-admin', 'editor']);
+        return $this->hasAnyRole(['super_admin', 'super-admin', 'editor']);
     }
 }
