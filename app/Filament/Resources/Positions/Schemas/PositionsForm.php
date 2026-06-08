@@ -6,6 +6,7 @@ use App\Models\Company;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
 
 class PositionsForm
@@ -29,6 +30,9 @@ class PositionsForm
                     ->label('岗位编码')
                     ->required()
                     ->maxLength(60),
+                Toggle::make('is_leader')
+                    ->label('管理岗')
+                    ->default(false),
                 TextInput::make('sort')
                     ->label('排序号')
                     ->default(99)

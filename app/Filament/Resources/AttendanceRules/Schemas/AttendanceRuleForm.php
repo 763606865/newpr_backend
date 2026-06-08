@@ -23,7 +23,7 @@ class AttendanceRuleForm
     public static function configure(Schema $schema): Schema
     {
         $companies = Company::query()->pluck('name', 'id');
-        $amapWebKey = (string) config('services.amap.web_key', '');
+        $amapWebKey = (string) config('amap.web_key', config('services.amap.web_key', ''));
 
         return $schema
             ->components([

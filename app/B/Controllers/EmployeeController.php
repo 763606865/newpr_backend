@@ -75,7 +75,7 @@ class EmployeeController extends Controller
                 ->where('company_id', $companyId)
                 ->orderBy('sort')
                 ->orderBy('id')
-                ->get(['id', 'name', 'code', 'sort']),
+                ->get(['id', 'name', 'code', 'is_leader', 'sort']),
             'status_options' => [
                 ['value' => EmployeeStatus::Active->value, 'label' => EmployeeStatus::Active->getLabel()],
                 ['value' => EmployeeStatus::Dismissed->value, 'label' => EmployeeStatus::Dismissed->getLabel()],

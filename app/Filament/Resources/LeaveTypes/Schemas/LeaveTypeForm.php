@@ -4,9 +4,11 @@ namespace App\Filament\Resources\LeaveTypes\Schemas;
 
 use App\Enums\LeaveTypeDeductionType;
 use App\Models\Company;
+use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Illuminate\Validation\Rules\Unique;
 
@@ -35,6 +37,15 @@ class LeaveTypeForm
                         column: 'code',
                         ignoreRecord: true,
                         modifyRuleUsing: fn (Unique $rule, Get $get): Unique => $rule->where('company_id', $get('company_id')),
+                    )
+                    ->suffixAction(
+                        Action::make('generateCode')
+                            ->label('自动生成')
+                            ->button()
+                            ->color('gray')
+                            ->action(function (Set $schemaSet): void {
+                                $schemaSet('code', self::generateCode());
+                            })
                     )
                     ->maxLength(32),
                 Select::make('deduction_type')
@@ -85,5 +96,10 @@ class LeaveTypeForm
                     ->default(1)
                     ->required(),
             ]);
+    }
+
+    private static function generateCode(): string
+    {
+        return strtoupper(uniqid('LT-', false));
     }
 }

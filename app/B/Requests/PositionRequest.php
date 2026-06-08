@@ -38,6 +38,7 @@ class PositionRequest extends FormRequest
                     ->whereNull('deleted_at')
                     ->ignore($positionId),
             ],
+            'is_leader' => ['nullable', 'boolean'],
             'sort' => ['nullable', 'integer', 'min:0'],
             'remark' => ['nullable', 'string', 'max:255'],
         ];
@@ -46,6 +47,7 @@ class PositionRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->merge([
+            'is_leader' => $this->boolean('is_leader'),
             'sort' => $this->input('sort', 0),
         ]);
     }
@@ -55,6 +57,7 @@ class PositionRequest extends FormRequest
         return [
             'name' => '岗位名称',
             'code' => '岗位编码',
+            'is_leader' => '管理岗',
             'sort' => '排序',
             'remark' => '备注',
         ];

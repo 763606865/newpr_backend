@@ -151,6 +151,10 @@ class PositionController extends Controller
             $query->where('code', 'like', "%$code%");
         });
 
+        if ($request->has('is_leader')) {
+            $query->where('is_leader', $request->boolean('is_leader'));
+        }
+
         if ($keyword !== '') {
             $query->where(function (Builder $subQuery) use ($keyword): void {
                 $subQuery->where('name', 'like', "%{$keyword}%")

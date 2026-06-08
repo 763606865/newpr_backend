@@ -23,6 +23,11 @@ class PositionsTable
                 TextColumn::make('company.name')->label('所属企业')->searchable(),
                 TextColumn::make('name')->label('岗位名称')->searchable(),
                 TextColumn::make('code')->label('岗位编码')->searchable(),
+                TextColumn::make('is_leader')
+                    ->label('管理岗')
+                    ->badge()
+                    ->formatStateUsing(fn (bool $state): string => $state ? '是' : '否')
+                    ->color(fn (bool $state): string => $state ? 'success' : 'gray'),
                 TextColumn::make('sort')->label('排序号')->sortable(),
                 TextColumn::make('created_at')->label('创建时间')->dateTime('Y-m-d H:i:s')->toggleable(),
                 TextColumn::make('updated_at')->label('更新时间')->dateTime('Y-m-d H:i:s')->toggleable(),
@@ -32,6 +37,12 @@ class PositionsTable
                     ->label('所属企业')
                     ->relationship('company', 'name')
                     ->searchable(),
+                SelectFilter::make('is_leader')
+                    ->label('管理岗')
+                    ->options([
+                        1 => '是',
+                        0 => '否',
+                    ]),
                 TrashedFilter::make(),
             ])
             ->recordActions([
