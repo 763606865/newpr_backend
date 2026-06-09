@@ -108,6 +108,10 @@ class ResumeIntentionControllerTest extends TestCase
             ->assertJsonPath('data.salary_max', '20000.00')
             ->assertJsonPath('data.salary_unit', 1);
 
+        $resume->refresh();
+        $this->assertSame('10000.00', (string) $resume->expected_salary_min);
+        $this->assertSame('20000.00', (string) $resume->expected_salary_max);
+
         $this->assertSame(
             '2026-06-15',
             Carbon::parse((string) $createResponse->json('data.available_date'))
@@ -135,6 +139,10 @@ class ResumeIntentionControllerTest extends TestCase
             ->assertJsonPath('code', 200)
             ->assertJsonPath('data.job_status', 1)
             ->assertJsonPath('data.expected_city_code', '110100');
+
+        $resume->refresh();
+        $this->assertSame('15000.00', (string) $resume->expected_salary_min);
+        $this->assertSame('30000.00', (string) $resume->expected_salary_max);
 
         $this->assertDatabaseCount('rc_resume_intentions', 2);
 

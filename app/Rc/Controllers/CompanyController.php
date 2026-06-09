@@ -7,10 +7,14 @@ use App\Models\Rc\UserIdentity;
 use App\Models\User;
 use App\Rc\Requests\CompanyBindRequest;
 use App\Rc\Requests\CompanyLookupRequest;
+use App\Rc\Requests\CompanyProfileUpdateRequest;
 use App\Rc\Requests\CompanyStoreRequest;
+use App\Resources\Rc\RcCompanyProfileResource;
 use App\Resources\Rc\RcCompanyResource;
 use App\Resources\Rc\RcUserIdentityResource;
+use App\Services\CompanyProfileService;
 use App\Services\RcCompanyService;
+use App\Services\RcJobService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -127,11 +131,53 @@ class CompanyController extends Controller
     }
 
     /**
+     * 当前企业招聘资料
+     *
+     * GET /rc/companies/profile
+     */
+    public function profileShow(Request $request): JsonResponse
+    {
+        $company = $this->resolveCompany();
+
+        if (! $company instanceof Company) {
+            return $this->error('请先切换为招聘方身份并绑定企业。', Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $profile = CompanyProfileService::make()->ensureForCompany($company);
+
+        return $this->success([
+            'profile' => (new RcCompanyProfileResource($profile))->resolve($request),
+        ]);
+    }
+
+    /**
+     * 更新当前企业招聘资料
+     *
+     * PUT /rc/companies/profile
+     */
+    public function profileUpdate(CompanyProfileUpdateRequest $request): JsonResponse
+    {
+        $company = $this->resolveCompany();
+
+        if (! $company instanceof Company) {
+            return $this->error('请先切换为招聘方身份并绑定企业。', Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $profile = CompanyProfileService::make()->ensureForCompany($company);
+        $profile = CompanyProfileService::make()->update($profile, $request->validated());
+
+        return $this->success([
+            'profile' => (new RcCompanyProfileResource($profile))->resolve($request),
+        ]);
+    }
+
+    /**
      * @return array{company: array<string, mixed>, identity: array<string, mixed>}
      */
     private function bindPayload(Request $request, Company $company, UserIdentity $identity): array
     {
         $company->load([
+            'profile',
             'licenses' => fn ($query) => $query->orderBy('sort')->orderBy('id'),
             'contacts' => fn ($query) => $query->orderBy('sort')->orderBy('id'),
         ]);
@@ -140,5 +186,13 @@ class CompanyController extends Controller
             'company' => (new RcCompanyResource($company))->resolve($request),
             'identity' => (new RcUserIdentityResource($identity))->resolve($request),
         ];
+    }
+
+    private function resolveCompany(): ?Company
+    {
+        /** @var User $user */
+        $user = $this->user();
+
+        return RcJobService::make()->resolveRecruiterCompany($user);
     }
 }

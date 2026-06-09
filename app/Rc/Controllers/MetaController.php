@@ -23,6 +23,7 @@ class MetaController extends Controller
             'areas' => $this->areasPayload(),
             'industries' => $this->industriesPayload(),
             'positions' => $this->positionsPayload(),
+            ...$this->metaService->getCompanyDictionaries(),
         ]);
     }
 
@@ -66,6 +67,18 @@ class MetaController extends Controller
         return $this->success([
             'positions' => $this->positionsPayload(),
         ]);
+    }
+
+    /**
+     * 企业资料字典
+     *
+     * GET /rc/meta/companies
+     *
+     * @throws \Exception
+     */
+    public function companies(Request $request): JsonResponse
+    {
+        return $this->success($this->metaService->getCompanyDictionaries());
     }
 
     /**

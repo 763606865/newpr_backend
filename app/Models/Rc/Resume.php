@@ -5,6 +5,7 @@ namespace App\Models\Rc;
 use App\Enums\RcCurrentIdentity;
 use App\Enums\RcEducationLevel;
 use App\Enums\RcMaritalStatus;
+use App\Enums\RcPoliticalStatus;
 use App\Enums\RcResumeSourceType;
 use App\Enums\RcResumeStatus;
 use App\Enums\RcSalaryUnit;
@@ -44,7 +45,7 @@ use Laravel\Scout\Searchable;
  * @property string|null $birth_month 出生年月
  * @property int|null $age 年龄
  * @property int $marital_status 婚姻状况
- * @property string $political_status 政治面貌
+ * @property RcPoliticalStatus $political_status 政治面貌
  * @property string|null $native_place 籍贯
  * @property int $current_identity 当前身份
  * @property string|null $work_start_date 参加工作日期
@@ -124,6 +125,11 @@ class Resume extends Model
     use HasEvents, Searchable, SoftDeletes;
 
     protected $attributes = [
+        'gender' => UserGender::Unknown,
+        'nation' => '未知',
+        'marital_status' => RcMaritalStatus::Unknown,
+        'political_status' => RcPoliticalStatus::Masses,
+        'current_identity' => RcCurrentIdentity::Other,
         'source_type' => RcResumeSourceType::Manual,
         'is_primary' => 1,
         'status' => RcResumeStatus::Normal,
@@ -147,10 +153,46 @@ class Resume extends Model
      */
     protected function syncDerivedAttributes(): void
     {
+        $this->syncTitleFromFullName();
         $this->syncAgeFromBirthDate();
         $this->syncBirthMonthFromBirthDate();
+        $this->syncWorkStartDateFromWorkYear();
         $this->syncWorkYearsFromWorkStartDate();
         $this->syncCurrentResidenceCityFromCode();
+        $this->syncIsFreshGraduateFromWorkYearAndIdentity();
+    }
+
+    protected function syncTitleFromFullName(): void
+    {
+        if (! $this->isDirty('full_name')) {
+            return;
+        }
+
+        if (blank($this->full_name)) {
+            $this->title = '求职简历';
+
+            return;
+        }
+
+        $this->title = $this->full_name.'的简历';
+    }
+
+    protected function syncIsFreshGraduateFromWorkYearAndIdentity(): void
+    {
+        if ($this->isDirty('is_fresh_graduate') && ! $this->isDirty(['current_identity', 'work_years'])) {
+            return;
+        }
+
+        $this->is_fresh_graduate = self::resolvesFreshGraduate($this->current_identity, $this->work_years) ? 1 : 0;
+    }
+
+    public static function resolvesFreshGraduate(?RcCurrentIdentity $identity, ?int $workYears): bool
+    {
+        if ($identity !== RcCurrentIdentity::Student) {
+            return false;
+        }
+
+        return (int) ($workYears ?? 0) === 0;
     }
 
     protected function syncCurrentResidenceCityFromCode(): void
@@ -202,6 +244,35 @@ class Resume extends Model
         $this->birth_month = Carbon::parse($this->birth_date)->format('Y-m');
     }
 
+    protected function syncWorkStartDateFromWorkYear(): void
+    {
+        if ($this->work_years === null) {
+            return;
+        }
+
+        if ($this->isDirty('work_start_date') && ! $this->isDirty('work_years')) {
+            return;
+        }
+
+        if (filled($this->work_start_date) && ! $this->isDirty('work_years')) {
+            return;
+        }
+
+        if ($this->isDirty('work_start_date') && filled($this->work_start_date)) {
+            return;
+        }
+
+        $this->work_start_date = self::resolveWorkStartDateFromWorkYears((int) $this->work_years);
+    }
+
+    public static function resolveWorkStartDateFromWorkYears(int $workYears, ?Carbon $now = null): string
+    {
+        $years = min(max($workYears, 0), 80);
+        $reference = ($now ?? Carbon::now())->copy()->startOfYear();
+
+        return $reference->subYears($years)->format('Y-m-d');
+    }
+
     protected function syncWorkYearsFromWorkStartDate(): void
     {
         if (blank($this->work_start_date)) {
@@ -230,6 +301,7 @@ class Resume extends Model
             'gender' => UserGender::class,
             'age' => 'integer',
             'marital_status' => RcMaritalStatus::class,
+            'political_status' => RcPoliticalStatus::class,
             'current_identity' => RcCurrentIdentity::class,
             'work_years' => 'integer',
             'highest_education_level' => RcEducationLevel::class,

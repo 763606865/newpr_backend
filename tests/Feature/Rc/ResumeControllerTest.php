@@ -155,6 +155,8 @@ class ResumeControllerTest extends TestCase
             'title' => 'New Resume',
             'full_name' => 'Test User',
             'avatar' => 'uploads/rc/avatar/2026/06/03/example.jpg',
+            'gender' => UserGender::Male->value,
+            'birth_date' => '1995-01-01',
             'phone' => '13800000000',
             'email' => 'resume@example.com',
             'is_primary' => 0,
@@ -170,18 +172,64 @@ class ResumeControllerTest extends TestCase
             ->assertJsonPath('data.title', 'New Resume')
             ->assertJsonPath('data.avatar', 'uploads/rc/avatar/2026/06/03/example.jpg')
             ->assertJsonPath('data.is_primary', 1)
-            ->assertJsonPath('data.source_type', 3);
+            ->assertJsonPath('data.source_type', 3)
+            ->assertJsonPath('data.political_status', 5)
+            ->assertJsonPath('data.political_status_label', '群众');
 
         $this->assertDatabaseHas('rc_resumes', [
             'user_id' => $user->id,
             'title' => 'New Resume',
             'avatar' => 'uploads/rc/avatar/2026/06/03/example.jpg',
             'is_primary' => 1,
+            'political_status' => 5,
         ]);
         $this->assertMatchesRegularExpression(
             '/^RC\d{14}[A-Z0-9]{6}$/',
             (string) $response->json('data.resume_no'),
         );
+    }
+
+    public function test_store_accepts_political_status_enum_value(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this
+            ->actingAs($user, 'rc')
+            ->postJson('/rc/resumes', [
+                'title' => 'Political Resume',
+                'full_name' => 'Political Tester',
+                'avatar' => 'uploads/rc/avatar/2026/06/03/example.jpg',
+                'gender' => UserGender::Male->value,
+                'birth_date' => '1995-01-01',
+                'phone' => '13800000003',
+                'email' => 'political@example.com',
+                'political_status' => 1,
+            ]);
+
+        $response
+            ->assertOk()
+            ->assertJsonPath('data.political_status', 1)
+            ->assertJsonPath('data.political_status_label', '中共党员（含预备党员）');
+    }
+
+    public function test_store_rejects_invalid_political_status(): void
+    {
+        $user = User::factory()->create();
+
+        $this
+            ->actingAs($user, 'rc')
+            ->postJson('/rc/resumes', [
+                'title' => 'Invalid Political Resume',
+                'full_name' => 'Invalid Tester',
+                'avatar' => 'uploads/rc/avatar/2026/06/03/example.jpg',
+                'gender' => UserGender::Male->value,
+                'birth_date' => '1995-01-01',
+                'phone' => '13800000004',
+                'email' => 'invalid-political@example.com',
+                'political_status' => 99,
+            ])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors(['political_status']);
     }
 
     public function test_update_can_update_avatar(): void

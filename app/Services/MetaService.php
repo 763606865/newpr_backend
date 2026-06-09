@@ -2,12 +2,17 @@
 
 namespace App\Services;
 
+use App\Enums\CompanyBenefitTag;
+use App\Enums\CompanyFundingStage;
+use App\Enums\CompanyNatureType;
+use App\Enums\CompanyScaleType;
 use App\Models\Area;
 use App\Models\Rc\Industry;
 use App\Models\Rc\Position;
 use App\Resources\Rc\RcAreaResource;
 use App\Resources\Rc\RcIndustryResource;
 use App\Resources\Rc\RcPositionResource;
+use App\Support\EnumOptions;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 
@@ -138,6 +143,51 @@ class MetaService extends Service
 
             return tree(RcPositionResource::collection($positions)->resolve(new Request));
         });
+    }
+
+    /**
+     * @return array<int, array{value: int|string, label: string|null}>
+     */
+    public function getCompanyScales(): array
+    {
+        return EnumOptions::from(CompanyScaleType::class);
+    }
+
+    /**
+     * @return array<int, array{value: int|string, label: string|null}>
+     */
+    public function getCompanyNatures(): array
+    {
+        return EnumOptions::from(CompanyNatureType::class);
+    }
+
+    /**
+     * @return array<int, array{value: int|string, label: string|null}>
+     */
+    public function getCompanyFundingStages(): array
+    {
+        return EnumOptions::from(CompanyFundingStage::class);
+    }
+
+    /**
+     * @return array<int, array{value: int|string, label: string|null}>
+     */
+    public function getCompanyBenefitTags(): array
+    {
+        return EnumOptions::from(CompanyBenefitTag::class);
+    }
+
+    /**
+     * @return array<string, array<int, array{value: int|string, label: string|null}>>
+     */
+    public function getCompanyDictionaries(): array
+    {
+        return [
+            'company_scales' => $this->getCompanyScales(),
+            'company_natures' => $this->getCompanyNatures(),
+            'company_funding_stages' => $this->getCompanyFundingStages(),
+            'company_benefit_tags' => $this->getCompanyBenefitTags(),
+        ];
     }
 
     public function forgetAreas(): void

@@ -4,6 +4,9 @@ namespace Tests\Feature\Rc;
 
 use App\Enums\CompanyContactType;
 use App\Enums\CompanyLicenseType;
+use App\Enums\CompanyNatureType;
+use App\Enums\CompanyProfileStatus;
+use App\Enums\CompanyScaleType;
 use App\Enums\CompanyStatus;
 use App\Enums\RcIdentityStatus;
 use App\Enums\RcIdentityType;
@@ -309,9 +312,15 @@ class CompanyControllerTest extends TestCase
             ->assertJsonPath('data.company.contacts.0.contact_type', CompanyContactType::LegalPerson->value)
             ->assertJsonPath('data.identity.id', $identity->id)
             ->assertJsonPath('data.identity.job_title', 'HR 总监')
-            ->assertJsonPath('data.identity.has_basic_info', true);
+            ->assertJsonPath('data.identity.has_basic_info', true)
+            ->assertJsonPath('data.company.profile.profile_status', CompanyProfileStatus::Draft->value);
 
         $companyId = Company::query()->where('credit_code', self::CREDIT_CODE)->value('id');
+
+        $this->assertDatabaseHas('company_profiles', [
+            'company_id' => $companyId,
+            'profile_status' => CompanyProfileStatus::Draft->value,
+        ]);
 
         $this->assertDatabaseHas('company_licenses', [
             'company_id' => $companyId,
@@ -346,6 +355,81 @@ class CompanyControllerTest extends TestCase
             ->assertOk()
             ->assertJsonPath('code', 422)
             ->assertJsonPath('message', '企业已存在，请直接绑定。');
+    }
+
+    public function test_bind_creates_draft_profile_when_missing(): void
+    {
+        $user = User::factory()->create();
+        $company = $this->createCompany();
+        $this->createRecruiterIdentity($user);
+
+        $response = $this
+            ->actingAs($user, 'rc')
+            ->postJson('/rc/companies/bind', [
+                'company_id' => $company->id,
+                'job_title' => '招聘经理',
+            ]);
+
+        $response
+            ->assertOk()
+            ->assertJsonPath('data.company.profile.profile_status', CompanyProfileStatus::Draft->value);
+
+        $this->assertDatabaseHas('company_profiles', [
+            'company_id' => $company->id,
+            'profile_status' => CompanyProfileStatus::Draft->value,
+        ]);
+    }
+
+    public function test_profile_show_requires_bound_recruiter_company(): void
+    {
+        $user = User::factory()->create();
+        $this->createRecruiterIdentity($user);
+
+        $response = $this
+            ->actingAs($user, 'rc')
+            ->getJson('/rc/companies/profile');
+
+        $response
+            ->assertOk()
+            ->assertJsonPath('code', 422)
+            ->assertJsonPath('message', '请先切换为招聘方身份并绑定企业。');
+    }
+
+    public function test_profile_update_updates_company_profile(): void
+    {
+        $user = User::factory()->create();
+        $company = $this->createCompany();
+        $this->createRecruiterIdentity($user, [
+            'organization_type' => 'company',
+            'organization_id' => $company->id,
+            'organization_name' => $company->name,
+            'job_title' => 'HR',
+        ]);
+
+        $response = $this
+            ->actingAs($user, 'rc')
+            ->putJson('/rc/companies/profile', [
+                'short_name' => '示例科技',
+                'scale_type' => CompanyScaleType::From100To499->value,
+                'nature_type' => CompanyNatureType::Private->value,
+                'introduction' => '专注招聘数字化。',
+                'logo' => 'uploads/rc/logo.png',
+                'benefit_tags' => ['social_insurance', 'weekend_off'],
+            ]);
+
+        $response
+            ->assertOk()
+            ->assertJsonPath('code', 200)
+            ->assertJsonPath('data.profile.short_name', '示例科技')
+            ->assertJsonPath('data.profile.scale_type', CompanyScaleType::From100To499->value)
+            ->assertJsonPath('data.profile.profile_status', CompanyProfileStatus::Complete->value)
+            ->assertJsonPath('data.profile.benefit_tags.0', 'social_insurance');
+
+        $this->assertDatabaseHas('company_profiles', [
+            'company_id' => $company->id,
+            'short_name' => '示例科技',
+            'profile_status' => CompanyProfileStatus::Complete->value,
+        ]);
     }
 
     /**

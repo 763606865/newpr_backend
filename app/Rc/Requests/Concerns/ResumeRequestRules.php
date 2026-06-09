@@ -2,6 +2,7 @@
 
 namespace App\Rc\Requests\Concerns;
 
+use App\Enums\RcPoliticalStatus;
 use Illuminate\Validation\Rule;
 
 trait ResumeRequestRules
@@ -24,13 +25,12 @@ trait ResumeRequestRules
         return array_merge([
             'title' => $rule(['nullable', 'string', 'max:255']),
             'full_name' => $rule(['required', 'string', 'max:50']),
-            'avatar' => $rule(['nullable', 'string', 'max:255']),
-            'gender' => $rule(['nullable', 'integer', 'min:0', 'max:2']),
-            'id_card' => $rule(['nullable', 'string', 'size:18']),
+            'avatar' => $rule(['required', 'string', 'max:255']),
+            'gender' => $rule(['required', 'integer', 'min:0', 'max:2']),
             'nation' => $rule(['nullable', 'string', 'max:20']),
-            'birth_date' => $rule(['nullable', 'date_format:Y-m-d']),
+            'birth_date' => $rule(['required', 'date_format:Y-m-d']),
             'marital_status' => $rule(['nullable', 'integer', 'min:0', 'max:4']),
-            'political_status' => $rule(['nullable', 'string', 'max:20']),
+            'political_status' => $rule(['nullable', 'integer', Rule::enum(RcPoliticalStatus::class)]),
             'current_identity' => $rule(['nullable', 'integer', 'min:0']),
             'work_start_date' => $rule(['nullable', 'date_format:Y-m-d']),
             'work_years' => $rule(['nullable', 'integer', 'min:0', 'max:80']),

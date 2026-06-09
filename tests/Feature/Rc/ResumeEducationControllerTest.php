@@ -65,6 +65,9 @@ class ResumeEducationControllerTest extends TestCase
             ->assertJsonPath('data.school_name', 'Zhejiang University')
             ->assertJsonPath('data.major', 'Computer Science');
 
+        $resume->refresh();
+        $this->assertSame(3, $resume->highest_education_level?->value ?? $resume->highest_education_level);
+
         $educationId = (int) $storeResponse->json('data.id');
 
         $updateResponse = $this->actingAs($user, 'rc')

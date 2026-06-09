@@ -59,7 +59,7 @@
 
 - 接口：`GET /rc/meta`
 - 鉴权：Bearer Token（`auth:rc`）
-- 描述：一次性返回简历填写所需的地区、行业、职位元数据
+- 描述：一次性返回简历填写所需的地区、行业、职位元数据，以及企业资料字典
 
 ### 成功响应示例
 
@@ -129,6 +129,18 @@
           }
         ]
       }
+    ],
+    "company_scales": [
+      { "value": 1, "label": "0-20人" }
+    ],
+    "company_natures": [
+      { "value": 1, "label": "民营企业" }
+    ],
+    "company_funding_stages": [
+      { "value": 1, "label": "未融资" }
+    ],
+    "company_benefit_tags": [
+      { "value": "social_insurance", "label": "五险一金" }
     ]
   },
   "meta": {
@@ -143,6 +155,7 @@
 - `areas`：来自 `areas` 表
 - `industries`：来自 `rc_industries` 表
 - `positions`：来自 `rc_positions` 表
+- `company_scales` / `company_natures` / `company_funding_stages` / `company_benefit_tags`：来自 PHP Enum，结构为 `{ value, label }`
 - 所有树结构均通过 `tree()` 生成
 
 ---
@@ -297,9 +310,54 @@
 
 ---
 
-## 5) 前端使用建议
+## 5) 企业资料字典
+
+- 接口：`GET /rc/meta/companies`
+- 鉴权：Bearer Token（`auth:rc`）
+- 描述：返回企业招聘资料表单所需的规模、性质、融资阶段、福利标签字典
+
+### 成功响应示例
+
+```json
+{
+  "code": 200,
+  "data": {
+    "company_scales": [
+      { "value": 1, "label": "0-20人" },
+      { "value": 2, "label": "20-99人" }
+    ],
+    "company_natures": [
+      { "value": 1, "label": "民营企业" },
+      { "value": 2, "label": "国有企业" }
+    ],
+    "company_funding_stages": [
+      { "value": 1, "label": "未融资" },
+      { "value": 2, "label": "天使轮" }
+    ],
+    "company_benefit_tags": [
+      { "value": "social_insurance", "label": "五险一金" },
+      { "value": "weekend_off", "label": "双休" }
+    ]
+  },
+  "meta": {
+    "timestamp": 1748865600.1234,
+    "response_time": 0.0123
+  }
+}
+```
+
+### 规则
+
+- 字典项来自 Enum，非数据库表
+- `company_scales` / `company_natures` / `company_funding_stages` 的 `value` 为 int
+- `company_benefit_tags` 的 `value` 为 string code
+
+---
+
+## 6) 前端使用建议
 
 - 简历创建页建议优先调用 `GET /rc/meta`
+- 企业资料编辑页可调用 `GET /rc/meta/companies` 或直接使用 `GET /rc/meta` 中的企业字典
 - 如果页面只需要单一字典，可分别调用：
   - `GET /rc/meta/areas`
   - `GET /rc/meta/industries`

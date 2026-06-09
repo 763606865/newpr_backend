@@ -3,23 +3,24 @@
 namespace App\Models\Rc\Concerns;
 
 use App\Models\Rc\Resume;
+use App\Services\RcResumeAggregateService;
 
 trait SyncsResumeSearchIndex
 {
     protected static function bootSyncsResumeSearchIndex(): void
     {
         $sync = function (self $model): void {
-            $resume = $model->resume;
+            if (! $model->resume_id) {
+                return;
+            }
+
+            $resume = Resume::query()->find($model->resume_id);
 
             if (! $resume instanceof Resume) {
                 return;
             }
 
-            if ($resume->shouldBeSearchable()) {
-                $resume->searchable();
-            } else {
-                $resume->unsearchable();
-            }
+            RcResumeAggregateService::make()->sync($resume);
         };
 
         static::saved($sync);

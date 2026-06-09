@@ -44,6 +44,7 @@ class RcCompanyService extends Service
 
         if ($company instanceof Company) {
             $company->load([
+                'profile',
                 'licenses' => fn ($query) => $query->orderBy('sort')->orderBy('id'),
                 'contacts' => fn ($query) => $query->orderBy('sort')->orderBy('id'),
             ]);
@@ -105,6 +106,8 @@ class RcCompanyService extends Service
     public function bind(UserIdentity $identity, Company $company, string $jobTitle): UserIdentity
     {
         return DB::transaction(function () use ($identity, $company, $jobTitle): UserIdentity {
+            CompanyProfileService::make()->ensureForCompany($company);
+
             $identity->organization()->associate($company);
             $identity->fill([
                 'organization_name' => $company->name,
@@ -140,6 +143,7 @@ class RcCompanyService extends Service
 
             return [
                 'company' => $company->refresh()->load([
+                    'profile',
                     'licenses' => fn ($query) => $query->orderBy('sort')->orderBy('id'),
                     'contacts' => fn ($query) => $query->orderBy('sort')->orderBy('id'),
                 ]),

@@ -41,12 +41,31 @@ class MetaControllerTest extends TestCase
             ->assertJsonPath('data.areas.0.name', 'Province A')
             ->assertJsonPath('data.areas.0.children.0.name', 'City A')
             ->assertJsonPath('data.industries.0.name', 'Internet/IT')
-            ->assertJsonPath('data.positions.0.name', 'Engineering');
+            ->assertJsonPath('data.positions.0.name', 'Engineering')
+            ->assertJsonPath('data.company_scales.0.value', 1)
+            ->assertJsonPath('data.company_natures.0.value', 1)
+            ->assertJsonPath('data.company_benefit_tags.0.value', 'social_insurance');
 
         $this->assertSame([
             '000001' => 'Province A',
             '000001001' => 'City A',
         ], app(MetaService::class)->getAreaNameMap());
+    }
+
+    public function test_companies_meta_endpoint_returns_company_dictionaries(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this
+            ->actingAs($user, 'rc')
+            ->getJson('/rc/meta/companies');
+
+        $response
+            ->assertOk()
+            ->assertJsonPath('code', 200)
+            ->assertJsonPath('data.company_scales.0.label', '0-20人')
+            ->assertJsonPath('data.company_funding_stages.0.value', 1)
+            ->assertJsonPath('data.company_benefit_tags.0.label', '五险一金');
     }
 
     public function test_areas_endpoint_returns_area_tree(): void

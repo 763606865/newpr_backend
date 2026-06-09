@@ -6,6 +6,7 @@ use App\Models\Rc\Resume;
 use App\Models\Rc\ResumeWork;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
 use Tests\TestCase;
 
 class ResumeWorkControllerTest extends TestCase
@@ -44,6 +45,8 @@ class ResumeWorkControllerTest extends TestCase
 
     public function test_store_update_and_destroy_work(): void
     {
+        Carbon::setTestNow('2026-06-09');
+
         $user = User::factory()->create();
         $resume = $this->createResume($user);
 
@@ -63,6 +66,10 @@ class ResumeWorkControllerTest extends TestCase
             ->assertJsonPath('code', 200)
             ->assertJsonPath('data.company_name', 'Acme Inc')
             ->assertJsonPath('data.position', 'Backend Engineer');
+
+        $resume->refresh();
+        $this->assertSame('2022-01-01', $resume->work_start_date);
+        $this->assertSame(4, $resume->work_years);
 
         $workId = (int) $storeResponse->json('data.id');
 

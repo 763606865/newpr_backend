@@ -37,6 +37,10 @@ class RcCompanyResource extends JsonResource
             $data['contacts'] = RcCompanyContactResource::collection($this->resource->contacts)->resolve($request);
         }
 
+        if ($this->resource->relationLoaded('profile') && $this->resource->profile) {
+            $data['profile'] = (new RcCompanyProfileResource($this->resource->profile))->resolve($request);
+        }
+
         return $data;
     }
 }

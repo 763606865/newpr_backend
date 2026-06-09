@@ -44,6 +44,7 @@ Route::middleware('auth:rc')->group(function (): void {
     Route::get('/meta/areas', [MetaController::class, 'areas']);
     Route::get('/meta/industries', [MetaController::class, 'industries']);
     Route::get('/meta/positions', [MetaController::class, 'positions']);
+    Route::get('/meta/companies', [MetaController::class, 'companies']);
     // ==============================================================================
 
     // 求职者-简历
@@ -82,6 +83,8 @@ Route::middleware('auth:rc')->group(function (): void {
 
     // 招聘方-企业
     Route::get('/companies/lookup', [CompanyController::class, 'lookup']);
+    Route::get('/companies/profile', [CompanyController::class, 'profileShow']);
+    Route::put('/companies/profile', [CompanyController::class, 'profileUpdate']);
     Route::post('/companies/bind', [CompanyController::class, 'bind']);
     Route::post('/companies', [CompanyController::class, 'store']);
     // ==============================================================================

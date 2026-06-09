@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
 
@@ -103,6 +104,14 @@ class Company extends Model
         }
 
         return $ids->values();
+    }
+
+    /**
+     * 招聘展示资料
+     */
+    public function profile(): HasOne
+    {
+        return $this->hasOne(CompanyProfile::class, 'company_id');
     }
 
     /**
