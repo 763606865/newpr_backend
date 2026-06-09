@@ -1,0 +1,3935 @@
+[
+    {
+        "id": 2552,
+        "careerCode": "1",
+        "parentCode": null,
+        "careerName": "党的机关、国家机关、群众团体和社会组织、企事业单位负责人",
+        "versionId": 2,
+        "children": [
+            {
+                "id": 3142,
+                "careerCode": "1-01",
+                "parentCode": "1",
+                "careerName": "中国共产党机关和基层组织负责人",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 3468,
+                        "careerCode": "1-01-00",
+                        "parentCode": "1-01",
+                        "careerName": "中国共产党机关和基层组织负责人",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 3138,
+                "careerCode": "1-02",
+                "parentCode": "1",
+                "careerName": "国家机关负责人",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 2853,
+                        "careerCode": "1-02-01",
+                        "parentCode": "1-02",
+                        "careerName": "国家权力机关负责人",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2851,
+                        "careerCode": "1-02-02",
+                        "parentCode": "1-02",
+                        "careerName": "国家行政机关负责人",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2848,
+                        "careerCode": "1-02-03",
+                        "parentCode": "1-02",
+                        "careerName": "人民政协机关负责人",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2846,
+                        "careerCode": "1-02-04",
+                        "parentCode": "1-02",
+                        "careerName": "监察机关负责人",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2844,
+                        "careerCode": "1-02-05",
+                        "parentCode": "1-02",
+                        "careerName": "人民法院和人民检察院负责人",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 3140,
+                "careerCode": "1-03",
+                "parentCode": "1",
+                "careerName": "民主党派和工商联负责人",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 4622,
+                        "careerCode": "1-03-00",
+                        "parentCode": "1-03",
+                        "careerName": "民主党派和工商联负责人",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 3157,
+                "careerCode": "1-04",
+                "parentCode": "1",
+                "careerName": "人民团体和群众团体、社会组织及其他成员组织负责人",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 3947,
+                        "careerCode": "1-04-01",
+                        "parentCode": "1-04",
+                        "careerName": "人民团体和群众团体负责人",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3948,
+                        "careerCode": "1-04-02",
+                        "parentCode": "1-04",
+                        "careerName": "社会团体负责人",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3926,
+                        "careerCode": "1-04-03",
+                        "parentCode": "1-04",
+                        "careerName": "社会服务机构负责人",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3928,
+                        "careerCode": "1-04-04",
+                        "parentCode": "1-04",
+                        "careerName": "社会中介组织负责人",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3929,
+                        "careerCode": "1-04-05",
+                        "parentCode": "1-04",
+                        "careerName": "基金会负责人",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3932,
+                        "careerCode": "1-04-06",
+                        "parentCode": "1-04",
+                        "careerName": "宗教组织负责人",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 3158,
+                "careerCode": "1-05",
+                "parentCode": "1",
+                "careerName": "基层群众性自治组织负责人",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 3206,
+                        "careerCode": "1-05-00",
+                        "parentCode": "1-05",
+                        "careerName": "基层群众性自治组织负责人",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 3154,
+                "careerCode": "1-06",
+                "parentCode": "1",
+                "careerName": "企事业单位负责人",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 2679,
+                        "careerCode": "1-06-01",
+                        "parentCode": "1-06",
+                        "careerName": "企业负责人",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2678,
+                        "careerCode": "1-06-02",
+                        "parentCode": "1-06",
+                        "careerName": "事业单位负责人",
+                        "versionId": 2
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": 2553,
+        "careerCode": "2",
+        "parentCode": null,
+        "careerName": "专业技术人员",
+        "versionId": 2,
+        "children": [
+            {
+                "id": 3793,
+                "careerCode": "2-01",
+                "parentCode": "2",
+                "careerName": "科学研究人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 3518,
+                        "careerCode": "2-01-01",
+                        "parentCode": "2-01",
+                        "careerName": "哲学研究人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3517,
+                        "careerCode": "2-01-02",
+                        "parentCode": "2-01",
+                        "careerName": "经济学研究人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3513,
+                        "careerCode": "2-01-03",
+                        "parentCode": "2-01",
+                        "careerName": "法学研究人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3512,
+                        "careerCode": "2-01-04",
+                        "parentCode": "2-01",
+                        "careerName": "教育学研究人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3516,
+                        "careerCode": "2-01-05",
+                        "parentCode": "2-01",
+                        "careerName": "历史学研究人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3515,
+                        "careerCode": "2-01-06",
+                        "parentCode": "2-01",
+                        "careerName": "自然科学和地球科学研究人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3508,
+                        "careerCode": "2-01-07",
+                        "parentCode": "2-01",
+                        "careerName": "农业科学研究人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3506,
+                        "careerCode": "2-01-08",
+                        "parentCode": "2-01",
+                        "careerName": "医学研究人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3511,
+                        "careerCode": "2-01-09",
+                        "parentCode": "2-01",
+                        "careerName": "管理学研究人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2589,
+                        "careerCode": "2-01-10",
+                        "parentCode": "2-01",
+                        "careerName": "文学、艺术学研究人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2587,
+                        "careerCode": "2-01-11",
+                        "parentCode": "2-01",
+                        "careerName": "军事学研究人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2707,
+                        "careerCode": "2-01-99",
+                        "parentCode": "2-01",
+                        "careerName": "其他科学研究人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 3791,
+                "careerCode": "2-02",
+                "parentCode": "2",
+                "careerName": "工程技术人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 4243,
+                        "careerCode": "2-02-01",
+                        "parentCode": "2-02",
+                        "careerName": "地质勘探工程技术人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4247,
+                        "careerCode": "2-02-02",
+                        "parentCode": "2-02",
+                        "careerName": "测绘和地理信息工程技术人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4246,
+                        "careerCode": "2-02-03",
+                        "parentCode": "2-02",
+                        "careerName": "矿山工程技术人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4238,
+                        "careerCode": "2-02-04",
+                        "parentCode": "2-02",
+                        "careerName": "石油天然气工程技术人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4237,
+                        "careerCode": "2-02-05",
+                        "parentCode": "2-02",
+                        "careerName": "冶金工程技术人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4241,
+                        "careerCode": "2-02-06",
+                        "parentCode": "2-02",
+                        "careerName": "化工工程技术人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4239,
+                        "careerCode": "2-02-07",
+                        "parentCode": "2-02",
+                        "careerName": "机械工程技术人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4236,
+                        "careerCode": "2-02-08",
+                        "parentCode": "2-02",
+                        "careerName": "航空工程技术人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4235,
+                        "careerCode": "2-02-09",
+                        "parentCode": "2-02",
+                        "careerName": "电子工程技术人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4227,
+                        "careerCode": "2-02-10",
+                        "parentCode": "2-02",
+                        "careerName": "信息和通信工程技术人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4222,
+                        "careerCode": "2-02-11",
+                        "parentCode": "2-02",
+                        "careerName": "电气工程技术人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4221,
+                        "careerCode": "2-02-12",
+                        "parentCode": "2-02",
+                        "careerName": "电力工程技术人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4225,
+                        "careerCode": "2-02-13",
+                        "parentCode": "2-02",
+                        "careerName": "邮政和快递工程技术人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4223,
+                        "careerCode": "2-02-14",
+                        "parentCode": "2-02",
+                        "careerName": "广播电影电视及演艺设备工程技术人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4218,
+                        "careerCode": "2-02-15",
+                        "parentCode": "2-02",
+                        "careerName": "道路和水上运输工程技术人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4217,
+                        "careerCode": "2-02-16",
+                        "parentCode": "2-02",
+                        "careerName": "民用航空工程技术人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4220,
+                        "careerCode": "2-02-17",
+                        "parentCode": "2-02",
+                        "careerName": "铁道工程技术人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4219,
+                        "careerCode": "2-02-18",
+                        "parentCode": "2-02",
+                        "careerName": "建筑工程技术人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4215,
+                        "careerCode": "2-02-19",
+                        "parentCode": "2-02",
+                        "careerName": "建材工程技术人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4378,
+                        "careerCode": "2-02-20",
+                        "parentCode": "2-02",
+                        "careerName": "林草工程技术人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4377,
+                        "careerCode": "2-02-21",
+                        "parentCode": "2-02",
+                        "careerName": "水利工程技术人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4370,
+                        "careerCode": "2-02-22",
+                        "parentCode": "2-02",
+                        "careerName": "海洋工程技术人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4368,
+                        "careerCode": "2-02-23",
+                        "parentCode": "2-02",
+                        "careerName": "纺织服装工程技术人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4374,
+                        "careerCode": "2-02-24",
+                        "parentCode": "2-02",
+                        "careerName": "食品工程技术人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4372,
+                        "careerCode": "2-02-25",
+                        "parentCode": "2-02",
+                        "careerName": "气象工程技术人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4362,
+                        "careerCode": "2-02-26",
+                        "parentCode": "2-02",
+                        "careerName": "地震工程技术人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4360,
+                        "careerCode": "2-02-27",
+                        "parentCode": "2-02",
+                        "careerName": "环境保护工程技术人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4366,
+                        "careerCode": "2-02-28",
+                        "parentCode": "2-02",
+                        "careerName": "安全工程技术人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4364,
+                        "careerCode": "2-02-29",
+                        "parentCode": "2-02",
+                        "careerName": "标准化、计量、质量和认证认可工程技术人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4355,
+                        "careerCode": "2-02-30",
+                        "parentCode": "2-02",
+                        "careerName": "管理（工业）工程技术人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4357,
+                        "careerCode": "2-02-31",
+                        "parentCode": "2-02",
+                        "careerName": "检验检疫工程技术人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4356,
+                        "careerCode": "2-02-32",
+                        "parentCode": "2-02",
+                        "careerName": "制药工程技术人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4351,
+                        "careerCode": "2-02-33",
+                        "parentCode": "2-02",
+                        "careerName": "印刷复制工程技术人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4350,
+                        "careerCode": "2-02-34",
+                        "parentCode": "2-02",
+                        "careerName": "工业（产品）设计工程技术人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4354,
+                        "careerCode": "2-02-35",
+                        "parentCode": "2-02",
+                        "careerName": "康复辅具工程技术人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4353,
+                        "careerCode": "2-02-36",
+                        "parentCode": "2-02",
+                        "careerName": "轻工工程技术人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4347,
+                        "careerCode": "2-02-37",
+                        "parentCode": "2-02",
+                        "careerName": "国土空间规划与生态修复工程技术人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4345,
+                        "careerCode": "2-02-38",
+                        "parentCode": "2-02",
+                        "careerName": "数字技术工程技术人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4389,
+                        "careerCode": "2-02-99",
+                        "parentCode": "2-02",
+                        "careerName": "其他工程技术人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 3789,
+                "careerCode": "2-03",
+                "parentCode": "2",
+                "careerName": "农业技术人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 3666,
+                        "careerCode": "2-03-01",
+                        "parentCode": "2-03",
+                        "careerName": "土壤肥料技术人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3665,
+                        "careerCode": "2-03-02",
+                        "parentCode": "2-03",
+                        "careerName": "农业技术指导人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3668,
+                        "careerCode": "2-03-03",
+                        "parentCode": "2-03",
+                        "careerName": "植物保护技术人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3667,
+                        "careerCode": "2-03-04",
+                        "parentCode": "2-03",
+                        "careerName": "园艺技术人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3658,
+                        "careerCode": "2-03-05",
+                        "parentCode": "2-03",
+                        "careerName": "作物遗传育种栽培技术人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3656,
+                        "careerCode": "2-03-06",
+                        "parentCode": "2-03",
+                        "careerName": "兽医兽药技术人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3663,
+                        "careerCode": "2-03-07",
+                        "parentCode": "2-03",
+                        "careerName": "畜牧与草业技术人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3661,
+                        "careerCode": "2-03-08",
+                        "parentCode": "2-03",
+                        "careerName": "水产技术人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3646,
+                        "careerCode": "2-03-09",
+                        "parentCode": "2-03",
+                        "careerName": "农业工程技术人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3831,
+                        "careerCode": "2-03-99",
+                        "parentCode": "2-03",
+                        "careerName": "其他农业技术人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 3788,
+                "careerCode": "2-04",
+                "parentCode": "2",
+                "careerName": "飞机和船舶技术人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 3193,
+                        "careerCode": "2-04-01",
+                        "parentCode": "2-04",
+                        "careerName": "飞行人员和领航人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3192,
+                        "careerCode": "2-04-02",
+                        "parentCode": "2-04",
+                        "careerName": "船舶指挥和引航人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3299,
+                        "careerCode": "2-04-99",
+                        "parentCode": "2-04",
+                        "careerName": "其他飞机和船舶技术人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 3811,
+                "careerCode": "2-05",
+                "parentCode": "2",
+                "careerName": "卫生专业技术人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 2670,
+                        "careerCode": "2-05-01",
+                        "parentCode": "2-05",
+                        "careerName": "临床和口腔医师",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2673,
+                        "careerCode": "2-05-02",
+                        "parentCode": "2-05",
+                        "careerName": "中医医师",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2668,
+                        "careerCode": "2-05-03",
+                        "parentCode": "2-05",
+                        "careerName": "中西医结合医师",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2669,
+                        "careerCode": "2-05-04",
+                        "parentCode": "2-05",
+                        "careerName": "少数民族医医师",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2666,
+                        "careerCode": "2-05-05",
+                        "parentCode": "2-05",
+                        "careerName": "公共卫生与健康医师",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2667,
+                        "careerCode": "2-05-06",
+                        "parentCode": "2-05",
+                        "careerName": "药学技术人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2664,
+                        "careerCode": "2-05-07",
+                        "parentCode": "2-05",
+                        "careerName": "医疗卫生技术人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2665,
+                        "careerCode": "2-05-08",
+                        "parentCode": "2-05",
+                        "careerName": "护理人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2663,
+                        "careerCode": "2-05-09",
+                        "parentCode": "2-05",
+                        "careerName": "乡村医生",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2778,
+                        "careerCode": "2-05-10",
+                        "parentCode": "2-05",
+                        "careerName": "盲人医疗按摩人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2893,
+                        "careerCode": "2-05-99",
+                        "parentCode": "2-05",
+                        "careerName": "其他卫生专业技术人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 3809,
+                "careerCode": "2-06",
+                "parentCode": "2",
+                "careerName": "经济和金融专业人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 4487,
+                        "careerCode": "2-06-01",
+                        "parentCode": "2-06",
+                        "careerName": "经济专业人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4484,
+                        "careerCode": "2-06-02",
+                        "parentCode": "2-06",
+                        "careerName": "统计专业人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4482,
+                        "careerCode": "2-06-03",
+                        "parentCode": "2-06",
+                        "careerName": "会计专业人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4479,
+                        "careerCode": "2-06-04",
+                        "parentCode": "2-06",
+                        "careerName": "审计专业人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4476,
+                        "careerCode": "2-06-05",
+                        "parentCode": "2-06",
+                        "careerName": "涉税服务专业人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4471,
+                        "careerCode": "2-06-06",
+                        "parentCode": "2-06",
+                        "careerName": "资产和资源评估专业人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4470,
+                        "careerCode": "2-06-07",
+                        "parentCode": "2-06",
+                        "careerName": "商务专业人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4468,
+                        "careerCode": "2-06-08",
+                        "parentCode": "2-06",
+                        "careerName": "人力资源专业人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4465,
+                        "careerCode": "2-06-09",
+                        "parentCode": "2-06",
+                        "careerName": "银行专业人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4449,
+                        "careerCode": "2-06-10",
+                        "parentCode": "2-06",
+                        "careerName": "保险专业人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4447,
+                        "careerCode": "2-06-11",
+                        "parentCode": "2-06",
+                        "careerName": "证券期货基金专业人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4445,
+                        "careerCode": "2-06-12",
+                        "parentCode": "2-06",
+                        "careerName": "知识产权专业人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4444,
+                        "careerCode": "2-06-13",
+                        "parentCode": "2-06",
+                        "careerName": "社会保险专业人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4443,
+                        "careerCode": "2-06-14",
+                        "parentCode": "2-06",
+                        "careerName": "金融科技专业人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4578,
+                        "careerCode": "2-06-99",
+                        "parentCode": "2-06",
+                        "careerName": "其他经济和金融专业人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 3807,
+                "careerCode": "2-07",
+                "parentCode": "2",
+                "careerName": "监察、法律、社会和宗教专业人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 3946,
+                        "careerCode": "2-07-01",
+                        "parentCode": "2-07",
+                        "careerName": "监察人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3945,
+                        "careerCode": "2-07-02",
+                        "parentCode": "2-07",
+                        "careerName": "法官",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3944,
+                        "careerCode": "2-07-03",
+                        "parentCode": "2-07",
+                        "careerName": "检察官",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3943,
+                        "careerCode": "2-07-04",
+                        "parentCode": "2-07",
+                        "careerName": "律师",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3941,
+                        "careerCode": "2-07-05",
+                        "parentCode": "2-07",
+                        "careerName": "公证员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3939,
+                        "careerCode": "2-07-06",
+                        "parentCode": "2-07",
+                        "careerName": "司法鉴定人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3937,
+                        "careerCode": "2-07-07",
+                        "parentCode": "2-07",
+                        "careerName": "审判辅助人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3935,
+                        "careerCode": "2-07-08",
+                        "parentCode": "2-07",
+                        "careerName": "检察辅助人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3933,
+                        "careerCode": "2-07-09",
+                        "parentCode": "2-07",
+                        "careerName": "法律顾问",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3907,
+                        "careerCode": "2-07-10",
+                        "parentCode": "2-07",
+                        "careerName": "宗教教职人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3906,
+                        "careerCode": "2-07-11",
+                        "parentCode": "2-07",
+                        "careerName": "社会工作专业人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4120,
+                        "careerCode": "2-07-99",
+                        "parentCode": "2-07",
+                        "careerName": "其他监察、法律、社会和宗教专业人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 3806,
+                "careerCode": "2-08",
+                "parentCode": "2",
+                "careerName": "教学人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 3259,
+                        "careerCode": "2-08-01",
+                        "parentCode": "2-08",
+                        "careerName": "高等学校教师",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3260,
+                        "careerCode": "2-08-02",
+                        "parentCode": "2-08",
+                        "careerName": "中小学教师",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3261,
+                        "careerCode": "2-08-03",
+                        "parentCode": "2-08",
+                        "careerName": "幼儿园教师",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3262,
+                        "careerCode": "2-08-04",
+                        "parentCode": "2-08",
+                        "careerName": "特殊教育教师",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3470,
+                        "careerCode": "2-08-99",
+                        "parentCode": "2-08",
+                        "careerName": "其他教学人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 3805,
+                "careerCode": "2-09",
+                "parentCode": "2",
+                "careerName": "文学艺术、体育专业人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 2831,
+                        "careerCode": "2-09-01",
+                        "parentCode": "2-09",
+                        "careerName": "文艺创作与编导人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2832,
+                        "careerCode": "2-09-02",
+                        "parentCode": "2-09",
+                        "careerName": "音乐指挥与演员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2833,
+                        "careerCode": "2-09-03",
+                        "parentCode": "2-09",
+                        "careerName": "电影电视制作专业人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2834,
+                        "careerCode": "2-09-04",
+                        "parentCode": "2-09",
+                        "careerName": "舞台专业人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2835,
+                        "careerCode": "2-09-05",
+                        "parentCode": "2-09",
+                        "careerName": "美术专业人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2836,
+                        "careerCode": "2-09-06",
+                        "parentCode": "2-09",
+                        "careerName": "工艺美术与创意设计专业人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2837,
+                        "careerCode": "2-09-07",
+                        "parentCode": "2-09",
+                        "careerName": "体育专业人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4308,
+                        "careerCode": "2-09-99",
+                        "parentCode": "2-09",
+                        "careerName": "其他文学艺术、体育专业人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 3804,
+                "careerCode": "2-10",
+                "parentCode": "2",
+                "careerName": "新闻出版、文化专业人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 2971,
+                        "careerCode": "2-10-01",
+                        "parentCode": "2-10",
+                        "careerName": "记者",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2972,
+                        "careerCode": "2-10-02",
+                        "parentCode": "2-10",
+                        "careerName": "编辑",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2968,
+                        "careerCode": "2-10-03",
+                        "parentCode": "2-10",
+                        "careerName": "校对员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2969,
+                        "careerCode": "2-10-04",
+                        "parentCode": "2-10",
+                        "careerName": "播音员及节目主持人",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2964,
+                        "careerCode": "2-10-05",
+                        "parentCode": "2-10",
+                        "careerName": "翻译人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2965,
+                        "careerCode": "2-10-06",
+                        "parentCode": "2-10",
+                        "careerName": "图书资料与微缩摄影专业人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2962,
+                        "careerCode": "2-10-07",
+                        "parentCode": "2-10",
+                        "careerName": "档案专业人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2963,
+                        "careerCode": "2-10-08",
+                        "parentCode": "2-10",
+                        "careerName": "考古及文物保护专业人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4342,
+                        "careerCode": "2-10-99",
+                        "parentCode": "2-10",
+                        "careerName": "其他新闻出版、文化专业人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 3979,
+                "careerCode": "2-99",
+                "parentCode": "2",
+                "careerName": "其他专业技术人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 4577,
+                        "careerCode": "2-99-00",
+                        "parentCode": "2-99",
+                        "careerName": "其他专业技术人员",
+                        "versionId": 2
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": 2554,
+        "careerCode": "3",
+        "parentCode": null,
+        "careerName": "办事人员和有关人员",
+        "versionId": 2,
+        "children": [
+            {
+                "id": 4503,
+                "careerCode": "3-01",
+                "parentCode": "3",
+                "careerName": "行政办事及辅助人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 3300,
+                        "careerCode": "3-01-01",
+                        "parentCode": "3-01",
+                        "careerName": "行政业务办理人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3306,
+                        "careerCode": "3-01-02",
+                        "parentCode": "3-01",
+                        "careerName": "行政事务处理人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3305,
+                        "careerCode": "3-01-03",
+                        "parentCode": "3-01",
+                        "careerName": "行政执法及仲裁人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3302,
+                        "careerCode": "3-01-04",
+                        "parentCode": "3-01",
+                        "careerName": "社区和村镇工作人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3751,
+                        "careerCode": "3-01-99",
+                        "parentCode": "3-01",
+                        "careerName": "其他行政办事及辅助人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 4502,
+                "careerCode": "3-02",
+                "parentCode": "3",
+                "careerName": "安全和消防及辅助人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 4057,
+                        "careerCode": "3-02-01",
+                        "parentCode": "3-02",
+                        "careerName": "人民警察",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4056,
+                        "careerCode": "3-02-02",
+                        "parentCode": "3-02",
+                        "careerName": "保卫和警务辅助人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4058,
+                        "careerCode": "3-02-03",
+                        "parentCode": "3-02",
+                        "careerName": "消防和应急救援人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4508,
+                        "careerCode": "3-02-99",
+                        "parentCode": "3-02",
+                        "careerName": "其他安全和消防及辅助人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 4501,
+                "careerCode": "3-03",
+                "parentCode": "3",
+                "careerName": "仲裁、调解及相关法律事务辅助人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 4579,
+                        "careerCode": "3-03-01",
+                        "parentCode": "3-03",
+                        "careerName": "仲裁、调解及辅助人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2591,
+                        "careerCode": "3-03-99",
+                        "parentCode": "3-03",
+                        "careerName": "其他仲裁、调解及相关法律事务辅助人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 4616,
+                "careerCode": "3-99",
+                "parentCode": "3",
+                "careerName": "其他办事人员和有关人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 4275,
+                        "careerCode": "3-99-00",
+                        "parentCode": "3-99",
+                        "careerName": "其他办事人员和有关人员",
+                        "versionId": 2
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": 2555,
+        "careerCode": "4",
+        "parentCode": null,
+        "careerName": "社会生产服务和生活服务人员",
+        "versionId": 2,
+        "children": [
+            {
+                "id": 2790,
+                "careerCode": "4-01",
+                "parentCode": "4",
+                "careerName": "批发与零售服务人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 3046,
+                        "careerCode": "4-01-01",
+                        "parentCode": "4-01",
+                        "careerName": "购销服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3045,
+                        "careerCode": "4-01-02",
+                        "parentCode": "4-01",
+                        "careerName": "销售人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3048,
+                        "careerCode": "4-01-03",
+                        "parentCode": "4-01",
+                        "careerName": "贸易经纪代理人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3047,
+                        "careerCode": "4-01-04",
+                        "parentCode": "4-01",
+                        "careerName": "再生物资回收人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3037,
+                        "careerCode": "4-01-05",
+                        "parentCode": "4-01",
+                        "careerName": "特殊商品购销人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3036,
+                        "careerCode": "4-01-06",
+                        "parentCode": "4-01",
+                        "careerName": "电子商务服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3229,
+                        "careerCode": "4-01-99",
+                        "parentCode": "4-01",
+                        "careerName": "其他批发与零售服务人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 2792,
+                "careerCode": "4-02",
+                "parentCode": "4",
+                "careerName": "交通运输、仓储物流和邮政业服务人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 2613,
+                        "careerCode": "4-02-01",
+                        "parentCode": "4-02",
+                        "careerName": "轨道交通运输服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2615,
+                        "careerCode": "4-02-02",
+                        "parentCode": "4-02",
+                        "careerName": "道路运输服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2614,
+                        "careerCode": "4-02-03",
+                        "parentCode": "4-02",
+                        "careerName": "水上运输服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2617,
+                        "careerCode": "4-02-04",
+                        "parentCode": "4-02",
+                        "careerName": "航空运输服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2616,
+                        "careerCode": "4-02-05",
+                        "parentCode": "4-02",
+                        "careerName": "装卸搬运和运输代理服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2608,
+                        "careerCode": "4-02-06",
+                        "parentCode": "4-02",
+                        "careerName": "仓储物流服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2606,
+                        "careerCode": "4-02-07",
+                        "parentCode": "4-02",
+                        "careerName": "邮政和快递服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2733,
+                        "careerCode": "4-02-99",
+                        "parentCode": "4-02",
+                        "careerName": "其他交通运输、仓储物流和邮政业服务人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 2793,
+                "careerCode": "4-03",
+                "parentCode": "4",
+                "careerName": "住宿和餐饮服务人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 4432,
+                        "careerCode": "4-03-01",
+                        "parentCode": "4-03",
+                        "careerName": "住宿服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4433,
+                        "careerCode": "4-03-02",
+                        "parentCode": "4-03",
+                        "careerName": "餐饮服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3898,
+                        "careerCode": "4-03-99",
+                        "parentCode": "4-03",
+                        "careerName": "其他住宿和餐饮服务人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 2795,
+                "careerCode": "4-04",
+                "parentCode": "4",
+                "careerName": "信息传输、软件和信息技术服务人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 3858,
+                        "careerCode": "4-04-01",
+                        "parentCode": "4-04",
+                        "careerName": "信息通信业务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3856,
+                        "careerCode": "4-04-02",
+                        "parentCode": "4-04",
+                        "careerName": "信息通信网络维护人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3857,
+                        "careerCode": "4-04-03",
+                        "parentCode": "4-04",
+                        "careerName": "广播电视传输服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3863,
+                        "careerCode": "4-04-04",
+                        "parentCode": "4-04",
+                        "careerName": "信息通信网络运行管理人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3865,
+                        "careerCode": "4-04-05",
+                        "parentCode": "4-04",
+                        "careerName": "软件和信息技术服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3449,
+                        "careerCode": "4-04-99",
+                        "parentCode": "4-04",
+                        "careerName": "其他信息传输、软件和信息技术服务人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 2797,
+                "careerCode": "4-05",
+                "parentCode": "4",
+                "careerName": "金融服务人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 3210,
+                        "careerCode": "4-05-01",
+                        "parentCode": "4-05",
+                        "careerName": "银行服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3209,
+                        "careerCode": "4-05-02",
+                        "parentCode": "4-05",
+                        "careerName": "证券期货服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3208,
+                        "careerCode": "4-05-03",
+                        "parentCode": "4-05",
+                        "careerName": "保险服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3207,
+                        "careerCode": "4-05-04",
+                        "parentCode": "4-05",
+                        "careerName": "典当服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3214,
+                        "careerCode": "4-05-05",
+                        "parentCode": "4-05",
+                        "careerName": "信托和资产管理服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2924,
+                        "careerCode": "4-05-99",
+                        "parentCode": "4-05",
+                        "careerName": "其他金融服务人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 2799,
+                "careerCode": "4-06",
+                "parentCode": "4",
+                "careerName": "房地产服务人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 4529,
+                        "careerCode": "4-06-01",
+                        "parentCode": "4-06",
+                        "careerName": "物业管理服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4543,
+                        "careerCode": "4-06-02",
+                        "parentCode": "4-06",
+                        "careerName": "房地产开发与交易服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4626,
+                        "careerCode": "4-06-99",
+                        "parentCode": "4-06",
+                        "careerName": "其他房地产服务人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 2828,
+                "careerCode": "4-07",
+                "parentCode": "4",
+                "careerName": "租赁和商务服务人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 4041,
+                        "careerCode": "4-07-01",
+                        "parentCode": "4-07",
+                        "careerName": "租赁和拍卖业务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4043,
+                        "careerCode": "4-07-02",
+                        "parentCode": "4-07",
+                        "careerName": "商务咨询服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4063,
+                        "careerCode": "4-07-03",
+                        "parentCode": "4-07",
+                        "careerName": "人力资源服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4065,
+                        "careerCode": "4-07-04",
+                        "parentCode": "4-07",
+                        "careerName": "旅游及公共游览场所服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4066,
+                        "careerCode": "4-07-05",
+                        "parentCode": "4-07",
+                        "careerName": "安全保护服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4068,
+                        "careerCode": "4-07-06",
+                        "parentCode": "4-07",
+                        "careerName": "市场管理服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4059,
+                        "careerCode": "4-07-07",
+                        "parentCode": "4-07",
+                        "careerName": "会议及展览服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4174,
+                        "careerCode": "4-07-99",
+                        "parentCode": "4-07",
+                        "careerName": "其他租赁和商务服务人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 2829,
+                "careerCode": "4-08",
+                "parentCode": "4",
+                "careerName": "技术辅助服务人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 3484,
+                        "careerCode": "4-08-01",
+                        "parentCode": "4-08",
+                        "careerName": "气象服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3486,
+                        "careerCode": "4-08-02",
+                        "parentCode": "4-08",
+                        "careerName": "海洋服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3488,
+                        "careerCode": "4-08-03",
+                        "parentCode": "4-08",
+                        "careerName": "测绘服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3496,
+                        "careerCode": "4-08-04",
+                        "parentCode": "4-08",
+                        "careerName": "地理信息服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3497,
+                        "careerCode": "4-08-05",
+                        "parentCode": "4-08",
+                        "careerName": "检验、检测和计量服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3498,
+                        "careerCode": "4-08-06",
+                        "parentCode": "4-08",
+                        "careerName": "环境监测服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3499,
+                        "careerCode": "4-08-07",
+                        "parentCode": "4-08",
+                        "careerName": "地质勘查人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3494,
+                        "careerCode": "4-08-08",
+                        "parentCode": "4-08",
+                        "careerName": "专业化设计服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3495,
+                        "careerCode": "4-08-09",
+                        "parentCode": "4-08",
+                        "careerName": "摄影扩印服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3500,
+                        "careerCode": "4-08-10",
+                        "parentCode": "4-08",
+                        "careerName": "生产现场技术工艺人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3058,
+                        "careerCode": "4-08-99",
+                        "parentCode": "4-08",
+                        "careerName": "其他技术辅助服务人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 2830,
+                "careerCode": "4-09",
+                "parentCode": "4",
+                "careerName": "水利、环境和公共设施管理服务人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 2910,
+                        "careerCode": "4-09-01",
+                        "parentCode": "4-09",
+                        "careerName": "水利设施管理养护人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2909,
+                        "careerCode": "4-09-02",
+                        "parentCode": "4-09",
+                        "careerName": "水文服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2912,
+                        "careerCode": "4-09-03",
+                        "parentCode": "4-09",
+                        "careerName": "水土保持人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2911,
+                        "careerCode": "4-09-04",
+                        "parentCode": "4-09",
+                        "careerName": "农田灌排人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2920,
+                        "careerCode": "4-09-05",
+                        "parentCode": "4-09",
+                        "careerName": "自然保护区和草地监护人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2919,
+                        "careerCode": "4-09-06",
+                        "parentCode": "4-09",
+                        "careerName": "野生动植物保护人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2922,
+                        "careerCode": "4-09-07",
+                        "parentCode": "4-09",
+                        "careerName": "环境治理服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2921,
+                        "careerCode": "4-09-08",
+                        "parentCode": "4-09",
+                        "careerName": "环境卫生服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2918,
+                        "careerCode": "4-09-09",
+                        "parentCode": "4-09",
+                        "careerName": "有害生物防制人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2997,
+                        "careerCode": "4-09-10",
+                        "parentCode": "4-09",
+                        "careerName": "绿化与园艺服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2640,
+                        "careerCode": "4-09-99",
+                        "parentCode": "4-09",
+                        "careerName": "其他水利、环境和公共设施管理服务人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 2819,
+                "careerCode": "4-10",
+                "parentCode": "4",
+                "careerName": "居民服务人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 2996,
+                        "careerCode": "4-10-01",
+                        "parentCode": "4-10",
+                        "careerName": "生活照料服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2995,
+                        "careerCode": "4-10-02",
+                        "parentCode": "4-10",
+                        "careerName": "服装裁剪和洗染织补人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3004,
+                        "careerCode": "4-10-03",
+                        "parentCode": "4-10",
+                        "careerName": "美容美发和浴池服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3003,
+                        "careerCode": "4-10-04",
+                        "parentCode": "4-10",
+                        "careerName": "保健服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3002,
+                        "careerCode": "4-10-05",
+                        "parentCode": "4-10",
+                        "careerName": "婚姻服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3001,
+                        "careerCode": "4-10-06",
+                        "parentCode": "4-10",
+                        "careerName": "殡葬服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3000,
+                        "careerCode": "4-10-07",
+                        "parentCode": "4-10",
+                        "careerName": "宠物服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2998,
+                        "careerCode": "4-10-08",
+                        "parentCode": "4-10",
+                        "careerName": "社区生活服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2655,
+                        "careerCode": "4-10-99",
+                        "parentCode": "4-10",
+                        "careerName": "其他居民服务人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 2821,
+                "careerCode": "4-11",
+                "parentCode": "4",
+                "careerName": "电力、燃气及水供应服务人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 4684,
+                        "careerCode": "4-11-01",
+                        "parentCode": "4-11",
+                        "careerName": "电力供应服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4683,
+                        "careerCode": "4-11-02",
+                        "parentCode": "4-11",
+                        "careerName": "燃气供应服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4682,
+                        "careerCode": "4-11-03",
+                        "parentCode": "4-11",
+                        "careerName": "水供应服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4422,
+                        "careerCode": "4-11-99",
+                        "parentCode": "4-11",
+                        "careerName": "其他电力、燃气及水供应服务人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 2823,
+                "careerCode": "4-12",
+                "parentCode": "4",
+                "careerName": "修理及制作服务人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 3559,
+                        "careerCode": "4-12-01",
+                        "parentCode": "4-12",
+                        "careerName": "汽车摩托车修理技术服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3562,
+                        "careerCode": "4-12-02",
+                        "parentCode": "4-12",
+                        "careerName": "计算机和办公设备维修人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3564,
+                        "careerCode": "4-12-03",
+                        "parentCode": "4-12",
+                        "careerName": "家用电子电器产品维修人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3565,
+                        "careerCode": "4-12-04",
+                        "parentCode": "4-12",
+                        "careerName": "日用产品修理服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3550,
+                        "careerCode": "4-12-05",
+                        "parentCode": "4-12",
+                        "careerName": "乐器维修人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3551,
+                        "careerCode": "4-12-06",
+                        "parentCode": "4-12",
+                        "careerName": "印章制作人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3749,
+                        "careerCode": "4-12-99",
+                        "parentCode": "4-12",
+                        "careerName": "其他修理及制作服务人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 2824,
+                "careerCode": "4-13",
+                "parentCode": "4",
+                "careerName": "文化和教育服务人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 3107,
+                        "careerCode": "4-13-01",
+                        "parentCode": "4-13",
+                        "careerName": "社会文化活动服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3110,
+                        "careerCode": "4-13-02",
+                        "parentCode": "4-13",
+                        "careerName": "广播、电视、电影和影视录音制作人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3113,
+                        "careerCode": "4-13-03",
+                        "parentCode": "4-13",
+                        "careerName": "考古及文物保护作业人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3116,
+                        "careerCode": "4-13-04",
+                        "parentCode": "4-13",
+                        "careerName": "教育服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3197,
+                        "careerCode": "4-13-99",
+                        "parentCode": "4-13",
+                        "careerName": "其他文化和教育服务人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 2825,
+                "careerCode": "4-14",
+                "parentCode": "4",
+                "careerName": "健康、体育和休闲服务人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 2686,
+                        "careerCode": "4-14-01",
+                        "parentCode": "4-14",
+                        "careerName": "医疗辅助服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2688,
+                        "careerCode": "4-14-02",
+                        "parentCode": "4-14",
+                        "careerName": "健康咨询服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2691,
+                        "careerCode": "4-14-03",
+                        "parentCode": "4-14",
+                        "careerName": "康复矫正服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2693,
+                        "careerCode": "4-14-04",
+                        "parentCode": "4-14",
+                        "careerName": "公共卫生辅助服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2694,
+                        "careerCode": "4-14-05",
+                        "parentCode": "4-14",
+                        "careerName": "体育健身和娱乐场所服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2695,
+                        "careerCode": "4-14-06",
+                        "parentCode": "4-14",
+                        "careerName": "康养、休闲服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4571,
+                        "careerCode": "4-14-99",
+                        "parentCode": "4-14",
+                        "careerName": "其他健康、体育和休闲服务人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 2923,
+                "careerCode": "4-99",
+                "parentCode": "4",
+                "careerName": "其他社会生产服务和生活服务人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 4553,
+                        "careerCode": "4-99-00",
+                        "parentCode": "4-99",
+                        "careerName": "其他社会生产服务和生活服务人员",
+                        "versionId": 2
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": 2556,
+        "careerCode": "5",
+        "parentCode": null,
+        "careerName": "农、林、牧、渔业生产及辅助人员",
+        "versionId": 2,
+        "children": [
+            {
+                "id": 3348,
+                "careerCode": "5-01",
+                "parentCode": "5",
+                "careerName": "农业生产人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 3393,
+                        "careerCode": "5-01-01",
+                        "parentCode": "5-01",
+                        "careerName": "作物种子（苗）繁育生产人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3391,
+                        "careerCode": "5-01-02",
+                        "parentCode": "5-01",
+                        "careerName": "农作物生产人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3252,
+                        "careerCode": "5-01-99",
+                        "parentCode": "5-01",
+                        "careerName": "其他农业生产人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 3350,
+                "careerCode": "5-02",
+                "parentCode": "5",
+                "careerName": "林业生产人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 3735,
+                        "careerCode": "5-02-01",
+                        "parentCode": "5-02",
+                        "careerName": "林草种苗繁育人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3738,
+                        "careerCode": "5-02-02",
+                        "parentCode": "5-02",
+                        "careerName": "营造林人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3742,
+                        "careerCode": "5-02-03",
+                        "parentCode": "5-02",
+                        "careerName": "森林经营和管护人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3746,
+                        "careerCode": "5-02-04",
+                        "parentCode": "5-02",
+                        "careerName": "木材采运人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3552,
+                        "careerCode": "5-02-99",
+                        "parentCode": "5-02",
+                        "careerName": "其他林业生产人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 3352,
+                "careerCode": "5-03",
+                "parentCode": "5",
+                "careerName": "畜牧业生产人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 4423,
+                        "careerCode": "5-03-01",
+                        "parentCode": "5-03",
+                        "careerName": "畜禽种苗繁育人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4425,
+                        "careerCode": "5-03-02",
+                        "parentCode": "5-03",
+                        "careerName": "畜禽饲养人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4427,
+                        "careerCode": "5-03-03",
+                        "parentCode": "5-03",
+                        "careerName": "特种经济动物饲养人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4325,
+                        "careerCode": "5-03-99",
+                        "parentCode": "5-03",
+                        "careerName": "其他畜牧业生产人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 3354,
+                "careerCode": "5-04",
+                "parentCode": "5",
+                "careerName": "渔业生产人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 2768,
+                        "careerCode": "5-04-01",
+                        "parentCode": "5-04",
+                        "careerName": "水产苗种繁育人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2767,
+                        "careerCode": "5-04-02",
+                        "parentCode": "5-04",
+                        "careerName": "水产养殖人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2773,
+                        "careerCode": "5-04-03",
+                        "parentCode": "5-04",
+                        "careerName": "水产捕捞及有关人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2639,
+                        "careerCode": "5-04-99",
+                        "parentCode": "5-04",
+                        "careerName": "其他渔业生产人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 3355,
+                "careerCode": "5-05",
+                "parentCode": "5",
+                "careerName": "农、林、牧、渔业生产辅助人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 3024,
+                        "careerCode": "5-05-01",
+                        "parentCode": "5-05",
+                        "careerName": "农业生产服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3026,
+                        "careerCode": "5-05-02",
+                        "parentCode": "5-05",
+                        "careerName": "动植物疫病防治人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3025,
+                        "careerCode": "5-05-03",
+                        "parentCode": "5-05",
+                        "careerName": "农村能源利用人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3029,
+                        "careerCode": "5-05-04",
+                        "parentCode": "5-05",
+                        "careerName": "农村环境保护人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3027,
+                        "careerCode": "5-05-05",
+                        "parentCode": "5-05",
+                        "careerName": "农机化服务人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3032,
+                        "careerCode": "5-05-06",
+                        "parentCode": "5-05",
+                        "careerName": "农副林特产品初加工人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4152,
+                        "careerCode": "5-05-99",
+                        "parentCode": "5-05",
+                        "careerName": "其他农、林、牧、渔业生产辅助人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 3529,
+                "careerCode": "5-99",
+                "parentCode": "5",
+                "careerName": "其他农、林、牧、渔业生产及辅助人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 4672,
+                        "careerCode": "5-99-00",
+                        "parentCode": "5-99",
+                        "careerName": "其他农、林、牧、渔业生产及辅助人员",
+                        "versionId": 2
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": 2557,
+        "careerCode": "6",
+        "parentCode": null,
+        "careerName": "生产制造及有关人员",
+        "versionId": 2,
+        "children": [
+            {
+                "id": 4039,
+                "careerCode": "6-01",
+                "parentCode": "6",
+                "careerName": "农副产品加工人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 3680,
+                        "careerCode": "6-01-01",
+                        "parentCode": "6-01",
+                        "careerName": "粮油加工人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3679,
+                        "careerCode": "6-01-02",
+                        "parentCode": "6-01",
+                        "careerName": "饲料加工人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3691,
+                        "careerCode": "6-01-03",
+                        "parentCode": "6-01",
+                        "careerName": "制糖人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3689,
+                        "careerCode": "6-01-04",
+                        "parentCode": "6-01",
+                        "careerName": "畜禽制品加工人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3696,
+                        "careerCode": "6-01-05",
+                        "parentCode": "6-01",
+                        "careerName": "水产品加工人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3693,
+                        "careerCode": "6-01-06",
+                        "parentCode": "6-01",
+                        "careerName": "果蔬和坚果加工人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3684,
+                        "careerCode": "6-01-07",
+                        "parentCode": "6-01",
+                        "careerName": "淀粉和豆制品加工人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3882,
+                        "careerCode": "6-01-99",
+                        "parentCode": "6-01",
+                        "careerName": "其他农副产品加工人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 4037,
+                "careerCode": "6-02",
+                "parentCode": "6",
+                "careerName": "食品、饮料生产加工人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 4424,
+                        "careerCode": "6-02-01",
+                        "parentCode": "6-02",
+                        "careerName": "焙烤食品制造人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4420,
+                        "careerCode": "6-02-02",
+                        "parentCode": "6-02",
+                        "careerName": "糖制品加工人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4421,
+                        "careerCode": "6-02-03",
+                        "parentCode": "6-02",
+                        "careerName": "方便食品和罐头食品加工人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4430,
+                        "careerCode": "6-02-04",
+                        "parentCode": "6-02",
+                        "careerName": "乳制品加工人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4431,
+                        "careerCode": "6-02-05",
+                        "parentCode": "6-02",
+                        "careerName": "调味品及食品添加剂制作人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4429,
+                        "careerCode": "6-02-06",
+                        "parentCode": "6-02",
+                        "careerName": "酒、饮料及精制茶制造人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4570,
+                        "careerCode": "6-02-99",
+                        "parentCode": "6-02",
+                        "careerName": "其他食品、饮料生产加工人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 4044,
+                "careerCode": "6-03",
+                "parentCode": "6",
+                "careerName": "烟草及其制品加工人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 2723,
+                        "careerCode": "6-03-01",
+                        "parentCode": "6-03",
+                        "careerName": "烟叶初加工人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2724,
+                        "careerCode": "6-03-02",
+                        "parentCode": "6-03",
+                        "careerName": "烟用材料生产人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2722,
+                        "careerCode": "6-03-03",
+                        "parentCode": "6-03",
+                        "careerName": "烟草制品生产人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2874,
+                        "careerCode": "6-03-99",
+                        "parentCode": "6-03",
+                        "careerName": "其他烟草及其制品加工人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 4042,
+                "careerCode": "6-04",
+                "parentCode": "6",
+                "careerName": "纺织、针织、印染人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 3257,
+                        "careerCode": "6-04-01",
+                        "parentCode": "6-04",
+                        "careerName": "纤维预处理人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3256,
+                        "careerCode": "6-04-02",
+                        "parentCode": "6-04",
+                        "careerName": "纺纱人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3255,
+                        "careerCode": "6-04-03",
+                        "parentCode": "6-04",
+                        "careerName": "织造人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3254,
+                        "careerCode": "6-04-04",
+                        "parentCode": "6-04",
+                        "careerName": "针织人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3253,
+                        "careerCode": "6-04-05",
+                        "parentCode": "6-04",
+                        "careerName": "非织造布制造人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3263,
+                        "careerCode": "6-04-06",
+                        "parentCode": "6-04",
+                        "careerName": "印染人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3467,
+                        "careerCode": "6-04-99",
+                        "parentCode": "6-04",
+                        "careerName": "其他纺织、针织、印染人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 4046,
+                "careerCode": "6-05",
+                "parentCode": "6",
+                "careerName": "纺织品、服装和皮革、毛皮制品加工制作人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 3958,
+                        "careerCode": "6-05-01",
+                        "parentCode": "6-05",
+                        "careerName": "纺织品和服装剪裁缝纫人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3956,
+                        "careerCode": "6-05-02",
+                        "parentCode": "6-05",
+                        "careerName": "皮革、毛皮及其制品加工人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3954,
+                        "careerCode": "6-05-03",
+                        "parentCode": "6-05",
+                        "careerName": "羽绒羽毛加工及制品制造人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3952,
+                        "careerCode": "6-05-04",
+                        "parentCode": "6-05",
+                        "careerName": "鞋帽制作人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4179,
+                        "careerCode": "6-05-99",
+                        "parentCode": "6-05",
+                        "careerName": "其他纺织品、服装和皮革、毛皮制品加工制作人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 4045,
+                "careerCode": "6-06",
+                "parentCode": "6",
+                "careerName": "木材加工、家具与木制品制作人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 4594,
+                        "careerCode": "6-06-01",
+                        "parentCode": "6-06",
+                        "careerName": "木材加工人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4595,
+                        "careerCode": "6-06-02",
+                        "parentCode": "6-06",
+                        "careerName": "人造板制造人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4597,
+                        "careerCode": "6-06-03",
+                        "parentCode": "6-06",
+                        "careerName": "木制品制造人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4598,
+                        "careerCode": "6-06-04",
+                        "parentCode": "6-06",
+                        "careerName": "家具制造人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4691,
+                        "careerCode": "6-06-99",
+                        "parentCode": "6-06",
+                        "careerName": "其他木材加工、家具与木制品制作人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 4048,
+                "careerCode": "6-07",
+                "parentCode": "6",
+                "careerName": "纸及纸制品生产加工人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 2913,
+                        "careerCode": "6-07-01",
+                        "parentCode": "6-07",
+                        "careerName": "制浆造纸人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2914,
+                        "careerCode": "6-07-02",
+                        "parentCode": "6-07",
+                        "careerName": "纸制品制作人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3057,
+                        "careerCode": "6-07-99",
+                        "parentCode": "6-07",
+                        "careerName": "其他纸及纸制品生产加工人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 4047,
+                "careerCode": "6-08",
+                "parentCode": "6",
+                "careerName": "印刷和记录媒介复制人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 3524,
+                        "careerCode": "6-08-01",
+                        "parentCode": "6-08",
+                        "careerName": "印刷人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3514,
+                        "careerCode": "6-08-02",
+                        "parentCode": "6-08",
+                        "careerName": "记录媒介复制人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3638,
+                        "careerCode": "6-08-99",
+                        "parentCode": "6-08",
+                        "careerName": "其他印刷和记录媒介复制人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 4090,
+                "careerCode": "6-09",
+                "parentCode": "6",
+                "careerName": "文教、工美、体育和娱乐用品制造人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 4214,
+                        "careerCode": "6-09-01",
+                        "parentCode": "6-09",
+                        "careerName": "文教用品制作人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4212,
+                        "careerCode": "6-09-02",
+                        "parentCode": "6-09",
+                        "careerName": "乐器制作人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4207,
+                        "careerCode": "6-09-03",
+                        "parentCode": "6-09",
+                        "careerName": "工艺美术品制造人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4206,
+                        "careerCode": "6-09-04",
+                        "parentCode": "6-09",
+                        "careerName": "体育用品制作人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4209,
+                        "careerCode": "6-09-05",
+                        "parentCode": "6-09",
+                        "careerName": "玩具制作人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4391,
+                        "careerCode": "6-09-99",
+                        "parentCode": "6-09",
+                        "careerName": "其他文教、工美、体育和娱乐用品制造人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 4087,
+                "careerCode": "6-10",
+                "parentCode": "6",
+                "careerName": "石油加工和炼焦、煤化工生产人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 4255,
+                        "careerCode": "6-10-01",
+                        "parentCode": "6-10",
+                        "careerName": "石油炼制生产人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4252,
+                        "careerCode": "6-10-02",
+                        "parentCode": "6-10",
+                        "careerName": "炼焦人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4250,
+                        "careerCode": "6-10-03",
+                        "parentCode": "6-10",
+                        "careerName": "煤化工生产人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4392,
+                        "careerCode": "6-10-99",
+                        "parentCode": "6-10",
+                        "careerName": "其他石油加工和炼焦、煤化工生产人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 4086,
+                "careerCode": "6-11",
+                "parentCode": "6",
+                "careerName": "化学原料和化学制品制造人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 2571,
+                        "careerCode": "6-11-01",
+                        "parentCode": "6-11",
+                        "careerName": "化工产品生产通用工艺人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2577,
+                        "careerCode": "6-11-02",
+                        "parentCode": "6-11",
+                        "careerName": "基础化学原料制造人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2578,
+                        "careerCode": "6-11-03",
+                        "parentCode": "6-11",
+                        "careerName": "化学肥料生产人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2579,
+                        "careerCode": "6-11-04",
+                        "parentCode": "6-11",
+                        "careerName": "农药生产人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2580,
+                        "careerCode": "6-11-05",
+                        "parentCode": "6-11",
+                        "careerName": "涂料、油墨、颜料及类似产品制造人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2573,
+                        "careerCode": "6-11-06",
+                        "parentCode": "6-11",
+                        "careerName": "合成树脂生产人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2574,
+                        "careerCode": "6-11-07",
+                        "parentCode": "6-11",
+                        "careerName": "合成橡胶生产人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2575,
+                        "careerCode": "6-11-08",
+                        "parentCode": "6-11",
+                        "careerName": "专用化学产品生产人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2576,
+                        "careerCode": "6-11-09",
+                        "parentCode": "6-11",
+                        "careerName": "火工品制造、保管、爆破及焰火产品制造人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2631,
+                        "careerCode": "6-11-10",
+                        "parentCode": "6-11",
+                        "careerName": "日用化学品生产人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2730,
+                        "careerCode": "6-11-99",
+                        "parentCode": "6-11",
+                        "careerName": "其他化学原料和化学制品制造人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 4071,
+                "careerCode": "6-12",
+                "parentCode": "6",
+                "careerName": "医药制造人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 3122,
+                        "careerCode": "6-12-01",
+                        "parentCode": "6-12",
+                        "careerName": "化学药品原料药制造人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3124,
+                        "careerCode": "6-12-02",
+                        "parentCode": "6-12",
+                        "careerName": "中药饮片加工人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3131,
+                        "careerCode": "6-12-03",
+                        "parentCode": "6-12",
+                        "careerName": "药物制剂人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3132,
+                        "careerCode": "6-12-04",
+                        "parentCode": "6-12",
+                        "careerName": "兽用药品制造人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3133,
+                        "careerCode": "6-12-05",
+                        "parentCode": "6-12",
+                        "careerName": "生物药品制造人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3227,
+                        "careerCode": "6-12-99",
+                        "parentCode": "6-12",
+                        "careerName": "其他医药制造人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 4069,
+                "careerCode": "6-13",
+                "parentCode": "6",
+                "careerName": "化学纤维制造人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 3723,
+                        "careerCode": "6-13-01",
+                        "parentCode": "6-13",
+                        "careerName": "化学纤维原料制造人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3724,
+                        "careerCode": "6-13-02",
+                        "parentCode": "6-13",
+                        "careerName": "化学纤维纺丝及后处理人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3965,
+                        "careerCode": "6-13-99",
+                        "parentCode": "6-13",
+                        "careerName": "其他化学纤维制造人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 4076,
+                "careerCode": "6-14",
+                "parentCode": "6",
+                "careerName": "橡胶和塑料制品制造人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 4485,
+                        "careerCode": "6-14-01",
+                        "parentCode": "6-14",
+                        "careerName": "橡胶制品生产人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4483,
+                        "careerCode": "6-14-02",
+                        "parentCode": "6-14",
+                        "careerName": "塑料制品加工人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4580,
+                        "careerCode": "6-14-99",
+                        "parentCode": "6-14",
+                        "careerName": "其他橡胶和塑料制品制造人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 4073,
+                "careerCode": "6-15",
+                "parentCode": "6",
+                "careerName": "非金属矿物制品制造人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 2753,
+                        "careerCode": "6-15-01",
+                        "parentCode": "6-15",
+                        "careerName": "水泥、石灰、石膏及其制品制造人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2747,
+                        "careerCode": "6-15-02",
+                        "parentCode": "6-15",
+                        "careerName": "砖瓦石材等建筑材料制造人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2746,
+                        "careerCode": "6-15-03",
+                        "parentCode": "6-15",
+                        "careerName": "玻璃及玻璃制品生产加工人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2750,
+                        "careerCode": "6-15-04",
+                        "parentCode": "6-15",
+                        "careerName": "玻璃纤维及玻璃纤维增强塑料制品制造人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2748,
+                        "careerCode": "6-15-05",
+                        "parentCode": "6-15",
+                        "careerName": "陶瓷制品制造人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2762,
+                        "careerCode": "6-15-06",
+                        "parentCode": "6-15",
+                        "careerName": "耐火材料制品生产人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2760,
+                        "careerCode": "6-15-07",
+                        "parentCode": "6-15",
+                        "careerName": "石墨及炭素制品生产人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2765,
+                        "careerCode": "6-15-08",
+                        "parentCode": "6-15",
+                        "careerName": "高岭土、珍珠岩等非金属矿物加工人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2917,
+                        "careerCode": "6-15-99",
+                        "parentCode": "6-15",
+                        "careerName": "其他非金属矿物制品制造人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 4080,
+                "careerCode": "6-16",
+                "parentCode": "6",
+                "careerName": "采矿人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 3337,
+                        "careerCode": "6-16-01",
+                        "parentCode": "6-16",
+                        "careerName": "矿物采选人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3338,
+                        "careerCode": "6-16-02",
+                        "parentCode": "6-16",
+                        "careerName": "石油和天然气开采与储运人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3336,
+                        "careerCode": "6-16-03",
+                        "parentCode": "6-16",
+                        "careerName": "采盐人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3493,
+                        "careerCode": "6-16-99",
+                        "parentCode": "6-16",
+                        "careerName": "其他采矿人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 4079,
+                "careerCode": "6-17",
+                "parentCode": "6",
+                "careerName": "金属冶炼和压延加工人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 3993,
+                        "careerCode": "6-17-01",
+                        "parentCode": "6-17",
+                        "careerName": "炼铁人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3988,
+                        "careerCode": "6-17-02",
+                        "parentCode": "6-17",
+                        "careerName": "炼钢人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3990,
+                        "careerCode": "6-17-03",
+                        "parentCode": "6-17",
+                        "careerName": "铸铁管人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3984,
+                        "careerCode": "6-17-04",
+                        "parentCode": "6-17",
+                        "careerName": "铁合金冶炼人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3986,
+                        "careerCode": "6-17-05",
+                        "parentCode": "6-17",
+                        "careerName": "重有色金属冶炼人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3981,
+                        "careerCode": "6-17-06",
+                        "parentCode": "6-17",
+                        "careerName": "轻有色金属冶炼人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3983,
+                        "careerCode": "6-17-07",
+                        "parentCode": "6-17",
+                        "careerName": "稀贵金属冶炼人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3994,
+                        "careerCode": "6-17-08",
+                        "parentCode": "6-17",
+                        "careerName": "半导体材料制备人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3995,
+                        "careerCode": "6-17-09",
+                        "parentCode": "6-17",
+                        "careerName": "金属轧制人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4052,
+                        "careerCode": "6-17-10",
+                        "parentCode": "6-17",
+                        "careerName": "硬质合金生产人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4213,
+                        "careerCode": "6-17-99",
+                        "parentCode": "6-17",
+                        "careerName": "其他金属冶炼和压延加工人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 4083,
+                "careerCode": "6-18",
+                "parentCode": "6",
+                "careerName": "机械制造基础加工人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 4632,
+                        "careerCode": "6-18-01",
+                        "parentCode": "6-18",
+                        "careerName": "机械冷加工人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4631,
+                        "careerCode": "6-18-02",
+                        "parentCode": "6-18",
+                        "careerName": "机械热加工人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4630,
+                        "careerCode": "6-18-03",
+                        "parentCode": "6-18",
+                        "careerName": "机械表面处理加工人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4629,
+                        "careerCode": "6-18-04",
+                        "parentCode": "6-18",
+                        "careerName": "工装工具制造加工人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2522,
+                        "careerCode": "6-18-99",
+                        "parentCode": "6-18",
+                        "careerName": "其他机械制造基础加工人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 4081,
+                "careerCode": "6-19",
+                "parentCode": "6",
+                "careerName": "金属制品制造人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 2926,
+                        "careerCode": "6-19-01",
+                        "parentCode": "6-19",
+                        "careerName": "五金制品制作装配人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3075,
+                        "careerCode": "6-19-99",
+                        "parentCode": "6-19",
+                        "careerName": "其他金属制品制造人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 4113,
+                "careerCode": "6-20",
+                "parentCode": "6",
+                "careerName": "通用设备制造人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 2976,
+                        "careerCode": "6-20-01",
+                        "parentCode": "6-20",
+                        "careerName": "通用基础件装配制造人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2982,
+                        "careerCode": "6-20-02",
+                        "parentCode": "6-20",
+                        "careerName": "锅炉及原动设备制造人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2980,
+                        "careerCode": "6-20-03",
+                        "parentCode": "6-20",
+                        "careerName": "金属加工机械制造人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2988,
+                        "careerCode": "6-20-04",
+                        "parentCode": "6-20",
+                        "careerName": "物料搬运设备制造人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2984,
+                        "careerCode": "6-20-05",
+                        "parentCode": "6-20",
+                        "careerName": "泵、阀门、压缩机及类似机械制造人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2993,
+                        "careerCode": "6-20-06",
+                        "parentCode": "6-20",
+                        "careerName": "烘炉、衡器、水处理等设备制造人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2991,
+                        "careerCode": "6-20-07",
+                        "parentCode": "6-20",
+                        "careerName": "文化办公机械制造人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3063,
+                        "careerCode": "6-20-99",
+                        "parentCode": "6-20",
+                        "careerName": "其他通用设备制造人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 4116,
+                "careerCode": "6-21",
+                "parentCode": "6",
+                "careerName": "专用设备制造人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 3538,
+                        "careerCode": "6-21-01",
+                        "parentCode": "6-21",
+                        "careerName": "采矿、建筑专用设备制造人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3539,
+                        "careerCode": "6-21-02",
+                        "parentCode": "6-21",
+                        "careerName": "印刷生产专用设备制造人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3536,
+                        "careerCode": "6-21-03",
+                        "parentCode": "6-21",
+                        "careerName": "纺织服装和皮革加工专用设备制造人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3537,
+                        "careerCode": "6-21-04",
+                        "parentCode": "6-21",
+                        "careerName": "电子专用设备装配调试人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3540,
+                        "careerCode": "6-21-05",
+                        "parentCode": "6-21",
+                        "careerName": "农业机械制造人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3541,
+                        "careerCode": "6-21-06",
+                        "parentCode": "6-21",
+                        "careerName": "医疗器械制品和康复辅具生产人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3740,
+                        "careerCode": "6-21-99",
+                        "parentCode": "6-21",
+                        "careerName": "其他专用设备制造人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 4114,
+                "careerCode": "6-22",
+                "parentCode": "6",
+                "careerName": "汽车制造人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 4278,
+                        "careerCode": "6-22-01",
+                        "parentCode": "6-22",
+                        "careerName": "汽车零部件、饰件生产加工人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4281,
+                        "careerCode": "6-22-02",
+                        "parentCode": "6-22",
+                        "careerName": "汽车整车制造人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4426,
+                        "careerCode": "6-22-99",
+                        "parentCode": "6-22",
+                        "careerName": "其他汽车制造人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 4096,
+                "careerCode": "6-23",
+                "parentCode": "6",
+                "careerName": "铁路、船舶、航空设备制造人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 2600,
+                        "careerCode": "6-23-01",
+                        "parentCode": "6-23",
+                        "careerName": "轨道交通运输设备制造人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2599,
+                        "careerCode": "6-23-02",
+                        "parentCode": "6-23",
+                        "careerName": "船舶制造人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2604,
+                        "careerCode": "6-23-03",
+                        "parentCode": "6-23",
+                        "careerName": "航空产品装配、调试人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2603,
+                        "careerCode": "6-23-04",
+                        "parentCode": "6-23",
+                        "careerName": "摩托车、自行车制造人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2774,
+                        "careerCode": "6-23-99",
+                        "parentCode": "6-23",
+                        "careerName": "其他铁路、船舶、航空设备制造人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 4095,
+                "careerCode": "6-24",
+                "parentCode": "6",
+                "careerName": "电气机械和器材制造人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 3147,
+                        "careerCode": "6-24-01",
+                        "parentCode": "6-24",
+                        "careerName": "电机制造人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3146,
+                        "careerCode": "6-24-02",
+                        "parentCode": "6-24",
+                        "careerName": "输配电及控制设备制造人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3145,
+                        "careerCode": "6-24-03",
+                        "parentCode": "6-24",
+                        "careerName": "电线电缆、光纤光缆及电工器材制造人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3151,
+                        "careerCode": "6-24-04",
+                        "parentCode": "6-24",
+                        "careerName": "电池制造人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3150,
+                        "careerCode": "6-24-05",
+                        "parentCode": "6-24",
+                        "careerName": "家用电力器具制造人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3149,
+                        "careerCode": "6-24-06",
+                        "parentCode": "6-24",
+                        "careerName": "非电力家用器具制造人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3148,
+                        "careerCode": "6-24-07",
+                        "parentCode": "6-24",
+                        "careerName": "照明器具制造人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3152,
+                        "careerCode": "6-24-08",
+                        "parentCode": "6-24",
+                        "careerName": "电气信号设备装置制造人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3258,
+                        "careerCode": "6-24-99",
+                        "parentCode": "6-24",
+                        "careerName": "其他电气机械和器材制造人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 4100,
+                "careerCode": "6-25",
+                "parentCode": "6",
+                "careerName": "计算机、通信和其他电子设备制造人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 3771,
+                        "careerCode": "6-25-01",
+                        "parentCode": "6-25",
+                        "careerName": "电子元件制造人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3769,
+                        "careerCode": "6-25-02",
+                        "parentCode": "6-25",
+                        "careerName": "电子器件制造人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3767,
+                        "careerCode": "6-25-03",
+                        "parentCode": "6-25",
+                        "careerName": "计算机制造人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3765,
+                        "careerCode": "6-25-04",
+                        "parentCode": "6-25",
+                        "careerName": "电子设备装配调试人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3998,
+                        "careerCode": "6-25-99",
+                        "parentCode": "6-25",
+                        "careerName": "其他计算机、通信和其他电子设备制造人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 4098,
+                "careerCode": "6-26",
+                "parentCode": "6",
+                "careerName": "仪器仪表制造人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 4518,
+                        "careerCode": "6-26-01",
+                        "parentCode": "6-26",
+                        "careerName": "仪器仪表装配人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4593,
+                        "careerCode": "6-26-99",
+                        "parentCode": "6-26",
+                        "careerName": "其他仪器仪表制造人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 4104,
+                "careerCode": "6-27",
+                "parentCode": "6",
+                "careerName": "再生资源综合利用人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 2783,
+                        "careerCode": "6-27-01",
+                        "parentCode": "6-27",
+                        "careerName": "废料和碎屑加工处理人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2939,
+                        "careerCode": "6-27-99",
+                        "parentCode": "6-27",
+                        "careerName": "其他再生资源综合利用人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 4102,
+                "careerCode": "6-28",
+                "parentCode": "6",
+                "careerName": "电力、热力、气体、水生产和输配人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 3399,
+                        "careerCode": "6-28-01",
+                        "parentCode": "6-28",
+                        "careerName": "电力、热力生产和供应人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3401,
+                        "careerCode": "6-28-02",
+                        "parentCode": "6-28",
+                        "careerName": "气体生产、处理和输送人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3400,
+                        "careerCode": "6-28-03",
+                        "parentCode": "6-28",
+                        "careerName": "水生产、输排和水处理人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 3510,
+                        "careerCode": "6-28-99",
+                        "parentCode": "6-28",
+                        "careerName": "其他电力、热力、气体、水生产和输配人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 4107,
+                "careerCode": "6-29",
+                "parentCode": "6",
+                "careerName": "建筑施工人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 4032,
+                        "careerCode": "6-29-01",
+                        "parentCode": "6-29",
+                        "careerName": "房屋建筑施工人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4030,
+                        "careerCode": "6-29-02",
+                        "parentCode": "6-29",
+                        "careerName": "土木工程建筑施工人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4036,
+                        "careerCode": "6-29-03",
+                        "parentCode": "6-29",
+                        "careerName": "建筑安装施工人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4034,
+                        "careerCode": "6-29-04",
+                        "parentCode": "6-29",
+                        "careerName": "建筑装饰人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4026,
+                        "careerCode": "6-29-05",
+                        "parentCode": "6-29",
+                        "careerName": "古建筑修建人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4254,
+                        "careerCode": "6-29-99",
+                        "parentCode": "6-29",
+                        "careerName": "其他建筑施工人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 4139,
+                "careerCode": "6-30",
+                "parentCode": "6",
+                "careerName": "运输设备和通用工程机械操作人员及有关人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 4105,
+                        "careerCode": "6-30-01",
+                        "parentCode": "6-30",
+                        "careerName": "专用车辆操作人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4103,
+                        "careerCode": "6-30-02",
+                        "parentCode": "6-30",
+                        "careerName": "轨道交通运输机械设备操作人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4101,
+                        "careerCode": "6-30-03",
+                        "parentCode": "6-30",
+                        "careerName": "民用航空设备操作及有关人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4099,
+                        "careerCode": "6-30-04",
+                        "parentCode": "6-30",
+                        "careerName": "水上运输设备操作及有关人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4097,
+                        "careerCode": "6-30-05",
+                        "parentCode": "6-30",
+                        "careerName": "通用工程机械操作人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4216,
+                        "careerCode": "6-30-99",
+                        "parentCode": "6-30",
+                        "careerName": "其他运输设备和通用工程机械操作人员及有关人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 4137,
+                "careerCode": "6-31",
+                "parentCode": "6",
+                "careerName": "生产辅助人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 4633,
+                        "careerCode": "6-31-01",
+                        "parentCode": "6-31",
+                        "careerName": "机械设备修理人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4634,
+                        "careerCode": "6-31-02",
+                        "parentCode": "6-31",
+                        "careerName": "船舶、航空器修理人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4635,
+                        "careerCode": "6-31-03",
+                        "parentCode": "6-31",
+                        "careerName": "检验试验人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4637,
+                        "careerCode": "6-31-04",
+                        "parentCode": "6-31",
+                        "careerName": "称重计量人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4638,
+                        "careerCode": "6-31-05",
+                        "parentCode": "6-31",
+                        "careerName": "包装人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4640,
+                        "careerCode": "6-31-06",
+                        "parentCode": "6-31",
+                        "careerName": "安全生产管理人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 4642,
+                        "careerCode": "6-31-07",
+                        "parentCode": "6-31",
+                        "careerName": "工业机器人操作运维人员",
+                        "versionId": 2
+                    },
+                    {
+                        "id": 2653,
+                        "careerCode": "6-31-99",
+                        "parentCode": "6-31",
+                        "careerName": "其他生产辅助人员",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 4224,
+                "careerCode": "6-99",
+                "parentCode": "6",
+                "careerName": "其他生产制造及有关人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 4692,
+                        "careerCode": "6-99-00",
+                        "parentCode": "6-99",
+                        "careerName": "其他生产制造及有关人员",
+                        "versionId": 2
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": 2558,
+        "careerCode": "7",
+        "parentCode": null,
+        "careerName": "军队人员",
+        "versionId": 2,
+        "children": [
+            {
+                "id": 4652,
+                "careerCode": "7-01",
+                "parentCode": "7",
+                "careerName": "军官（警官）",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 2643,
+                        "careerCode": "7-01-00",
+                        "parentCode": "7-01",
+                        "careerName": "军官（警官）",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 4644,
+                "careerCode": "7-02",
+                "parentCode": "7",
+                "careerName": "军士（警士）",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 4279,
+                        "careerCode": "7-02-00",
+                        "parentCode": "7-02",
+                        "careerName": "军士（警士）",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 4643,
+                "careerCode": "7-03",
+                "parentCode": "7",
+                "careerName": "义务兵",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 3555,
+                        "careerCode": "7-03-00",
+                        "parentCode": "7-03",
+                        "careerName": "义务兵",
+                        "versionId": 2
+                    }
+                ]
+            },
+            {
+                "id": 4645,
+                "careerCode": "7-04",
+                "parentCode": "7",
+                "careerName": "文职人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 3205,
+                        "careerCode": "7-04-00",
+                        "parentCode": "7-04",
+                        "careerName": "文职人员",
+                        "versionId": 2
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": 2559,
+        "careerCode": "8",
+        "parentCode": null,
+        "careerName": "不便分类的其他从业人员",
+        "versionId": 2,
+        "children": [
+            {
+                "id": 2994,
+                "careerCode": "8-00",
+                "parentCode": "8",
+                "careerName": "不便分类的其他从业人员",
+                "versionId": 2,
+                "children": [
+                    {
+                        "id": 2894,
+                        "careerCode": "8-00-00",
+                        "parentCode": "8-00",
+                        "careerName": "不便分类的其他从业人员",
+                        "versionId": 2
+                    }
+                ]
+            }
+        ]
+    }
+]

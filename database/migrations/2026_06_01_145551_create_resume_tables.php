@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('code')->comment('职位代码');
             $table->unsignedBigInteger('parent_id')->nullable()->comment('父级职位ID');
             $table->integer('sort')->default(0)->comment('排序');
+            $table->tinyInteger('depth')->nullable()->comment('层级');
             $table->mediumText('extra')->nullable()->comment('扩展字段');
             $table->timestamps();
             $table->softDeletes();
@@ -33,6 +34,7 @@ return new class extends Migration
             $table->string('code')->comment('行业代码');
             $table->unsignedBigInteger('parent_id')->nullable()->comment('父级行业ID');
             $table->integer('sort')->default(0)->comment('排序');
+            $table->tinyInteger('depth')->nullable()->comment('层级');
             $table->mediumText('extra')->nullable()->comment('扩展字段');
             $table->timestamps();
             $table->softDeletes();

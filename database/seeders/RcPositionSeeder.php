@@ -33,7 +33,7 @@ class RcPositionSeeder extends Seeder
         $now = now();
 
         foreach ($positions as $index => $position) {
-            $this->insertPosition($position, null, $index + 1, $now);
+            $this->insertPosition($position, null, $index + 1, 1, $now);
         }
     }
 
@@ -107,13 +107,14 @@ class RcPositionSeeder extends Seeder
     /**
      * @param  array{name:string, code:string, children:array<int, array<string, mixed>>}  $position
      */
-    private function insertPosition(array $position, ?int $parentId, int $sort, mixed $now): void
+    private function insertPosition(array $position, ?int $parentId, int $sort, int $depth, mixed $now): void
     {
         $dbId = DB::table('rc_positions')->insertGetId([
             'name' => $position['name'],
             'code' => $position['code'],
             'parent_id' => $parentId,
             'sort' => $sort,
+            'depth' => $depth,
             // 仅使用本表自增 ID 建立层级关系，不依赖外部来源 ID。
             'extra' => null,
             'created_at' => $now,
@@ -121,7 +122,7 @@ class RcPositionSeeder extends Seeder
         ]);
 
         foreach ($position['children'] as $childSort => $child) {
-            $this->insertPosition($child, $dbId, $childSort + 1, $now);
+            $this->insertPosition($child, $dbId, $childSort + 1, $depth + 1, $now);
         }
     }
 }

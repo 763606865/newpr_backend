@@ -21,6 +21,7 @@ use Illuminate\Support\Carbon;
  * @property string $code 职位代码
  * @property int|null $parent_id 父级职位ID
  * @property int $sort 排序
+ * @property int|null $depth 层级
  * @property array<string, mixed>|null $extra 扩展字段
  * @property Carbon|null $created_at 创建时间
  * @property Carbon|null $updated_at 更新时间
@@ -34,6 +35,7 @@ use Illuminate\Support\Carbon;
     'code',
     'parent_id',
     'sort',
+    'depth',
     'extra',
 ])]
 #[ObservedBy(PositionMetaObserver::class)]
@@ -46,6 +48,7 @@ class Position extends Model
         return [
             'parent_id' => 'integer',
             'sort' => 'integer',
+            'depth' => 'integer',
             'extra' => 'array',
         ];
     }
