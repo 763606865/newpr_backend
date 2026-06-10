@@ -22,6 +22,7 @@ use App\Rc\Controllers\ResumeProjectController;
 use App\Rc\Controllers\ResumeSkillController;
 use App\Rc\Controllers\ResumeTrainingController;
 use App\Rc\Controllers\ResumeWorkController;
+use App\Rc\Controllers\ToolController;
 use App\Rc\Controllers\UploadController;
 use Illuminate\Support\Facades\Route;
 
@@ -144,6 +145,7 @@ Route::middleware('auth:rc')->group(function (): void {
     // ==============================================================================
 
     // 工具功能
+    Route::post('/tools/ocr/business-license', [ToolController::class, 'recognizeBusinessLicense']);
     Route::post('/upload', [UploadController::class, 'upload']);
     Route::delete('/files', [UploadController::class, 'destroy']);
     // ==============================================================================
