@@ -10,7 +10,7 @@ use Illuminate\Http\JsonResponse;
 class JobController extends Controller
 {
     /**
-     * 拉取职位列表（分页）
+     * 拉取职位列表
      *
      * GET /sapi/jobs
      */
@@ -18,7 +18,7 @@ class JobController extends Controller
     {
         $validated = $request->validated();
 
-        $jobs = Job::query()
+        $query = Job::query()
             ->with(['company:id,name', 'position:code,name'])
             ->when(filled($validated['company_id'] ?? null), function ($query) use ($validated): void {
                 $query->where('company_id', (int) $validated['company_id']);
@@ -31,13 +31,12 @@ class JobController extends Controller
             })
             ->tap(fn ($query) => $this->applyCreatedBetween($query, $validated))
             ->tap(fn ($query) => $this->applyUpdatedBetween($query, $validated))
-            ->orderByDesc('id')
-            ->paginate($this->getPerPage($request));
+            ->orderByDesc('id');
 
-        return $this->success(
-            $jobs->through(
-                fn (Job $job) => (new SApiJobResource($job))->resolve($request),
-            ),
+        return $this->indexDataResponse(
+            $request,
+            $query,
+            fn (Job $job) => (new SApiJobResource($job))->resolve($request),
         );
     }
 }

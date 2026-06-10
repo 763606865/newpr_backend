@@ -10,7 +10,7 @@ use Illuminate\Http\JsonResponse;
 class CompanyController extends Controller
 {
     /**
-     * 拉取企业列表（分页）
+     * 拉取企业列表
      *
      * GET /sapi/companies
      */
@@ -18,7 +18,7 @@ class CompanyController extends Controller
     {
         $validated = $request->validated();
 
-        $companies = Company::query()
+        $query = Company::query()
             ->when(filled($validated['parent_id'] ?? null), function ($query) use ($validated): void {
                 $query->where('parent_id', (int) $validated['parent_id']);
             })
@@ -27,13 +27,12 @@ class CompanyController extends Controller
             })
             ->tap(fn ($query) => $this->applyCreatedBetween($query, $validated))
             ->tap(fn ($query) => $this->applyUpdatedBetween($query, $validated))
-            ->orderByDesc('id')
-            ->paginate($this->getPerPage($request));
+            ->orderByDesc('id');
 
-        return $this->success(
-            $companies->through(
-                fn (Company $company) => (new SApiCompanyResource($company))->resolve($request),
-            ),
+        return $this->indexDataResponse(
+            $request,
+            $query,
+            fn (Company $company) => (new SApiCompanyResource($company))->resolve($request),
         );
     }
 }

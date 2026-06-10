@@ -10,7 +10,7 @@ use Illuminate\Http\JsonResponse;
 class UserController extends Controller
 {
     /**
-     * 拉取用户列表（分页）
+     * 拉取用户列表
      *
      * GET /sapi/users
      */
@@ -18,19 +18,18 @@ class UserController extends Controller
     {
         $validated = $request->validated();
 
-        $users = User::query()
+        $query = User::query()
             ->when(filled($validated['status'] ?? null), function ($query) use ($validated): void {
                 $query->where('status', (string) $validated['status']);
             })
             ->tap(fn ($query) => $this->applyCreatedBetween($query, $validated))
             ->tap(fn ($query) => $this->applyUpdatedBetween($query, $validated))
-            ->orderByDesc('id')
-            ->paginate($this->getPerPage($request));
+            ->orderByDesc('id');
 
-        return $this->success(
-            $users->through(
-                fn (User $user) => (new SApiUserResource($user))->resolve($request),
-            ),
+        return $this->indexDataResponse(
+            $request,
+            $query,
+            fn (User $user) => (new SApiUserResource($user))->resolve($request),
         );
     }
 }

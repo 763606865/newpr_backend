@@ -10,7 +10,7 @@ use Illuminate\Http\JsonResponse;
 class AnnouncementController extends Controller
 {
     /**
-     * 拉取公告列表（分页）
+     * 拉取公告列表
      *
      * GET /sapi/announcements
      */
@@ -22,20 +22,19 @@ class AnnouncementController extends Controller
             ? (string) $validated['city_code']
             : null;
 
-        $announcements = Announcement::query()
+        $query = Announcement::query()
             ->enabled()
             ->forCity($cityCode)
             ->createdBetween(
                 $validated['created_from'] ?? null,
                 $validated['created_to'] ?? null,
             )
-            ->orderByDesc('id')
-            ->paginate($this->getPerPage($request));
+            ->orderByDesc('id');
 
-        return $this->success(
-            $announcements->through(
-                fn (Announcement $announcement) => (new SApiAnnouncementResource($announcement))->resolve($request),
-            ),
+        return $this->indexDataResponse(
+            $request,
+            $query,
+            fn (Announcement $announcement) => (new SApiAnnouncementResource($announcement))->resolve($request),
         );
     }
 }

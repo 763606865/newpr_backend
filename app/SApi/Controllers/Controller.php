@@ -50,9 +50,34 @@ abstract class Controller
         return $client;
     }
 
+    protected function paginationEnabled(Request $request): bool
+    {
+        if ($request->exists('pagination_enabled')) {
+            return $request->boolean('pagination_enabled');
+        }
+
+        return (bool) config('sapi.pagination_enabled', true);
+    }
+
     protected function getPerPage(Request $request, int $default = 15, int $max = 100): int
     {
         return max(1, min($max, (int) $request->input('per_page', $default)));
+    }
+
+    /**
+     * @param  callable(mixed): array<string, mixed>  $transformer
+     */
+    protected function indexDataResponse(Request $request, Builder $query, callable $transformer): JsonResponse
+    {
+        if ($this->paginationEnabled($request)) {
+            return $this->success(
+                $query->paginate($this->getPerPage($request))->through($transformer),
+            );
+        }
+
+        return $this->success(
+            $query->get()->map($transformer)->values(),
+        );
     }
 
     /**

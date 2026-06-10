@@ -27,4 +27,16 @@ return [
     */
     'nonce_cache_prefix' => 'sapi:nonce:',
     'nonce_cache_store' => env('SAPI_NONCE_CACHE_STORE'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | 是否开启分页
+    |--------------------------------------------------------------------------
+    |
+    | 开启时，业务数据列表接口默认返回 paginate() 分页结构；
+    | 关闭时，默认返回 get() 全量数组。
+    | 调用方可通过 query 参数 pagination_enabled（0/1）单次覆盖上述默认行为。
+    |
+    */
+    'pagination_enabled' => (bool) env('SAPI_PAGINATION_ENABLED', true),
 ];

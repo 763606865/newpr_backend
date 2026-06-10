@@ -24,6 +24,7 @@ abstract class PaginatedIndexRequest extends FormRequest
             'updated_to' => ['sometimes', 'nullable', 'date_format:Y-m-d H:i:s', 'after_or_equal:updated_from'],
             'page' => ['sometimes', 'integer', 'min:1'],
             'per_page' => ['sometimes', 'integer', 'min:1', 'max:100'],
+            'pagination_enabled' => ['sometimes', 'boolean'],
         ];
     }
 
@@ -39,6 +40,7 @@ abstract class PaginatedIndexRequest extends FormRequest
             'updated_to' => '更新时间截止',
             'page' => '页码',
             'per_page' => '每页条数',
+            'pagination_enabled' => '是否分页',
         ];
     }
 }

@@ -10,7 +10,7 @@ use Illuminate\Http\JsonResponse;
 class ResumeController extends Controller
 {
     /**
-     * 拉取简历列表（分页）
+     * 拉取简历列表
      *
      * GET /sapi/resumes
      */
@@ -18,7 +18,7 @@ class ResumeController extends Controller
     {
         $validated = $request->validated();
 
-        $resumes = Resume::query()
+        $query = Resume::query()
             ->when(filled($validated['user_id'] ?? null), function ($query) use ($validated): void {
                 $query->where('user_id', (int) $validated['user_id']);
             })
@@ -30,13 +30,12 @@ class ResumeController extends Controller
             })
             ->tap(fn ($query) => $this->applyCreatedBetween($query, $validated))
             ->tap(fn ($query) => $this->applyUpdatedBetween($query, $validated))
-            ->orderByDesc('id')
-            ->paginate($this->getPerPage($request));
+            ->orderByDesc('id');
 
-        return $this->success(
-            $resumes->through(
-                fn (Resume $resume) => (new SApiResumeResource($resume))->resolve($request),
-            ),
+        return $this->indexDataResponse(
+            $request,
+            $query,
+            fn (Resume $resume) => (new SApiResumeResource($resume))->resolve($request),
         );
     }
 }
