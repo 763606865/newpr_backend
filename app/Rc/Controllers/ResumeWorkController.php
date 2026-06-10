@@ -16,6 +16,10 @@ use Illuminate\Support\Collection;
 class ResumeWorkController extends Controller
 {
     /**
+     * 简历工作经历列表
+     *
+     * GET /rc/resumes/{id}/works
+     *
      * @throws \Exception
      */
     public function index(Request $request, int $id): JsonResponse
@@ -35,6 +39,10 @@ class ResumeWorkController extends Controller
     }
 
     /**
+     * 简历工作经历详情
+     *
+     * GET /rc/resumes/{id}/works/{workId}
+     *
      * @throws \Exception
      */
     public function show(Request $request, int $id, int $workId): JsonResponse
@@ -55,6 +63,10 @@ class ResumeWorkController extends Controller
     }
 
     /**
+     * 新增简历工作经历
+     *
+     * POST /rc/resumes/{id}/works
+     *
      * @throws \Exception
      */
     public function store(ResumeWorkStoreRequest $request, int $id): JsonResponse
@@ -78,6 +90,10 @@ class ResumeWorkController extends Controller
     }
 
     /**
+     * 编辑简历工作经历
+     *
+     * PUT /rc/resumes/{id}/works/{workId}
+     *
      * @throws \Exception
      */
     public function update(ResumeWorkUpdateRequest $request, int $id, int $workId): JsonResponse
@@ -101,6 +117,10 @@ class ResumeWorkController extends Controller
     }
 
     /**
+     * 删除简历工作经历
+     *
+     * DELETE /rc/resumes/{id}/works/{workId}
+     *
      * @throws \Exception
      */
     public function destroy(Request $request, int $id, int $workId): JsonResponse

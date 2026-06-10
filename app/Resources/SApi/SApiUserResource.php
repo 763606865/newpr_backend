@@ -27,6 +27,7 @@ class SApiUserResource extends JsonResource
             'hub_user_id' => $this->resource->hub_user_id,
             'gender' => $this->resource->gender?->value ?? $this->resource->gender,
             'avatar' => $this->resource->avatar,
+            'display_avatar' => $this->resource->display_avatar,
             'status' => $this->resource->status,
             'last_login_ip' => $this->resource->last_login_ip,
             'last_login_at' => $this->resource->last_login_at,

@@ -53,13 +53,31 @@
 | `extra` | object\|null | 扩展字段 |
 | `children` | array | 子级职位 |
 
+### 专业对象（Major）
+
+专业接口统一使用 `RcMajorResource` 输出：
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| `id` | int | 专业 ID |
+| `full_code` | string | 专业国标编码 |
+| `name` | string | 专业名称 |
+| `level` | int | 层级，`1`大类、`2`专业类、`3`专业 |
+| `level_label` | string | 层级中文标签 |
+| `parent_code` | string\|null | 父级国标编码，顶级为 `null` |
+| `type` | string | 学历类型：`中职` / `高职专科` / `职教本科` |
+| `type_label` | string | 学历类型中文标签 |
+| `tag` | string | 扩展标签 |
+| `sort` | int | 排序 |
+| `children` | array | 子级专业 |
+
 ---
 
 ## 1) Meta 汇总
 
 - 接口：`GET /rc/meta`
 - 鉴权：Bearer Token（`auth:rc`）
-- 描述：一次性返回简历填写所需的地区、行业、职位元数据，以及企业资料字典
+- 描述：一次性返回简历填写所需的地区、行业、职位、专业元数据，以及企业资料字典
 
 ### 成功响应示例
 
@@ -130,6 +148,27 @@
         ]
       }
     ],
+    "majors": [
+      {
+        "id": 1,
+        "full_code": "55",
+        "name": "装备制造大类",
+        "level": 1,
+        "level_label": "大类",
+        "parent_code": null,
+        "type": "中职",
+        "type_label": "中职",
+        "tag": "",
+        "sort": 1,
+        "children": []
+      }
+    ],
+    "major_levels": [
+      { "value": 1, "label": "大类" }
+    ],
+    "major_education_types": [
+      { "value": "中职", "label": "中职" }
+    ],
     "company_scales": [
       { "value": 1, "label": "0-20人" }
     ],
@@ -155,6 +194,8 @@
 - `areas`：来自 `areas` 表
 - `industries`：来自 `rc_industries` 表
 - `positions`：来自 `rc_positions` 表
+- `majors`：来自 `majors` 表，仅返回 `status=1` 的启用数据
+- `major_levels` / `major_education_types`：来自 PHP Enum，结构为 `{ value, label }`
 - `company_scales` / `company_natures` / `company_funding_stages` / `company_benefit_tags`：来自 PHP Enum，结构为 `{ value, label }`
 - 所有树结构均通过 `tree()` 生成
 
@@ -354,7 +395,77 @@
 
 ---
 
-## 6) 前端使用建议
+## 6) 专业元数据
+
+- 接口：`GET /rc/meta/majors`
+- 鉴权：Bearer Token（`auth:rc`）
+- 描述：返回专业树及学历类型、层级字典，用于简历教育经历中的专业选择
+
+### 成功响应示例
+
+```json
+{
+  "code": 200,
+  "data": {
+    "majors": [
+      {
+        "id": 1,
+        "full_code": "55",
+        "name": "装备制造大类",
+        "level": 1,
+        "level_label": "大类",
+        "parent_code": null,
+        "type": "中职",
+        "type_label": "中职",
+        "tag": "",
+        "sort": 1,
+        "children": [
+          {
+            "id": 2,
+            "full_code": "5501",
+            "name": "机械设计制造类",
+            "level": 2,
+            "level_label": "专业类",
+            "parent_code": "55",
+            "type": "中职",
+            "type_label": "中职",
+            "tag": "",
+            "sort": 1,
+            "children": []
+          }
+        ]
+      }
+    ],
+    "major_levels": [
+      { "value": 1, "label": "大类" },
+      { "value": 2, "label": "专业类" },
+      { "value": 3, "label": "专业" }
+    ],
+    "major_education_types": [
+      { "value": "中职", "label": "中职" },
+      { "value": "高职专科", "label": "高职专科" },
+      { "value": "职教本科", "label": "职教本科" }
+    ]
+  },
+  "meta": {
+    "timestamp": 1748865600.1234,
+    "response_time": 0.0123
+  }
+}
+```
+
+### 规则
+
+- 数据来源：`majors` 表
+- 仅返回 `status=1` 的启用记录
+- 排序：`level asc, sort asc, full_code asc`
+- 使用 `RcMajorResource` 序列化
+- 树结构通过 `tree()` 按 `parent_code` / `full_code` 组树，顶层为大类（`level=1`）
+- 缓存：结果永久缓存，`majors` 表变更时由 `MajorMetaObserver` 自动失效
+
+---
+
+## 7) 前端使用建议
 
 - 简历创建页建议优先调用 `GET /rc/meta`
 - 企业资料编辑页可调用 `GET /rc/meta/companies` 或直接使用 `GET /rc/meta` 中的企业字典
@@ -362,5 +473,6 @@
   - `GET /rc/meta/areas`
   - `GET /rc/meta/industries`
   - `GET /rc/meta/positions`
+  - `GET /rc/meta/majors`
 - 后续“填写简历”接口也可复用这份元数据结构，避免前端重复实现树转换逻辑
 

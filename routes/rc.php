@@ -12,9 +12,15 @@ use App\Rc\Controllers\Discovery\ResumeSearchController;
 use App\Rc\Controllers\HomeController;
 use App\Rc\Controllers\JobController;
 use App\Rc\Controllers\MetaController;
+use App\Rc\Controllers\ResumeCertificateController;
 use App\Rc\Controllers\ResumeController;
 use App\Rc\Controllers\ResumeEducationController;
 use App\Rc\Controllers\ResumeIntentionController;
+use App\Rc\Controllers\ResumeLanguageController;
+use App\Rc\Controllers\ResumePortfolioController;
+use App\Rc\Controllers\ResumeProjectController;
+use App\Rc\Controllers\ResumeSkillController;
+use App\Rc\Controllers\ResumeTrainingController;
 use App\Rc\Controllers\ResumeWorkController;
 use App\Rc\Controllers\UploadController;
 use Illuminate\Support\Facades\Route;
@@ -44,6 +50,7 @@ Route::middleware('auth:rc')->group(function (): void {
     Route::get('/meta/areas', [MetaController::class, 'areas']);
     Route::get('/meta/industries', [MetaController::class, 'industries']);
     Route::get('/meta/positions', [MetaController::class, 'positions']);
+    Route::get('/meta/majors', [MetaController::class, 'majors']);
     Route::get('/meta/companies', [MetaController::class, 'companies']);
     // ==============================================================================
 
@@ -56,18 +63,48 @@ Route::middleware('auth:rc')->group(function (): void {
     Route::get('/resumes/{id}/works/{workId}', [ResumeWorkController::class, 'show'])->whereNumber('id')->whereNumber('workId');
     Route::get('/resumes/{id}/educations', [ResumeEducationController::class, 'index'])->whereNumber('id');
     Route::get('/resumes/{id}/educations/{educationId}', [ResumeEducationController::class, 'show'])->whereNumber('id')->whereNumber('educationId');
+    Route::get('/resumes/{id}/projects', [ResumeProjectController::class, 'index'])->whereNumber('id');
+    Route::get('/resumes/{id}/projects/{projectId}', [ResumeProjectController::class, 'show'])->whereNumber('id')->whereNumber('projectId');
+    Route::get('/resumes/{id}/trainings', [ResumeTrainingController::class, 'index'])->whereNumber('id');
+    Route::get('/resumes/{id}/trainings/{trainingId}', [ResumeTrainingController::class, 'show'])->whereNumber('id')->whereNumber('trainingId');
+    Route::get('/resumes/{id}/languages', [ResumeLanguageController::class, 'index'])->whereNumber('id');
+    Route::get('/resumes/{id}/languages/{languageId}', [ResumeLanguageController::class, 'show'])->whereNumber('id')->whereNumber('languageId');
+    Route::get('/resumes/{id}/skills', [ResumeSkillController::class, 'index'])->whereNumber('id');
+    Route::get('/resumes/{id}/skills/{skillId}', [ResumeSkillController::class, 'show'])->whereNumber('id')->whereNumber('skillId');
+    Route::get('/resumes/{id}/certificates', [ResumeCertificateController::class, 'index'])->whereNumber('id');
+    Route::get('/resumes/{id}/certificates/{certificateId}', [ResumeCertificateController::class, 'show'])->whereNumber('id')->whereNumber('certificateId');
+    Route::get('/resumes/{id}/portfolios', [ResumePortfolioController::class, 'index'])->whereNumber('id');
+    Route::get('/resumes/{id}/portfolios/{portfolioId}', [ResumePortfolioController::class, 'show'])->whereNumber('id')->whereNumber('portfolioId');
     Route::post('/resumes', [ResumeController::class, 'store']);
     Route::put('/resumes/{id}', [ResumeController::class, 'update'])->whereNumber('id');
     Route::post('/resumes/{id}/attachment', [ResumeController::class, 'uploadAttachment'])->whereNumber('id');
     Route::post('/resumes/{id}/intentions', [ResumeIntentionController::class, 'store'])->whereNumber('id');
     Route::post('/resumes/{id}/works', [ResumeWorkController::class, 'store'])->whereNumber('id');
     Route::post('/resumes/{id}/educations', [ResumeEducationController::class, 'store'])->whereNumber('id');
+    Route::post('/resumes/{id}/projects', [ResumeProjectController::class, 'store'])->whereNumber('id');
+    Route::post('/resumes/{id}/trainings', [ResumeTrainingController::class, 'store'])->whereNumber('id');
+    Route::post('/resumes/{id}/languages', [ResumeLanguageController::class, 'store'])->whereNumber('id');
+    Route::post('/resumes/{id}/skills', [ResumeSkillController::class, 'store'])->whereNumber('id');
+    Route::post('/resumes/{id}/certificates', [ResumeCertificateController::class, 'store'])->whereNumber('id');
+    Route::post('/resumes/{id}/portfolios', [ResumePortfolioController::class, 'store'])->whereNumber('id');
     Route::put('/resumes/{id}/intentions/{intentionId}', [ResumeIntentionController::class, 'update'])->whereNumber('id')->whereNumber('intentionId');
     Route::put('/resumes/{id}/works/{workId}', [ResumeWorkController::class, 'update'])->whereNumber('id')->whereNumber('workId');
     Route::put('/resumes/{id}/educations/{educationId}', [ResumeEducationController::class, 'update'])->whereNumber('id')->whereNumber('educationId');
+    Route::put('/resumes/{id}/projects/{projectId}', [ResumeProjectController::class, 'update'])->whereNumber('id')->whereNumber('projectId');
+    Route::put('/resumes/{id}/trainings/{trainingId}', [ResumeTrainingController::class, 'update'])->whereNumber('id')->whereNumber('trainingId');
+    Route::put('/resumes/{id}/languages/{languageId}', [ResumeLanguageController::class, 'update'])->whereNumber('id')->whereNumber('languageId');
+    Route::put('/resumes/{id}/skills/{skillId}', [ResumeSkillController::class, 'update'])->whereNumber('id')->whereNumber('skillId');
+    Route::put('/resumes/{id}/certificates/{certificateId}', [ResumeCertificateController::class, 'update'])->whereNumber('id')->whereNumber('certificateId');
+    Route::put('/resumes/{id}/portfolios/{portfolioId}', [ResumePortfolioController::class, 'update'])->whereNumber('id')->whereNumber('portfolioId');
     Route::delete('/resumes/{id}/intentions/{intentionId}', [ResumeIntentionController::class, 'destroy'])->whereNumber('id')->whereNumber('intentionId');
     Route::delete('/resumes/{id}/works/{workId}', [ResumeWorkController::class, 'destroy'])->whereNumber('id')->whereNumber('workId');
     Route::delete('/resumes/{id}/educations/{educationId}', [ResumeEducationController::class, 'destroy'])->whereNumber('id')->whereNumber('educationId');
+    Route::delete('/resumes/{id}/projects/{projectId}', [ResumeProjectController::class, 'destroy'])->whereNumber('id')->whereNumber('projectId');
+    Route::delete('/resumes/{id}/trainings/{trainingId}', [ResumeTrainingController::class, 'destroy'])->whereNumber('id')->whereNumber('trainingId');
+    Route::delete('/resumes/{id}/languages/{languageId}', [ResumeLanguageController::class, 'destroy'])->whereNumber('id')->whereNumber('languageId');
+    Route::delete('/resumes/{id}/skills/{skillId}', [ResumeSkillController::class, 'destroy'])->whereNumber('id')->whereNumber('skillId');
+    Route::delete('/resumes/{id}/certificates/{certificateId}', [ResumeCertificateController::class, 'destroy'])->whereNumber('id')->whereNumber('certificateId');
+    Route::delete('/resumes/{id}/portfolios/{portfolioId}', [ResumePortfolioController::class, 'destroy'])->whereNumber('id')->whereNumber('portfolioId');
     // ==============================================================================
 
     // Discovery - 职位搜索

@@ -23,7 +23,9 @@ class MetaController extends Controller
             'areas' => $this->areasPayload(),
             'industries' => $this->industriesPayload(),
             'positions' => $this->positionsPayload(),
+            'majors' => $this->majorsPayload(),
             ...$this->metaService->getCompanyDictionaries(),
+            ...$this->metaService->getMajorDictionaries(),
         ]);
     }
 
@@ -70,6 +72,21 @@ class MetaController extends Controller
     }
 
     /**
+     * 专业元数据
+     *
+     * GET /rc/meta/majors
+     *
+     * @throws \Exception
+     */
+    public function majors(Request $request): JsonResponse
+    {
+        return $this->success([
+            'majors' => $this->majorsPayload(),
+            ...$this->metaService->getMajorDictionaries(),
+        ]);
+    }
+
+    /**
      * 企业资料字典
      *
      * GET /rc/meta/companies
@@ -103,5 +120,13 @@ class MetaController extends Controller
     private function positionsPayload(): array
     {
         return $this->metaService->getPositionsTree();
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    private function majorsPayload(): array
+    {
+        return $this->metaService->getMajorsTree();
     }
 }

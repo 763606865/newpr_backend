@@ -45,6 +45,44 @@ class AliyunOssCastTest extends TestCase
         $this->assertSame('ads/banner.jpg', $value);
     }
 
+    public function test_from_model_uses_cast_configuration_for_display_url(): void
+    {
+        Carbon::setTestNow('2026-05-28 12:00:00');
+
+        try {
+            $user = new class extends Model
+            {
+                protected function casts(): array
+                {
+                    return [
+                        'avatar' => AliyunOss::class.':oss,private,120',
+                    ];
+                }
+            };
+
+            $disk = Mockery::mock();
+            $disk->shouldReceive('temporaryUrl')
+                ->once()
+                ->withArgs(function (string $path, $expiration): bool {
+                    return $path === 'uploads/avatar.jpg'
+                        && $expiration instanceof \DateTimeInterface
+                        && $expiration->getTimestamp() === now()->addSeconds(120)->getTimestamp();
+                })
+                ->andReturn('https://signed.example.com/uploads/avatar.jpg?token=abc');
+
+            Storage::shouldReceive('disk')
+                ->once()
+                ->with('oss')
+                ->andReturn($disk);
+
+            $url = AliyunOss::fromModel($user, 'avatar')->toDisplayUrl('uploads/avatar.jpg');
+
+            $this->assertSame('https://signed.example.com/uploads/avatar.jpg?token=abc', $url);
+        } finally {
+            Carbon::setTestNow();
+        }
+    }
+
     public function test_serialize_returns_public_url_for_public_assets(): void
     {
         $cast = new AliyunOss('oss', 'public', 3600);

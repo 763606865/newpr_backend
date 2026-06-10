@@ -18,12 +18,11 @@ class RcResumeAggregateService extends Service
     public function sync(Resume $resume): Resume
     {
         $resume->load([
-            'intentions' => fn ($query) => $query->orderByDesc('updated_at')->orderByDesc('id'),
             'educations',
             'works',
         ]);
 
-        $primaryIntention = $resume->intentions->first();
+        $primaryIntention = ResumeIntention::resolvePrimaryForResume((int) $resume->id);
         $workStartDate = $this->resolveWorkStartDate($resume);
         $workYears = $this->resolveWorkYears($workStartDate);
         $currentIdentity = $this->resolveCurrentIdentity($resume, $primaryIntention);

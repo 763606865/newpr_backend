@@ -1,0 +1,8822 @@
+[
+  {
+    "full_code": "01",
+    "name": "哲学",
+    "level": 1,
+    "parent_code": null,
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "0101",
+    "name": "哲学类",
+    "level": 2,
+    "parent_code": "01",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "010101",
+    "name": "哲学",
+    "level": 3,
+    "parent_code": "0101",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "010102",
+    "name": "逻辑学",
+    "level": 3,
+    "parent_code": "0101",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "010103K",
+    "name": "宗教学",
+    "level": 3,
+    "parent_code": "0101",
+    "type": "本科",
+    "tag": "K",
+    "sort": 3
+  },
+  {
+    "full_code": "010104T",
+    "name": "伦理学",
+    "level": 3,
+    "parent_code": "0101",
+    "type": "本科",
+    "tag": "T",
+    "sort": 4
+  },
+  {
+    "full_code": "02",
+    "name": "经济学",
+    "level": 1,
+    "parent_code": null,
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "0201",
+    "name": "经济学类",
+    "level": 2,
+    "parent_code": "02",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "020101",
+    "name": "经济学",
+    "level": 3,
+    "parent_code": "0201",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "020102",
+    "name": "经济统计学",
+    "level": 3,
+    "parent_code": "0201",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "020103T",
+    "name": "国民经济管理",
+    "level": 3,
+    "parent_code": "0201",
+    "type": "本科",
+    "tag": "T",
+    "sort": 3
+  },
+  {
+    "full_code": "020104T",
+    "name": "资源与环境经济学",
+    "level": 3,
+    "parent_code": "0201",
+    "type": "本科",
+    "tag": "T",
+    "sort": 4
+  },
+  {
+    "full_code": "020105T",
+    "name": "商务经济学",
+    "level": 3,
+    "parent_code": "0201",
+    "type": "本科",
+    "tag": "T",
+    "sort": 5
+  },
+  {
+    "full_code": "020106T",
+    "name": "能源经济",
+    "level": 3,
+    "parent_code": "0201",
+    "type": "本科",
+    "tag": "T",
+    "sort": 6
+  },
+  {
+    "full_code": "020107T",
+    "name": "劳动经济学",
+    "level": 3,
+    "parent_code": "0201",
+    "type": "本科",
+    "tag": "T",
+    "sort": 7
+  },
+  {
+    "full_code": "020108T",
+    "name": "经济工程",
+    "level": 3,
+    "parent_code": "0201",
+    "type": "本科",
+    "tag": "T",
+    "sort": 8
+  },
+  {
+    "full_code": "020109T",
+    "name": "数字经济",
+    "level": 3,
+    "parent_code": "0201",
+    "type": "本科",
+    "tag": "T",
+    "sort": 9
+  },
+  {
+    "full_code": "020110TK",
+    "name": "低空经济与管理",
+    "level": 3,
+    "parent_code": "0201",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 10
+  },
+  {
+    "full_code": "020111T",
+    "name": "资源环境审计",
+    "level": 3,
+    "parent_code": "0201",
+    "type": "本科",
+    "tag": "T",
+    "sort": 11
+  },
+  {
+    "full_code": "0202",
+    "name": "财政学类",
+    "level": 2,
+    "parent_code": "02",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "020201K",
+    "name": "财政学",
+    "level": 3,
+    "parent_code": "0202",
+    "type": "本科",
+    "tag": "K",
+    "sort": 1
+  },
+  {
+    "full_code": "020202",
+    "name": "税收学",
+    "level": 3,
+    "parent_code": "0202",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "020203TK",
+    "name": "国际税收",
+    "level": 3,
+    "parent_code": "0202",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 3
+  },
+  {
+    "full_code": "0203",
+    "name": "金融学类",
+    "level": 2,
+    "parent_code": "02",
+    "type": "本科",
+    "tag": "",
+    "sort": 3
+  },
+  {
+    "full_code": "020301K",
+    "name": "金融学",
+    "level": 3,
+    "parent_code": "0203",
+    "type": "本科",
+    "tag": "K",
+    "sort": 1
+  },
+  {
+    "full_code": "020302",
+    "name": "金融工程",
+    "level": 3,
+    "parent_code": "0203",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "020303",
+    "name": "保险学",
+    "level": 3,
+    "parent_code": "0203",
+    "type": "本科",
+    "tag": "",
+    "sort": 3
+  },
+  {
+    "full_code": "020304",
+    "name": "投资学",
+    "level": 3,
+    "parent_code": "0203",
+    "type": "本科",
+    "tag": "",
+    "sort": 4
+  },
+  {
+    "full_code": "020305T",
+    "name": "金融数学",
+    "level": 3,
+    "parent_code": "0203",
+    "type": "本科",
+    "tag": "T",
+    "sort": 5
+  },
+  {
+    "full_code": "020306T",
+    "name": "信用管理",
+    "level": 3,
+    "parent_code": "0203",
+    "type": "本科",
+    "tag": "T",
+    "sort": 6
+  },
+  {
+    "full_code": "020307T",
+    "name": "经济与金融",
+    "level": 3,
+    "parent_code": "0203",
+    "type": "本科",
+    "tag": "T",
+    "sort": 7
+  },
+  {
+    "full_code": "020308T",
+    "name": "精算学",
+    "level": 3,
+    "parent_code": "0203",
+    "type": "本科",
+    "tag": "T",
+    "sort": 8
+  },
+  {
+    "full_code": "020309T",
+    "name": "互联网金融",
+    "level": 3,
+    "parent_code": "0203",
+    "type": "本科",
+    "tag": "T",
+    "sort": 9
+  },
+  {
+    "full_code": "020310T",
+    "name": "金融科技",
+    "level": 3,
+    "parent_code": "0203",
+    "type": "本科",
+    "tag": "T",
+    "sort": 10
+  },
+  {
+    "full_code": "020311TK",
+    "name": "金融审计",
+    "level": 3,
+    "parent_code": "0203",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 11
+  },
+  {
+    "full_code": "020312TK",
+    "name": "数字金融",
+    "level": 3,
+    "parent_code": "0203",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 12
+  },
+  {
+    "full_code": "0204",
+    "name": "经济与贸易类",
+    "level": 2,
+    "parent_code": "02",
+    "type": "本科",
+    "tag": "",
+    "sort": 4
+  },
+  {
+    "full_code": "020401",
+    "name": "国际经济与贸易",
+    "level": 3,
+    "parent_code": "0204",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "020402",
+    "name": "贸易经济",
+    "level": 3,
+    "parent_code": "0204",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "020403T",
+    "name": "国际经济发展合作",
+    "level": 3,
+    "parent_code": "0204",
+    "type": "本科",
+    "tag": "T",
+    "sort": 3
+  },
+  {
+    "full_code": "020404TK",
+    "name": "数字贸易",
+    "level": 3,
+    "parent_code": "0204",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 4
+  },
+  {
+    "full_code": "03",
+    "name": "法学",
+    "level": 1,
+    "parent_code": null,
+    "type": "本科",
+    "tag": "",
+    "sort": 3
+  },
+  {
+    "full_code": "0301",
+    "name": "法学类",
+    "level": 2,
+    "parent_code": "03",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "030101K",
+    "name": "法学",
+    "level": 3,
+    "parent_code": "0301",
+    "type": "本科",
+    "tag": "K",
+    "sort": 1
+  },
+  {
+    "full_code": "030102T",
+    "name": "知识产权",
+    "level": 3,
+    "parent_code": "0301",
+    "type": "本科",
+    "tag": "T",
+    "sort": 2
+  },
+  {
+    "full_code": "030103T",
+    "name": "监狱学",
+    "level": 3,
+    "parent_code": "0301",
+    "type": "本科",
+    "tag": "T",
+    "sort": 3
+  },
+  {
+    "full_code": "030104T",
+    "name": "信用风险管理与法律防控",
+    "level": 3,
+    "parent_code": "0301",
+    "type": "本科",
+    "tag": "T",
+    "sort": 4
+  },
+  {
+    "full_code": "030105T",
+    "name": "国际经贸规则",
+    "level": 3,
+    "parent_code": "0301",
+    "type": "本科",
+    "tag": "T",
+    "sort": 5
+  },
+  {
+    "full_code": "030106TK",
+    "name": "司法警察学",
+    "level": 3,
+    "parent_code": "0301",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 6
+  },
+  {
+    "full_code": "030107TK",
+    "name": "社区矫正",
+    "level": 3,
+    "parent_code": "0301",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 7
+  },
+  {
+    "full_code": "030108TK",
+    "name": "纪检监察",
+    "level": 3,
+    "parent_code": "0301",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 8
+  },
+  {
+    "full_code": "030109TK",
+    "name": "国际法",
+    "level": 3,
+    "parent_code": "0301",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 9
+  },
+  {
+    "full_code": "030110TK",
+    "name": "司法鉴定学",
+    "level": 3,
+    "parent_code": "0301",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 10
+  },
+  {
+    "full_code": "030111TK",
+    "name": "国家安全学",
+    "level": 3,
+    "parent_code": "0301",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 11
+  },
+  {
+    "full_code": "030112TK",
+    "name": "海外利益安全",
+    "level": 3,
+    "parent_code": "0301",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 12
+  },
+  {
+    "full_code": "0302",
+    "name": "政治学类",
+    "level": 2,
+    "parent_code": "03",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "030201",
+    "name": "政治学与行政学",
+    "level": 3,
+    "parent_code": "0302",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "030202",
+    "name": "国际政治",
+    "level": 3,
+    "parent_code": "0302",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "030203",
+    "name": "外交学",
+    "level": 3,
+    "parent_code": "0302",
+    "type": "本科",
+    "tag": "",
+    "sort": 3
+  },
+  {
+    "full_code": "030204T",
+    "name": "国际事务与国际关系",
+    "level": 3,
+    "parent_code": "0302",
+    "type": "本科",
+    "tag": "T",
+    "sort": 4
+  },
+  {
+    "full_code": "030205T",
+    "name": "政治学、经济学与哲学",
+    "level": 3,
+    "parent_code": "0302",
+    "type": "本科",
+    "tag": "T",
+    "sort": 5
+  },
+  {
+    "full_code": "030206TK",
+    "name": "国际组织与全球治理",
+    "level": 3,
+    "parent_code": "0302",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 6
+  },
+  {
+    "full_code": "0303",
+    "name": "社会学类",
+    "level": 2,
+    "parent_code": "03",
+    "type": "本科",
+    "tag": "",
+    "sort": 3
+  },
+  {
+    "full_code": "030301",
+    "name": "社会学",
+    "level": 3,
+    "parent_code": "0303",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "030302",
+    "name": "社会工作",
+    "level": 3,
+    "parent_code": "0303",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "030303T",
+    "name": "人类学",
+    "level": 3,
+    "parent_code": "0303",
+    "type": "本科",
+    "tag": "T",
+    "sort": 3
+  },
+  {
+    "full_code": "030304T",
+    "name": "女性学",
+    "level": 3,
+    "parent_code": "0303",
+    "type": "本科",
+    "tag": "T",
+    "sort": 4
+  },
+  {
+    "full_code": "030305T",
+    "name": "家政学",
+    "level": 3,
+    "parent_code": "0303",
+    "type": "本科",
+    "tag": "T",
+    "sort": 5
+  },
+  {
+    "full_code": "030306T",
+    "name": "老年学",
+    "level": 3,
+    "parent_code": "0303",
+    "type": "本科",
+    "tag": "T",
+    "sort": 6
+  },
+  {
+    "full_code": "030307T",
+    "name": "社会政策",
+    "level": 3,
+    "parent_code": "0303",
+    "type": "本科",
+    "tag": "T",
+    "sort": 7
+  },
+  {
+    "full_code": "0304",
+    "name": "民族学类",
+    "level": 2,
+    "parent_code": "03",
+    "type": "本科",
+    "tag": "",
+    "sort": 4
+  },
+  {
+    "full_code": "030401",
+    "name": "民族学",
+    "level": 3,
+    "parent_code": "0304",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "0305",
+    "name": "马克思主义理论类",
+    "level": 2,
+    "parent_code": "03",
+    "type": "本科",
+    "tag": "",
+    "sort": 5
+  },
+  {
+    "full_code": "030501",
+    "name": "科学社会主义",
+    "level": 3,
+    "parent_code": "0305",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "030502",
+    "name": "中国共产党历史",
+    "level": 3,
+    "parent_code": "0305",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "030503",
+    "name": "思想政治教育",
+    "level": 3,
+    "parent_code": "0305",
+    "type": "本科",
+    "tag": "",
+    "sort": 3
+  },
+  {
+    "full_code": "030504T",
+    "name": "马克思主义理论",
+    "level": 3,
+    "parent_code": "0305",
+    "type": "本科",
+    "tag": "T",
+    "sort": 4
+  },
+  {
+    "full_code": "030505TK",
+    "name": "工会学",
+    "level": 3,
+    "parent_code": "0305",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 5
+  },
+  {
+    "full_code": "0306",
+    "name": "公安学类",
+    "level": 2,
+    "parent_code": "03",
+    "type": "本科",
+    "tag": "",
+    "sort": 6
+  },
+  {
+    "full_code": "030601K",
+    "name": "治安学",
+    "level": 3,
+    "parent_code": "0306",
+    "type": "本科",
+    "tag": "K",
+    "sort": 1
+  },
+  {
+    "full_code": "030602K",
+    "name": "侦查学",
+    "level": 3,
+    "parent_code": "0306",
+    "type": "本科",
+    "tag": "K",
+    "sort": 2
+  },
+  {
+    "full_code": "030603K",
+    "name": "边防管理",
+    "level": 3,
+    "parent_code": "0306",
+    "type": "本科",
+    "tag": "K",
+    "sort": 3
+  },
+  {
+    "full_code": "030604TK",
+    "name": "禁毒学",
+    "level": 3,
+    "parent_code": "0306",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 4
+  },
+  {
+    "full_code": "030605TK",
+    "name": "警犬技术",
+    "level": 3,
+    "parent_code": "0306",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 5
+  },
+  {
+    "full_code": "030606TK",
+    "name": "经济犯罪侦查",
+    "level": 3,
+    "parent_code": "0306",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 6
+  },
+  {
+    "full_code": "030607TK",
+    "name": "边防指挥",
+    "level": 3,
+    "parent_code": "0306",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 7
+  },
+  {
+    "full_code": "030608TK",
+    "name": "消防指挥",
+    "level": 3,
+    "parent_code": "0306",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 8
+  },
+  {
+    "full_code": "030609TK",
+    "name": "警卫学",
+    "level": 3,
+    "parent_code": "0306",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 9
+  },
+  {
+    "full_code": "030610TK",
+    "name": "公安情报学",
+    "level": 3,
+    "parent_code": "0306",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 10
+  },
+  {
+    "full_code": "030611TK",
+    "name": "犯罪学",
+    "level": 3,
+    "parent_code": "0306",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 11
+  },
+  {
+    "full_code": "030612TK",
+    "name": "公安管理学",
+    "level": 3,
+    "parent_code": "0306",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 12
+  },
+  {
+    "full_code": "030613TK",
+    "name": "涉外警务",
+    "level": 3,
+    "parent_code": "0306",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 13
+  },
+  {
+    "full_code": "030614TK",
+    "name": "国内安全保卫",
+    "level": 3,
+    "parent_code": "0306",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 14
+  },
+  {
+    "full_code": "030615TK",
+    "name": "警务指挥与战术",
+    "level": 3,
+    "parent_code": "0306",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 15
+  },
+  {
+    "full_code": "030616TK",
+    "name": "技术侦查学",
+    "level": 3,
+    "parent_code": "0306",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 16
+  },
+  {
+    "full_code": "030617TK",
+    "name": "海警执法",
+    "level": 3,
+    "parent_code": "0306",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 17
+  },
+  {
+    "full_code": "030618TK",
+    "name": "公安政治工作",
+    "level": 3,
+    "parent_code": "0306",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 18
+  },
+  {
+    "full_code": "030619TK",
+    "name": "移民管理",
+    "level": 3,
+    "parent_code": "0306",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 19
+  },
+  {
+    "full_code": "030620TK",
+    "name": "出入境管理",
+    "level": 3,
+    "parent_code": "0306",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 20
+  },
+  {
+    "full_code": "030621TK",
+    "name": "反恐警务",
+    "level": 3,
+    "parent_code": "0306",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 21
+  },
+  {
+    "full_code": "030622TK",
+    "name": "消防政治工作",
+    "level": 3,
+    "parent_code": "0306",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 22
+  },
+  {
+    "full_code": "030623TK",
+    "name": "铁路警务",
+    "level": 3,
+    "parent_code": "0306",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 23
+  },
+  {
+    "full_code": "030624TK",
+    "name": "森林消防",
+    "level": 3,
+    "parent_code": "0306",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 24
+  },
+  {
+    "full_code": "030625TK",
+    "name": "政治安全保卫",
+    "level": 3,
+    "parent_code": "0306",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 25
+  },
+  {
+    "full_code": "04",
+    "name": "教育学",
+    "level": 1,
+    "parent_code": null,
+    "type": "本科",
+    "tag": "",
+    "sort": 4
+  },
+  {
+    "full_code": "0401",
+    "name": "教育学类",
+    "level": 2,
+    "parent_code": "04",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "040101",
+    "name": "教育学",
+    "level": 3,
+    "parent_code": "0401",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "040102",
+    "name": "科学教育",
+    "level": 3,
+    "parent_code": "0401",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "040103",
+    "name": "人文教育",
+    "level": 3,
+    "parent_code": "0401",
+    "type": "本科",
+    "tag": "",
+    "sort": 3
+  },
+  {
+    "full_code": "040104",
+    "name": "教育技术学",
+    "level": 3,
+    "parent_code": "0401",
+    "type": "本科",
+    "tag": "",
+    "sort": 4
+  },
+  {
+    "full_code": "040105",
+    "name": "艺术教育",
+    "level": 3,
+    "parent_code": "0401",
+    "type": "本科",
+    "tag": "",
+    "sort": 5
+  },
+  {
+    "full_code": "040106",
+    "name": "学前教育",
+    "level": 3,
+    "parent_code": "0401",
+    "type": "本科",
+    "tag": "",
+    "sort": 6
+  },
+  {
+    "full_code": "040107",
+    "name": "小学教育",
+    "level": 3,
+    "parent_code": "0401",
+    "type": "本科",
+    "tag": "",
+    "sort": 7
+  },
+  {
+    "full_code": "040108",
+    "name": "特殊教育",
+    "level": 3,
+    "parent_code": "0401",
+    "type": "本科",
+    "tag": "",
+    "sort": 8
+  },
+  {
+    "full_code": "040109T",
+    "name": "华文教育",
+    "level": 3,
+    "parent_code": "0401",
+    "type": "本科",
+    "tag": "T",
+    "sort": 9
+  },
+  {
+    "full_code": "040110TK",
+    "name": "教育康复学",
+    "level": 3,
+    "parent_code": "0401",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 10
+  },
+  {
+    "full_code": "040111T",
+    "name": "卫生教育",
+    "level": 3,
+    "parent_code": "0401",
+    "type": "本科",
+    "tag": "T",
+    "sort": 11
+  },
+  {
+    "full_code": "040112T",
+    "name": "认知科学与技术",
+    "level": 3,
+    "parent_code": "0401",
+    "type": "本科",
+    "tag": "T",
+    "sort": 12
+  },
+  {
+    "full_code": "040113T",
+    "name": "融合教育",
+    "level": 3,
+    "parent_code": "0401",
+    "type": "本科",
+    "tag": "T",
+    "sort": 13
+  },
+  {
+    "full_code": "040114TK",
+    "name": "劳动教育",
+    "level": 3,
+    "parent_code": "0401",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 14
+  },
+  {
+    "full_code": "040115T",
+    "name": "家庭教育",
+    "level": 3,
+    "parent_code": "0401",
+    "type": "本科",
+    "tag": "T",
+    "sort": 15
+  },
+  {
+    "full_code": "040116TK",
+    "name": "孤独症儿童教育",
+    "level": 3,
+    "parent_code": "0401",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 16
+  },
+  {
+    "full_code": "040117TK",
+    "name": "人工智能教育",
+    "level": 3,
+    "parent_code": "0401",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 17
+  },
+  {
+    "full_code": "040118T",
+    "name": "婴幼儿发展与健康管理",
+    "level": 3,
+    "parent_code": "0401",
+    "type": "本科",
+    "tag": "T",
+    "sort": 18
+  },
+  {
+    "full_code": "0402",
+    "name": "体育学类",
+    "level": 2,
+    "parent_code": "04",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "040201",
+    "name": "体育教育",
+    "level": 3,
+    "parent_code": "0402",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "040202K",
+    "name": "运动训练",
+    "level": 3,
+    "parent_code": "0402",
+    "type": "本科",
+    "tag": "K",
+    "sort": 2
+  },
+  {
+    "full_code": "040203",
+    "name": "社会体育指导与管理",
+    "level": 3,
+    "parent_code": "0402",
+    "type": "本科",
+    "tag": "",
+    "sort": 3
+  },
+  {
+    "full_code": "040204K",
+    "name": "武术与民族传统体育",
+    "level": 3,
+    "parent_code": "0402",
+    "type": "本科",
+    "tag": "K",
+    "sort": 4
+  },
+  {
+    "full_code": "040205",
+    "name": "运动人体科学",
+    "level": 3,
+    "parent_code": "0402",
+    "type": "本科",
+    "tag": "",
+    "sort": 5
+  },
+  {
+    "full_code": "040206T",
+    "name": "运动康复",
+    "level": 3,
+    "parent_code": "0402",
+    "type": "本科",
+    "tag": "T",
+    "sort": 6
+  },
+  {
+    "full_code": "040207T",
+    "name": "休闲体育",
+    "level": 3,
+    "parent_code": "0402",
+    "type": "本科",
+    "tag": "T",
+    "sort": 7
+  },
+  {
+    "full_code": "040208T",
+    "name": "体能训练",
+    "level": 3,
+    "parent_code": "0402",
+    "type": "本科",
+    "tag": "T",
+    "sort": 8
+  },
+  {
+    "full_code": "040209T",
+    "name": "冰雪运动",
+    "level": 3,
+    "parent_code": "0402",
+    "type": "本科",
+    "tag": "T",
+    "sort": 9
+  },
+  {
+    "full_code": "040210TK",
+    "name": "电子竞技运动与管理",
+    "level": 3,
+    "parent_code": "0402",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 10
+  },
+  {
+    "full_code": "040211TK",
+    "name": "智能体育工程",
+    "level": 3,
+    "parent_code": "0402",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 11
+  },
+  {
+    "full_code": "040212TK",
+    "name": "体育旅游",
+    "level": 3,
+    "parent_code": "0402",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 12
+  },
+  {
+    "full_code": "040213T",
+    "name": "运动能力开发",
+    "level": 3,
+    "parent_code": "0402",
+    "type": "本科",
+    "tag": "T",
+    "sort": 13
+  },
+  {
+    "full_code": "040214TK",
+    "name": "足球运动",
+    "level": 3,
+    "parent_code": "0402",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 14
+  },
+  {
+    "full_code": "040215TK",
+    "name": "马术运动与管理",
+    "level": 3,
+    "parent_code": "0402",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 15
+  },
+  {
+    "full_code": "040216T",
+    "name": "体育康养",
+    "level": 3,
+    "parent_code": "0402",
+    "type": "本科",
+    "tag": "T",
+    "sort": 16
+  },
+  {
+    "full_code": "040217TK",
+    "name": "航空运动",
+    "level": 3,
+    "parent_code": "0402",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 17
+  },
+  {
+    "full_code": "040218TK",
+    "name": "太极拳",
+    "level": 3,
+    "parent_code": "0402",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 18
+  },
+  {
+    "full_code": "05",
+    "name": "文学",
+    "level": 1,
+    "parent_code": null,
+    "type": "本科",
+    "tag": "",
+    "sort": 5
+  },
+  {
+    "full_code": "0501",
+    "name": "中国语言文学类",
+    "level": 2,
+    "parent_code": "05",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "050101",
+    "name": "汉语言文学",
+    "level": 3,
+    "parent_code": "0501",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "050102",
+    "name": "汉语言",
+    "level": 3,
+    "parent_code": "0501",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "050103",
+    "name": "汉语国际教育",
+    "level": 3,
+    "parent_code": "0501",
+    "type": "本科",
+    "tag": "",
+    "sort": 3
+  },
+  {
+    "full_code": "050104",
+    "name": "中国少数民族语言文学",
+    "level": 3,
+    "parent_code": "0501",
+    "type": "本科",
+    "tag": "",
+    "sort": 4
+  },
+  {
+    "full_code": "050105",
+    "name": "古典文献学",
+    "level": 3,
+    "parent_code": "0501",
+    "type": "本科",
+    "tag": "",
+    "sort": 5
+  },
+  {
+    "full_code": "050106T",
+    "name": "应用语言学",
+    "level": 3,
+    "parent_code": "0501",
+    "type": "本科",
+    "tag": "T",
+    "sort": 6
+  },
+  {
+    "full_code": "050107T",
+    "name": "秘书学",
+    "level": 3,
+    "parent_code": "0501",
+    "type": "本科",
+    "tag": "T",
+    "sort": 7
+  },
+  {
+    "full_code": "050108T",
+    "name": "中国语言与文化",
+    "level": 3,
+    "parent_code": "0501",
+    "type": "本科",
+    "tag": "T",
+    "sort": 8
+  },
+  {
+    "full_code": "050109T",
+    "name": "手语翻译",
+    "level": 3,
+    "parent_code": "0501",
+    "type": "本科",
+    "tag": "T",
+    "sort": 9
+  },
+  {
+    "full_code": "050110T",
+    "name": "数字人文",
+    "level": 3,
+    "parent_code": "0501",
+    "type": "本科",
+    "tag": "T",
+    "sort": 10
+  },
+  {
+    "full_code": "050111T",
+    "name": "中国古典学",
+    "level": 3,
+    "parent_code": "0501",
+    "type": "本科",
+    "tag": "T",
+    "sort": 11
+  },
+  {
+    "full_code": "050112T",
+    "name": "汉学与中国学",
+    "level": 3,
+    "parent_code": "0501",
+    "type": "本科",
+    "tag": "T",
+    "sort": 12
+  },
+  {
+    "full_code": "050113T",
+    "name": "应用中文",
+    "level": 3,
+    "parent_code": "0501",
+    "type": "本科",
+    "tag": "T",
+    "sort": 13
+  },
+  {
+    "full_code": "050114TK",
+    "name": "语言科学",
+    "level": 3,
+    "parent_code": "0501",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 14
+  },
+  {
+    "full_code": "0502",
+    "name": "外国语言文学类",
+    "level": 2,
+    "parent_code": "05",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "050201",
+    "name": "英语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "050202",
+    "name": "俄语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "050203",
+    "name": "德语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 3
+  },
+  {
+    "full_code": "050204",
+    "name": "法语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 4
+  },
+  {
+    "full_code": "050205",
+    "name": "西班牙语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 5
+  },
+  {
+    "full_code": "050206",
+    "name": "阿拉伯语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 6
+  },
+  {
+    "full_code": "050207",
+    "name": "日语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 7
+  },
+  {
+    "full_code": "050208",
+    "name": "波斯语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 8
+  },
+  {
+    "full_code": "050209",
+    "name": "朝鲜语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 9
+  },
+  {
+    "full_code": "050210",
+    "name": "菲律宾语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 10
+  },
+  {
+    "full_code": "050211",
+    "name": "梵语巴利语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 11
+  },
+  {
+    "full_code": "050212",
+    "name": "印度尼西亚语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 12
+  },
+  {
+    "full_code": "050213",
+    "name": "印地语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 13
+  },
+  {
+    "full_code": "050214",
+    "name": "柬埔寨语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 14
+  },
+  {
+    "full_code": "050215",
+    "name": "老挝语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 15
+  },
+  {
+    "full_code": "050216",
+    "name": "缅甸语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 16
+  },
+  {
+    "full_code": "050217",
+    "name": "马来语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 17
+  },
+  {
+    "full_code": "050218",
+    "name": "蒙古语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 18
+  },
+  {
+    "full_code": "050219",
+    "name": "僧伽罗语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 19
+  },
+  {
+    "full_code": "050220",
+    "name": "泰语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 20
+  },
+  {
+    "full_code": "050221",
+    "name": "乌尔都语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 21
+  },
+  {
+    "full_code": "050222",
+    "name": "希伯来语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 22
+  },
+  {
+    "full_code": "050223",
+    "name": "越南语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 23
+  },
+  {
+    "full_code": "050224",
+    "name": "豪萨语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 24
+  },
+  {
+    "full_code": "050225",
+    "name": "斯瓦希里语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 25
+  },
+  {
+    "full_code": "050226",
+    "name": "阿尔巴尼亚语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 26
+  },
+  {
+    "full_code": "050227",
+    "name": "保加利亚语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 27
+  },
+  {
+    "full_code": "050228",
+    "name": "波兰语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 28
+  },
+  {
+    "full_code": "050229",
+    "name": "捷克语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 29
+  },
+  {
+    "full_code": "050230",
+    "name": "斯洛伐克语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 30
+  },
+  {
+    "full_code": "050231",
+    "name": "罗马尼亚语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 31
+  },
+  {
+    "full_code": "050232",
+    "name": "葡萄牙语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 32
+  },
+  {
+    "full_code": "050233",
+    "name": "瑞典语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 33
+  },
+  {
+    "full_code": "050234",
+    "name": "塞尔维亚语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 34
+  },
+  {
+    "full_code": "050235",
+    "name": "土耳其语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 35
+  },
+  {
+    "full_code": "050236",
+    "name": "希腊语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 36
+  },
+  {
+    "full_code": "050237",
+    "name": "匈牙利语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 37
+  },
+  {
+    "full_code": "050238",
+    "name": "意大利语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 38
+  },
+  {
+    "full_code": "050239",
+    "name": "泰米尔语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 39
+  },
+  {
+    "full_code": "050240",
+    "name": "普什图语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 40
+  },
+  {
+    "full_code": "050241",
+    "name": "世界语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 41
+  },
+  {
+    "full_code": "050242",
+    "name": "孟加拉语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 42
+  },
+  {
+    "full_code": "050243",
+    "name": "尼泊尔语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 43
+  },
+  {
+    "full_code": "050244",
+    "name": "克罗地亚语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 44
+  },
+  {
+    "full_code": "050245",
+    "name": "荷兰语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 45
+  },
+  {
+    "full_code": "050246",
+    "name": "芬兰语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 46
+  },
+  {
+    "full_code": "050247",
+    "name": "乌克兰语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 47
+  },
+  {
+    "full_code": "050248",
+    "name": "挪威语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 48
+  },
+  {
+    "full_code": "050249",
+    "name": "丹麦语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 49
+  },
+  {
+    "full_code": "050250",
+    "name": "冰岛语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 50
+  },
+  {
+    "full_code": "050251",
+    "name": "爱尔兰语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 51
+  },
+  {
+    "full_code": "050252",
+    "name": "拉脱维亚语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 52
+  },
+  {
+    "full_code": "050253",
+    "name": "立陶宛语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 53
+  },
+  {
+    "full_code": "050254",
+    "name": "斯洛文尼亚语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 54
+  },
+  {
+    "full_code": "050255",
+    "name": "爱沙尼亚语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 55
+  },
+  {
+    "full_code": "050256",
+    "name": "马耳他语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 56
+  },
+  {
+    "full_code": "050257",
+    "name": "哈萨克语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 57
+  },
+  {
+    "full_code": "050258",
+    "name": "乌兹别克语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 58
+  },
+  {
+    "full_code": "050259",
+    "name": "祖鲁语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 59
+  },
+  {
+    "full_code": "050260",
+    "name": "拉丁语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 60
+  },
+  {
+    "full_code": "050261",
+    "name": "翻译",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 61
+  },
+  {
+    "full_code": "050262",
+    "name": "商务英语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "",
+    "sort": 62
+  },
+  {
+    "full_code": "050263T",
+    "name": "阿姆哈拉语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "T",
+    "sort": 63
+  },
+  {
+    "full_code": "050264T",
+    "name": "吉尔吉斯语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "T",
+    "sort": 64
+  },
+  {
+    "full_code": "050265T",
+    "name": "索马里语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "T",
+    "sort": 65
+  },
+  {
+    "full_code": "050266T",
+    "name": "土库曼语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "T",
+    "sort": 66
+  },
+  {
+    "full_code": "050267T",
+    "name": "加泰罗尼亚语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "T",
+    "sort": 67
+  },
+  {
+    "full_code": "050268T",
+    "name": "约鲁巴语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "T",
+    "sort": 68
+  },
+  {
+    "full_code": "050269T",
+    "name": "亚美尼亚语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "T",
+    "sort": 69
+  },
+  {
+    "full_code": "050270T",
+    "name": "马达加斯加语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "T",
+    "sort": 70
+  },
+  {
+    "full_code": "050271T",
+    "name": "格鲁吉亚语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "T",
+    "sort": 71
+  },
+  {
+    "full_code": "050272T",
+    "name": "阿塞拜疆语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "T",
+    "sort": 72
+  },
+  {
+    "full_code": "050273T",
+    "name": "阿非利卡语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "T",
+    "sort": 73
+  },
+  {
+    "full_code": "050274T",
+    "name": "马其顿语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "T",
+    "sort": 74
+  },
+  {
+    "full_code": "050275T",
+    "name": "塔吉克语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "T",
+    "sort": 75
+  },
+  {
+    "full_code": "050276T",
+    "name": "茨瓦纳语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "T",
+    "sort": 76
+  },
+  {
+    "full_code": "050277T",
+    "name": "恩德贝莱语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "T",
+    "sort": 77
+  },
+  {
+    "full_code": "050278T",
+    "name": "科摩罗语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "T",
+    "sort": 78
+  },
+  {
+    "full_code": "050279T",
+    "name": "克里奥尔语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "T",
+    "sort": 79
+  },
+  {
+    "full_code": "050280T",
+    "name": "绍纳语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "T",
+    "sort": 80
+  },
+  {
+    "full_code": "050281T",
+    "name": "提格雷尼亚语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "T",
+    "sort": 81
+  },
+  {
+    "full_code": "050282T",
+    "name": "白俄罗斯语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "T",
+    "sort": 82
+  },
+  {
+    "full_code": "050283T",
+    "name": "毛利语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "T",
+    "sort": 83
+  },
+  {
+    "full_code": "050284T",
+    "name": "汤加语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "T",
+    "sort": 84
+  },
+  {
+    "full_code": "050285T",
+    "name": "萨摩亚语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "T",
+    "sort": 85
+  },
+  {
+    "full_code": "050286T",
+    "name": "库尔德语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "T",
+    "sort": 86
+  },
+  {
+    "full_code": "050287T",
+    "name": "比斯拉马语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "T",
+    "sort": 87
+  },
+  {
+    "full_code": "050288T",
+    "name": "达里语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "T",
+    "sort": 88
+  },
+  {
+    "full_code": "050289T",
+    "name": "德顿语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "T",
+    "sort": 89
+  },
+  {
+    "full_code": "050290T",
+    "name": "迪维希语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "T",
+    "sort": 90
+  },
+  {
+    "full_code": "050291T",
+    "name": "斐济语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "T",
+    "sort": 91
+  },
+  {
+    "full_code": "050292T",
+    "name": "库克群岛毛利语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "T",
+    "sort": 92
+  },
+  {
+    "full_code": "050293T",
+    "name": "隆迪语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "T",
+    "sort": 93
+  },
+  {
+    "full_code": "050294T",
+    "name": "卢森堡语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "T",
+    "sort": 94
+  },
+  {
+    "full_code": "050295T",
+    "name": "卢旺达语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "T",
+    "sort": 95
+  },
+  {
+    "full_code": "050296T",
+    "name": "纽埃语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "T",
+    "sort": 96
+  },
+  {
+    "full_code": "050297T",
+    "name": "皮金语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "T",
+    "sort": 97
+  },
+  {
+    "full_code": "050298T",
+    "name": "切瓦语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "T",
+    "sort": 98
+  },
+  {
+    "full_code": "050299T",
+    "name": "塞苏陀语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "T",
+    "sort": 99
+  },
+  {
+    "full_code": "050200T",
+    "name": "桑戈语",
+    "level": 3,
+    "parent_code": "0502",
+    "type": "本科",
+    "tag": "T",
+    "sort": 100
+  },
+  {
+    "full_code": "0503",
+    "name": "新闻传播学类",
+    "level": 2,
+    "parent_code": "05",
+    "type": "本科",
+    "tag": "",
+    "sort": 3
+  },
+  {
+    "full_code": "050301",
+    "name": "新闻学",
+    "level": 3,
+    "parent_code": "0503",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "050302",
+    "name": "广播电视学",
+    "level": 3,
+    "parent_code": "0503",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "050303",
+    "name": "广告学",
+    "level": 3,
+    "parent_code": "0503",
+    "type": "本科",
+    "tag": "",
+    "sort": 3
+  },
+  {
+    "full_code": "050304",
+    "name": "传播学",
+    "level": 3,
+    "parent_code": "0503",
+    "type": "本科",
+    "tag": "",
+    "sort": 4
+  },
+  {
+    "full_code": "050305",
+    "name": "编辑出版学",
+    "level": 3,
+    "parent_code": "0503",
+    "type": "本科",
+    "tag": "",
+    "sort": 5
+  },
+  {
+    "full_code": "050306T",
+    "name": "网络与新媒体",
+    "level": 3,
+    "parent_code": "0503",
+    "type": "本科",
+    "tag": "T",
+    "sort": 6
+  },
+  {
+    "full_code": "050307T",
+    "name": "数字出版",
+    "level": 3,
+    "parent_code": "0503",
+    "type": "本科",
+    "tag": "T",
+    "sort": 7
+  },
+  {
+    "full_code": "050308T",
+    "name": "时尚传播",
+    "level": 3,
+    "parent_code": "0503",
+    "type": "本科",
+    "tag": "T",
+    "sort": 8
+  },
+  {
+    "full_code": "050309T",
+    "name": "国际新闻与传播",
+    "level": 3,
+    "parent_code": "0503",
+    "type": "本科",
+    "tag": "T",
+    "sort": 9
+  },
+  {
+    "full_code": "050310T",
+    "name": "会展",
+    "level": 3,
+    "parent_code": "0503",
+    "type": "本科",
+    "tag": "T",
+    "sort": 10
+  },
+  {
+    "full_code": "06",
+    "name": "历史学",
+    "level": 1,
+    "parent_code": null,
+    "type": "本科",
+    "tag": "",
+    "sort": 6
+  },
+  {
+    "full_code": "0601",
+    "name": "历史学类",
+    "level": 2,
+    "parent_code": "06",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "060101",
+    "name": "历史学",
+    "level": 3,
+    "parent_code": "0601",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "060102",
+    "name": "世界史",
+    "level": 3,
+    "parent_code": "0601",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "060103",
+    "name": "考古学",
+    "level": 3,
+    "parent_code": "0601",
+    "type": "本科",
+    "tag": "",
+    "sort": 3
+  },
+  {
+    "full_code": "060104",
+    "name": "文物与博物馆学",
+    "level": 3,
+    "parent_code": "0601",
+    "type": "本科",
+    "tag": "",
+    "sort": 4
+  },
+  {
+    "full_code": "060105T",
+    "name": "文物保护技术",
+    "level": 3,
+    "parent_code": "0601",
+    "type": "本科",
+    "tag": "T",
+    "sort": 5
+  },
+  {
+    "full_code": "060106T",
+    "name": "外国语言与外国历史",
+    "level": 3,
+    "parent_code": "0601",
+    "type": "本科",
+    "tag": "T",
+    "sort": 6
+  },
+  {
+    "full_code": "060107T",
+    "name": "文化遗产",
+    "level": 3,
+    "parent_code": "0601",
+    "type": "本科",
+    "tag": "T",
+    "sort": 7
+  },
+  {
+    "full_code": "060108T",
+    "name": "古文字学",
+    "level": 3,
+    "parent_code": "0601",
+    "type": "本科",
+    "tag": "T",
+    "sort": 8
+  },
+  {
+    "full_code": "060109T",
+    "name": "科学史",
+    "level": 3,
+    "parent_code": "0601",
+    "type": "本科",
+    "tag": "T",
+    "sort": 9
+  },
+  {
+    "full_code": "07",
+    "name": "理学",
+    "level": 1,
+    "parent_code": null,
+    "type": "本科",
+    "tag": "",
+    "sort": 7
+  },
+  {
+    "full_code": "0701",
+    "name": "数学类",
+    "level": 2,
+    "parent_code": "07",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "070101",
+    "name": "数学与应用数学",
+    "level": 3,
+    "parent_code": "0701",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "070102",
+    "name": "信息与计算科学",
+    "level": 3,
+    "parent_code": "0701",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "070103T",
+    "name": "数理基础科学",
+    "level": 3,
+    "parent_code": "0701",
+    "type": "本科",
+    "tag": "T",
+    "sort": 3
+  },
+  {
+    "full_code": "070104T",
+    "name": "数据计算及应用",
+    "level": 3,
+    "parent_code": "0701",
+    "type": "本科",
+    "tag": "T",
+    "sort": 4
+  },
+  {
+    "full_code": "070105TK",
+    "name": "智能计算",
+    "level": 3,
+    "parent_code": "0701",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 5
+  },
+  {
+    "full_code": "0702",
+    "name": "物理学类",
+    "level": 2,
+    "parent_code": "07",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "070201",
+    "name": "物理学",
+    "level": 3,
+    "parent_code": "0702",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "070202",
+    "name": "应用物理学",
+    "level": 3,
+    "parent_code": "0702",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "070203",
+    "name": "核物理",
+    "level": 3,
+    "parent_code": "0702",
+    "type": "本科",
+    "tag": "",
+    "sort": 3
+  },
+  {
+    "full_code": "070204T",
+    "name": "声学",
+    "level": 3,
+    "parent_code": "0702",
+    "type": "本科",
+    "tag": "T",
+    "sort": 4
+  },
+  {
+    "full_code": "070205T",
+    "name": "系统科学与工程",
+    "level": 3,
+    "parent_code": "0702",
+    "type": "本科",
+    "tag": "T",
+    "sort": 5
+  },
+  {
+    "full_code": "070206T",
+    "name": "量子信息科学",
+    "level": 3,
+    "parent_code": "0702",
+    "type": "本科",
+    "tag": "T",
+    "sort": 6
+  },
+  {
+    "full_code": "0703",
+    "name": "化学类",
+    "level": 2,
+    "parent_code": "07",
+    "type": "本科",
+    "tag": "",
+    "sort": 3
+  },
+  {
+    "full_code": "070301",
+    "name": "化学",
+    "level": 3,
+    "parent_code": "0703",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "070302",
+    "name": "应用化学",
+    "level": 3,
+    "parent_code": "0703",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "070303T",
+    "name": "化学生物学",
+    "level": 3,
+    "parent_code": "0703",
+    "type": "本科",
+    "tag": "T",
+    "sort": 3
+  },
+  {
+    "full_code": "070304T",
+    "name": "分子科学与工程",
+    "level": 3,
+    "parent_code": "0703",
+    "type": "本科",
+    "tag": "T",
+    "sort": 4
+  },
+  {
+    "full_code": "070305T",
+    "name": "能源化学",
+    "level": 3,
+    "parent_code": "0703",
+    "type": "本科",
+    "tag": "T",
+    "sort": 5
+  },
+  {
+    "full_code": "070306T",
+    "name": "化学测量学与技术",
+    "level": 3,
+    "parent_code": "0703",
+    "type": "本科",
+    "tag": "T",
+    "sort": 6
+  },
+  {
+    "full_code": "070307T",
+    "name": "资源化学",
+    "level": 3,
+    "parent_code": "0703",
+    "type": "本科",
+    "tag": "T",
+    "sort": 7
+  },
+  {
+    "full_code": "0704",
+    "name": "天文学类",
+    "level": 2,
+    "parent_code": "07",
+    "type": "本科",
+    "tag": "",
+    "sort": 4
+  },
+  {
+    "full_code": "070401",
+    "name": "天文学",
+    "level": 3,
+    "parent_code": "0704",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "0705",
+    "name": "地理科学类",
+    "level": 2,
+    "parent_code": "07",
+    "type": "本科",
+    "tag": "",
+    "sort": 5
+  },
+  {
+    "full_code": "070501",
+    "name": "地理科学",
+    "level": 3,
+    "parent_code": "0705",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "070502",
+    "name": "自然地理与资源环境",
+    "level": 3,
+    "parent_code": "0705",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "070503",
+    "name": "人文地理与城乡规划",
+    "level": 3,
+    "parent_code": "0705",
+    "type": "本科",
+    "tag": "",
+    "sort": 3
+  },
+  {
+    "full_code": "070504",
+    "name": "地理信息科学",
+    "level": 3,
+    "parent_code": "0705",
+    "type": "本科",
+    "tag": "",
+    "sort": 4
+  },
+  {
+    "full_code": "0706",
+    "name": "大气科学类",
+    "level": 2,
+    "parent_code": "07",
+    "type": "本科",
+    "tag": "",
+    "sort": 6
+  },
+  {
+    "full_code": "070601",
+    "name": "大气科学",
+    "level": 3,
+    "parent_code": "0706",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "070602",
+    "name": "应用气象学",
+    "level": 3,
+    "parent_code": "0706",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "070603T",
+    "name": "气象技术与工程",
+    "level": 3,
+    "parent_code": "0706",
+    "type": "本科",
+    "tag": "T",
+    "sort": 3
+  },
+  {
+    "full_code": "070604T",
+    "name": "地球系统科学",
+    "level": 3,
+    "parent_code": "0706",
+    "type": "本科",
+    "tag": "T",
+    "sort": 4
+  },
+  {
+    "full_code": "0707",
+    "name": "海洋科学类",
+    "level": 2,
+    "parent_code": "07",
+    "type": "本科",
+    "tag": "",
+    "sort": 7
+  },
+  {
+    "full_code": "070701",
+    "name": "海洋科学",
+    "level": 3,
+    "parent_code": "0707",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "070702",
+    "name": "海洋技术",
+    "level": 3,
+    "parent_code": "0707",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "070703T",
+    "name": "海洋资源与环境",
+    "level": 3,
+    "parent_code": "0707",
+    "type": "本科",
+    "tag": "T",
+    "sort": 3
+  },
+  {
+    "full_code": "070704T",
+    "name": "军事海洋学",
+    "level": 3,
+    "parent_code": "0707",
+    "type": "本科",
+    "tag": "T",
+    "sort": 4
+  },
+  {
+    "full_code": "070705T",
+    "name": "海洋科学与技术",
+    "level": 3,
+    "parent_code": "0707",
+    "type": "本科",
+    "tag": "T",
+    "sort": 5
+  },
+  {
+    "full_code": "0708",
+    "name": "地球物理学类",
+    "level": 2,
+    "parent_code": "07",
+    "type": "本科",
+    "tag": "",
+    "sort": 8
+  },
+  {
+    "full_code": "070801",
+    "name": "地球物理学",
+    "level": 3,
+    "parent_code": "0708",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "070802",
+    "name": "空间科学与技术",
+    "level": 3,
+    "parent_code": "0708",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "070803T",
+    "name": "防灾减灾科学与工程",
+    "level": 3,
+    "parent_code": "0708",
+    "type": "本科",
+    "tag": "T",
+    "sort": 3
+  },
+  {
+    "full_code": "070804TK",
+    "name": "行星科学",
+    "level": 3,
+    "parent_code": "0708",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 4
+  },
+  {
+    "full_code": "0709",
+    "name": "地质学类",
+    "level": 2,
+    "parent_code": "07",
+    "type": "本科",
+    "tag": "",
+    "sort": 9
+  },
+  {
+    "full_code": "070901",
+    "name": "地质学",
+    "level": 3,
+    "parent_code": "0709",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "070902",
+    "name": "地球化学",
+    "level": 3,
+    "parent_code": "0709",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "070903T",
+    "name": "地球信息科学与技术",
+    "level": 3,
+    "parent_code": "0709",
+    "type": "本科",
+    "tag": "T",
+    "sort": 3
+  },
+  {
+    "full_code": "070904T",
+    "name": "古生物学",
+    "level": 3,
+    "parent_code": "0709",
+    "type": "本科",
+    "tag": "T",
+    "sort": 4
+  },
+  {
+    "full_code": "0710",
+    "name": "生物科学类",
+    "level": 2,
+    "parent_code": "07",
+    "type": "本科",
+    "tag": "",
+    "sort": 10
+  },
+  {
+    "full_code": "071001",
+    "name": "生物科学",
+    "level": 3,
+    "parent_code": "0710",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "071002",
+    "name": "生物技术",
+    "level": 3,
+    "parent_code": "0710",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "071003",
+    "name": "生物信息学",
+    "level": 3,
+    "parent_code": "0710",
+    "type": "本科",
+    "tag": "",
+    "sort": 3
+  },
+  {
+    "full_code": "071004",
+    "name": "生态学",
+    "level": 3,
+    "parent_code": "0710",
+    "type": "本科",
+    "tag": "",
+    "sort": 4
+  },
+  {
+    "full_code": "071005T",
+    "name": "整合科学",
+    "level": 3,
+    "parent_code": "0710",
+    "type": "本科",
+    "tag": "T",
+    "sort": 5
+  },
+  {
+    "full_code": "071006T",
+    "name": "神经科学",
+    "level": 3,
+    "parent_code": "0710",
+    "type": "本科",
+    "tag": "T",
+    "sort": 6
+  },
+  {
+    "full_code": "0711",
+    "name": "心理学类",
+    "level": 2,
+    "parent_code": "07",
+    "type": "本科",
+    "tag": "",
+    "sort": 11
+  },
+  {
+    "full_code": "071101",
+    "name": "心理学",
+    "level": 3,
+    "parent_code": "0711",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "071102",
+    "name": "应用心理学",
+    "level": 3,
+    "parent_code": "0711",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "071103TK",
+    "name": "心理、脑与认知科学",
+    "level": 3,
+    "parent_code": "0711",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 3
+  },
+  {
+    "full_code": "0712",
+    "name": "统计学类",
+    "level": 2,
+    "parent_code": "07",
+    "type": "本科",
+    "tag": "",
+    "sort": 12
+  },
+  {
+    "full_code": "071201",
+    "name": "统计学",
+    "level": 3,
+    "parent_code": "0712",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "071202",
+    "name": "应用统计学",
+    "level": 3,
+    "parent_code": "0712",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "071203T",
+    "name": "数据科学",
+    "level": 3,
+    "parent_code": "0712",
+    "type": "本科",
+    "tag": "T",
+    "sort": 3
+  },
+  {
+    "full_code": "071204T",
+    "name": "生物统计学",
+    "level": 3,
+    "parent_code": "0712",
+    "type": "本科",
+    "tag": "T",
+    "sort": 4
+  },
+  {
+    "full_code": "08",
+    "name": "工学",
+    "level": 1,
+    "parent_code": null,
+    "type": "本科",
+    "tag": "",
+    "sort": 8
+  },
+  {
+    "full_code": "0801",
+    "name": "力学类",
+    "level": 2,
+    "parent_code": "08",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "080101",
+    "name": "理论与应用力学",
+    "level": 3,
+    "parent_code": "0801",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "080102",
+    "name": "工程力学",
+    "level": 3,
+    "parent_code": "0801",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "0802",
+    "name": "机械类",
+    "level": 2,
+    "parent_code": "08",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "080201",
+    "name": "机械工程",
+    "level": 3,
+    "parent_code": "0802",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "080202",
+    "name": "机械设计制造及其自动化",
+    "level": 3,
+    "parent_code": "0802",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "080203",
+    "name": "材料成型及控制工程",
+    "level": 3,
+    "parent_code": "0802",
+    "type": "本科",
+    "tag": "",
+    "sort": 3
+  },
+  {
+    "full_code": "080204",
+    "name": "机械电子工程",
+    "level": 3,
+    "parent_code": "0802",
+    "type": "本科",
+    "tag": "",
+    "sort": 4
+  },
+  {
+    "full_code": "080205",
+    "name": "工业设计",
+    "level": 3,
+    "parent_code": "0802",
+    "type": "本科",
+    "tag": "",
+    "sort": 5
+  },
+  {
+    "full_code": "080206",
+    "name": "过程装备与控制工程",
+    "level": 3,
+    "parent_code": "0802",
+    "type": "本科",
+    "tag": "",
+    "sort": 6
+  },
+  {
+    "full_code": "080207",
+    "name": "车辆工程",
+    "level": 3,
+    "parent_code": "0802",
+    "type": "本科",
+    "tag": "",
+    "sort": 7
+  },
+  {
+    "full_code": "080208",
+    "name": "汽车服务工程",
+    "level": 3,
+    "parent_code": "0802",
+    "type": "本科",
+    "tag": "",
+    "sort": 8
+  },
+  {
+    "full_code": "080209T",
+    "name": "机械工艺技术",
+    "level": 3,
+    "parent_code": "0802",
+    "type": "本科",
+    "tag": "T",
+    "sort": 9
+  },
+  {
+    "full_code": "080210T",
+    "name": "微机电系统工程",
+    "level": 3,
+    "parent_code": "0802",
+    "type": "本科",
+    "tag": "T",
+    "sort": 10
+  },
+  {
+    "full_code": "080211T",
+    "name": "机电技术教育",
+    "level": 3,
+    "parent_code": "0802",
+    "type": "本科",
+    "tag": "T",
+    "sort": 11
+  },
+  {
+    "full_code": "080212T",
+    "name": "汽车维修工程教育",
+    "level": 3,
+    "parent_code": "0802",
+    "type": "本科",
+    "tag": "T",
+    "sort": 12
+  },
+  {
+    "full_code": "080213T",
+    "name": "智能制造工程",
+    "level": 3,
+    "parent_code": "0802",
+    "type": "本科",
+    "tag": "T",
+    "sort": 13
+  },
+  {
+    "full_code": "080214T",
+    "name": "智能车辆工程",
+    "level": 3,
+    "parent_code": "0802",
+    "type": "本科",
+    "tag": "T",
+    "sort": 14
+  },
+  {
+    "full_code": "080215T",
+    "name": "仿生科学与工程",
+    "level": 3,
+    "parent_code": "0802",
+    "type": "本科",
+    "tag": "T",
+    "sort": 15
+  },
+  {
+    "full_code": "080216T",
+    "name": "新能源汽车工程",
+    "level": 3,
+    "parent_code": "0802",
+    "type": "本科",
+    "tag": "T",
+    "sort": 16
+  },
+  {
+    "full_code": "080217T",
+    "name": "增材制造工程",
+    "level": 3,
+    "parent_code": "0802",
+    "type": "本科",
+    "tag": "T",
+    "sort": 17
+  },
+  {
+    "full_code": "080218T",
+    "name": "智能交互设计",
+    "level": 3,
+    "parent_code": "0802",
+    "type": "本科",
+    "tag": "T",
+    "sort": 18
+  },
+  {
+    "full_code": "080219T",
+    "name": "应急装备技术与工程",
+    "level": 3,
+    "parent_code": "0802",
+    "type": "本科",
+    "tag": "T",
+    "sort": 19
+  },
+  {
+    "full_code": "080220T",
+    "name": "农林智能装备工程",
+    "level": 3,
+    "parent_code": "0802",
+    "type": "本科",
+    "tag": "T",
+    "sort": 20
+  },
+  {
+    "full_code": "080221T",
+    "name": "真空工程与技术",
+    "level": 3,
+    "parent_code": "0802",
+    "type": "本科",
+    "tag": "T",
+    "sort": 21
+  },
+  {
+    "full_code": "0803",
+    "name": "仪器类",
+    "level": 2,
+    "parent_code": "08",
+    "type": "本科",
+    "tag": "",
+    "sort": 3
+  },
+  {
+    "full_code": "080301",
+    "name": "测控技术与仪器",
+    "level": 3,
+    "parent_code": "0803",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "080302T",
+    "name": "精密仪器",
+    "level": 3,
+    "parent_code": "0803",
+    "type": "本科",
+    "tag": "T",
+    "sort": 2
+  },
+  {
+    "full_code": "080303T",
+    "name": "智能感知工程",
+    "level": 3,
+    "parent_code": "0803",
+    "type": "本科",
+    "tag": "T",
+    "sort": 3
+  },
+  {
+    "full_code": "0804",
+    "name": "材料类",
+    "level": 2,
+    "parent_code": "08",
+    "type": "本科",
+    "tag": "",
+    "sort": 4
+  },
+  {
+    "full_code": "080401",
+    "name": "材料科学与工程",
+    "level": 3,
+    "parent_code": "0804",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "080402",
+    "name": "材料物理",
+    "level": 3,
+    "parent_code": "0804",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "080403",
+    "name": "材料化学",
+    "level": 3,
+    "parent_code": "0804",
+    "type": "本科",
+    "tag": "",
+    "sort": 3
+  },
+  {
+    "full_code": "080404",
+    "name": "冶金工程",
+    "level": 3,
+    "parent_code": "0804",
+    "type": "本科",
+    "tag": "",
+    "sort": 4
+  },
+  {
+    "full_code": "080405",
+    "name": "金属材料工程",
+    "level": 3,
+    "parent_code": "0804",
+    "type": "本科",
+    "tag": "",
+    "sort": 5
+  },
+  {
+    "full_code": "080406",
+    "name": "无机非金属材料工程",
+    "level": 3,
+    "parent_code": "0804",
+    "type": "本科",
+    "tag": "",
+    "sort": 6
+  },
+  {
+    "full_code": "080407",
+    "name": "高分子材料与工程",
+    "level": 3,
+    "parent_code": "0804",
+    "type": "本科",
+    "tag": "",
+    "sort": 7
+  },
+  {
+    "full_code": "080408",
+    "name": "复合材料与工程",
+    "level": 3,
+    "parent_code": "0804",
+    "type": "本科",
+    "tag": "",
+    "sort": 8
+  },
+  {
+    "full_code": "080409T",
+    "name": "粉体材料科学与工程",
+    "level": 3,
+    "parent_code": "0804",
+    "type": "本科",
+    "tag": "T",
+    "sort": 9
+  },
+  {
+    "full_code": "080410T",
+    "name": "宝石及材料工艺学",
+    "level": 3,
+    "parent_code": "0804",
+    "type": "本科",
+    "tag": "T",
+    "sort": 10
+  },
+  {
+    "full_code": "080411T",
+    "name": "焊接技术与工程",
+    "level": 3,
+    "parent_code": "0804",
+    "type": "本科",
+    "tag": "T",
+    "sort": 11
+  },
+  {
+    "full_code": "080412T",
+    "name": "功能材料",
+    "level": 3,
+    "parent_code": "0804",
+    "type": "本科",
+    "tag": "T",
+    "sort": 12
+  },
+  {
+    "full_code": "080413T",
+    "name": "纳米材料与技术",
+    "level": 3,
+    "parent_code": "0804",
+    "type": "本科",
+    "tag": "T",
+    "sort": 13
+  },
+  {
+    "full_code": "080414T",
+    "name": "新能源材料与器件",
+    "level": 3,
+    "parent_code": "0804",
+    "type": "本科",
+    "tag": "T",
+    "sort": 14
+  },
+  {
+    "full_code": "080415T",
+    "name": "材料设计科学与工程",
+    "level": 3,
+    "parent_code": "0804",
+    "type": "本科",
+    "tag": "T",
+    "sort": 15
+  },
+  {
+    "full_code": "080416T",
+    "name": "复合材料成型工程",
+    "level": 3,
+    "parent_code": "0804",
+    "type": "本科",
+    "tag": "T",
+    "sort": 16
+  },
+  {
+    "full_code": "080417T",
+    "name": "智能材料与结构",
+    "level": 3,
+    "parent_code": "0804",
+    "type": "本科",
+    "tag": "T",
+    "sort": 17
+  },
+  {
+    "full_code": "080418T",
+    "name": "光电信息材料与器件",
+    "level": 3,
+    "parent_code": "0804",
+    "type": "本科",
+    "tag": "T",
+    "sort": 18
+  },
+  {
+    "full_code": "080419T",
+    "name": "生物材料",
+    "level": 3,
+    "parent_code": "0804",
+    "type": "本科",
+    "tag": "T",
+    "sort": 19
+  },
+  {
+    "full_code": "080420T",
+    "name": "材料智能技术",
+    "level": 3,
+    "parent_code": "0804",
+    "type": "本科",
+    "tag": "T",
+    "sort": 20
+  },
+  {
+    "full_code": "080421T",
+    "name": "电子信息材料",
+    "level": 3,
+    "parent_code": "0804",
+    "type": "本科",
+    "tag": "T",
+    "sort": 21
+  },
+  {
+    "full_code": "080422T",
+    "name": "软物质科学与工程",
+    "level": 3,
+    "parent_code": "0804",
+    "type": "本科",
+    "tag": "T",
+    "sort": 22
+  },
+  {
+    "full_code": "080423T",
+    "name": "稀土材料科学与工程",
+    "level": 3,
+    "parent_code": "0804",
+    "type": "本科",
+    "tag": "T",
+    "sort": 23
+  },
+  {
+    "full_code": "0805",
+    "name": "能源动力类",
+    "level": 2,
+    "parent_code": "08",
+    "type": "本科",
+    "tag": "",
+    "sort": 5
+  },
+  {
+    "full_code": "080501",
+    "name": "能源与动力工程",
+    "level": 3,
+    "parent_code": "0805",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "080502T",
+    "name": "能源与环境系统工程",
+    "level": 3,
+    "parent_code": "0805",
+    "type": "本科",
+    "tag": "T",
+    "sort": 2
+  },
+  {
+    "full_code": "080503T",
+    "name": "新能源科学与工程",
+    "level": 3,
+    "parent_code": "0805",
+    "type": "本科",
+    "tag": "T",
+    "sort": 3
+  },
+  {
+    "full_code": "080504T",
+    "name": "储能科学与工程",
+    "level": 3,
+    "parent_code": "0805",
+    "type": "本科",
+    "tag": "T",
+    "sort": 4
+  },
+  {
+    "full_code": "080505T",
+    "name": "能源服务工程",
+    "level": 3,
+    "parent_code": "0805",
+    "type": "本科",
+    "tag": "T",
+    "sort": 5
+  },
+  {
+    "full_code": "080506TK",
+    "name": "氢能科学与工程",
+    "level": 3,
+    "parent_code": "0805",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 6
+  },
+  {
+    "full_code": "080507TK",
+    "name": "可持续能源",
+    "level": 3,
+    "parent_code": "0805",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 7
+  },
+  {
+    "full_code": "080508T",
+    "name": "能源科学与工程",
+    "level": 3,
+    "parent_code": "0805",
+    "type": "本科",
+    "tag": "T",
+    "sort": 8
+  },
+  {
+    "full_code": "0806",
+    "name": "电气类",
+    "level": 2,
+    "parent_code": "08",
+    "type": "本科",
+    "tag": "",
+    "sort": 6
+  },
+  {
+    "full_code": "080601",
+    "name": "电气工程及其自动化",
+    "level": 3,
+    "parent_code": "0806",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "080602T",
+    "name": "智能电网信息工程",
+    "level": 3,
+    "parent_code": "0806",
+    "type": "本科",
+    "tag": "T",
+    "sort": 2
+  },
+  {
+    "full_code": "080603T",
+    "name": "光源与照明",
+    "level": 3,
+    "parent_code": "0806",
+    "type": "本科",
+    "tag": "T",
+    "sort": 3
+  },
+  {
+    "full_code": "080604T",
+    "name": "电气工程与智能控制",
+    "level": 3,
+    "parent_code": "0806",
+    "type": "本科",
+    "tag": "T",
+    "sort": 4
+  },
+  {
+    "full_code": "080605T",
+    "name": "电机电器智能化",
+    "level": 3,
+    "parent_code": "0806",
+    "type": "本科",
+    "tag": "T",
+    "sort": 5
+  },
+  {
+    "full_code": "080606T",
+    "name": "电缆工程",
+    "level": 3,
+    "parent_code": "0806",
+    "type": "本科",
+    "tag": "T",
+    "sort": 6
+  },
+  {
+    "full_code": "080607T",
+    "name": "能源互联网工程",
+    "level": 3,
+    "parent_code": "0806",
+    "type": "本科",
+    "tag": "T",
+    "sort": 7
+  },
+  {
+    "full_code": "080608TK",
+    "name": "智慧能源工程",
+    "level": 3,
+    "parent_code": "0806",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 8
+  },
+  {
+    "full_code": "080609T",
+    "name": "电动载运工程",
+    "level": 3,
+    "parent_code": "0806",
+    "type": "本科",
+    "tag": "T",
+    "sort": 9
+  },
+  {
+    "full_code": "080610TK",
+    "name": "大功率半导体科学与工程",
+    "level": 3,
+    "parent_code": "0806",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 10
+  },
+  {
+    "full_code": "0807",
+    "name": "电子信息类",
+    "level": 2,
+    "parent_code": "08",
+    "type": "本科",
+    "tag": "",
+    "sort": 7
+  },
+  {
+    "full_code": "080701",
+    "name": "电子信息工程",
+    "level": 3,
+    "parent_code": "0807",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "080702",
+    "name": "电子科学与技术",
+    "level": 3,
+    "parent_code": "0807",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "080703",
+    "name": "通信工程",
+    "level": 3,
+    "parent_code": "0807",
+    "type": "本科",
+    "tag": "",
+    "sort": 3
+  },
+  {
+    "full_code": "080704",
+    "name": "微电子科学与工程",
+    "level": 3,
+    "parent_code": "0807",
+    "type": "本科",
+    "tag": "",
+    "sort": 4
+  },
+  {
+    "full_code": "080705",
+    "name": "光电信息科学与工程",
+    "level": 3,
+    "parent_code": "0807",
+    "type": "本科",
+    "tag": "",
+    "sort": 5
+  },
+  {
+    "full_code": "080706",
+    "name": "信息工程",
+    "level": 3,
+    "parent_code": "0807",
+    "type": "本科",
+    "tag": "",
+    "sort": 6
+  },
+  {
+    "full_code": "080707T",
+    "name": "广播电视工程",
+    "level": 3,
+    "parent_code": "0807",
+    "type": "本科",
+    "tag": "T",
+    "sort": 7
+  },
+  {
+    "full_code": "080708T",
+    "name": "水声工程",
+    "level": 3,
+    "parent_code": "0807",
+    "type": "本科",
+    "tag": "T",
+    "sort": 8
+  },
+  {
+    "full_code": "080709T",
+    "name": "电子封装技术",
+    "level": 3,
+    "parent_code": "0807",
+    "type": "本科",
+    "tag": "T",
+    "sort": 9
+  },
+  {
+    "full_code": "080710T",
+    "name": "集成电路设计与集成系统",
+    "level": 3,
+    "parent_code": "0807",
+    "type": "本科",
+    "tag": "T",
+    "sort": 10
+  },
+  {
+    "full_code": "080711T",
+    "name": "医学信息工程",
+    "level": 3,
+    "parent_code": "0807",
+    "type": "本科",
+    "tag": "T",
+    "sort": 11
+  },
+  {
+    "full_code": "080712T",
+    "name": "电磁场与无线技术",
+    "level": 3,
+    "parent_code": "0807",
+    "type": "本科",
+    "tag": "T",
+    "sort": 12
+  },
+  {
+    "full_code": "080713T",
+    "name": "电波传播与天线",
+    "level": 3,
+    "parent_code": "0807",
+    "type": "本科",
+    "tag": "T",
+    "sort": 13
+  },
+  {
+    "full_code": "080714T",
+    "name": "电子信息科学与技术",
+    "level": 3,
+    "parent_code": "0807",
+    "type": "本科",
+    "tag": "T",
+    "sort": 14
+  },
+  {
+    "full_code": "080715T",
+    "name": "电信工程及管理",
+    "level": 3,
+    "parent_code": "0807",
+    "type": "本科",
+    "tag": "T",
+    "sort": 15
+  },
+  {
+    "full_code": "080716T",
+    "name": "应用电子技术教育",
+    "level": 3,
+    "parent_code": "0807",
+    "type": "本科",
+    "tag": "T",
+    "sort": 16
+  },
+  {
+    "full_code": "080717T",
+    "name": "人工智能",
+    "level": 3,
+    "parent_code": "0807",
+    "type": "本科",
+    "tag": "T",
+    "sort": 17
+  },
+  {
+    "full_code": "080718T",
+    "name": "海洋信息工程",
+    "level": 3,
+    "parent_code": "0807",
+    "type": "本科",
+    "tag": "T",
+    "sort": 18
+  },
+  {
+    "full_code": "080719T",
+    "name": "柔性电子学",
+    "level": 3,
+    "parent_code": "0807",
+    "type": "本科",
+    "tag": "T",
+    "sort": 19
+  },
+  {
+    "full_code": "080720T",
+    "name": "智能测控工程",
+    "level": 3,
+    "parent_code": "0807",
+    "type": "本科",
+    "tag": "T",
+    "sort": 20
+  },
+  {
+    "full_code": "080721T",
+    "name": "智能视觉工程",
+    "level": 3,
+    "parent_code": "0807",
+    "type": "本科",
+    "tag": "T",
+    "sort": 21
+  },
+  {
+    "full_code": "080722T",
+    "name": "智能视听工程",
+    "level": 3,
+    "parent_code": "0807",
+    "type": "本科",
+    "tag": "T",
+    "sort": 22
+  },
+  {
+    "full_code": "080723TK",
+    "name": "半导体工艺与装备",
+    "level": 3,
+    "parent_code": "0807",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 23
+  },
+  {
+    "full_code": "0808",
+    "name": "自动化类",
+    "level": 2,
+    "parent_code": "08",
+    "type": "本科",
+    "tag": "",
+    "sort": 8
+  },
+  {
+    "full_code": "080801",
+    "name": "自动化",
+    "level": 3,
+    "parent_code": "0808",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "080802T",
+    "name": "轨道交通信号与控制",
+    "level": 3,
+    "parent_code": "0808",
+    "type": "本科",
+    "tag": "T",
+    "sort": 2
+  },
+  {
+    "full_code": "080803T",
+    "name": "机器人工程",
+    "level": 3,
+    "parent_code": "0808",
+    "type": "本科",
+    "tag": "T",
+    "sort": 3
+  },
+  {
+    "full_code": "080804T",
+    "name": "邮政工程",
+    "level": 3,
+    "parent_code": "0808",
+    "type": "本科",
+    "tag": "T",
+    "sort": 4
+  },
+  {
+    "full_code": "080805T",
+    "name": "核电技术与控制工程",
+    "level": 3,
+    "parent_code": "0808",
+    "type": "本科",
+    "tag": "T",
+    "sort": 5
+  },
+  {
+    "full_code": "080806T",
+    "name": "智能装备与系统",
+    "level": 3,
+    "parent_code": "0808",
+    "type": "本科",
+    "tag": "T",
+    "sort": 6
+  },
+  {
+    "full_code": "080807T",
+    "name": "工业智能",
+    "level": 3,
+    "parent_code": "0808",
+    "type": "本科",
+    "tag": "T",
+    "sort": 7
+  },
+  {
+    "full_code": "080808T",
+    "name": "智能工程与创意设计",
+    "level": 3,
+    "parent_code": "0808",
+    "type": "本科",
+    "tag": "T",
+    "sort": 8
+  },
+  {
+    "full_code": "0809",
+    "name": "计算机类",
+    "level": 2,
+    "parent_code": "08",
+    "type": "本科",
+    "tag": "",
+    "sort": 9
+  },
+  {
+    "full_code": "080901",
+    "name": "计算机科学与技术",
+    "level": 3,
+    "parent_code": "0809",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "080902",
+    "name": "软件工程",
+    "level": 3,
+    "parent_code": "0809",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "080903",
+    "name": "网络工程",
+    "level": 3,
+    "parent_code": "0809",
+    "type": "本科",
+    "tag": "",
+    "sort": 3
+  },
+  {
+    "full_code": "080904K",
+    "name": "信息安全",
+    "level": 3,
+    "parent_code": "0809",
+    "type": "本科",
+    "tag": "K",
+    "sort": 4
+  },
+  {
+    "full_code": "080905",
+    "name": "物联网工程",
+    "level": 3,
+    "parent_code": "0809",
+    "type": "本科",
+    "tag": "",
+    "sort": 5
+  },
+  {
+    "full_code": "080906",
+    "name": "数字媒体技术",
+    "level": 3,
+    "parent_code": "0809",
+    "type": "本科",
+    "tag": "",
+    "sort": 6
+  },
+  {
+    "full_code": "080907T",
+    "name": "智能科学与技术",
+    "level": 3,
+    "parent_code": "0809",
+    "type": "本科",
+    "tag": "T",
+    "sort": 7
+  },
+  {
+    "full_code": "080908T",
+    "name": "空间信息与数字技术",
+    "level": 3,
+    "parent_code": "0809",
+    "type": "本科",
+    "tag": "T",
+    "sort": 8
+  },
+  {
+    "full_code": "080909T",
+    "name": "电子与计算机工程",
+    "level": 3,
+    "parent_code": "0809",
+    "type": "本科",
+    "tag": "T",
+    "sort": 9
+  },
+  {
+    "full_code": "080910T",
+    "name": "数据科学与大数据技术",
+    "level": 3,
+    "parent_code": "0809",
+    "type": "本科",
+    "tag": "T",
+    "sort": 10
+  },
+  {
+    "full_code": "080911TK",
+    "name": "网络空间安全",
+    "level": 3,
+    "parent_code": "0809",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 11
+  },
+  {
+    "full_code": "080912T",
+    "name": "新媒体技术",
+    "level": 3,
+    "parent_code": "0809",
+    "type": "本科",
+    "tag": "T",
+    "sort": 12
+  },
+  {
+    "full_code": "080913T",
+    "name": "电影制作",
+    "level": 3,
+    "parent_code": "0809",
+    "type": "本科",
+    "tag": "T",
+    "sort": 13
+  },
+  {
+    "full_code": "080914TK",
+    "name": "保密技术",
+    "level": 3,
+    "parent_code": "0809",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 14
+  },
+  {
+    "full_code": "080915T",
+    "name": "服务科学与工程",
+    "level": 3,
+    "parent_code": "0809",
+    "type": "本科",
+    "tag": "T",
+    "sort": 15
+  },
+  {
+    "full_code": "080916T",
+    "name": "虚拟现实技术",
+    "level": 3,
+    "parent_code": "0809",
+    "type": "本科",
+    "tag": "T",
+    "sort": 16
+  },
+  {
+    "full_code": "080917T",
+    "name": "区块链工程",
+    "level": 3,
+    "parent_code": "0809",
+    "type": "本科",
+    "tag": "T",
+    "sort": 17
+  },
+  {
+    "full_code": "080918TK",
+    "name": "密码科学与技术",
+    "level": 3,
+    "parent_code": "0809",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 18
+  },
+  {
+    "full_code": "080919T",
+    "name": "工业软件",
+    "level": 3,
+    "parent_code": "0809",
+    "type": "本科",
+    "tag": "T",
+    "sort": 19
+  },
+  {
+    "full_code": "0810",
+    "name": "土木类",
+    "level": 2,
+    "parent_code": "08",
+    "type": "本科",
+    "tag": "",
+    "sort": 10
+  },
+  {
+    "full_code": "081001",
+    "name": "土木工程",
+    "level": 3,
+    "parent_code": "0810",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "081002",
+    "name": "建筑环境与能源应用工程",
+    "level": 3,
+    "parent_code": "0810",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "081003",
+    "name": "给排水科学与工程",
+    "level": 3,
+    "parent_code": "0810",
+    "type": "本科",
+    "tag": "",
+    "sort": 3
+  },
+  {
+    "full_code": "081004",
+    "name": "建筑电气与智能化",
+    "level": 3,
+    "parent_code": "0810",
+    "type": "本科",
+    "tag": "",
+    "sort": 4
+  },
+  {
+    "full_code": "081005T",
+    "name": "城市地下空间工程",
+    "level": 3,
+    "parent_code": "0810",
+    "type": "本科",
+    "tag": "T",
+    "sort": 5
+  },
+  {
+    "full_code": "081006T",
+    "name": "道路桥梁与渡河工程",
+    "level": 3,
+    "parent_code": "0810",
+    "type": "本科",
+    "tag": "T",
+    "sort": 6
+  },
+  {
+    "full_code": "081007T",
+    "name": "铁道工程",
+    "level": 3,
+    "parent_code": "0810",
+    "type": "本科",
+    "tag": "T",
+    "sort": 7
+  },
+  {
+    "full_code": "081008T",
+    "name": "智能建造",
+    "level": 3,
+    "parent_code": "0810",
+    "type": "本科",
+    "tag": "T",
+    "sort": 8
+  },
+  {
+    "full_code": "081009T",
+    "name": "土木、水利与海洋工程",
+    "level": 3,
+    "parent_code": "0810",
+    "type": "本科",
+    "tag": "T",
+    "sort": 9
+  },
+  {
+    "full_code": "081010T",
+    "name": "土木、水利与交通工程",
+    "level": 3,
+    "parent_code": "0810",
+    "type": "本科",
+    "tag": "T",
+    "sort": 10
+  },
+  {
+    "full_code": "081011T",
+    "name": "城市水系统工程",
+    "level": 3,
+    "parent_code": "0810",
+    "type": "本科",
+    "tag": "T",
+    "sort": 11
+  },
+  {
+    "full_code": "081012T",
+    "name": "智能建造与智慧交通",
+    "level": 3,
+    "parent_code": "0810",
+    "type": "本科",
+    "tag": "T",
+    "sort": 12
+  },
+  {
+    "full_code": "081013T",
+    "name": "工程软件",
+    "level": 3,
+    "parent_code": "0810",
+    "type": "本科",
+    "tag": "T",
+    "sort": 13
+  },
+  {
+    "full_code": "081014T",
+    "name": "城市更新",
+    "level": 3,
+    "parent_code": "0810",
+    "type": "本科",
+    "tag": "T",
+    "sort": 14
+  },
+  {
+    "full_code": "0811",
+    "name": "水利类",
+    "level": 2,
+    "parent_code": "08",
+    "type": "本科",
+    "tag": "",
+    "sort": 11
+  },
+  {
+    "full_code": "081101",
+    "name": "水利水电工程",
+    "level": 3,
+    "parent_code": "0811",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "081102",
+    "name": "水文与水资源工程",
+    "level": 3,
+    "parent_code": "0811",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "081103",
+    "name": "港口航道与海岸工程",
+    "level": 3,
+    "parent_code": "0811",
+    "type": "本科",
+    "tag": "",
+    "sort": 3
+  },
+  {
+    "full_code": "081104T",
+    "name": "水务工程",
+    "level": 3,
+    "parent_code": "0811",
+    "type": "本科",
+    "tag": "T",
+    "sort": 4
+  },
+  {
+    "full_code": "081105T",
+    "name": "水利科学与工程",
+    "level": 3,
+    "parent_code": "0811",
+    "type": "本科",
+    "tag": "T",
+    "sort": 5
+  },
+  {
+    "full_code": "081106T",
+    "name": "智慧水利",
+    "level": 3,
+    "parent_code": "0811",
+    "type": "本科",
+    "tag": "T",
+    "sort": 6
+  },
+  {
+    "full_code": "0812",
+    "name": "测绘类",
+    "level": 2,
+    "parent_code": "08",
+    "type": "本科",
+    "tag": "",
+    "sort": 12
+  },
+  {
+    "full_code": "081201",
+    "name": "测绘工程",
+    "level": 3,
+    "parent_code": "0812",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "081202",
+    "name": "遥感科学与技术",
+    "level": 3,
+    "parent_code": "0812",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "081203T",
+    "name": "导航工程",
+    "level": 3,
+    "parent_code": "0812",
+    "type": "本科",
+    "tag": "T",
+    "sort": 3
+  },
+  {
+    "full_code": "081204T",
+    "name": "地理国情监测",
+    "level": 3,
+    "parent_code": "0812",
+    "type": "本科",
+    "tag": "T",
+    "sort": 4
+  },
+  {
+    "full_code": "081205T",
+    "name": "地理空间信息工程",
+    "level": 3,
+    "parent_code": "0812",
+    "type": "本科",
+    "tag": "T",
+    "sort": 5
+  },
+  {
+    "full_code": "081206TK",
+    "name": "时空信息工程",
+    "level": 3,
+    "parent_code": "0812",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 6
+  },
+  {
+    "full_code": "0813",
+    "name": "化工与制药类",
+    "level": 2,
+    "parent_code": "08",
+    "type": "本科",
+    "tag": "",
+    "sort": 13
+  },
+  {
+    "full_code": "081301",
+    "name": "化学工程与工艺",
+    "level": 3,
+    "parent_code": "0813",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "081302",
+    "name": "制药工程",
+    "level": 3,
+    "parent_code": "0813",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "081303T",
+    "name": "资源循环科学与工程",
+    "level": 3,
+    "parent_code": "0813",
+    "type": "本科",
+    "tag": "T",
+    "sort": 3
+  },
+  {
+    "full_code": "081304T",
+    "name": "能源化学工程",
+    "level": 3,
+    "parent_code": "0813",
+    "type": "本科",
+    "tag": "T",
+    "sort": 4
+  },
+  {
+    "full_code": "081305T",
+    "name": "化学工程与工业生物工程",
+    "level": 3,
+    "parent_code": "0813",
+    "type": "本科",
+    "tag": "T",
+    "sort": 5
+  },
+  {
+    "full_code": "081306T",
+    "name": "化工安全工程",
+    "level": 3,
+    "parent_code": "0813",
+    "type": "本科",
+    "tag": "T",
+    "sort": 6
+  },
+  {
+    "full_code": "081307T",
+    "name": "涂料工程",
+    "level": 3,
+    "parent_code": "0813",
+    "type": "本科",
+    "tag": "T",
+    "sort": 7
+  },
+  {
+    "full_code": "081308T",
+    "name": "精细化工",
+    "level": 3,
+    "parent_code": "0813",
+    "type": "本科",
+    "tag": "T",
+    "sort": 8
+  },
+  {
+    "full_code": "081309T",
+    "name": "智能分子工程",
+    "level": 3,
+    "parent_code": "0813",
+    "type": "本科",
+    "tag": "T",
+    "sort": 9
+  },
+  {
+    "full_code": "0814",
+    "name": "地质类",
+    "level": 2,
+    "parent_code": "08",
+    "type": "本科",
+    "tag": "",
+    "sort": 14
+  },
+  {
+    "full_code": "081401",
+    "name": "地质工程",
+    "level": 3,
+    "parent_code": "0814",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "081402",
+    "name": "勘查技术与工程",
+    "level": 3,
+    "parent_code": "0814",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "081403K",
+    "name": "资源勘查工程",
+    "level": 3,
+    "parent_code": "0814",
+    "type": "本科",
+    "tag": "K",
+    "sort": 3
+  },
+  {
+    "full_code": "081404T",
+    "name": "地下水科学与工程",
+    "level": 3,
+    "parent_code": "0814",
+    "type": "本科",
+    "tag": "T",
+    "sort": 4
+  },
+  {
+    "full_code": "081405T",
+    "name": "旅游地学与规划工程",
+    "level": 3,
+    "parent_code": "0814",
+    "type": "本科",
+    "tag": "T",
+    "sort": 5
+  },
+  {
+    "full_code": "081406T",
+    "name": "智能地球探测",
+    "level": 3,
+    "parent_code": "0814",
+    "type": "本科",
+    "tag": "T",
+    "sort": 6
+  },
+  {
+    "full_code": "081407T",
+    "name": "资源环境大数据工程",
+    "level": 3,
+    "parent_code": "0814",
+    "type": "本科",
+    "tag": "T",
+    "sort": 7
+  },
+  {
+    "full_code": "0815",
+    "name": "矿业类",
+    "level": 2,
+    "parent_code": "08",
+    "type": "本科",
+    "tag": "",
+    "sort": 15
+  },
+  {
+    "full_code": "081501",
+    "name": "采矿工程",
+    "level": 3,
+    "parent_code": "0815",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "081502",
+    "name": "石油工程",
+    "level": 3,
+    "parent_code": "0815",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "081503",
+    "name": "矿物加工工程",
+    "level": 3,
+    "parent_code": "0815",
+    "type": "本科",
+    "tag": "",
+    "sort": 3
+  },
+  {
+    "full_code": "081504",
+    "name": "油气储运工程",
+    "level": 3,
+    "parent_code": "0815",
+    "type": "本科",
+    "tag": "",
+    "sort": 4
+  },
+  {
+    "full_code": "081505T",
+    "name": "矿物资源工程",
+    "level": 3,
+    "parent_code": "0815",
+    "type": "本科",
+    "tag": "T",
+    "sort": 5
+  },
+  {
+    "full_code": "081506T",
+    "name": "海洋油气工程",
+    "level": 3,
+    "parent_code": "0815",
+    "type": "本科",
+    "tag": "T",
+    "sort": 6
+  },
+  {
+    "full_code": "081507T",
+    "name": "智能采矿工程",
+    "level": 3,
+    "parent_code": "0815",
+    "type": "本科",
+    "tag": "T",
+    "sort": 7
+  },
+  {
+    "full_code": "081508TK",
+    "name": "碳储科学与工程",
+    "level": 3,
+    "parent_code": "0815",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 8
+  },
+  {
+    "full_code": "081509TK",
+    "name": "稀土科学与工程",
+    "level": 3,
+    "parent_code": "0815",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 9
+  },
+  {
+    "full_code": "0816",
+    "name": "纺织类",
+    "level": 2,
+    "parent_code": "08",
+    "type": "本科",
+    "tag": "",
+    "sort": 16
+  },
+  {
+    "full_code": "081601",
+    "name": "纺织工程",
+    "level": 3,
+    "parent_code": "0816",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "081602",
+    "name": "服装设计与工程",
+    "level": 3,
+    "parent_code": "0816",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "081603T",
+    "name": "非织造材料与工程",
+    "level": 3,
+    "parent_code": "0816",
+    "type": "本科",
+    "tag": "T",
+    "sort": 3
+  },
+  {
+    "full_code": "081604T",
+    "name": "服装设计与工艺教育",
+    "level": 3,
+    "parent_code": "0816",
+    "type": "本科",
+    "tag": "T",
+    "sort": 4
+  },
+  {
+    "full_code": "081605T",
+    "name": "丝绸设计与工程",
+    "level": 3,
+    "parent_code": "0816",
+    "type": "本科",
+    "tag": "T",
+    "sort": 5
+  },
+  {
+    "full_code": "081606T",
+    "name": "纤维科学与智能制造",
+    "level": 3,
+    "parent_code": "0816",
+    "type": "本科",
+    "tag": "T",
+    "sort": 6
+  },
+  {
+    "full_code": "0817",
+    "name": "轻工类",
+    "level": 2,
+    "parent_code": "08",
+    "type": "本科",
+    "tag": "",
+    "sort": 17
+  },
+  {
+    "full_code": "081701",
+    "name": "轻化工程",
+    "level": 3,
+    "parent_code": "0817",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "081702",
+    "name": "包装工程",
+    "level": 3,
+    "parent_code": "0817",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "081703",
+    "name": "印刷工程",
+    "level": 3,
+    "parent_code": "0817",
+    "type": "本科",
+    "tag": "",
+    "sort": 3
+  },
+  {
+    "full_code": "081704T",
+    "name": "香料香精技术与工程",
+    "level": 3,
+    "parent_code": "0817",
+    "type": "本科",
+    "tag": "T",
+    "sort": 4
+  },
+  {
+    "full_code": "081705T",
+    "name": "化妆品技术与工程",
+    "level": 3,
+    "parent_code": "0817",
+    "type": "本科",
+    "tag": "T",
+    "sort": 5
+  },
+  {
+    "full_code": "081706TK",
+    "name": "生物质能源与材料",
+    "level": 3,
+    "parent_code": "0817",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 6
+  },
+  {
+    "full_code": "081707T",
+    "name": "生物质技术与工程",
+    "level": 3,
+    "parent_code": "0817",
+    "type": "本科",
+    "tag": "T",
+    "sort": 7
+  },
+  {
+    "full_code": "0818",
+    "name": "交通运输类",
+    "level": 2,
+    "parent_code": "08",
+    "type": "本科",
+    "tag": "",
+    "sort": 18
+  },
+  {
+    "full_code": "081801",
+    "name": "交通运输",
+    "level": 3,
+    "parent_code": "0818",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "081802",
+    "name": "交通工程",
+    "level": 3,
+    "parent_code": "0818",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "081803K",
+    "name": "航海技术",
+    "level": 3,
+    "parent_code": "0818",
+    "type": "本科",
+    "tag": "K",
+    "sort": 3
+  },
+  {
+    "full_code": "081804K",
+    "name": "轮机工程",
+    "level": 3,
+    "parent_code": "0818",
+    "type": "本科",
+    "tag": "K",
+    "sort": 4
+  },
+  {
+    "full_code": "081805K",
+    "name": "飞行技术",
+    "level": 3,
+    "parent_code": "0818",
+    "type": "本科",
+    "tag": "K",
+    "sort": 5
+  },
+  {
+    "full_code": "081806T",
+    "name": "交通设备与控制工程",
+    "level": 3,
+    "parent_code": "0818",
+    "type": "本科",
+    "tag": "T",
+    "sort": 6
+  },
+  {
+    "full_code": "081807T",
+    "name": "救助与打捞工程",
+    "level": 3,
+    "parent_code": "0818",
+    "type": "本科",
+    "tag": "T",
+    "sort": 7
+  },
+  {
+    "full_code": "081808TK",
+    "name": "船舶电子电气工程",
+    "level": 3,
+    "parent_code": "0818",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 8
+  },
+  {
+    "full_code": "081809T",
+    "name": "轨道交通电气与控制",
+    "level": 3,
+    "parent_code": "0818",
+    "type": "本科",
+    "tag": "T",
+    "sort": 9
+  },
+  {
+    "full_code": "081810T",
+    "name": "邮轮工程与管理",
+    "level": 3,
+    "parent_code": "0818",
+    "type": "本科",
+    "tag": "T",
+    "sort": 10
+  },
+  {
+    "full_code": "081811T",
+    "name": "智慧交通",
+    "level": 3,
+    "parent_code": "0818",
+    "type": "本科",
+    "tag": "T",
+    "sort": 11
+  },
+  {
+    "full_code": "081812T",
+    "name": "智能运输工程",
+    "level": 3,
+    "parent_code": "0818",
+    "type": "本科",
+    "tag": "T",
+    "sort": 12
+  },
+  {
+    "full_code": "081813T",
+    "name": "交通能源融合工程",
+    "level": 3,
+    "parent_code": "0818",
+    "type": "本科",
+    "tag": "T",
+    "sort": 13
+  },
+  {
+    "full_code": "0819",
+    "name": "海洋工程类",
+    "level": 2,
+    "parent_code": "08",
+    "type": "本科",
+    "tag": "",
+    "sort": 19
+  },
+  {
+    "full_code": "081901",
+    "name": "船舶与海洋工程",
+    "level": 3,
+    "parent_code": "0819",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "081902T",
+    "name": "海洋工程与技术",
+    "level": 3,
+    "parent_code": "0819",
+    "type": "本科",
+    "tag": "T",
+    "sort": 2
+  },
+  {
+    "full_code": "081903T",
+    "name": "海洋资源开发技术",
+    "level": 3,
+    "parent_code": "0819",
+    "type": "本科",
+    "tag": "T",
+    "sort": 3
+  },
+  {
+    "full_code": "081904T",
+    "name": "海洋机器人",
+    "level": 3,
+    "parent_code": "0819",
+    "type": "本科",
+    "tag": "T",
+    "sort": 4
+  },
+  {
+    "full_code": "081905T",
+    "name": "智慧海洋技术",
+    "level": 3,
+    "parent_code": "0819",
+    "type": "本科",
+    "tag": "T",
+    "sort": 5
+  },
+  {
+    "full_code": "081906T",
+    "name": "智能海洋装备",
+    "level": 3,
+    "parent_code": "0819",
+    "type": "本科",
+    "tag": "T",
+    "sort": 6
+  },
+  {
+    "full_code": "081907T",
+    "name": "海洋智能与无人技术",
+    "level": 3,
+    "parent_code": "0819",
+    "type": "本科",
+    "tag": "T",
+    "sort": 7
+  },
+  {
+    "full_code": "0820",
+    "name": "航空航天类",
+    "level": 2,
+    "parent_code": "08",
+    "type": "本科",
+    "tag": "",
+    "sort": 20
+  },
+  {
+    "full_code": "082001",
+    "name": "航空航天工程",
+    "level": 3,
+    "parent_code": "0820",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "082002",
+    "name": "飞行器设计与工程",
+    "level": 3,
+    "parent_code": "0820",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "082003",
+    "name": "飞行器制造工程",
+    "level": 3,
+    "parent_code": "0820",
+    "type": "本科",
+    "tag": "",
+    "sort": 3
+  },
+  {
+    "full_code": "082004",
+    "name": "飞行器动力工程",
+    "level": 3,
+    "parent_code": "0820",
+    "type": "本科",
+    "tag": "",
+    "sort": 4
+  },
+  {
+    "full_code": "082005",
+    "name": "飞行器环境与生命保障工程",
+    "level": 3,
+    "parent_code": "0820",
+    "type": "本科",
+    "tag": "",
+    "sort": 5
+  },
+  {
+    "full_code": "082006T",
+    "name": "飞行器质量与可靠性",
+    "level": 3,
+    "parent_code": "0820",
+    "type": "本科",
+    "tag": "T",
+    "sort": 6
+  },
+  {
+    "full_code": "082007T",
+    "name": "飞行器适航技术",
+    "level": 3,
+    "parent_code": "0820",
+    "type": "本科",
+    "tag": "T",
+    "sort": 7
+  },
+  {
+    "full_code": "082008T",
+    "name": "飞行器控制与信息工程",
+    "level": 3,
+    "parent_code": "0820",
+    "type": "本科",
+    "tag": "T",
+    "sort": 8
+  },
+  {
+    "full_code": "082009T",
+    "name": "无人驾驶航空器系统工程",
+    "level": 3,
+    "parent_code": "0820",
+    "type": "本科",
+    "tag": "T",
+    "sort": 9
+  },
+  {
+    "full_code": "082010T",
+    "name": "智能飞行器技术",
+    "level": 3,
+    "parent_code": "0820",
+    "type": "本科",
+    "tag": "T",
+    "sort": 10
+  },
+  {
+    "full_code": "082011T",
+    "name": "空天智能电推进技术",
+    "level": 3,
+    "parent_code": "0820",
+    "type": "本科",
+    "tag": "T",
+    "sort": 11
+  },
+  {
+    "full_code": "082012T",
+    "name": "飞行器运维工程",
+    "level": 3,
+    "parent_code": "0820",
+    "type": "本科",
+    "tag": "T",
+    "sort": 12
+  },
+  {
+    "full_code": "0821",
+    "name": "兵器类",
+    "level": 2,
+    "parent_code": "08",
+    "type": "本科",
+    "tag": "",
+    "sort": 21
+  },
+  {
+    "full_code": "082101",
+    "name": "武器系统与工程",
+    "level": 3,
+    "parent_code": "0821",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "082102",
+    "name": "武器发射工程",
+    "level": 3,
+    "parent_code": "0821",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "082103",
+    "name": "探测制导与控制技术",
+    "level": 3,
+    "parent_code": "0821",
+    "type": "本科",
+    "tag": "",
+    "sort": 3
+  },
+  {
+    "full_code": "082104",
+    "name": "弹药工程与爆炸技术",
+    "level": 3,
+    "parent_code": "0821",
+    "type": "本科",
+    "tag": "",
+    "sort": 4
+  },
+  {
+    "full_code": "082105",
+    "name": "特种能源技术与工程",
+    "level": 3,
+    "parent_code": "0821",
+    "type": "本科",
+    "tag": "",
+    "sort": 5
+  },
+  {
+    "full_code": "082106",
+    "name": "装甲车辆工程",
+    "level": 3,
+    "parent_code": "0821",
+    "type": "本科",
+    "tag": "",
+    "sort": 6
+  },
+  {
+    "full_code": "082107",
+    "name": "信息对抗技术",
+    "level": 3,
+    "parent_code": "0821",
+    "type": "本科",
+    "tag": "",
+    "sort": 7
+  },
+  {
+    "full_code": "082108T",
+    "name": "智能无人系统技术",
+    "level": 3,
+    "parent_code": "0821",
+    "type": "本科",
+    "tag": "T",
+    "sort": 8
+  },
+  {
+    "full_code": "0822",
+    "name": "核工程类",
+    "level": 2,
+    "parent_code": "08",
+    "type": "本科",
+    "tag": "",
+    "sort": 22
+  },
+  {
+    "full_code": "082201",
+    "name": "核工程与核技术",
+    "level": 3,
+    "parent_code": "0822",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "082202",
+    "name": "辐射防护与核安全",
+    "level": 3,
+    "parent_code": "0822",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "082203",
+    "name": "工程物理",
+    "level": 3,
+    "parent_code": "0822",
+    "type": "本科",
+    "tag": "",
+    "sort": 3
+  },
+  {
+    "full_code": "082204",
+    "name": "核化工与核燃料工程",
+    "level": 3,
+    "parent_code": "0822",
+    "type": "本科",
+    "tag": "",
+    "sort": 4
+  },
+  {
+    "full_code": "0823",
+    "name": "农业工程类",
+    "level": 2,
+    "parent_code": "08",
+    "type": "本科",
+    "tag": "",
+    "sort": 23
+  },
+  {
+    "full_code": "082301",
+    "name": "农业工程",
+    "level": 3,
+    "parent_code": "0823",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "082302",
+    "name": "农业机械化及其自动化",
+    "level": 3,
+    "parent_code": "0823",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "082303",
+    "name": "农业电气化",
+    "level": 3,
+    "parent_code": "0823",
+    "type": "本科",
+    "tag": "",
+    "sort": 3
+  },
+  {
+    "full_code": "082304",
+    "name": "农业建筑环境与能源工程",
+    "level": 3,
+    "parent_code": "0823",
+    "type": "本科",
+    "tag": "",
+    "sort": 4
+  },
+  {
+    "full_code": "082305",
+    "name": "农业水利工程",
+    "level": 3,
+    "parent_code": "0823",
+    "type": "本科",
+    "tag": "",
+    "sort": 5
+  },
+  {
+    "full_code": "082306T",
+    "name": "土地整治工程",
+    "level": 3,
+    "parent_code": "0823",
+    "type": "本科",
+    "tag": "T",
+    "sort": 6
+  },
+  {
+    "full_code": "082307T",
+    "name": "农业智能装备工程",
+    "level": 3,
+    "parent_code": "0823",
+    "type": "本科",
+    "tag": "T",
+    "sort": 7
+  },
+  {
+    "full_code": "082308T",
+    "name": "农业机器人",
+    "level": 3,
+    "parent_code": "0823",
+    "type": "本科",
+    "tag": "T",
+    "sort": 8
+  },
+  {
+    "full_code": "0824",
+    "name": "林业工程类",
+    "level": 2,
+    "parent_code": "08",
+    "type": "本科",
+    "tag": "",
+    "sort": 24
+  },
+  {
+    "full_code": "082401",
+    "name": "森林工程",
+    "level": 3,
+    "parent_code": "0824",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "082402",
+    "name": "木材科学与工程",
+    "level": 3,
+    "parent_code": "0824",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "082403",
+    "name": "林产化工",
+    "level": 3,
+    "parent_code": "0824",
+    "type": "本科",
+    "tag": "",
+    "sort": 3
+  },
+  {
+    "full_code": "082404T",
+    "name": "家具设计与工程",
+    "level": 3,
+    "parent_code": "0824",
+    "type": "本科",
+    "tag": "T",
+    "sort": 4
+  },
+  {
+    "full_code": "082405T",
+    "name": "木结构建筑与材料",
+    "level": 3,
+    "parent_code": "0824",
+    "type": "本科",
+    "tag": "T",
+    "sort": 5
+  },
+  {
+    "full_code": "0825",
+    "name": "环境科学与工程类",
+    "level": 2,
+    "parent_code": "08",
+    "type": "本科",
+    "tag": "",
+    "sort": 25
+  },
+  {
+    "full_code": "082501",
+    "name": "环境科学与工程",
+    "level": 3,
+    "parent_code": "0825",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "082502",
+    "name": "环境工程",
+    "level": 3,
+    "parent_code": "0825",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "082503",
+    "name": "环境科学",
+    "level": 3,
+    "parent_code": "0825",
+    "type": "本科",
+    "tag": "",
+    "sort": 3
+  },
+  {
+    "full_code": "082504",
+    "name": "环境生态工程",
+    "level": 3,
+    "parent_code": "0825",
+    "type": "本科",
+    "tag": "",
+    "sort": 4
+  },
+  {
+    "full_code": "082505T",
+    "name": "环保设备工程",
+    "level": 3,
+    "parent_code": "0825",
+    "type": "本科",
+    "tag": "T",
+    "sort": 5
+  },
+  {
+    "full_code": "082506T",
+    "name": "资源环境科学",
+    "level": 3,
+    "parent_code": "0825",
+    "type": "本科",
+    "tag": "T",
+    "sort": 6
+  },
+  {
+    "full_code": "082507T",
+    "name": "水质科学与技术",
+    "level": 3,
+    "parent_code": "0825",
+    "type": "本科",
+    "tag": "T",
+    "sort": 7
+  },
+  {
+    "full_code": "0826",
+    "name": "生物医学工程类",
+    "level": 2,
+    "parent_code": "08",
+    "type": "本科",
+    "tag": "",
+    "sort": 26
+  },
+  {
+    "full_code": "082601",
+    "name": "生物医学工程",
+    "level": 3,
+    "parent_code": "0826",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "082602T",
+    "name": "假肢矫形工程",
+    "level": 3,
+    "parent_code": "0826",
+    "type": "本科",
+    "tag": "T",
+    "sort": 2
+  },
+  {
+    "full_code": "082603T",
+    "name": "临床工程技术",
+    "level": 3,
+    "parent_code": "0826",
+    "type": "本科",
+    "tag": "T",
+    "sort": 3
+  },
+  {
+    "full_code": "082604T",
+    "name": "康复工程",
+    "level": 3,
+    "parent_code": "0826",
+    "type": "本科",
+    "tag": "T",
+    "sort": 4
+  },
+  {
+    "full_code": "082605T",
+    "name": "健康科学与技术",
+    "level": 3,
+    "parent_code": "0826",
+    "type": "本科",
+    "tag": "T",
+    "sort": 5
+  },
+  {
+    "full_code": "0827",
+    "name": "食品科学与工程类",
+    "level": 2,
+    "parent_code": "08",
+    "type": "本科",
+    "tag": "",
+    "sort": 27
+  },
+  {
+    "full_code": "082701",
+    "name": "食品科学与工程",
+    "level": 3,
+    "parent_code": "0827",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "082702",
+    "name": "食品质量与安全",
+    "level": 3,
+    "parent_code": "0827",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "082703",
+    "name": "粮食工程",
+    "level": 3,
+    "parent_code": "0827",
+    "type": "本科",
+    "tag": "",
+    "sort": 3
+  },
+  {
+    "full_code": "082704",
+    "name": "乳品工程",
+    "level": 3,
+    "parent_code": "0827",
+    "type": "本科",
+    "tag": "",
+    "sort": 4
+  },
+  {
+    "full_code": "082705",
+    "name": "酿酒工程",
+    "level": 3,
+    "parent_code": "0827",
+    "type": "本科",
+    "tag": "",
+    "sort": 5
+  },
+  {
+    "full_code": "082706T",
+    "name": "葡萄与葡萄酒工程",
+    "level": 3,
+    "parent_code": "0827",
+    "type": "本科",
+    "tag": "T",
+    "sort": 6
+  },
+  {
+    "full_code": "082707T",
+    "name": "食品营养与检验教育",
+    "level": 3,
+    "parent_code": "0827",
+    "type": "本科",
+    "tag": "T",
+    "sort": 7
+  },
+  {
+    "full_code": "082708T",
+    "name": "烹饪与营养教育",
+    "level": 3,
+    "parent_code": "0827",
+    "type": "本科",
+    "tag": "T",
+    "sort": 8
+  },
+  {
+    "full_code": "082709T",
+    "name": "食品安全与检测",
+    "level": 3,
+    "parent_code": "0827",
+    "type": "本科",
+    "tag": "T",
+    "sort": 9
+  },
+  {
+    "full_code": "082710T",
+    "name": "食品营养与健康",
+    "level": 3,
+    "parent_code": "0827",
+    "type": "本科",
+    "tag": "T",
+    "sort": 10
+  },
+  {
+    "full_code": "082711T",
+    "name": "食用菌科学与工程",
+    "level": 3,
+    "parent_code": "0827",
+    "type": "本科",
+    "tag": "T",
+    "sort": 11
+  },
+  {
+    "full_code": "082712T",
+    "name": "白酒酿造工程",
+    "level": 3,
+    "parent_code": "0827",
+    "type": "本科",
+    "tag": "T",
+    "sort": 12
+  },
+  {
+    "full_code": "082713T",
+    "name": "咖啡科学与工程",
+    "level": 3,
+    "parent_code": "0827",
+    "type": "本科",
+    "tag": "T",
+    "sort": 13
+  },
+  {
+    "full_code": "0828",
+    "name": "建筑类",
+    "level": 2,
+    "parent_code": "08",
+    "type": "本科",
+    "tag": "",
+    "sort": 28
+  },
+  {
+    "full_code": "082801",
+    "name": "建筑学",
+    "level": 3,
+    "parent_code": "0828",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "082802",
+    "name": "城乡规划",
+    "level": 3,
+    "parent_code": "0828",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "082803",
+    "name": "风景园林",
+    "level": 3,
+    "parent_code": "0828",
+    "type": "本科",
+    "tag": "",
+    "sort": 3
+  },
+  {
+    "full_code": "082804T",
+    "name": "历史建筑保护工程",
+    "level": 3,
+    "parent_code": "0828",
+    "type": "本科",
+    "tag": "T",
+    "sort": 4
+  },
+  {
+    "full_code": "082805T",
+    "name": "人居环境科学与技术",
+    "level": 3,
+    "parent_code": "0828",
+    "type": "本科",
+    "tag": "T",
+    "sort": 5
+  },
+  {
+    "full_code": "082806T",
+    "name": "城市设计",
+    "level": 3,
+    "parent_code": "0828",
+    "type": "本科",
+    "tag": "T",
+    "sort": 6
+  },
+  {
+    "full_code": "082807T",
+    "name": "智慧建筑与建造",
+    "level": 3,
+    "parent_code": "0828",
+    "type": "本科",
+    "tag": "T",
+    "sort": 7
+  },
+  {
+    "full_code": "082808T",
+    "name": "智慧景观营造",
+    "level": 3,
+    "parent_code": "0828",
+    "type": "本科",
+    "tag": "T",
+    "sort": 8
+  },
+  {
+    "full_code": "0829",
+    "name": "安全科学与工程类",
+    "level": 2,
+    "parent_code": "08",
+    "type": "本科",
+    "tag": "",
+    "sort": 29
+  },
+  {
+    "full_code": "082901",
+    "name": "安全工程",
+    "level": 3,
+    "parent_code": "0829",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "082902T",
+    "name": "应急技术与管理",
+    "level": 3,
+    "parent_code": "0829",
+    "type": "本科",
+    "tag": "T",
+    "sort": 2
+  },
+  {
+    "full_code": "082903T",
+    "name": "职业卫生工程",
+    "level": 3,
+    "parent_code": "0829",
+    "type": "本科",
+    "tag": "T",
+    "sort": 3
+  },
+  {
+    "full_code": "082904T",
+    "name": "安全生产监管",
+    "level": 3,
+    "parent_code": "0829",
+    "type": "本科",
+    "tag": "T",
+    "sort": 4
+  },
+  {
+    "full_code": "082905TK",
+    "name": "智慧应急",
+    "level": 3,
+    "parent_code": "0829",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 5
+  },
+  {
+    "full_code": "0830",
+    "name": "生物工程类",
+    "level": 2,
+    "parent_code": "08",
+    "type": "本科",
+    "tag": "",
+    "sort": 30
+  },
+  {
+    "full_code": "083001",
+    "name": "生物工程",
+    "level": 3,
+    "parent_code": "0830",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "083002T",
+    "name": "生物制药",
+    "level": 3,
+    "parent_code": "0830",
+    "type": "本科",
+    "tag": "T",
+    "sort": 2
+  },
+  {
+    "full_code": "083003T",
+    "name": "合成生物学",
+    "level": 3,
+    "parent_code": "0830",
+    "type": "本科",
+    "tag": "T",
+    "sort": 3
+  },
+  {
+    "full_code": "083004T",
+    "name": "生物制造",
+    "level": 3,
+    "parent_code": "0830",
+    "type": "本科",
+    "tag": "T",
+    "sort": 4
+  },
+  {
+    "full_code": "0831",
+    "name": "公安技术类",
+    "level": 2,
+    "parent_code": "08",
+    "type": "本科",
+    "tag": "",
+    "sort": 31
+  },
+  {
+    "full_code": "083101K",
+    "name": "刑事科学技术",
+    "level": 3,
+    "parent_code": "0831",
+    "type": "本科",
+    "tag": "K",
+    "sort": 1
+  },
+  {
+    "full_code": "083102K",
+    "name": "消防工程",
+    "level": 3,
+    "parent_code": "0831",
+    "type": "本科",
+    "tag": "K",
+    "sort": 2
+  },
+  {
+    "full_code": "083103TK",
+    "name": "交通管理工程",
+    "level": 3,
+    "parent_code": "0831",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 3
+  },
+  {
+    "full_code": "083104TK",
+    "name": "安全防范工程",
+    "level": 3,
+    "parent_code": "0831",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 4
+  },
+  {
+    "full_code": "083105TK",
+    "name": "公安视听技术",
+    "level": 3,
+    "parent_code": "0831",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 5
+  },
+  {
+    "full_code": "083106TK",
+    "name": "抢险救援指挥与技术",
+    "level": 3,
+    "parent_code": "0831",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 6
+  },
+  {
+    "full_code": "083107TK",
+    "name": "火灾勘查",
+    "level": 3,
+    "parent_code": "0831",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 7
+  },
+  {
+    "full_code": "083108TK",
+    "name": "网络安全与执法",
+    "level": 3,
+    "parent_code": "0831",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 8
+  },
+  {
+    "full_code": "083109TK",
+    "name": "核生化消防",
+    "level": 3,
+    "parent_code": "0831",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 9
+  },
+  {
+    "full_code": "083110TK",
+    "name": "海警舰艇指挥与技术",
+    "level": 3,
+    "parent_code": "0831",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 10
+  },
+  {
+    "full_code": "083111TK",
+    "name": "数据警务技术",
+    "level": 3,
+    "parent_code": "0831",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 11
+  },
+  {
+    "full_code": "083112TK",
+    "name": "食品药品环境犯罪侦查技术",
+    "level": 3,
+    "parent_code": "0831",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 12
+  },
+  {
+    "full_code": "083113TK",
+    "name": "低空安全管理",
+    "level": 3,
+    "parent_code": "0831",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 13
+  },
+  {
+    "full_code": "09",
+    "name": "农学",
+    "level": 1,
+    "parent_code": null,
+    "type": "本科",
+    "tag": "",
+    "sort": 9
+  },
+  {
+    "full_code": "0901",
+    "name": "植物生产类",
+    "level": 2,
+    "parent_code": "09",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "090101",
+    "name": "农学",
+    "level": 3,
+    "parent_code": "0901",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "090102",
+    "name": "园艺",
+    "level": 3,
+    "parent_code": "0901",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "090103",
+    "name": "植物保护",
+    "level": 3,
+    "parent_code": "0901",
+    "type": "本科",
+    "tag": "",
+    "sort": 3
+  },
+  {
+    "full_code": "090104",
+    "name": "植物科学与技术",
+    "level": 3,
+    "parent_code": "0901",
+    "type": "本科",
+    "tag": "",
+    "sort": 4
+  },
+  {
+    "full_code": "090105",
+    "name": "种子科学与工程",
+    "level": 3,
+    "parent_code": "0901",
+    "type": "本科",
+    "tag": "",
+    "sort": 5
+  },
+  {
+    "full_code": "090106",
+    "name": "设施农业科学与工程",
+    "level": 3,
+    "parent_code": "0901",
+    "type": "本科",
+    "tag": "",
+    "sort": 6
+  },
+  {
+    "full_code": "090107T",
+    "name": "茶学",
+    "level": 3,
+    "parent_code": "0901",
+    "type": "本科",
+    "tag": "T",
+    "sort": 7
+  },
+  {
+    "full_code": "090108T",
+    "name": "烟草",
+    "level": 3,
+    "parent_code": "0901",
+    "type": "本科",
+    "tag": "T",
+    "sort": 8
+  },
+  {
+    "full_code": "090109T",
+    "name": "应用生物科学",
+    "level": 3,
+    "parent_code": "0901",
+    "type": "本科",
+    "tag": "T",
+    "sort": 9
+  },
+  {
+    "full_code": "090110T",
+    "name": "农艺教育",
+    "level": 3,
+    "parent_code": "0901",
+    "type": "本科",
+    "tag": "T",
+    "sort": 10
+  },
+  {
+    "full_code": "090111T",
+    "name": "园艺教育",
+    "level": 3,
+    "parent_code": "0901",
+    "type": "本科",
+    "tag": "T",
+    "sort": 11
+  },
+  {
+    "full_code": "090112T",
+    "name": "智慧农业",
+    "level": 3,
+    "parent_code": "0901",
+    "type": "本科",
+    "tag": "T",
+    "sort": 12
+  },
+  {
+    "full_code": "090113T",
+    "name": "菌物科学与工程",
+    "level": 3,
+    "parent_code": "0901",
+    "type": "本科",
+    "tag": "T",
+    "sort": 13
+  },
+  {
+    "full_code": "090114T",
+    "name": "农药化肥",
+    "level": 3,
+    "parent_code": "0901",
+    "type": "本科",
+    "tag": "T",
+    "sort": 14
+  },
+  {
+    "full_code": "090115T",
+    "name": "生物农药科学与工程",
+    "level": 3,
+    "parent_code": "0901",
+    "type": "本科",
+    "tag": "T",
+    "sort": 15
+  },
+  {
+    "full_code": "090116TK",
+    "name": "生物育种科学",
+    "level": 3,
+    "parent_code": "0901",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 16
+  },
+  {
+    "full_code": "090117TK",
+    "name": "生物育种技术",
+    "level": 3,
+    "parent_code": "0901",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 17
+  },
+  {
+    "full_code": "0902",
+    "name": "自然保护与环境生态类",
+    "level": 2,
+    "parent_code": "09",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "090201",
+    "name": "农业资源与环境",
+    "level": 3,
+    "parent_code": "0902",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "090202",
+    "name": "野生动物与自然保护区管理",
+    "level": 3,
+    "parent_code": "0902",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "090203",
+    "name": "水土保持与荒漠化防治",
+    "level": 3,
+    "parent_code": "0902",
+    "type": "本科",
+    "tag": "",
+    "sort": 3
+  },
+  {
+    "full_code": "090204T",
+    "name": "生物质科学与工程",
+    "level": 3,
+    "parent_code": "0902",
+    "type": "本科",
+    "tag": "T",
+    "sort": 4
+  },
+  {
+    "full_code": "090205T",
+    "name": "土地科学与技术",
+    "level": 3,
+    "parent_code": "0902",
+    "type": "本科",
+    "tag": "T",
+    "sort": 5
+  },
+  {
+    "full_code": "090206T",
+    "name": "湿地保护与恢复",
+    "level": 3,
+    "parent_code": "0902",
+    "type": "本科",
+    "tag": "T",
+    "sort": 6
+  },
+  {
+    "full_code": "090207TK",
+    "name": "国家公园建设与管理",
+    "level": 3,
+    "parent_code": "0902",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 7
+  },
+  {
+    "full_code": "090208TK",
+    "name": "生态修复学",
+    "level": 3,
+    "parent_code": "0902",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 8
+  },
+  {
+    "full_code": "090209T",
+    "name": "盐碱地科学与工程",
+    "level": 3,
+    "parent_code": "0902",
+    "type": "本科",
+    "tag": "T",
+    "sort": 9
+  },
+  {
+    "full_code": "0903",
+    "name": "动物生产类",
+    "level": 2,
+    "parent_code": "09",
+    "type": "本科",
+    "tag": "",
+    "sort": 3
+  },
+  {
+    "full_code": "090301",
+    "name": "动物科学",
+    "level": 3,
+    "parent_code": "0903",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "090302T",
+    "name": "蚕学",
+    "level": 3,
+    "parent_code": "0903",
+    "type": "本科",
+    "tag": "T",
+    "sort": 2
+  },
+  {
+    "full_code": "090303T",
+    "name": "蜂学",
+    "level": 3,
+    "parent_code": "0903",
+    "type": "本科",
+    "tag": "T",
+    "sort": 3
+  },
+  {
+    "full_code": "090304T",
+    "name": "经济动物学",
+    "level": 3,
+    "parent_code": "0903",
+    "type": "本科",
+    "tag": "T",
+    "sort": 4
+  },
+  {
+    "full_code": "090305T",
+    "name": "马业科学",
+    "level": 3,
+    "parent_code": "0903",
+    "type": "本科",
+    "tag": "T",
+    "sort": 5
+  },
+  {
+    "full_code": "090306T",
+    "name": "饲料工程",
+    "level": 3,
+    "parent_code": "0903",
+    "type": "本科",
+    "tag": "T",
+    "sort": 6
+  },
+  {
+    "full_code": "090307T",
+    "name": "智慧牧业科学与工程",
+    "level": 3,
+    "parent_code": "0903",
+    "type": "本科",
+    "tag": "T",
+    "sort": 7
+  },
+  {
+    "full_code": "0904",
+    "name": "动物医学类",
+    "level": 2,
+    "parent_code": "09",
+    "type": "本科",
+    "tag": "",
+    "sort": 4
+  },
+  {
+    "full_code": "090401",
+    "name": "动物医学",
+    "level": 3,
+    "parent_code": "0904",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "090402",
+    "name": "动物药学",
+    "level": 3,
+    "parent_code": "0904",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "090403T",
+    "name": "动植物检疫",
+    "level": 3,
+    "parent_code": "0904",
+    "type": "本科",
+    "tag": "T",
+    "sort": 3
+  },
+  {
+    "full_code": "090404T",
+    "name": "实验动物学",
+    "level": 3,
+    "parent_code": "0904",
+    "type": "本科",
+    "tag": "T",
+    "sort": 4
+  },
+  {
+    "full_code": "090405T",
+    "name": "中兽医学",
+    "level": 3,
+    "parent_code": "0904",
+    "type": "本科",
+    "tag": "T",
+    "sort": 5
+  },
+  {
+    "full_code": "090406TK",
+    "name": "兽医公共卫生",
+    "level": 3,
+    "parent_code": "0904",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 6
+  },
+  {
+    "full_code": "0905",
+    "name": "林学类",
+    "level": 2,
+    "parent_code": "09",
+    "type": "本科",
+    "tag": "",
+    "sort": 5
+  },
+  {
+    "full_code": "090501",
+    "name": "林学",
+    "level": 3,
+    "parent_code": "0905",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "090502",
+    "name": "园林",
+    "level": 3,
+    "parent_code": "0905",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "090503",
+    "name": "森林保护",
+    "level": 3,
+    "parent_code": "0905",
+    "type": "本科",
+    "tag": "",
+    "sort": 3
+  },
+  {
+    "full_code": "090504T",
+    "name": "经济林",
+    "level": 3,
+    "parent_code": "0905",
+    "type": "本科",
+    "tag": "T",
+    "sort": 4
+  },
+  {
+    "full_code": "090505T",
+    "name": "智慧林业",
+    "level": 3,
+    "parent_code": "0905",
+    "type": "本科",
+    "tag": "T",
+    "sort": 5
+  },
+  {
+    "full_code": "0906",
+    "name": "水产类",
+    "level": 2,
+    "parent_code": "09",
+    "type": "本科",
+    "tag": "",
+    "sort": 6
+  },
+  {
+    "full_code": "090601",
+    "name": "水产养殖学",
+    "level": 3,
+    "parent_code": "0906",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "090602",
+    "name": "海洋渔业科学与技术",
+    "level": 3,
+    "parent_code": "0906",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "090603T",
+    "name": "水族科学与技术",
+    "level": 3,
+    "parent_code": "0906",
+    "type": "本科",
+    "tag": "T",
+    "sort": 3
+  },
+  {
+    "full_code": "090604TK",
+    "name": "水生动物医学",
+    "level": 3,
+    "parent_code": "0906",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 4
+  },
+  {
+    "full_code": "090605T",
+    "name": "智慧渔业",
+    "level": 3,
+    "parent_code": "0906",
+    "type": "本科",
+    "tag": "T",
+    "sort": 5
+  },
+  {
+    "full_code": "0907",
+    "name": "草学类",
+    "level": 2,
+    "parent_code": "09",
+    "type": "本科",
+    "tag": "",
+    "sort": 7
+  },
+  {
+    "full_code": "090701",
+    "name": "草业科学",
+    "level": 3,
+    "parent_code": "0907",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "090702T",
+    "name": "草坪科学与工程",
+    "level": 3,
+    "parent_code": "0907",
+    "type": "本科",
+    "tag": "T",
+    "sort": 2
+  },
+  {
+    "full_code": "10",
+    "name": "医学",
+    "level": 1,
+    "parent_code": null,
+    "type": "本科",
+    "tag": "",
+    "sort": 10
+  },
+  {
+    "full_code": "1001",
+    "name": "基础医学类",
+    "level": 2,
+    "parent_code": "10",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "100101K",
+    "name": "基础医学",
+    "level": 3,
+    "parent_code": "1001",
+    "type": "本科",
+    "tag": "K",
+    "sort": 1
+  },
+  {
+    "full_code": "100102TK",
+    "name": "生物医学",
+    "level": 3,
+    "parent_code": "1001",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 2
+  },
+  {
+    "full_code": "100103T",
+    "name": "生物医学科学",
+    "level": 3,
+    "parent_code": "1001",
+    "type": "本科",
+    "tag": "T",
+    "sort": 3
+  },
+  {
+    "full_code": "1002",
+    "name": "临床医学类",
+    "level": 2,
+    "parent_code": "10",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "100201K",
+    "name": "临床医学",
+    "level": 3,
+    "parent_code": "1002",
+    "type": "本科",
+    "tag": "K",
+    "sort": 1
+  },
+  {
+    "full_code": "100202TK",
+    "name": "麻醉学",
+    "level": 3,
+    "parent_code": "1002",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 2
+  },
+  {
+    "full_code": "100203TK",
+    "name": "医学影像学",
+    "level": 3,
+    "parent_code": "1002",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 3
+  },
+  {
+    "full_code": "100204TK",
+    "name": "眼视光医学",
+    "level": 3,
+    "parent_code": "1002",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 4
+  },
+  {
+    "full_code": "100205TK",
+    "name": "精神医学",
+    "level": 3,
+    "parent_code": "1002",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 5
+  },
+  {
+    "full_code": "100206TK",
+    "name": "放射医学",
+    "level": 3,
+    "parent_code": "1002",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 6
+  },
+  {
+    "full_code": "100207TK",
+    "name": "儿科学",
+    "level": 3,
+    "parent_code": "1002",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 7
+  },
+  {
+    "full_code": "1003",
+    "name": "口腔医学类",
+    "level": 2,
+    "parent_code": "10",
+    "type": "本科",
+    "tag": "",
+    "sort": 3
+  },
+  {
+    "full_code": "100301K",
+    "name": "口腔医学",
+    "level": 3,
+    "parent_code": "1003",
+    "type": "本科",
+    "tag": "K",
+    "sort": 1
+  },
+  {
+    "full_code": "1004",
+    "name": "公共卫生与预防医学类",
+    "level": 2,
+    "parent_code": "10",
+    "type": "本科",
+    "tag": "",
+    "sort": 4
+  },
+  {
+    "full_code": "100401K",
+    "name": "预防医学",
+    "level": 3,
+    "parent_code": "1004",
+    "type": "本科",
+    "tag": "K",
+    "sort": 1
+  },
+  {
+    "full_code": "100402",
+    "name": "食品卫生与营养学",
+    "level": 3,
+    "parent_code": "1004",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "100403TK",
+    "name": "妇幼保健医学",
+    "level": 3,
+    "parent_code": "1004",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 3
+  },
+  {
+    "full_code": "100404TK",
+    "name": "卫生监督",
+    "level": 3,
+    "parent_code": "1004",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 4
+  },
+  {
+    "full_code": "100405TK",
+    "name": "全球健康学",
+    "level": 3,
+    "parent_code": "1004",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 5
+  },
+  {
+    "full_code": "100406T",
+    "name": "运动与公共健康",
+    "level": 3,
+    "parent_code": "1004",
+    "type": "本科",
+    "tag": "T",
+    "sort": 6
+  },
+  {
+    "full_code": "1005",
+    "name": "中医学类",
+    "level": 2,
+    "parent_code": "10",
+    "type": "本科",
+    "tag": "",
+    "sort": 5
+  },
+  {
+    "full_code": "100501K",
+    "name": "中医学",
+    "level": 3,
+    "parent_code": "1005",
+    "type": "本科",
+    "tag": "K",
+    "sort": 1
+  },
+  {
+    "full_code": "100502K",
+    "name": "针灸推拿学",
+    "level": 3,
+    "parent_code": "1005",
+    "type": "本科",
+    "tag": "K",
+    "sort": 2
+  },
+  {
+    "full_code": "100503K",
+    "name": "藏医学",
+    "level": 3,
+    "parent_code": "1005",
+    "type": "本科",
+    "tag": "K",
+    "sort": 3
+  },
+  {
+    "full_code": "100504K",
+    "name": "蒙医学",
+    "level": 3,
+    "parent_code": "1005",
+    "type": "本科",
+    "tag": "K",
+    "sort": 4
+  },
+  {
+    "full_code": "100505K",
+    "name": "维医学",
+    "level": 3,
+    "parent_code": "1005",
+    "type": "本科",
+    "tag": "K",
+    "sort": 5
+  },
+  {
+    "full_code": "100506K",
+    "name": "壮医学",
+    "level": 3,
+    "parent_code": "1005",
+    "type": "本科",
+    "tag": "K",
+    "sort": 6
+  },
+  {
+    "full_code": "100507K",
+    "name": "哈医学",
+    "level": 3,
+    "parent_code": "1005",
+    "type": "本科",
+    "tag": "K",
+    "sort": 7
+  },
+  {
+    "full_code": "100508TK",
+    "name": "傣医学",
+    "level": 3,
+    "parent_code": "1005",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 8
+  },
+  {
+    "full_code": "100509TK",
+    "name": "回医学",
+    "level": 3,
+    "parent_code": "1005",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 9
+  },
+  {
+    "full_code": "100510TK",
+    "name": "中医康复学",
+    "level": 3,
+    "parent_code": "1005",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 10
+  },
+  {
+    "full_code": "100511TK",
+    "name": "中医养生学",
+    "level": 3,
+    "parent_code": "1005",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 11
+  },
+  {
+    "full_code": "100512TK",
+    "name": "中医儿科学",
+    "level": 3,
+    "parent_code": "1005",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 12
+  },
+  {
+    "full_code": "100513TK",
+    "name": "中医骨伤科学",
+    "level": 3,
+    "parent_code": "1005",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 13
+  },
+  {
+    "full_code": "1006",
+    "name": "中西医结合类",
+    "level": 2,
+    "parent_code": "10",
+    "type": "本科",
+    "tag": "",
+    "sort": 6
+  },
+  {
+    "full_code": "100601K",
+    "name": "中西医临床医学",
+    "level": 3,
+    "parent_code": "1006",
+    "type": "本科",
+    "tag": "K",
+    "sort": 1
+  },
+  {
+    "full_code": "1007",
+    "name": "药学类",
+    "level": 2,
+    "parent_code": "10",
+    "type": "本科",
+    "tag": "",
+    "sort": 7
+  },
+  {
+    "full_code": "100701",
+    "name": "药学",
+    "level": 3,
+    "parent_code": "1007",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "100702",
+    "name": "药物制剂",
+    "level": 3,
+    "parent_code": "1007",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "100703TK",
+    "name": "临床药学",
+    "level": 3,
+    "parent_code": "1007",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 3
+  },
+  {
+    "full_code": "100704T",
+    "name": "药事管理",
+    "level": 3,
+    "parent_code": "1007",
+    "type": "本科",
+    "tag": "T",
+    "sort": 4
+  },
+  {
+    "full_code": "100705T",
+    "name": "药物分析",
+    "level": 3,
+    "parent_code": "1007",
+    "type": "本科",
+    "tag": "T",
+    "sort": 5
+  },
+  {
+    "full_code": "100706T",
+    "name": "药物化学",
+    "level": 3,
+    "parent_code": "1007",
+    "type": "本科",
+    "tag": "T",
+    "sort": 6
+  },
+  {
+    "full_code": "100707T",
+    "name": "海洋药学",
+    "level": 3,
+    "parent_code": "1007",
+    "type": "本科",
+    "tag": "T",
+    "sort": 7
+  },
+  {
+    "full_code": "100708T",
+    "name": "化妆品科学与技术",
+    "level": 3,
+    "parent_code": "1007",
+    "type": "本科",
+    "tag": "T",
+    "sort": 8
+  },
+  {
+    "full_code": "100709TK",
+    "name": "药物经济与管理",
+    "level": 3,
+    "parent_code": "1007",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 9
+  },
+  {
+    "full_code": "1008",
+    "name": "中药学类",
+    "level": 2,
+    "parent_code": "10",
+    "type": "本科",
+    "tag": "",
+    "sort": 8
+  },
+  {
+    "full_code": "100801",
+    "name": "中药学",
+    "level": 3,
+    "parent_code": "1008",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "100802",
+    "name": "中药资源与开发",
+    "level": 3,
+    "parent_code": "1008",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "100803T",
+    "name": "藏药学",
+    "level": 3,
+    "parent_code": "1008",
+    "type": "本科",
+    "tag": "T",
+    "sort": 3
+  },
+  {
+    "full_code": "100804T",
+    "name": "蒙药学",
+    "level": 3,
+    "parent_code": "1008",
+    "type": "本科",
+    "tag": "T",
+    "sort": 4
+  },
+  {
+    "full_code": "100805T",
+    "name": "中药制药",
+    "level": 3,
+    "parent_code": "1008",
+    "type": "本科",
+    "tag": "T",
+    "sort": 5
+  },
+  {
+    "full_code": "100806T",
+    "name": "中草药栽培与鉴定",
+    "level": 3,
+    "parent_code": "1008",
+    "type": "本科",
+    "tag": "T",
+    "sort": 6
+  },
+  {
+    "full_code": "1009",
+    "name": "法医学类",
+    "level": 2,
+    "parent_code": "10",
+    "type": "本科",
+    "tag": "",
+    "sort": 9
+  },
+  {
+    "full_code": "100901K",
+    "name": "法医学",
+    "level": 3,
+    "parent_code": "1009",
+    "type": "本科",
+    "tag": "K",
+    "sort": 1
+  },
+  {
+    "full_code": "1010",
+    "name": "医学技术类",
+    "level": 2,
+    "parent_code": "10",
+    "type": "本科",
+    "tag": "",
+    "sort": 10
+  },
+  {
+    "full_code": "101001",
+    "name": "医学检验技术",
+    "level": 3,
+    "parent_code": "1010",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "101002",
+    "name": "医学实验技术",
+    "level": 3,
+    "parent_code": "1010",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "101003",
+    "name": "医学影像技术",
+    "level": 3,
+    "parent_code": "1010",
+    "type": "本科",
+    "tag": "",
+    "sort": 3
+  },
+  {
+    "full_code": "101004",
+    "name": "眼视光学",
+    "level": 3,
+    "parent_code": "1010",
+    "type": "本科",
+    "tag": "",
+    "sort": 4
+  },
+  {
+    "full_code": "101005",
+    "name": "康复治疗学",
+    "level": 3,
+    "parent_code": "1010",
+    "type": "本科",
+    "tag": "",
+    "sort": 5
+  },
+  {
+    "full_code": "101006",
+    "name": "口腔医学技术",
+    "level": 3,
+    "parent_code": "1010",
+    "type": "本科",
+    "tag": "",
+    "sort": 6
+  },
+  {
+    "full_code": "101007",
+    "name": "卫生检验与检疫",
+    "level": 3,
+    "parent_code": "1010",
+    "type": "本科",
+    "tag": "",
+    "sort": 7
+  },
+  {
+    "full_code": "101008T",
+    "name": "听力与言语康复学",
+    "level": 3,
+    "parent_code": "1010",
+    "type": "本科",
+    "tag": "T",
+    "sort": 8
+  },
+  {
+    "full_code": "101009T",
+    "name": "康复物理治疗",
+    "level": 3,
+    "parent_code": "1010",
+    "type": "本科",
+    "tag": "T",
+    "sort": 9
+  },
+  {
+    "full_code": "101010T",
+    "name": "康复作业治疗",
+    "level": 3,
+    "parent_code": "1010",
+    "type": "本科",
+    "tag": "T",
+    "sort": 10
+  },
+  {
+    "full_code": "101016TK",
+    "name": "健康与医疗保障",
+    "level": 3,
+    "parent_code": "1010",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 11
+  },
+  {
+    "full_code": "101017TK",
+    "name": "老年医学与健康",
+    "level": 3,
+    "parent_code": "1010",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 12
+  },
+  {
+    "full_code": "101018TK",
+    "name": "核医学工程",
+    "level": 3,
+    "parent_code": "1010",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 13
+  },
+  {
+    "full_code": "1011",
+    "name": "护理学类",
+    "level": 2,
+    "parent_code": "10",
+    "type": "本科",
+    "tag": "",
+    "sort": 11
+  },
+  {
+    "full_code": "101101K",
+    "name": "护理学",
+    "level": 3,
+    "parent_code": "1011",
+    "type": "本科",
+    "tag": "K",
+    "sort": 1
+  },
+  {
+    "full_code": "101102TK",
+    "name": "助产学",
+    "level": 3,
+    "parent_code": "1011",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 2
+  },
+  {
+    "full_code": "12",
+    "name": "管理学",
+    "level": 1,
+    "parent_code": null,
+    "type": "本科",
+    "tag": "",
+    "sort": 11
+  },
+  {
+    "full_code": "1201",
+    "name": "管理科学与工程类",
+    "level": 2,
+    "parent_code": "12",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "120101",
+    "name": "管理科学",
+    "level": 3,
+    "parent_code": "1201",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "120102",
+    "name": "信息管理与信息系统",
+    "level": 3,
+    "parent_code": "1201",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "120103",
+    "name": "工程管理",
+    "level": 3,
+    "parent_code": "1201",
+    "type": "本科",
+    "tag": "",
+    "sort": 3
+  },
+  {
+    "full_code": "120104",
+    "name": "房地产开发与管理",
+    "level": 3,
+    "parent_code": "1201",
+    "type": "本科",
+    "tag": "",
+    "sort": 4
+  },
+  {
+    "full_code": "120105",
+    "name": "工程造价",
+    "level": 3,
+    "parent_code": "1201",
+    "type": "本科",
+    "tag": "",
+    "sort": 5
+  },
+  {
+    "full_code": "120106TK",
+    "name": "保密管理",
+    "level": 3,
+    "parent_code": "1201",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 6
+  },
+  {
+    "full_code": "120107T",
+    "name": "邮政管理",
+    "level": 3,
+    "parent_code": "1201",
+    "type": "本科",
+    "tag": "T",
+    "sort": 7
+  },
+  {
+    "full_code": "120108T",
+    "name": "大数据管理与应用",
+    "level": 3,
+    "parent_code": "1201",
+    "type": "本科",
+    "tag": "T",
+    "sort": 8
+  },
+  {
+    "full_code": "120109T",
+    "name": "工程审计",
+    "level": 3,
+    "parent_code": "1201",
+    "type": "本科",
+    "tag": "T",
+    "sort": 9
+  },
+  {
+    "full_code": "120110T",
+    "name": "计算金融",
+    "level": 3,
+    "parent_code": "1201",
+    "type": "本科",
+    "tag": "T",
+    "sort": 10
+  },
+  {
+    "full_code": "120111T",
+    "name": "应急管理",
+    "level": 3,
+    "parent_code": "1201",
+    "type": "本科",
+    "tag": "T",
+    "sort": 11
+  },
+  {
+    "full_code": "1202",
+    "name": "工商管理类",
+    "level": 2,
+    "parent_code": "12",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "120201K",
+    "name": "工商管理",
+    "level": 3,
+    "parent_code": "1202",
+    "type": "本科",
+    "tag": "K",
+    "sort": 1
+  },
+  {
+    "full_code": "120202",
+    "name": "市场营销",
+    "level": 3,
+    "parent_code": "1202",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "120203K",
+    "name": "会计学",
+    "level": 3,
+    "parent_code": "1202",
+    "type": "本科",
+    "tag": "K",
+    "sort": 3
+  },
+  {
+    "full_code": "120204",
+    "name": "财务管理",
+    "level": 3,
+    "parent_code": "1202",
+    "type": "本科",
+    "tag": "",
+    "sort": 4
+  },
+  {
+    "full_code": "120205",
+    "name": "国际商务",
+    "level": 3,
+    "parent_code": "1202",
+    "type": "本科",
+    "tag": "",
+    "sort": 5
+  },
+  {
+    "full_code": "120206",
+    "name": "人力资源管理",
+    "level": 3,
+    "parent_code": "1202",
+    "type": "本科",
+    "tag": "",
+    "sort": 6
+  },
+  {
+    "full_code": "120207",
+    "name": "审计学",
+    "level": 3,
+    "parent_code": "1202",
+    "type": "本科",
+    "tag": "",
+    "sort": 7
+  },
+  {
+    "full_code": "120208",
+    "name": "资产评估",
+    "level": 3,
+    "parent_code": "1202",
+    "type": "本科",
+    "tag": "",
+    "sort": 8
+  },
+  {
+    "full_code": "120209",
+    "name": "物业管理",
+    "level": 3,
+    "parent_code": "1202",
+    "type": "本科",
+    "tag": "",
+    "sort": 9
+  },
+  {
+    "full_code": "120210",
+    "name": "文化产业管理",
+    "level": 3,
+    "parent_code": "1202",
+    "type": "本科",
+    "tag": "",
+    "sort": 10
+  },
+  {
+    "full_code": "120211T",
+    "name": "劳动关系",
+    "level": 3,
+    "parent_code": "1202",
+    "type": "本科",
+    "tag": "T",
+    "sort": 11
+  },
+  {
+    "full_code": "120212T",
+    "name": "体育经济与管理",
+    "level": 3,
+    "parent_code": "1202",
+    "type": "本科",
+    "tag": "T",
+    "sort": 12
+  },
+  {
+    "full_code": "120213T",
+    "name": "财务会计教育",
+    "level": 3,
+    "parent_code": "1202",
+    "type": "本科",
+    "tag": "T",
+    "sort": 13
+  },
+  {
+    "full_code": "120214T",
+    "name": "市场营销教育",
+    "level": 3,
+    "parent_code": "1202",
+    "type": "本科",
+    "tag": "T",
+    "sort": 14
+  },
+  {
+    "full_code": "120215T",
+    "name": "零售业管理",
+    "level": 3,
+    "parent_code": "1202",
+    "type": "本科",
+    "tag": "T",
+    "sort": 15
+  },
+  {
+    "full_code": "120216T",
+    "name": "创业管理",
+    "level": 3,
+    "parent_code": "1202",
+    "type": "本科",
+    "tag": "T",
+    "sort": 16
+  },
+  {
+    "full_code": "120217TK",
+    "name": "海关稽查",
+    "level": 3,
+    "parent_code": "1202",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 17
+  },
+  {
+    "full_code": "120218T",
+    "name": "内部审计",
+    "level": 3,
+    "parent_code": "1202",
+    "type": "本科",
+    "tag": "T",
+    "sort": 18
+  },
+  {
+    "full_code": "120219TK",
+    "name": "商业人工智能",
+    "level": 3,
+    "parent_code": "1202",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 19
+  },
+  {
+    "full_code": "1203",
+    "name": "农业经济管理类",
+    "level": 2,
+    "parent_code": "12",
+    "type": "本科",
+    "tag": "",
+    "sort": 3
+  },
+  {
+    "full_code": "120301",
+    "name": "农林经济管理",
+    "level": 3,
+    "parent_code": "1203",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "120302",
+    "name": "农村区域发展",
+    "level": 3,
+    "parent_code": "1203",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "120303TK",
+    "name": "乡村治理",
+    "level": 3,
+    "parent_code": "1203",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 3
+  },
+  {
+    "full_code": "1204",
+    "name": "公共管理类",
+    "level": 2,
+    "parent_code": "12",
+    "type": "本科",
+    "tag": "",
+    "sort": 4
+  },
+  {
+    "full_code": "120401",
+    "name": "公共事业管理",
+    "level": 3,
+    "parent_code": "1204",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "120402",
+    "name": "行政管理",
+    "level": 3,
+    "parent_code": "1204",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "120403",
+    "name": "劳动与社会保障",
+    "level": 3,
+    "parent_code": "1204",
+    "type": "本科",
+    "tag": "",
+    "sort": 3
+  },
+  {
+    "full_code": "120404",
+    "name": "土地资源管理",
+    "level": 3,
+    "parent_code": "1204",
+    "type": "本科",
+    "tag": "",
+    "sort": 4
+  },
+  {
+    "full_code": "120405",
+    "name": "城市管理",
+    "level": 3,
+    "parent_code": "1204",
+    "type": "本科",
+    "tag": "",
+    "sort": 5
+  },
+  {
+    "full_code": "120406TK",
+    "name": "海关管理",
+    "level": 3,
+    "parent_code": "1204",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 6
+  },
+  {
+    "full_code": "120407T",
+    "name": "交通管理",
+    "level": 3,
+    "parent_code": "1204",
+    "type": "本科",
+    "tag": "T",
+    "sort": 7
+  },
+  {
+    "full_code": "120408T",
+    "name": "海事管理",
+    "level": 3,
+    "parent_code": "1204",
+    "type": "本科",
+    "tag": "T",
+    "sort": 8
+  },
+  {
+    "full_code": "120409T",
+    "name": "公共关系学",
+    "level": 3,
+    "parent_code": "1204",
+    "type": "本科",
+    "tag": "T",
+    "sort": 9
+  },
+  {
+    "full_code": "120410T",
+    "name": "健康服务与管理",
+    "level": 3,
+    "parent_code": "1204",
+    "type": "本科",
+    "tag": "T",
+    "sort": 10
+  },
+  {
+    "full_code": "120411TK",
+    "name": "海警后勤管理",
+    "level": 3,
+    "parent_code": "1204",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 11
+  },
+  {
+    "full_code": "120412T",
+    "name": "医疗产品管理",
+    "level": 3,
+    "parent_code": "1204",
+    "type": "本科",
+    "tag": "T",
+    "sort": 12
+  },
+  {
+    "full_code": "120413T",
+    "name": "医疗保险",
+    "level": 3,
+    "parent_code": "1204",
+    "type": "本科",
+    "tag": "T",
+    "sort": 13
+  },
+  {
+    "full_code": "120414T",
+    "name": "养老服务管理",
+    "level": 3,
+    "parent_code": "1204",
+    "type": "本科",
+    "tag": "T",
+    "sort": 14
+  },
+  {
+    "full_code": "120415TK",
+    "name": "海关检验检疫安全",
+    "level": 3,
+    "parent_code": "1204",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 15
+  },
+  {
+    "full_code": "120416TK",
+    "name": "海外安全管理",
+    "level": 3,
+    "parent_code": "1204",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 16
+  },
+  {
+    "full_code": "120417T",
+    "name": "自然资源登记与管理",
+    "level": 3,
+    "parent_code": "1204",
+    "type": "本科",
+    "tag": "T",
+    "sort": 17
+  },
+  {
+    "full_code": "120418T",
+    "name": "慈善管理",
+    "level": 3,
+    "parent_code": "1204",
+    "type": "本科",
+    "tag": "T",
+    "sort": 18
+  },
+  {
+    "full_code": "120419TK",
+    "name": "航空安防管理",
+    "level": 3,
+    "parent_code": "1204",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 19
+  },
+  {
+    "full_code": "120420TK",
+    "name": "无障碍管理",
+    "level": 3,
+    "parent_code": "1204",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 20
+  },
+  {
+    "full_code": "120421TK",
+    "name": "人才发展与管理",
+    "level": 3,
+    "parent_code": "1204",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 21
+  },
+  {
+    "full_code": "120422TK",
+    "name": "数字公共治理",
+    "level": 3,
+    "parent_code": "1204",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 22
+  },
+  {
+    "full_code": "1205",
+    "name": "图书情报与档案管理类",
+    "level": 2,
+    "parent_code": "12",
+    "type": "本科",
+    "tag": "",
+    "sort": 5
+  },
+  {
+    "full_code": "120501",
+    "name": "图书馆学",
+    "level": 3,
+    "parent_code": "1205",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "120502",
+    "name": "档案学",
+    "level": 3,
+    "parent_code": "1205",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "120503",
+    "name": "信息资源管理",
+    "level": 3,
+    "parent_code": "1205",
+    "type": "本科",
+    "tag": "",
+    "sort": 3
+  },
+  {
+    "full_code": "120504T",
+    "name": "数据资源与数据智能",
+    "level": 3,
+    "parent_code": "1205",
+    "type": "本科",
+    "tag": "T",
+    "sort": 4
+  },
+  {
+    "full_code": "1206",
+    "name": "物流管理与工程类",
+    "level": 2,
+    "parent_code": "12",
+    "type": "本科",
+    "tag": "",
+    "sort": 6
+  },
+  {
+    "full_code": "120601",
+    "name": "物流管理",
+    "level": 3,
+    "parent_code": "1206",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "120602",
+    "name": "物流工程",
+    "level": 3,
+    "parent_code": "1206",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "120603T",
+    "name": "采购管理",
+    "level": 3,
+    "parent_code": "1206",
+    "type": "本科",
+    "tag": "T",
+    "sort": 3
+  },
+  {
+    "full_code": "120604T",
+    "name": "供应链管理",
+    "level": 3,
+    "parent_code": "1206",
+    "type": "本科",
+    "tag": "T",
+    "sort": 4
+  },
+  {
+    "full_code": "1207",
+    "name": "工业工程类",
+    "level": 2,
+    "parent_code": "12",
+    "type": "本科",
+    "tag": "",
+    "sort": 7
+  },
+  {
+    "full_code": "120701",
+    "name": "工业工程",
+    "level": 3,
+    "parent_code": "1207",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "120702T",
+    "name": "标准化工程",
+    "level": 3,
+    "parent_code": "1207",
+    "type": "本科",
+    "tag": "T",
+    "sort": 2
+  },
+  {
+    "full_code": "120703T",
+    "name": "质量管理工程",
+    "level": 3,
+    "parent_code": "1207",
+    "type": "本科",
+    "tag": "T",
+    "sort": 3
+  },
+  {
+    "full_code": "1208",
+    "name": "电子商务类",
+    "level": 2,
+    "parent_code": "12",
+    "type": "本科",
+    "tag": "",
+    "sort": 8
+  },
+  {
+    "full_code": "120801",
+    "name": "电子商务",
+    "level": 3,
+    "parent_code": "1208",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "120802T",
+    "name": "电子商务及法律",
+    "level": 3,
+    "parent_code": "1208",
+    "type": "本科",
+    "tag": "T",
+    "sort": 2
+  },
+  {
+    "full_code": "120803T",
+    "name": "跨境电子商务",
+    "level": 3,
+    "parent_code": "1208",
+    "type": "本科",
+    "tag": "T",
+    "sort": 3
+  },
+  {
+    "full_code": "1209",
+    "name": "旅游管理类",
+    "level": 2,
+    "parent_code": "12",
+    "type": "本科",
+    "tag": "",
+    "sort": 9
+  },
+  {
+    "full_code": "120901K",
+    "name": "旅游管理",
+    "level": 3,
+    "parent_code": "1209",
+    "type": "本科",
+    "tag": "K",
+    "sort": 1
+  },
+  {
+    "full_code": "120902",
+    "name": "酒店管理",
+    "level": 3,
+    "parent_code": "1209",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "120903",
+    "name": "会展经济与管理",
+    "level": 3,
+    "parent_code": "1209",
+    "type": "本科",
+    "tag": "",
+    "sort": 3
+  },
+  {
+    "full_code": "120904T",
+    "name": "旅游管理与服务教育",
+    "level": 3,
+    "parent_code": "1209",
+    "type": "本科",
+    "tag": "T",
+    "sort": 4
+  },
+  {
+    "full_code": "120905TK",
+    "name": "国际邮轮管理",
+    "level": 3,
+    "parent_code": "1209",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 5
+  },
+  {
+    "full_code": "120906TK",
+    "name": "数字文旅",
+    "level": 3,
+    "parent_code": "1209",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 6
+  },
+  {
+    "full_code": "13",
+    "name": "艺术学",
+    "level": 1,
+    "parent_code": null,
+    "type": "本科",
+    "tag": "",
+    "sort": 12
+  },
+  {
+    "full_code": "1301",
+    "name": "艺术学理论类",
+    "level": 2,
+    "parent_code": "13",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "130101",
+    "name": "艺术史论",
+    "level": 3,
+    "parent_code": "1301",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "130102T",
+    "name": "艺术管理",
+    "level": 3,
+    "parent_code": "1301",
+    "type": "本科",
+    "tag": "T",
+    "sort": 2
+  },
+  {
+    "full_code": "130103T",
+    "name": "非物质文化遗产保护",
+    "level": 3,
+    "parent_code": "1301",
+    "type": "本科",
+    "tag": "T",
+    "sort": 3
+  },
+  {
+    "full_code": "1302",
+    "name": "音乐与舞蹈学类",
+    "level": 2,
+    "parent_code": "13",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "130201",
+    "name": "音乐表演",
+    "level": 3,
+    "parent_code": "1302",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "130202",
+    "name": "音乐学",
+    "level": 3,
+    "parent_code": "1302",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "130203",
+    "name": "作曲与作曲技术理论",
+    "level": 3,
+    "parent_code": "1302",
+    "type": "本科",
+    "tag": "",
+    "sort": 3
+  },
+  {
+    "full_code": "130204",
+    "name": "舞蹈表演",
+    "level": 3,
+    "parent_code": "1302",
+    "type": "本科",
+    "tag": "",
+    "sort": 4
+  },
+  {
+    "full_code": "130205",
+    "name": "舞蹈学",
+    "level": 3,
+    "parent_code": "1302",
+    "type": "本科",
+    "tag": "",
+    "sort": 5
+  },
+  {
+    "full_code": "130206",
+    "name": "舞蹈编导",
+    "level": 3,
+    "parent_code": "1302",
+    "type": "本科",
+    "tag": "",
+    "sort": 6
+  },
+  {
+    "full_code": "130207T",
+    "name": "舞蹈教育",
+    "level": 3,
+    "parent_code": "1302",
+    "type": "本科",
+    "tag": "T",
+    "sort": 7
+  },
+  {
+    "full_code": "130208TK",
+    "name": "航空服务艺术与管理",
+    "level": 3,
+    "parent_code": "1302",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 8
+  },
+  {
+    "full_code": "130209T",
+    "name": "流行音乐",
+    "level": 3,
+    "parent_code": "1302",
+    "type": "本科",
+    "tag": "T",
+    "sort": 9
+  },
+  {
+    "full_code": "130210T",
+    "name": "音乐治疗",
+    "level": 3,
+    "parent_code": "1302",
+    "type": "本科",
+    "tag": "T",
+    "sort": 10
+  },
+  {
+    "full_code": "130211T",
+    "name": "流行舞蹈",
+    "level": 3,
+    "parent_code": "1302",
+    "type": "本科",
+    "tag": "T",
+    "sort": 11
+  },
+  {
+    "full_code": "130212T",
+    "name": "音乐教育",
+    "level": 3,
+    "parent_code": "1302",
+    "type": "本科",
+    "tag": "T",
+    "sort": 12
+  },
+  {
+    "full_code": "130213TK",
+    "name": "冰雪舞蹈表演",
+    "level": 3,
+    "parent_code": "1302",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 13
+  },
+  {
+    "full_code": "130214TK",
+    "name": "舞蹈治疗",
+    "level": 3,
+    "parent_code": "1302",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 14
+  },
+  {
+    "full_code": "130215T",
+    "name": "音乐科技",
+    "level": 3,
+    "parent_code": "1302",
+    "type": "本科",
+    "tag": "T",
+    "sort": 15
+  },
+  {
+    "full_code": "130216T",
+    "name": "乐器智造",
+    "level": 3,
+    "parent_code": "1302",
+    "type": "本科",
+    "tag": "T",
+    "sort": 16
+  },
+  {
+    "full_code": "1303",
+    "name": "戏剧与影视学类",
+    "level": 2,
+    "parent_code": "13",
+    "type": "本科",
+    "tag": "",
+    "sort": 3
+  },
+  {
+    "full_code": "130301",
+    "name": "表演",
+    "level": 3,
+    "parent_code": "1303",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "130302",
+    "name": "戏剧学",
+    "level": 3,
+    "parent_code": "1303",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "130303",
+    "name": "电影学",
+    "level": 3,
+    "parent_code": "1303",
+    "type": "本科",
+    "tag": "",
+    "sort": 3
+  },
+  {
+    "full_code": "130304",
+    "name": "戏剧影视文学",
+    "level": 3,
+    "parent_code": "1303",
+    "type": "本科",
+    "tag": "",
+    "sort": 4
+  },
+  {
+    "full_code": "130305",
+    "name": "广播电视编导",
+    "level": 3,
+    "parent_code": "1303",
+    "type": "本科",
+    "tag": "",
+    "sort": 5
+  },
+  {
+    "full_code": "130306",
+    "name": "戏剧影视导演",
+    "level": 3,
+    "parent_code": "1303",
+    "type": "本科",
+    "tag": "",
+    "sort": 6
+  },
+  {
+    "full_code": "130307",
+    "name": "戏剧影视美术设计",
+    "level": 3,
+    "parent_code": "1303",
+    "type": "本科",
+    "tag": "",
+    "sort": 7
+  },
+  {
+    "full_code": "130308",
+    "name": "录音艺术",
+    "level": 3,
+    "parent_code": "1303",
+    "type": "本科",
+    "tag": "",
+    "sort": 8
+  },
+  {
+    "full_code": "130309",
+    "name": "播音与主持艺术",
+    "level": 3,
+    "parent_code": "1303",
+    "type": "本科",
+    "tag": "",
+    "sort": 9
+  },
+  {
+    "full_code": "130310",
+    "name": "动画",
+    "level": 3,
+    "parent_code": "1303",
+    "type": "本科",
+    "tag": "",
+    "sort": 10
+  },
+  {
+    "full_code": "130311T",
+    "name": "影视摄影与制作",
+    "level": 3,
+    "parent_code": "1303",
+    "type": "本科",
+    "tag": "T",
+    "sort": 11
+  },
+  {
+    "full_code": "130312T",
+    "name": "影视技术",
+    "level": 3,
+    "parent_code": "1303",
+    "type": "本科",
+    "tag": "T",
+    "sort": 12
+  },
+  {
+    "full_code": "130313T",
+    "name": "戏剧教育",
+    "level": 3,
+    "parent_code": "1303",
+    "type": "本科",
+    "tag": "T",
+    "sort": 13
+  },
+  {
+    "full_code": "130314TK",
+    "name": "曲艺",
+    "level": 3,
+    "parent_code": "1303",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 14
+  },
+  {
+    "full_code": "130315TK",
+    "name": "音乐剧",
+    "level": 3,
+    "parent_code": "1303",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 15
+  },
+  {
+    "full_code": "130316T",
+    "name": "数字戏剧",
+    "level": 3,
+    "parent_code": "1303",
+    "type": "本科",
+    "tag": "T",
+    "sort": 16
+  },
+  {
+    "full_code": "130317T",
+    "name": "数字演艺设计",
+    "level": 3,
+    "parent_code": "1303",
+    "type": "本科",
+    "tag": "T",
+    "sort": 17
+  },
+  {
+    "full_code": "130318T",
+    "name": "智能影像艺术",
+    "level": 3,
+    "parent_code": "1303",
+    "type": "本科",
+    "tag": "T",
+    "sort": 18
+  },
+  {
+    "full_code": "1304",
+    "name": "美术学类",
+    "level": 2,
+    "parent_code": "13",
+    "type": "本科",
+    "tag": "",
+    "sort": 4
+  },
+  {
+    "full_code": "130401",
+    "name": "美术学",
+    "level": 3,
+    "parent_code": "1304",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "130402",
+    "name": "绘画",
+    "level": 3,
+    "parent_code": "1304",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "130403",
+    "name": "雕塑",
+    "level": 3,
+    "parent_code": "1304",
+    "type": "本科",
+    "tag": "",
+    "sort": 3
+  },
+  {
+    "full_code": "130404",
+    "name": "摄影",
+    "level": 3,
+    "parent_code": "1304",
+    "type": "本科",
+    "tag": "",
+    "sort": 4
+  },
+  {
+    "full_code": "130405T",
+    "name": "书法学",
+    "level": 3,
+    "parent_code": "1304",
+    "type": "本科",
+    "tag": "T",
+    "sort": 5
+  },
+  {
+    "full_code": "130406T",
+    "name": "中国画",
+    "level": 3,
+    "parent_code": "1304",
+    "type": "本科",
+    "tag": "T",
+    "sort": 6
+  },
+  {
+    "full_code": "130407TK",
+    "name": "实验艺术",
+    "level": 3,
+    "parent_code": "1304",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 7
+  },
+  {
+    "full_code": "130408TK",
+    "name": "跨媒体艺术",
+    "level": 3,
+    "parent_code": "1304",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 8
+  },
+  {
+    "full_code": "130409T",
+    "name": "文物保护与修复",
+    "level": 3,
+    "parent_code": "1304",
+    "type": "本科",
+    "tag": "T",
+    "sort": 9
+  },
+  {
+    "full_code": "130410T",
+    "name": "漫画",
+    "level": 3,
+    "parent_code": "1304",
+    "type": "本科",
+    "tag": "T",
+    "sort": 10
+  },
+  {
+    "full_code": "130411T",
+    "name": "纤维艺术",
+    "level": 3,
+    "parent_code": "1304",
+    "type": "本科",
+    "tag": "T",
+    "sort": 11
+  },
+  {
+    "full_code": "130412TK",
+    "name": "科技艺术",
+    "level": 3,
+    "parent_code": "1304",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 12
+  },
+  {
+    "full_code": "130413TK",
+    "name": "美术教育",
+    "level": 3,
+    "parent_code": "1304",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 13
+  },
+  {
+    "full_code": "130414T",
+    "name": "虚拟空间艺术",
+    "level": 3,
+    "parent_code": "1304",
+    "type": "本科",
+    "tag": "T",
+    "sort": 14
+  },
+  {
+    "full_code": "130415T",
+    "name": "艺术治疗",
+    "level": 3,
+    "parent_code": "1304",
+    "type": "本科",
+    "tag": "T",
+    "sort": 15
+  },
+  {
+    "full_code": "1305",
+    "name": "设计学类",
+    "level": 2,
+    "parent_code": "13",
+    "type": "本科",
+    "tag": "",
+    "sort": 5
+  },
+  {
+    "full_code": "130501",
+    "name": "艺术设计学",
+    "level": 3,
+    "parent_code": "1305",
+    "type": "本科",
+    "tag": "",
+    "sort": 1
+  },
+  {
+    "full_code": "130502",
+    "name": "视觉传达设计",
+    "level": 3,
+    "parent_code": "1305",
+    "type": "本科",
+    "tag": "",
+    "sort": 2
+  },
+  {
+    "full_code": "130503",
+    "name": "环境设计",
+    "level": 3,
+    "parent_code": "1305",
+    "type": "本科",
+    "tag": "",
+    "sort": 3
+  },
+  {
+    "full_code": "130504",
+    "name": "产品设计",
+    "level": 3,
+    "parent_code": "1305",
+    "type": "本科",
+    "tag": "",
+    "sort": 4
+  },
+  {
+    "full_code": "130505",
+    "name": "服装与服饰设计",
+    "level": 3,
+    "parent_code": "1305",
+    "type": "本科",
+    "tag": "",
+    "sort": 5
+  },
+  {
+    "full_code": "130506",
+    "name": "公共艺术",
+    "level": 3,
+    "parent_code": "1305",
+    "type": "本科",
+    "tag": "",
+    "sort": 6
+  },
+  {
+    "full_code": "130507",
+    "name": "工艺美术",
+    "level": 3,
+    "parent_code": "1305",
+    "type": "本科",
+    "tag": "",
+    "sort": 7
+  },
+  {
+    "full_code": "130508",
+    "name": "数字媒体艺术",
+    "level": 3,
+    "parent_code": "1305",
+    "type": "本科",
+    "tag": "",
+    "sort": 8
+  },
+  {
+    "full_code": "130509T",
+    "name": "艺术与科技",
+    "level": 3,
+    "parent_code": "1305",
+    "type": "本科",
+    "tag": "T",
+    "sort": 9
+  },
+  {
+    "full_code": "130510TK",
+    "name": "陶瓷艺术设计",
+    "level": 3,
+    "parent_code": "1305",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 10
+  },
+  {
+    "full_code": "130511T",
+    "name": "新媒体艺术",
+    "level": 3,
+    "parent_code": "1305",
+    "type": "本科",
+    "tag": "T",
+    "sort": 11
+  },
+  {
+    "full_code": "130512T",
+    "name": "包装设计",
+    "level": 3,
+    "parent_code": "1305",
+    "type": "本科",
+    "tag": "T",
+    "sort": 12
+  },
+  {
+    "full_code": "130513TK",
+    "name": "珠宝首饰设计与工艺",
+    "level": 3,
+    "parent_code": "1305",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 13
+  },
+  {
+    "full_code": "130514T",
+    "name": "人居设计",
+    "level": 3,
+    "parent_code": "1305",
+    "type": "本科",
+    "tag": "T",
+    "sort": 14
+  },
+  {
+    "full_code": "130515TK",
+    "name": "游戏艺术设计",
+    "level": 3,
+    "parent_code": "1305",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 15
+  },
+  {
+    "full_code": "14",
+    "name": "交叉学科",
+    "level": 1,
+    "parent_code": null,
+    "type": "本科",
+    "tag": "",
+    "sort": 13
+  },
+  {
+    "full_code": "140001TK",
+    "name": "未来机器人",
+    "level": 3,
+    "parent_code": "14",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 1
+  },
+  {
+    "full_code": "140002TK",
+    "name": "交叉工程",
+    "level": 3,
+    "parent_code": "14",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 2
+  },
+  {
+    "full_code": "140003TK",
+    "name": "低空技术与工程",
+    "level": 3,
+    "parent_code": "14",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 3
+  },
+  {
+    "full_code": "140004TK",
+    "name": "集成电路科学与工程",
+    "level": 3,
+    "parent_code": "14",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 4
+  },
+  {
+    "full_code": "140005T",
+    "name": "碳中和科学与工程",
+    "level": 3,
+    "parent_code": "14",
+    "type": "本科",
+    "tag": "T",
+    "sort": 5
+  },
+  {
+    "full_code": "140006T",
+    "name": "智慧城市与空间规划",
+    "level": 3,
+    "parent_code": "14",
+    "type": "本科",
+    "tag": "T",
+    "sort": 6
+  },
+  {
+    "full_code": "140007T",
+    "name": "智能医学工程",
+    "level": 3,
+    "parent_code": "14",
+    "type": "本科",
+    "tag": "T",
+    "sort": 7
+  },
+  {
+    "full_code": "140008T",
+    "name": "生物医药数据科学",
+    "level": 3,
+    "parent_code": "14",
+    "type": "本科",
+    "tag": "T",
+    "sort": 8
+  },
+  {
+    "full_code": "140009T",
+    "name": "智能影像工程",
+    "level": 3,
+    "parent_code": "14",
+    "type": "本科",
+    "tag": "T",
+    "sort": 9
+  },
+  {
+    "full_code": "140010TK",
+    "name": "医工学",
+    "level": 3,
+    "parent_code": "14",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 10
+  },
+  {
+    "full_code": "140011TK",
+    "name": "医疗器械与装备工程",
+    "level": 3,
+    "parent_code": "14",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 11
+  },
+  {
+    "full_code": "140012TK",
+    "name": "具身智能",
+    "level": 3,
+    "parent_code": "14",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 12
+  },
+  {
+    "full_code": "140013TK",
+    "name": "脑机科学与技术",
+    "level": 3,
+    "parent_code": "14",
+    "type": "本科",
+    "tag": "TK",
+    "sort": 13
+  },
+  {
+    "full_code": "140014T",
+    "name": "工程互联网",
+    "level": 3,
+    "parent_code": "14",
+    "type": "本科",
+    "tag": "T",
+    "sort": 14
+  },
+  {
+    "full_code": "140015T",
+    "name": "深地科学与工程",
+    "level": 3,
+    "parent_code": "14",
+    "type": "本科",
+    "tag": "T",
+    "sort": 15
+  }
+]

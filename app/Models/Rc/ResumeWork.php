@@ -4,6 +4,7 @@ namespace App\Models\Rc;
 
 use App\Enums\RcEmploymentType;
 use App\Models\Model;
+use App\Models\Rc\Concerns\SyncsPositionFromCode;
 use App\Models\Rc\Concerns\SyncsResumeSearchIndex;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
@@ -19,6 +20,7 @@ use Illuminate\Support\Carbon;
     'company_name',
     'department',
     'position',
+    'position_code',
     'employment_type',
     'start_date',
     'end_date',
@@ -29,7 +31,7 @@ use Illuminate\Support\Carbon;
 ])]
 class ResumeWork extends Model
 {
-    use SoftDeletes, SyncsResumeSearchIndex;
+    use SoftDeletes, SyncsPositionFromCode, SyncsResumeSearchIndex;
 
     protected $attributes = [
         'employment_type' => RcEmploymentType::FullTime,

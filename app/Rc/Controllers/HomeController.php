@@ -8,7 +8,9 @@ use Illuminate\View\View;
 class HomeController extends Controller
 {
     /**
-     * GET /rc/home
+     * RC 模块首页
+     *
+     * GET /rc
      */
     public function index(Request $request): \Illuminate\Contracts\View\View|View
     {

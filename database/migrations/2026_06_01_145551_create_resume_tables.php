@@ -71,6 +71,7 @@ return new class extends Migration
             $table->string('company_name')->comment('公司名称');
             $table->string('department')->nullable()->comment('部门');
             $table->string('position')->comment('职位');
+            $table->string('position_code')->comment('职位编码')->index();
             $table->tinyInteger('employment_type')->default(1)->comment('工作类型: 1-全职, 2-兼职, 3-实习');
             $table->date('start_date')->comment('开始时间');
             $table->date('end_date')->nullable()->comment('结束时间，null表示至今');

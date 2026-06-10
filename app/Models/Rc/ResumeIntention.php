@@ -66,4 +66,34 @@ class ResumeIntention extends Model
     {
         return $this->belongsTo(Resume::class, 'resume_id');
     }
+
+    public static function resolvePrimaryForResume(int $resumeId): ?self
+    {
+        return self::query()
+            ->where('resume_id', $resumeId)
+            ->orderByDesc('created_at')
+            ->orderByDesc('id')
+            ->first();
+    }
+
+    public function isPrimaryIntention(): bool
+    {
+        if (! $this->resume_id || ! $this->getKey()) {
+            return false;
+        }
+
+        $primary = self::resolvePrimaryForResume((int) $this->resume_id);
+
+        return $primary instanceof self && $primary->is($this);
+    }
+
+    protected function shouldSyncParentResumeSearchIndex(): bool
+    {
+        return $this->isPrimaryIntention();
+    }
+
+    protected function shouldSyncParentResumeSearchIndexOnDelete(): bool
+    {
+        return $this->isPrimaryIntention();
+    }
 }

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\UserGender;
 use App\Enums\UserStatus;
+use App\Models\Cast\AliyunOss;
 use App\Models\Oa\LeaveBalance;
 use App\Models\Rc\Resume;
 use App\Models\Rc\UserIdentity;
@@ -38,6 +39,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property string|null $hub_user_id
  * @property int $gender
  * @property string|null $avatar
+ * @property-read string|null $display_avatar
  * @property string $password
  * @property string $status
  * @property string|null $last_login_ip
@@ -79,6 +81,7 @@ class User extends Authenticatable implements FilamentUser
     protected function casts(): array
     {
         return [
+            'avatar' => AliyunOss::class.':oss,public,3600',
             'gender' => UserGender::class,
             'last_login_at' => 'datetime',
             'password' => 'hashed',
@@ -175,5 +178,23 @@ class User extends Authenticatable implements FilamentUser
     public function defaultIdentity(): HasOne
     {
         return $this->hasOne(UserIdentity::class, 'user_id')->where('is_default', 1);
+    }
+
+    /**
+     * 头像展示 URL（Aliyun OSS 可访问链接）。
+     */
+    protected function displayAvatar(): Attribute
+    {
+        return Attribute::make(
+            get: function (): ?string {
+                $path = $this->avatar;
+
+                if (! is_string($path) || $path === '') {
+                    return null;
+                }
+
+                return AliyunOss::fromModel($this, 'avatar')->toDisplayUrl($path);
+            },
+        );
     }
 }

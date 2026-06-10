@@ -29,5 +29,6 @@ class DatabaseSeeder extends Seeder
         $this->call(BasicTableSeeder::class);
         $this->call(RcIndustrySeeder::class);
         $this->call(RcPositionSeeder::class);
+        $this->call(MajorSeeder::class);
     }
 }

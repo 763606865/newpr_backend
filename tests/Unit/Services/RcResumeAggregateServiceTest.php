@@ -24,22 +24,18 @@ class RcResumeAggregateServiceTest extends TestCase
     {
         $resume = $this->createResume();
 
-        ResumeIntention::query()->create([
-            'resume_id' => $resume->id,
-            'user_id' => $resume->user_id,
+        $this->createIntentionWithoutSync($resume, [
             'salary_min' => 8000,
             'salary_max' => 12000,
             'salary_unit' => RcSalaryUnit::Month,
-            'updated_at' => Carbon::parse('2026-01-01 10:00:00'),
+            'created_at' => Carbon::parse('2026-01-01 10:00:00'),
         ]);
 
-        ResumeIntention::query()->create([
-            'resume_id' => $resume->id,
-            'user_id' => $resume->user_id,
+        $this->createIntentionWithoutSync($resume, [
             'salary_min' => 15000,
             'salary_max' => 25000,
             'salary_unit' => RcSalaryUnit::Month,
-            'updated_at' => Carbon::parse('2026-06-01 10:00:00'),
+            'created_at' => Carbon::parse('2026-06-01 10:00:00'),
         ]);
 
         RcResumeAggregateService::make()->sync($resume->fresh());
@@ -49,6 +45,35 @@ class RcResumeAggregateServiceTest extends TestCase
         $this->assertSame('15000.00', (string) $resume->expected_salary_min);
         $this->assertSame('25000.00', (string) $resume->expected_salary_max);
         $this->assertSame(RcSalaryUnit::Month, $resume->expected_salary_unit);
+    }
+
+    public function test_sync_uses_latest_intention_by_created_at_then_id(): void
+    {
+        $resume = $this->createResume();
+        $sameCreatedAt = Carbon::parse('2026-06-01 10:00:00');
+
+        ResumeIntention::withoutEvents(function () use ($resume, $sameCreatedAt): void {
+            $this->createIntentionWithoutSync($resume, [
+                'salary_min' => 8000,
+                'salary_max' => 12000,
+                'created_at' => $sameCreatedAt,
+            ]);
+        });
+
+        ResumeIntention::withoutEvents(function () use ($resume, $sameCreatedAt): void {
+            $this->createIntentionWithoutSync($resume, [
+                'salary_min' => 15000,
+                'salary_max' => 25000,
+                'created_at' => $sameCreatedAt,
+            ]);
+        });
+
+        RcResumeAggregateService::make()->sync($resume->fresh());
+
+        $resume->refresh();
+
+        $this->assertSame('15000.00', (string) $resume->expected_salary_min);
+        $this->assertSame('25000.00', (string) $resume->expected_salary_max);
     }
 
     public function test_sync_updates_highest_education_level_from_educations(): void
@@ -129,6 +154,117 @@ class RcResumeAggregateServiceTest extends TestCase
         $this->assertSame(RcCurrentIdentity::Student, $resume->current_identity);
     }
 
+    public function test_updating_non_primary_intention_does_not_change_resume_salary(): void
+    {
+        $resume = $this->createResume();
+
+        $this->createIntentionWithoutSync($resume, [
+            'salary_min' => 15000,
+            'salary_max' => 25000,
+            'created_at' => Carbon::parse('2026-06-01 10:00:00'),
+        ]);
+
+        $olderIntention = $this->createIntentionWithoutSync($resume, [
+            'salary_min' => 8000,
+            'salary_max' => 12000,
+            'created_at' => Carbon::parse('2026-01-01 10:00:00'),
+        ]);
+
+        RcResumeAggregateService::make()->sync($resume->fresh());
+        $resume->refresh();
+
+        $this->assertSame('15000.00', (string) $resume->expected_salary_min);
+
+        $olderIntention->update(['salary_min' => 9000, 'salary_max' => 13000]);
+
+        $resume->refresh();
+
+        $this->assertSame('15000.00', (string) $resume->expected_salary_min);
+        $this->assertSame('25000.00', (string) $resume->expected_salary_max);
+    }
+
+    public function test_updating_primary_intention_changes_resume_salary(): void
+    {
+        $resume = $this->createResume();
+
+        $primaryIntention = $this->createIntentionWithoutSync($resume, [
+            'salary_min' => 15000,
+            'salary_max' => 25000,
+            'salary_unit' => RcSalaryUnit::Month,
+            'created_at' => Carbon::parse('2026-06-01 10:00:00'),
+        ]);
+
+        RcResumeAggregateService::make()->sync($resume->fresh());
+        $resume->refresh();
+        $this->assertSame('15000.00', (string) $resume->expected_salary_min);
+
+        $primaryIntention->update([
+            'salary_min' => 18000,
+            'salary_max' => 28000,
+        ]);
+
+        $resume->refresh();
+
+        $this->assertSame('18000.00', (string) $resume->expected_salary_min);
+        $this->assertSame('28000.00', (string) $resume->expected_salary_max);
+    }
+
+    public function test_deleting_non_primary_intention_does_not_change_resume_salary(): void
+    {
+        $resume = $this->createResume();
+
+        $this->createIntentionWithoutSync($resume, [
+            'salary_min' => 15000,
+            'salary_max' => 25000,
+            'created_at' => Carbon::parse('2026-06-01 10:00:00'),
+        ]);
+
+        $olderIntention = $this->createIntentionWithoutSync($resume, [
+            'salary_min' => 8000,
+            'salary_max' => 12000,
+            'created_at' => Carbon::parse('2026-01-01 10:00:00'),
+        ]);
+
+        RcResumeAggregateService::make()->sync($resume->fresh());
+        $resume->refresh();
+        $this->assertSame('15000.00', (string) $resume->expected_salary_min);
+
+        $olderIntention->delete();
+
+        $resume->refresh();
+
+        $this->assertSame('15000.00', (string) $resume->expected_salary_min);
+        $this->assertSame('25000.00', (string) $resume->expected_salary_max);
+    }
+
+    public function test_deleting_primary_intention_syncs_from_next_intention(): void
+    {
+        $resume = $this->createResume();
+
+        $primaryIntention = $this->createIntentionWithoutSync($resume, [
+            'salary_min' => 15000,
+            'salary_max' => 25000,
+            'created_at' => Carbon::parse('2026-06-01 10:00:00'),
+        ]);
+
+        $this->createIntentionWithoutSync($resume, [
+            'salary_min' => 8000,
+            'salary_max' => 12000,
+            'created_at' => Carbon::parse('2026-01-01 10:00:00'),
+        ]);
+
+        RcResumeAggregateService::make()->sync($resume->fresh());
+        $resume->refresh();
+        $this->assertSame('15000.00', (string) $resume->expected_salary_min);
+
+        $primaryIntention->delete();
+
+        $resume->refresh();
+
+        $this->assertSame('8000.00', (string) $resume->expected_salary_min);
+        $this->assertSame('12000.00', (string) $resume->expected_salary_max);
+    }
+
     public function test_sync_clears_aggregate_fields_when_child_records_removed(): void
     {
         $resume = $this->createResume();
@@ -174,6 +310,31 @@ class RcResumeAggregateServiceTest extends TestCase
         $this->assertNull($resume->work_start_date);
         $this->assertNull($resume->work_years);
         $this->assertSame(0, $resume->is_fresh_graduate);
+    }
+
+    /**
+     * @param  array<string, mixed>  $attributes
+     */
+    private function createIntentionWithoutSync(Resume $resume, array $attributes = []): ResumeIntention
+    {
+        return ResumeIntention::withoutEvents(function () use ($resume, $attributes): ResumeIntention {
+            $intention = ResumeIntention::query()->create(array_merge([
+                'resume_id' => $resume->id,
+                'user_id' => $resume->user_id,
+                'salary_unit' => RcSalaryUnit::Month,
+            ], $attributes));
+
+            if (isset($attributes['created_at'])) {
+                $createdAt = Carbon::parse($attributes['created_at']);
+
+                $intention->forceFill([
+                    'created_at' => $createdAt,
+                    'updated_at' => $createdAt,
+                ])->saveQuietly();
+            }
+
+            return $intention->refresh();
+        });
     }
 
     private function createResume(): Resume

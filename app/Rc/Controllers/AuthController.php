@@ -150,6 +150,11 @@ class AuthController extends Controller
         return $this->success();
     }
 
+    /**
+     * 忘记密码
+     *
+     * POST /rc/auth/forgot-password
+     */
     public function forgotPassword(ForgotPasswordRequest $request): JsonResponse
     {
         $validated = $request->validated();
@@ -325,6 +330,7 @@ class AuthController extends Controller
             'email' => $user->email,
             'gender' => $user->gender,
             'avatar' => $user->avatar,
+            'display_avatar' => $user->display_avatar,
             'last_login_ip' => $user->last_login_ip,
             'last_login_at' => $user->last_login_at?->toDateTimeString(),
             'current_identity' => $currentIdentity,

@@ -14,3 +14,4 @@ Route::get('/announcements', [AnnouncementController::class, 'index'])->name('an
 Route::get('/announcements/{id}', [AnnouncementController::class, 'show'])->name('announcement.show');
 
 Route::get('/meta', [MetaController::class, 'index'])->name('meta');
+Route::get('/meta/majors', [MetaController::class, 'majors'])->name('meta.majors');

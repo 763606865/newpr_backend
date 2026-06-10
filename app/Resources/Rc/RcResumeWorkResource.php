@@ -24,6 +24,7 @@ class RcResumeWorkResource extends JsonResource
             'company_name' => $this->resource->company_name,
             'department' => $this->resource->department,
             'position' => $this->resource->position,
+            'position_code' => $this->resource->position_code,
             'employment_type' => $this->resource->employment_type?->value ?? $this->resource->employment_type,
             'start_date' => $this->resource->start_date,
             'end_date' => $this->resource->end_date,

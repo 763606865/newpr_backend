@@ -358,6 +358,36 @@ class Resume extends Model
         return $this->hasMany(ResumeEducation::class, 'resume_id');
     }
 
+    public function projects(): HasMany
+    {
+        return $this->hasMany(ResumeProject::class, 'resume_id');
+    }
+
+    public function trainings(): HasMany
+    {
+        return $this->hasMany(ResumeTraining::class, 'resume_id');
+    }
+
+    public function languages(): HasMany
+    {
+        return $this->hasMany(ResumeLanguage::class, 'resume_id');
+    }
+
+    public function skills(): HasMany
+    {
+        return $this->hasMany(ResumeSkill::class, 'resume_id');
+    }
+
+    public function certificates(): HasMany
+    {
+        return $this->hasMany(ResumeCertificate::class, 'resume_id');
+    }
+
+    public function portfolios(): HasMany
+    {
+        return $this->hasMany(ResumePortfolio::class, 'resume_id');
+    }
+
     public function talentPoolMembers(): HasMany
     {
         return $this->hasMany(TalentPoolMember::class, 'resume_id');

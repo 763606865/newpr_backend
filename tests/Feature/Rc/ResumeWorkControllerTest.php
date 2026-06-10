@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Rc;
 
+use App\Models\Rc\Position;
 use App\Models\Rc\Resume;
 use App\Models\Rc\ResumeWork;
 use App\Models\User;
@@ -13,6 +14,8 @@ class ResumeWorkControllerTest extends TestCase
 {
     use RefreshDatabase;
 
+    private const POSITION_CODE = 'backend-developer';
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -20,6 +23,12 @@ class ResumeWorkControllerTest extends TestCase
         if (! defined('LARAVEL_START')) {
             define('LARAVEL_START', microtime(true));
         }
+
+        Position::query()->create([
+            'name' => '后端开发',
+            'code' => self::POSITION_CODE,
+            'sort' => 1,
+        ]);
     }
 
     public function test_index_returns_works_of_current_resume(): void
@@ -28,9 +37,9 @@ class ResumeWorkControllerTest extends TestCase
         $resume = $this->createResume($user);
         $otherResume = $this->createResume($user, ['title' => 'Other Resume']);
 
-        $firstWork = $this->createWork($resume, ['sort' => 1, 'position' => 'PHP Engineer']);
-        $secondWork = $this->createWork($resume, ['sort' => 2, 'position' => 'Java Engineer']);
-        $this->createWork($otherResume, ['sort' => 99, 'position' => 'Ignored']);
+        $firstWork = $this->createWork($resume, ['sort' => 1, 'position_code' => self::POSITION_CODE]);
+        $secondWork = $this->createWork($resume, ['sort' => 2, 'position_code' => self::POSITION_CODE]);
+        $this->createWork($otherResume, ['sort' => 99, 'position_code' => self::POSITION_CODE]);
 
         $response = $this->actingAs($user, 'rc')
             ->getJson('/rc/resumes/'.$resume->id.'/works');
@@ -53,7 +62,7 @@ class ResumeWorkControllerTest extends TestCase
         $storeResponse = $this->actingAs($user, 'rc')
             ->postJson('/rc/resumes/'.$resume->id.'/works', [
                 'company_name' => 'Acme Inc',
-                'position' => 'Backend Engineer',
+                'position_code' => self::POSITION_CODE,
                 'employment_type' => 1,
                 'start_date' => '2022-01-01',
                 'end_date' => '2023-01-01',
@@ -65,7 +74,8 @@ class ResumeWorkControllerTest extends TestCase
             ->assertOk()
             ->assertJsonPath('code', 200)
             ->assertJsonPath('data.company_name', 'Acme Inc')
-            ->assertJsonPath('data.position', 'Backend Engineer');
+            ->assertJsonPath('data.position_code', self::POSITION_CODE)
+            ->assertJsonPath('data.position', '后端开发');
 
         $resume->refresh();
         $this->assertSame('2022-01-01', $resume->work_start_date);
@@ -73,16 +83,23 @@ class ResumeWorkControllerTest extends TestCase
 
         $workId = (int) $storeResponse->json('data.id');
 
+        Position::query()->create([
+            'name' => '高级后端开发',
+            'code' => 'senior-backend-developer',
+            'sort' => 2,
+        ]);
+
         $updateResponse = $this->actingAs($user, 'rc')
             ->putJson('/rc/resumes/'.$resume->id.'/works/'.$workId, [
-                'position' => 'Senior Backend Engineer',
+                'position_code' => 'senior-backend-developer',
                 'is_current' => 1,
             ]);
 
         $updateResponse
             ->assertOk()
             ->assertJsonPath('code', 200)
-            ->assertJsonPath('data.position', 'Senior Backend Engineer')
+            ->assertJsonPath('data.position_code', 'senior-backend-developer')
+            ->assertJsonPath('data.position', '高级后端开发')
             ->assertJsonPath('data.is_current', 1);
 
         $deleteResponse = $this->actingAs($user, 'rc')
@@ -113,7 +130,7 @@ class ResumeWorkControllerTest extends TestCase
         $this->actingAs($user, 'rc')
             ->postJson('/rc/resumes/'.$otherResume->id.'/works', [
                 'company_name' => 'Blocked',
-                'position' => 'Blocked',
+                'position_code' => self::POSITION_CODE,
                 'start_date' => '2020-01-01',
             ])
             ->assertOk()
@@ -144,7 +161,8 @@ class ResumeWorkControllerTest extends TestCase
             'resume_id' => $resume->id,
             'user_id' => $resume->user_id,
             'company_name' => 'Example Co',
-            'position' => 'Engineer',
+            'position_code' => self::POSITION_CODE,
+            'position' => '后端开发',
             'start_date' => '2021-01-01',
             'employment_type' => 1,
             'is_current' => 0,

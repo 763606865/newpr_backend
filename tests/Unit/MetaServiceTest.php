@@ -3,6 +3,7 @@
 namespace Tests\Unit;
 
 use App\Models\Area;
+use App\Models\Major;
 use App\Models\Rc\Industry;
 use App\Models\Rc\Position;
 use App\Services\MetaService;
@@ -150,5 +151,58 @@ class MetaServiceTest extends TestCase
         $this->assertSame('E-commerce', $service->getIndustriesTree()[0]['children'][0]['name']);
         $this->assertSame('Engineering', $service->getPositionsTree()[0]['name']);
         $this->assertSame('Backend Developer', $service->getPositionsTree()[0]['children'][0]['name']);
+    }
+
+    public function test_it_builds_cached_majors_tree_and_invalidates_on_update(): void
+    {
+        Major::query()->create([
+            'full_code' => '55',
+            'name' => '装备制造大类',
+            'level' => 1,
+            'parent_code' => null,
+            'type' => '中职',
+            'sort' => 1,
+        ]);
+
+        $service = app(MetaService::class);
+
+        $this->assertSame('装备制造大类', $service->getMajorsTree()[0]['name']);
+
+        Major::query()->create([
+            'full_code' => '5501',
+            'name' => '机械设计制造类',
+            'level' => 2,
+            'parent_code' => '55',
+            'type' => '中职',
+            'sort' => 1,
+        ]);
+
+        $this->assertSame('机械设计制造类', $service->getMajorsTree()[0]['children'][0]['name']);
+    }
+
+    public function test_majors_tree_excludes_disabled_records(): void
+    {
+        Major::query()->create([
+            'full_code' => '99',
+            'name' => '禁用大类',
+            'level' => 1,
+            'parent_code' => null,
+            'type' => '中职',
+            'status' => 0,
+        ]);
+
+        Major::query()->create([
+            'full_code' => '55',
+            'name' => '装备制造大类',
+            'level' => 1,
+            'parent_code' => null,
+            'type' => '中职',
+            'status' => 1,
+        ]);
+
+        $tree = app(MetaService::class)->getMajorsTree();
+
+        $this->assertCount(1, $tree);
+        $this->assertSame('装备制造大类', $tree[0]['name']);
     }
 }

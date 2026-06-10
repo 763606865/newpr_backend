@@ -7,23 +7,49 @@ use App\Services\RcResumeAggregateService;
 
 trait SyncsResumeSearchIndex
 {
+    protected bool $wasPrimaryIntentionBeforeDelete = false;
+
     protected static function bootSyncsResumeSearchIndex(): void
     {
-        $sync = function (self $model): void {
-            if (! $model->resume_id) {
-                return;
+        static::saved(function (self $model): void {
+            if ($model->shouldSyncParentResumeSearchIndex()) {
+                $model->syncParentResumeSearchIndex();
             }
+        });
 
-            $resume = Resume::query()->find($model->resume_id);
+        static::deleting(function (self $model): void {
+            $model->wasPrimaryIntentionBeforeDelete = $model->shouldSyncParentResumeSearchIndexOnDelete();
+        });
 
-            if (! $resume instanceof Resume) {
-                return;
+        static::deleted(function (self $model): void {
+            if ($model->wasPrimaryIntentionBeforeDelete) {
+                $model->syncParentResumeSearchIndex();
             }
+        });
+    }
 
-            RcResumeAggregateService::make()->sync($resume);
-        };
+    protected function shouldSyncParentResumeSearchIndex(): bool
+    {
+        return true;
+    }
 
-        static::saved($sync);
-        static::deleted($sync);
+    protected function shouldSyncParentResumeSearchIndexOnDelete(): bool
+    {
+        return $this->shouldSyncParentResumeSearchIndex();
+    }
+
+    protected function syncParentResumeSearchIndex(): void
+    {
+        if (! $this->resume_id) {
+            return;
+        }
+
+        $resume = Resume::query()->find($this->resume_id);
+
+        if (! $resume instanceof Resume) {
+            return;
+        }
+
+        RcResumeAggregateService::make()->sync($resume);
     }
 }

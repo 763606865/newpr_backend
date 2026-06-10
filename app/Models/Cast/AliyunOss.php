@@ -95,6 +95,31 @@ class AliyunOss implements CastsAttributes, SerializesCastableAttributes
     }
 
     /**
+     * 根据模型字段上的 AliyunOss cast 配置创建实例。
+     */
+    public static function fromModel(Model $model, string $attribute): self
+    {
+        $definition = $model->getCasts()[$attribute] ?? null;
+
+        if (! is_string($definition) || ! str_starts_with($definition, self::class)) {
+            return new self;
+        }
+
+        if (! str_contains($definition, ':')) {
+            return new self;
+        }
+
+        [, $parameters] = explode(':', $definition, 2);
+        $parts = explode(',', $parameters);
+
+        return new self(
+            $parts[0] !== '' ? $parts[0] : 'oss',
+            $parts[1] ?? 'public',
+            isset($parts[2]) && $parts[2] !== '' ? (int) $parts[2] : 3600,
+        );
+    }
+
+    /**
      * 将 OSS 相对路径转为可访问 URL（供 API 展示字段使用）。
      */
     public function toDisplayUrl(?string $path): ?string

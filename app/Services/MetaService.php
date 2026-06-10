@@ -6,11 +6,15 @@ use App\Enums\CompanyBenefitTag;
 use App\Enums\CompanyFundingStage;
 use App\Enums\CompanyNatureType;
 use App\Enums\CompanyScaleType;
+use App\Enums\MajorEducationType;
+use App\Enums\MajorLevel;
 use App\Models\Area;
+use App\Models\Major;
 use App\Models\Rc\Industry;
 use App\Models\Rc\Position;
 use App\Resources\Rc\RcAreaResource;
 use App\Resources\Rc\RcIndustryResource;
+use App\Resources\Rc\RcMajorResource;
 use App\Resources\Rc\RcPositionResource;
 use App\Support\EnumOptions;
 use Illuminate\Http\Request;
@@ -27,6 +31,8 @@ class MetaService extends Service
     private const INDUSTRIES_TREE_CACHE_KEY = 'rc:meta:industries:tree';
 
     private const POSITIONS_TREE_CACHE_KEY = 'rc:meta:positions:tree';
+
+    private const MAJORS_TREE_CACHE_KEY = 'rc:meta:majors:tree';
 
     /**
      * @return array<int, array<string, mixed>>
@@ -146,6 +152,39 @@ class MetaService extends Service
     }
 
     /**
+     * @return array<int, array<string, mixed>>
+     */
+    public function getMajorsTree(): array
+    {
+        return Cache::rememberForever(self::MAJORS_TREE_CACHE_KEY, function (): array {
+            $majors = Major::query()
+                ->enabled()
+                ->orderBy('level')
+                ->orderBy('sort')
+                ->orderBy('full_code')
+                ->get();
+
+            return tree(
+                RcMajorResource::collection($majors)->resolve(new Request),
+                'parent_code',
+                'full_code',
+                '',
+            );
+        });
+    }
+
+    /**
+     * @return array<string, array<int, array{value: int|string, label: string|null}>>
+     */
+    public function getMajorDictionaries(): array
+    {
+        return [
+            'major_levels' => EnumOptions::from(MajorLevel::class),
+            'major_education_types' => EnumOptions::from(MajorEducationType::class),
+        ];
+    }
+
+    /**
      * @return array<int, array{value: int|string, label: string|null}>
      */
     public function getCompanyScales(): array
@@ -207,10 +246,16 @@ class MetaService extends Service
         Cache::forget(self::POSITIONS_TREE_CACHE_KEY);
     }
 
+    public function forgetMajors(): void
+    {
+        Cache::forget(self::MAJORS_TREE_CACHE_KEY);
+    }
+
     public function forgetAll(): void
     {
         $this->forgetAreas();
         $this->forgetIndustries();
         $this->forgetPositions();
+        $this->forgetMajors();
     }
 }
