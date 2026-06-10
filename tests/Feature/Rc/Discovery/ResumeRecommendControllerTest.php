@@ -12,6 +12,7 @@ use App\Enums\RcResumeStatus;
 use App\Models\Company;
 use App\Models\Rc\Job;
 use App\Models\Rc\Resume;
+use App\Models\Rc\ResumeEducation;
 use App\Models\Rc\ResumeWork;
 use App\Models\Rc\UserIdentity;
 use App\Models\User;
@@ -82,6 +83,16 @@ class ResumeRecommendControllerTest extends TestCase
             'position' => 'Laravel 工程师',
             'start_date' => '2020-01-01',
             'description' => '负责 Laravel API 开发',
+        ]);
+
+        ResumeEducation::query()->create([
+            'resume_id' => $matchedResume->id,
+            'user_id' => $matchedCandidate->id,
+            'school_name' => '南昌大学',
+            'major' => '计算机科学',
+            'degree' => RcEducationLevel::Bachelor,
+            'start_date' => '2016-09-01',
+            'end_date' => '2020-06-01',
         ]);
 
         $otherCandidate = User::factory()->create();

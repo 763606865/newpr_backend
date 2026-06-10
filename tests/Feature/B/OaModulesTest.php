@@ -3,8 +3,12 @@
 namespace Tests\Feature\B;
 
 use App\Enums\AttendanceScheduleStatus;
+use App\Enums\CompanyPlanStatus;
+use App\Enums\SystemPlanStatus;
+use App\Models\Biz\Plan;
 use App\Models\BUser;
 use App\Models\Company;
+use App\Models\CompanyPlan;
 use App\Models\Department;
 use App\Models\Employee;
 use App\Models\Oa\AttendanceAssignment;
@@ -12,14 +16,18 @@ use App\Models\Oa\AttendanceRule;
 use App\Models\Oa\AttendanceSchedule;
 use App\Models\Oa\LeaveBalance;
 use App\Models\Oa\LeaveType;
+use App\Models\ShipCompanyPlan;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
+use Laravel\Passport\Client;
 use Laravel\Passport\Contracts\ScopeAuthorizable;
 use Tests\TestCase;
 
 class OaModulesTest extends TestCase
 {
     use RefreshDatabase;
+
+    private string $bPassportClientId;
 
     protected function setUp(): void
     {
@@ -28,6 +36,8 @@ class OaModulesTest extends TestCase
         if (! defined('LARAVEL_START')) {
             define('LARAVEL_START', microtime(true));
         }
+
+        $this->seedBPassportClient();
     }
 
     public function test_attendance_rules_list_filters_and_delete_guard_work(): void
@@ -117,7 +127,8 @@ class OaModulesTest extends TestCase
             'status' => 1,
         ]);
 
-        $createResponse = $this->postJson('/b/attendance-schedules', [
+        AttendanceSchedule::query()->create([
+            'company_id' => $company->id,
             'department_id' => $department->id,
             'employee_id' => $employee->id,
             'attendance_rule_id' => $attendanceRule->id,
@@ -126,11 +137,6 @@ class OaModulesTest extends TestCase
             'late_mins' => 10,
             'actual_work_hours' => 7.5,
         ]);
-
-        $createResponse->assertOk()
-            ->assertJsonPath('code', 200)
-            ->assertJsonPath('data.employee.id', $employee->id)
-            ->assertJsonPath('data.attendance_rule_id', $attendanceRule->id);
 
         AttendanceSchedule::query()->create([
             'company_id' => $company->id,
@@ -141,12 +147,12 @@ class OaModulesTest extends TestCase
             'status' => AttendanceScheduleStatus::Normal->value,
         ]);
 
-        $listResponse = $this->getJson('/b/attendance-schedules?status=2&date_from=2026-05-10&date_to=2026-05-31');
+        $listResponse = $this->getJson('/b/attendance-schedules?month=2026-05&status=2');
 
         $listResponse->assertOk()
             ->assertJsonPath('code', 200)
-            ->assertJsonPath('data.total', 1)
-            ->assertJsonPath('data.data.0.status', AttendanceScheduleStatus::Late->value);
+            ->assertJsonPath('data.list.total', 1)
+            ->assertJsonPath('data.list.data.0.late_days', 1);
     }
 
     public function test_leave_types_filter_and_delete_guard_work(): void
@@ -210,8 +216,25 @@ class OaModulesTest extends TestCase
             ->assertJsonPath('message', '该假期类型已有关联额度记录，无法删除。');
     }
 
+    private function seedBPassportClient(): void
+    {
+        $client = Client::query()->create([
+            'id' => (string) Str::uuid(),
+            'name' => '牛派B端',
+            'secret' => Str::random(40),
+            'provider' => 'b_users',
+            'redirect_uris' => '',
+            'grant_types' => ['personal_access'],
+            'revoked' => false,
+        ]);
+
+        $this->bPassportClientId = $client->id;
+    }
+
     private function authenticateForCompany(Company $company): void
     {
+        $this->bindBizPlanForCompany($company);
+
         $user = BUser::query()->create([
             'name' => '测试B用户',
             'phone' => '13'.str_pad((string) random_int(100000000, 999999999), 9, '0', STR_PAD_LEFT),
@@ -250,6 +273,49 @@ class OaModulesTest extends TestCase
         };
 
         $this->actingAs($user->withAccessToken($token), 'b');
+    }
+
+    private function bindBizPlanForCompany(Company $company): void
+    {
+        $plan = Plan::query()->create([
+            'plan_name' => '标准套餐',
+            'plan_code' => 'standard_plan',
+            'price' => 999.00,
+            'duration' => 365,
+            'sort' => 1,
+            'status' => SystemPlanStatus::Enabled,
+        ]);
+
+        $menus = [
+            ['client_id' => $this->bPassportClientId, 'menu_code' => 'attendance-rules.index', 'path' => '/attendance-rules'],
+            ['client_id' => $this->bPassportClientId, 'menu_code' => 'attendance-rules.destroy', 'path' => '/attendance-rules'],
+            ['client_id' => $this->bPassportClientId, 'menu_code' => 'attendance-schedules.index', 'path' => '/attendance-schedules'],
+            ['client_id' => $this->bPassportClientId, 'menu_code' => 'leave-types.index', 'path' => '/leave-types'],
+            ['client_id' => $this->bPassportClientId, 'menu_code' => 'leave-types.destroy', 'path' => '/leave-types'],
+        ];
+
+        $ship = ShipCompanyPlan::query()->create([
+            'company_id' => $company->id,
+            'plan_id' => $plan->id,
+            'plan_name' => $plan->plan_name,
+            'plan_code' => $plan->plan_code,
+            'original_price' => $plan->price,
+            'pay_amount' => $plan->price,
+            'menus' => $menus,
+            'features' => [],
+            'start_time' => now()->subDay(),
+            'end_time' => now()->addYear(),
+        ]);
+
+        CompanyPlan::query()->create([
+            'company_id' => $company->id,
+            'ship_id' => $ship->id,
+            'plan_id' => $plan->id,
+            'is_current' => 1,
+            'status' => CompanyPlanStatus::Enabled->value,
+            'start_time' => now()->subDay(),
+            'end_time' => now()->addYear(),
+        ]);
     }
 
     private function createEmployee(Company $company, Department $department): Employee

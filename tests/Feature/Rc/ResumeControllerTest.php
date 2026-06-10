@@ -34,6 +34,7 @@ class ResumeControllerTest extends TestCase
         ]);
         $this->createResume($currentUser, [
             'title' => 'Second Resume',
+            'full_name' => 'Second Tester',
             'is_primary' => 0,
         ]);
         $this->createResume($otherUser, [
@@ -51,7 +52,7 @@ class ResumeControllerTest extends TestCase
             ->assertJsonPath('data.total', 2)
             ->assertJsonPath('data.data.0.id', $primaryResume->id);
 
-        $this->assertSame('Second Resume', $response->json('data.data.1.title'));
+        $this->assertSame('Second Tester的简历', $response->json('data.data.1.title'));
     }
 
     public function test_show_returns_not_found_when_resume_does_not_belong_to_user(): void
@@ -78,14 +79,14 @@ class ResumeControllerTest extends TestCase
 
         $response = $this
             ->actingAs($user, 'rc')
-            ->postJson('/rc/resumes', [
+            ->postJson('/rc/resumes', array_merge($this->baseStorePayload(), [
                 'full_name' => 'Area Tester',
                 'phone' => '13800000088',
                 'email' => 'area-test@example.com',
                 'native_place' => '000001',
                 'household_register' => '000001',
                 'current_city_code' => '000001',
-            ]);
+            ]));
 
         $response
             ->assertUnprocessable()
@@ -107,7 +108,7 @@ class ResumeControllerTest extends TestCase
 
         $response = $this
             ->actingAs($user, 'rc')
-            ->postJson('/rc/resumes', [
+            ->postJson('/rc/resumes', array_merge($this->baseStorePayload(), [
                 'title' => 'City Resume',
                 'full_name' => 'City Tester',
                 'phone' => '13800000087',
@@ -116,7 +117,7 @@ class ResumeControllerTest extends TestCase
                 'household_register' => '360100',
                 'current_city_code' => '360100',
                 'current_residence_city' => '前端传入应被忽略',
-            ]);
+            ]));
 
         $response
             ->assertOk()
@@ -132,14 +133,14 @@ class ResumeControllerTest extends TestCase
 
         $response = $this
             ->actingAs($user, 'rc')
-            ->postJson('/rc/resumes', [
+            ->postJson('/rc/resumes', array_merge($this->baseStorePayload(), [
                 'title' => 'Date Format Resume',
                 'full_name' => 'Date Tester',
                 'phone' => '13800000099',
                 'email' => 'date-format@example.com',
                 'birth_date' => '1998-05-20',
                 'work_start_date' => '2020-07-01',
-            ]);
+            ]));
 
         $response
             ->assertOk()
@@ -151,16 +152,13 @@ class ResumeControllerTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $payload = [
+        $payload = array_merge($this->baseStorePayload(), [
             'title' => 'New Resume',
             'full_name' => 'Test User',
-            'avatar' => 'uploads/rc/avatar/2026/06/03/example.jpg',
-            'gender' => UserGender::Male->value,
-            'birth_date' => '1995-01-01',
             'phone' => '13800000000',
             'email' => 'resume@example.com',
             'is_primary' => 0,
-        ];
+        ]);
 
         $response = $this
             ->actingAs($user, 'rc')
@@ -169,7 +167,7 @@ class ResumeControllerTest extends TestCase
         $response
             ->assertOk()
             ->assertJsonPath('code', 200)
-            ->assertJsonPath('data.title', 'New Resume')
+            ->assertJsonPath('data.title', 'Test User的简历')
             ->assertJsonPath('data.avatar', 'uploads/rc/avatar/2026/06/03/example.jpg')
             ->assertJsonPath('data.is_primary', 1)
             ->assertJsonPath('data.source_type', 3)
@@ -178,7 +176,7 @@ class ResumeControllerTest extends TestCase
 
         $this->assertDatabaseHas('rc_resumes', [
             'user_id' => $user->id,
-            'title' => 'New Resume',
+            'title' => 'Test User的简历',
             'avatar' => 'uploads/rc/avatar/2026/06/03/example.jpg',
             'is_primary' => 1,
             'political_status' => 5,
@@ -267,14 +265,14 @@ class ResumeControllerTest extends TestCase
 
         $response = $this
             ->actingAs($user, 'rc')
-            ->postJson('/rc/resumes', [
+            ->postJson('/rc/resumes', array_merge($this->baseStorePayload([
+                'avatar' => 'uploads/rc/avatar/2026/06/03/profile.jpg',
+            ]), [
                 'title' => 'Profile Resume',
                 'full_name' => 'Zhang San',
-                'avatar' => 'uploads/rc/avatar/2026/06/03/profile.jpg',
-                'gender' => UserGender::Male->value,
                 'phone' => '13800000001',
                 'email' => 'profile@example.com',
-            ]);
+            ]));
 
         $response->assertOk()->assertJsonPath('data.is_primary', 1);
 
@@ -297,15 +295,13 @@ class ResumeControllerTest extends TestCase
 
         $this
             ->actingAs($user, 'rc')
-            ->postJson('/rc/resumes', [
+            ->postJson('/rc/resumes', array_merge($this->baseStorePayload(), [
                 'title' => 'Another Resume',
                 'full_name' => 'New Name',
-                'avatar' => 'uploads/rc/avatar/2026/06/03/new.jpg',
-                'gender' => UserGender::Male->value,
                 'phone' => '13800000002',
                 'email' => 'another@example.com',
                 'is_primary' => 1,
-            ])
+            ]))
             ->assertOk();
 
         $user->refresh();
@@ -441,6 +437,19 @@ class ResumeControllerTest extends TestCase
                 'updated_at' => now(),
             ],
         ]);
+    }
+
+    /**
+     * @param  array<string, mixed>  $overrides
+     * @return array<string, mixed>
+     */
+    private function baseStorePayload(array $overrides = []): array
+    {
+        return array_merge([
+            'avatar' => 'uploads/rc/avatar/2026/06/03/example.jpg',
+            'gender' => UserGender::Male->value,
+            'birth_date' => '1995-01-01',
+        ], $overrides);
     }
 
     /**

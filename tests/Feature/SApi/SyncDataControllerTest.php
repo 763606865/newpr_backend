@@ -100,7 +100,6 @@ class SyncDataControllerTest extends TestCase
         $client = Client::factory()->create();
         $user = User::factory()->create();
         $included = $this->createResume($user, [
-            'title' => '我的简历',
             'status' => RcResumeStatus::Normal,
         ]);
 
@@ -111,7 +110,7 @@ class SyncDataControllerTest extends TestCase
             ->assertJsonPath('data.total', 1)
             ->assertJsonPath('data.data.0.id', $included->id)
             ->assertJsonPath('data.data.0.user_id', $user->id)
-            ->assertJsonPath('data.data.0.title', '我的简历');
+            ->assertJsonPath('data.data.0.title', $user->name.'的简历');
     }
 
     public function test_resumes_index_filters_by_user_id(): void

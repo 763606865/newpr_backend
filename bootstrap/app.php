@@ -31,12 +31,12 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->render(function (Throwable $e, $request) {
-            if ($request->is('api/*')) {
+            if ($request->is('api/*', 'b/*', 'rc/*', 'sapi/*')) {
                 if ($e instanceof AuthenticationException) {
-                    throw new UnauthenticatedException('Token expired or invalid.');
+                    return (new UnauthenticatedException('Token expired or invalid.'))->render($request);
                 }
                 if ($e instanceof OAuthServerException) {
-                    throw new UnauthenticatedException('Token expired or invalid.');
+                    return (new UnauthenticatedException('Token expired or invalid.'))->render($request);
                 }
             }
         });

@@ -42,7 +42,7 @@ class AttendanceClockServiceTest extends TestCase
 
     public function test_today_returns_clock_in_state_before_any_clock(): void
     {
-        [$employee, $schedule] = $this->createClockContext();
+        [$employee, $schedule, $clockAt] = $this->createClockContext();
 
         $this->assertFalse($schedule->has_clocked_in);
         $this->assertFalse($schedule->has_clocked_out);
@@ -50,7 +50,7 @@ class AttendanceClockServiceTest extends TestCase
         $this->assertSame(AttendanceClockState::ClockIn, $schedule->clock_state);
         $this->assertSame(1, $schedule->next_punch_type?->value);
 
-        $result = AttendanceService::make()->today($employee, Carbon::parse('2026-05-22 08:00:00'));
+        $result = AttendanceService::make()->today($employee, $clockAt->copy()->setTime(8, 0, 0));
 
         $this->assertTrue($result['has_schedule']);
         $this->assertTrue($result['can_clock']);

@@ -37,7 +37,7 @@ abstract class Controller
             $rv['errors'] = $errors;
         }
 
-        return response()->json($rv);
+        return response()->json($rv, $status);
     }
 
     public function user(): ?BUser

@@ -3,8 +3,8 @@
 namespace App\Exceptions;
 
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Throwable;
 
 abstract class HttpException extends Exception
 {
@@ -13,7 +13,7 @@ abstract class HttpException extends Exception
         //
     }
 
-    public function render(Request $request): ?\Illuminate\Http\JsonResponse
+    public function render(Request $request): ?JsonResponse
     {
         $response = [
             'code' => $this->getCode(),
@@ -23,7 +23,7 @@ abstract class HttpException extends Exception
             $response['trace'] = $this->getTrace();
         }
         try {
-            return response()->json($response);
+            return response()->json($response, $this->getCode());
         } catch (Exception $e) {
             return null;
         }

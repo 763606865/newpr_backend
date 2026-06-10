@@ -18,8 +18,12 @@ use App\Models\Rc\JobStage;
 use App\Models\Rc\Position;
 use App\Models\Rc\Resume;
 use App\Models\Rc\UserIdentity;
+use App\Models\Token;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Auth;
+use Laravel\Passport\ClientRepository;
+use Laravel\Passport\PersonalAccessTokenFactory;
 use Tests\TestCase;
 
 class ApplicationControllerTest extends TestCase
@@ -39,6 +43,8 @@ class ApplicationControllerTest extends TestCase
             'code' => 'backend-developer',
             'sort' => 1,
         ]);
+
+        app(ClientRepository::class)->createPersonalAccessGrantClient('RC Discovery Applications Test', 'rc_users');
     }
 
     public function test_apply_requires_job_seeker_identity(): void
@@ -46,9 +52,7 @@ class ApplicationControllerTest extends TestCase
         $user = User::factory()->create();
         $job = $this->createPublishedJob();
 
-        $response = $this
-            ->actingAs($user, 'rc')
-            ->postJson('/rc/talent/jobs/'.$job->id.'/apply');
+        $response = $this->rcPostJson($user, null, '/rc/applications', ['job_id' => $job->id]);
 
         $response
             ->assertOk()
@@ -58,7 +62,7 @@ class ApplicationControllerTest extends TestCase
 
     public function test_job_seeker_can_apply_with_primary_resume(): void
     {
-        $user = $this->createJobSeekerContext();
+        [$user, $identity] = $this->createJobSeekerContext();
         $job = $this->createPublishedJob();
 
         $resume = Resume::query()->create([
@@ -71,9 +75,7 @@ class ApplicationControllerTest extends TestCase
             'is_primary' => 1,
         ]);
 
-        $response = $this
-            ->actingAs($user, 'rc')
-            ->postJson('/rc/talent/jobs/'.$job->id.'/apply');
+        $response = $this->rcPostJson($user, $identity, '/rc/applications', ['job_id' => $job->id]);
 
         $response
             ->assertOk()
@@ -103,7 +105,7 @@ class ApplicationControllerTest extends TestCase
 
     public function test_apply_rejects_duplicate_active_application(): void
     {
-        $user = $this->createJobSeekerContext();
+        [$user, $identity] = $this->createJobSeekerContext();
         $job = $this->createPublishedJob();
 
         Resume::query()->create([
@@ -116,15 +118,11 @@ class ApplicationControllerTest extends TestCase
             'is_primary' => 1,
         ]);
 
-        $this
-            ->actingAs($user, 'rc')
-            ->postJson('/rc/talent/jobs/'.$job->id.'/apply')
+        $this->rcPostJson($user, $identity, '/rc/applications', ['job_id' => $job->id])
             ->assertOk()
             ->assertJsonPath('code', 200);
 
-        $response = $this
-            ->actingAs($user, 'rc')
-            ->postJson('/rc/talent/jobs/'.$job->id.'/apply');
+        $response = $this->rcPostJson($user, $identity, '/rc/applications', ['job_id' => $job->id]);
 
         $response
             ->assertOk()
@@ -134,7 +132,7 @@ class ApplicationControllerTest extends TestCase
 
     public function test_job_seeker_can_reapply_after_withdraw(): void
     {
-        $user = $this->createJobSeekerContext();
+        [$user, $identity] = $this->createJobSeekerContext();
         $job = $this->createPublishedJob();
 
         Resume::query()->create([
@@ -147,21 +145,15 @@ class ApplicationControllerTest extends TestCase
             'is_primary' => 1,
         ]);
 
-        $applyResponse = $this
-            ->actingAs($user, 'rc')
-            ->postJson('/rc/talent/jobs/'.$job->id.'/apply');
+        $applyResponse = $this->rcPostJson($user, $identity, '/rc/applications', ['job_id' => $job->id]);
 
         $applicationId = $applyResponse->json('data.id');
 
-        $this
-            ->actingAs($user, 'rc')
-            ->postJson('/rc/talent/applications/'.$applicationId.'/withdraw')
+        $this->rcPostJson($user, $identity, '/rc/applications/'.$applicationId.'/withdraw')
             ->assertOk()
             ->assertJsonPath('data.status', RcApplicationStatus::Withdrawn->value);
 
-        $this
-            ->actingAs($user, 'rc')
-            ->postJson('/rc/talent/jobs/'.$job->id.'/apply')
+        $this->rcPostJson($user, $identity, '/rc/applications', ['job_id' => $job->id])
             ->assertOk()
             ->assertJsonPath('code', 200)
             ->assertJsonPath('data.status', RcApplicationStatus::Pending->value)
@@ -170,7 +162,7 @@ class ApplicationControllerTest extends TestCase
 
     public function test_job_seeker_can_list_applications(): void
     {
-        $user = $this->createJobSeekerContext();
+        [$user, $identity] = $this->createJobSeekerContext();
         $job = $this->createPublishedJob();
 
         Resume::query()->create([
@@ -183,14 +175,10 @@ class ApplicationControllerTest extends TestCase
             'is_primary' => 1,
         ]);
 
-        $this
-            ->actingAs($user, 'rc')
-            ->postJson('/rc/talent/jobs/'.$job->id.'/apply')
+        $this->rcPostJson($user, $identity, '/rc/applications', ['job_id' => $job->id])
             ->assertOk();
 
-        $response = $this
-            ->actingAs($user, 'rc')
-            ->getJson('/rc/talent/applications');
+        $response = $this->rcGetJson($user, $identity, '/rc/applications');
 
         $response
             ->assertOk()
@@ -201,7 +189,7 @@ class ApplicationControllerTest extends TestCase
 
     public function test_apply_assigns_default_stage_when_configured(): void
     {
-        $user = $this->createJobSeekerContext();
+        [$user, $identity] = $this->createJobSeekerContext();
         $job = $this->createPublishedJob();
 
         $stage = JobStage::query()->create([
@@ -223,9 +211,7 @@ class ApplicationControllerTest extends TestCase
             'is_primary' => 1,
         ]);
 
-        $response = $this
-            ->actingAs($user, 'rc')
-            ->postJson('/rc/talent/jobs/'.$job->id.'/apply');
+        $response = $this->rcPostJson($user, $identity, '/rc/applications', ['job_id' => $job->id]);
 
         $response
             ->assertOk()
@@ -253,11 +239,14 @@ class ApplicationControllerTest extends TestCase
         ]);
     }
 
-    private function createJobSeekerContext(): User
+    /**
+     * @return array{0: User, 1: UserIdentity}
+     */
+    private function createJobSeekerContext(): array
     {
         $user = User::factory()->create();
 
-        UserIdentity::query()->create([
+        $identity = UserIdentity::query()->create([
             'user_id' => $user->id,
             'identity_type' => RcIdentityType::JobSeeker,
             'identity_name' => '求职者',
@@ -265,6 +254,55 @@ class ApplicationControllerTest extends TestCase
             'status' => RcIdentityStatus::Enabled,
         ]);
 
-        return $user;
+        return [$user, $identity];
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     */
+    private function rcGetJson(User $user, ?UserIdentity $identity, string $uri)
+    {
+        $this->resetRcAuth();
+
+        return $this
+            ->withHeader('Authorization', 'Bearer '.$this->rcBearerToken($user, $identity))
+            ->getJson($uri);
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     */
+    private function rcPostJson(User $user, ?UserIdentity $identity, string $uri, array $data = [])
+    {
+        $this->resetRcAuth();
+
+        return $this
+            ->withHeader('Authorization', 'Bearer '.$this->rcBearerToken($user, $identity))
+            ->postJson($uri, $data);
+    }
+
+    private function resetRcAuth(): void
+    {
+        Auth::forgetGuards();
+    }
+
+    private function rcBearerToken(User $user, ?UserIdentity $identity): string
+    {
+        $tokenResult = app(PersonalAccessTokenFactory::class)->make(
+            $user->getAuthIdentifier(),
+            'rc',
+            [],
+            'rc_users',
+        );
+
+        $token = $tokenResult->getToken();
+
+        if ($token instanceof Token && $identity instanceof UserIdentity) {
+            $token->responsible_type = UserIdentity::class;
+            $token->responsible_id = $identity->id;
+            $token->save();
+        }
+
+        return $tokenResult->accessToken;
     }
 }
