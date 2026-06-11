@@ -50,6 +50,7 @@ class RcJobService extends Service
         $query = Job::query()
             ->where('company_id', $company->id)
             ->with(['position'])
+            ->withCount('applications')
             ->orderByDesc('updated_at')
             ->orderByDesc('id');
 
@@ -83,7 +84,7 @@ class RcJobService extends Service
 
         return $builder
             ->orderBy('updated_at', 'desc')
-            ->query(fn ($query) => $query->with(['position']))
+            ->query(fn ($query) => $query->with(['position'])->withCount('applications'))
             ->paginate($perPage);
     }
 

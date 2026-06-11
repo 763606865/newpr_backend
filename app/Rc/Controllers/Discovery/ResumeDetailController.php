@@ -4,10 +4,12 @@ namespace App\Rc\Controllers\Discovery;
 
 use App\Models\Company;
 use App\Models\Rc\Resume;
+use App\Models\User;
 use App\Rc\Controllers\Controller;
 use App\Resources\Rc\RcResumePreviewResource;
 use App\Services\RcJobService;
 use App\Services\RcResumeDiscoveryService;
+use App\Services\RcViewStatsService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -32,6 +34,11 @@ class ResumeDetailController extends Controller
         if (! $resume instanceof Resume) {
             return $this->error('简历不存在或不可查看。', Response::HTTP_NOT_FOUND);
         }
+
+        /** @var User $viewer */
+        $viewer = $this->user();
+
+        RcViewStatsService::make()->recordResumeView($resume, $viewer);
 
         return $this->success((new RcResumePreviewResource($resume))->resolve($request));
     }

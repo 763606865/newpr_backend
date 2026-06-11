@@ -9,6 +9,8 @@ use App\Models\Company;
 use App\Models\Rc\Job;
 use App\Models\Rc\Position;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Redis\Connections\Connection;
+use Illuminate\Support\Facades\Redis;
 use Tests\TestCase;
 
 class JobDetailControllerTest extends TestCase
@@ -51,6 +53,23 @@ class JobDetailControllerTest extends TestCase
             'published_at' => now(),
         ]);
 
+        $connection = \Mockery::mock(Connection::class);
+        $connection->shouldReceive('pipeline')
+            ->once()
+            ->with(\Mockery::type('callable'))
+            ->andReturnUsing(function (callable $callback) use ($connection): void {
+                $callback($connection);
+            });
+        $connection->shouldReceive('incr')
+            ->once()
+            ->with('rc:view:job:'.$job->id.':pv:'.now()->toDateString());
+        $connection->shouldReceive('expire')
+            ->once()
+            ->with('rc:view:job:'.$job->id.':pv:'.now()->toDateString(), \Mockery::type('int'));
+        $connection->shouldNotReceive('pfadd');
+
+        Redis::shouldReceive('connection')->once()->with('default')->andReturn($connection);
+
         $response = $this->getJson('/rc/talent/jobs/'.$job->id);
 
         $response
@@ -78,6 +97,8 @@ class JobDetailControllerTest extends TestCase
             'description' => '草稿',
             'status' => RcJobStatus::Draft,
         ]);
+
+        Redis::shouldReceive('connection')->never();
 
         $response = $this->getJson('/rc/talent/jobs/'.$job->id);
 

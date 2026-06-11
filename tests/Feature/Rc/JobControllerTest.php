@@ -9,11 +9,16 @@ use App\Enums\RcIdentityType;
 use App\Enums\RcJobEmploymentType;
 use App\Enums\RcJobStatus;
 use App\Models\Company;
+use App\Models\Rc\Application;
 use App\Models\Rc\Job;
+use App\Models\Rc\JobStatsDaily;
 use App\Models\Rc\Position;
+use App\Models\Rc\Resume;
 use App\Models\Rc\UserIdentity;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Redis\Connections\Connection;
+use Illuminate\Support\Facades\Redis;
 use Tests\TestCase;
 
 class JobControllerTest extends TestCase
@@ -119,6 +124,43 @@ class JobControllerTest extends TestCase
             ->assertJsonPath('message', '请选择职位类别。');
     }
 
+    public function test_show_records_job_view_in_redis(): void
+    {
+        [$user, $company] = $this->createRecruiterContext();
+
+        $job = Job::query()->create(array_merge($this->validJobAttributes(), [
+            'company_id' => $company->id,
+            'creator_user_id' => $user->id,
+            'code' => 'JOB-SHOW-001',
+            'status' => RcJobStatus::Published,
+            'published_at' => now(),
+        ]));
+
+        $connection = \Mockery::mock(Connection::class);
+        $connection->shouldReceive('pipeline')
+            ->once()
+            ->with(\Mockery::type('callable'))
+            ->andReturnUsing(function (callable $callback) use ($connection): void {
+                $callback($connection);
+            });
+        $connection->shouldReceive('incr')
+            ->once()
+            ->with('rc:view:job:'.$job->id.':pv:'.now()->toDateString());
+        $connection->shouldReceive('expire')->twice()->with(\Mockery::type('string'), \Mockery::type('int'));
+        $connection->shouldReceive('pfadd')
+            ->once()
+            ->with('rc:view:job:'.$job->id.':uv:'.now()->toDateString(), ['user:'.$user->id]);
+
+        Redis::shouldReceive('connection')->once()->with('default')->andReturn($connection);
+
+        $this
+            ->actingAs($user, 'rc')
+            ->getJson('/rc/jobs/'.$job->id)
+            ->assertOk()
+            ->assertJsonPath('code', 200)
+            ->assertJsonPath('data.id', $job->id);
+    }
+
     public function test_publish_publishes_draft_job(): void
     {
         [$user, $company] = $this->createRecruiterContext();
@@ -173,6 +215,61 @@ class JobControllerTest extends TestCase
             ->assertOk()
             ->assertJsonPath('data.total', 1)
             ->assertJsonPath('data.data.0.title', 'Java 后端工程师');
+    }
+
+    public function test_index_returns_stat_with_views_and_applications(): void
+    {
+        [$user, $company] = $this->createRecruiterContext();
+        $candidate = User::factory()->create();
+
+        $job = Job::query()->create(array_merge($this->validJobAttributes(), [
+            'company_id' => $company->id,
+            'code' => 'JOB-STAT-001',
+            'title' => '统计职位',
+        ]));
+
+        JobStatsDaily::query()->create([
+            'company_id' => $company->id,
+            'user_id' => $user->id,
+            'job_id' => $job->id,
+            'stat_date' => now()->subDay()->toDateString(),
+            'views_total' => 20,
+            'views_uv' => 8,
+        ]);
+
+        $resume = Resume::query()->create([
+            'user_id' => $candidate->id,
+            'title' => '候选人简历',
+            'full_name' => '候选人',
+            'phone' => '13800003333',
+            'email' => 'candidate@example.com',
+        ]);
+
+        Application::query()->create([
+            'company_id' => $company->id,
+            'job_id' => $job->id,
+            'candidate_user_id' => $candidate->id,
+            'resume_id' => $resume->id,
+            'applied_at' => now(),
+        ]);
+
+        $connection = \Mockery::mock(Connection::class);
+        $connection->shouldReceive('mget')
+            ->once()
+            ->with(['rc:view:job:'.$job->id.':pv:'.now()->toDateString()])
+            ->andReturn(['7']);
+
+        Redis::shouldReceive('connection')->once()->with('default')->andReturn($connection);
+
+        $response = $this
+            ->actingAs($user, 'rc')
+            ->getJson('/rc/jobs');
+
+        $response
+            ->assertOk()
+            ->assertJsonPath('code', 200)
+            ->assertJsonPath('data.data.0.stat.views', 27)
+            ->assertJsonPath('data.data.0.stat.applications', 1);
     }
 
     public function test_index_only_returns_current_company_jobs(): void

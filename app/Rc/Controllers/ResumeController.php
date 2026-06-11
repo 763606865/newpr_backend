@@ -8,6 +8,7 @@ use App\Rc\Requests\ResumeAttachmentStoreRequest;
 use App\Rc\Requests\ResumeStoreRequest;
 use App\Rc\Requests\ResumeUpdateRequest;
 use App\Resources\Rc\RcResumeResource;
+use App\Services\RcViewStatsService;
 use App\Services\ResumeService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -28,10 +29,28 @@ class ResumeController extends Controller
         /** @var User $user */
         $user = $this->user();
 
-        $resumes = $user->resumes()->orderByDesc('is_primary')
+        $resumes = $user->resumes()
+            ->withCount('applications')
+            ->orderByDesc('is_primary')
             ->orderByDesc('updated_at')
             ->orderByDesc('id')
             ->paginate($this->getPerPage($request));
+
+        $viewTotals = RcViewStatsService::make()->getResumeTotalViewsForIds(
+            $resumes->getCollection()->pluck('id')->map(fn (mixed $id): int => (int) $id)->all(),
+        );
+
+        $resumes->getCollection()->transform(
+            function (Resume $resume) use ($request, $viewTotals): array {
+                $data = (new RcResumeResource($resume))->resolve($request);
+                $data['stats'] = [
+                    'views' => $viewTotals[(int) $resume->id] ?? 0,
+                    'applications' => (int) $resume->applications_count,
+                ];
+
+                return $data;
+            },
+        );
 
         return $this->success($resumes);
     }
@@ -55,6 +74,8 @@ class ResumeController extends Controller
         if (! $resume instanceof Resume) {
             return $this->error('简历不存在。', Response::HTTP_NOT_FOUND);
         }
+
+        RcViewStatsService::make()->recordResumeView($resume, $user);
 
         return $this->success((new RcResumeResource($resume))->resolve($request));
     }

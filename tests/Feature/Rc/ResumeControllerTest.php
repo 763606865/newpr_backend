@@ -2,12 +2,21 @@
 
 namespace Tests\Feature\Rc;
 
+use App\Enums\CompanyStatus;
+use App\Enums\RcJobEmploymentType;
+use App\Enums\RcJobStatus;
 use App\Enums\UserGender;
 use App\Models\Area;
+use App\Models\Company;
+use App\Models\Rc\Application;
+use App\Models\Rc\Job;
 use App\Models\Rc\Resume;
+use App\Models\Rc\ResumeStatsDaily;
 use App\Models\User;
 use App\Services\MetaService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Redis\Connections\Connection;
+use Illuminate\Support\Facades\Redis;
 use Tests\TestCase;
 
 class ResumeControllerTest extends TestCase
@@ -21,6 +30,78 @@ class ResumeControllerTest extends TestCase
         if (! defined('LARAVEL_START')) {
             define('LARAVEL_START', microtime(true));
         }
+    }
+
+    public function test_index_returns_stat_with_views_and_applications(): void
+    {
+        $user = User::factory()->create();
+        $company = Company::query()->create([
+            'name' => '示例企业',
+            'credit_code' => '91360100MA0000000S',
+            'status' => CompanyStatus::Enabled,
+        ]);
+
+        $resume = $this->createResume($user, [
+            'title' => 'Stat Resume',
+        ]);
+
+        ResumeStatsDaily::query()->create([
+            'user_id' => $user->id,
+            'resume_id' => $resume->id,
+            'stat_date' => now()->subDay()->toDateString(),
+            'views_total' => 10,
+            'views_uv' => 4,
+        ]);
+
+        $firstJob = Job::query()->create([
+            'company_id' => $company->id,
+            'code' => 'JOB-STAT-001',
+            'title' => '后端工程师',
+            'employment_type' => RcJobEmploymentType::FullTime,
+            'status' => RcJobStatus::Published,
+        ]);
+
+        $secondJob = Job::query()->create([
+            'company_id' => $company->id,
+            'code' => 'JOB-STAT-002',
+            'title' => '前端工程师',
+            'employment_type' => RcJobEmploymentType::FullTime,
+            'status' => RcJobStatus::Published,
+        ]);
+
+        Application::query()->create([
+            'company_id' => $company->id,
+            'job_id' => $firstJob->id,
+            'candidate_user_id' => $user->id,
+            'resume_id' => $resume->id,
+            'applied_at' => now(),
+        ]);
+
+        Application::query()->create([
+            'company_id' => $company->id,
+            'job_id' => $secondJob->id,
+            'candidate_user_id' => $user->id,
+            'resume_id' => $resume->id,
+            'applied_at' => now(),
+        ]);
+
+        $connection = \Mockery::mock(Connection::class);
+        $connection->shouldReceive('mget')
+            ->once()
+            ->with(['rc:view:resume:'.$resume->id.':pv:'.now()->toDateString()])
+            ->andReturn(['6']);
+
+        Redis::shouldReceive('connection')->once()->with('default')->andReturn($connection);
+
+        $response = $this
+            ->actingAs($user, 'rc')
+            ->getJson('/rc/resumes');
+
+        $response
+            ->assertOk()
+            ->assertJsonPath('code', 200)
+            ->assertJsonPath('data.data.0.stat.views', 16)
+            ->assertJsonPath('data.data.0.stat.applications', 2);
     }
 
     public function test_index_returns_only_current_user_resumes(): void
@@ -62,6 +143,8 @@ class ResumeControllerTest extends TestCase
 
         $otherResume = $this->createResume($otherUser);
 
+        Redis::shouldReceive('connection')->never();
+
         $response = $this
             ->actingAs($currentUser, 'rc')
             ->getJson('/rc/resumes/'.$otherResume->id);
@@ -70,6 +153,36 @@ class ResumeControllerTest extends TestCase
             ->assertOk()
             ->assertJsonPath('code', 404)
             ->assertJsonPath('message', '简历不存在。');
+    }
+
+    public function test_show_records_resume_view_in_redis(): void
+    {
+        $user = User::factory()->create();
+        $resume = $this->createResume($user);
+
+        $connection = \Mockery::mock(Connection::class);
+        $connection->shouldReceive('pipeline')
+            ->once()
+            ->with(\Mockery::type('callable'))
+            ->andReturnUsing(function (callable $callback) use ($connection): void {
+                $callback($connection);
+            });
+        $connection->shouldReceive('incr')
+            ->once()
+            ->with('rc:view:resume:'.$resume->id.':pv:'.now()->toDateString());
+        $connection->shouldReceive('expire')->twice()->with(\Mockery::type('string'), \Mockery::type('int'));
+        $connection->shouldReceive('pfadd')
+            ->once()
+            ->with('rc:view:resume:'.$resume->id.':uv:'.now()->toDateString(), ['user:'.$user->id]);
+
+        Redis::shouldReceive('connection')->once()->with('default')->andReturn($connection);
+
+        $this
+            ->actingAs($user, 'rc')
+            ->getJson('/rc/resumes/'.$resume->id)
+            ->assertOk()
+            ->assertJsonPath('code', 200)
+            ->assertJsonPath('data.id', $resume->id);
     }
 
     public function test_store_rejects_non_city_area_codes(): void

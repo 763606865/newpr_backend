@@ -14,6 +14,8 @@ use App\Models\Rc\ResumeWork;
 use App\Models\Rc\UserIdentity;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Redis\Connections\Connection;
+use Illuminate\Support\Facades\Redis;
 use Tests\TestCase;
 
 class ResumeDetailControllerTest extends TestCase
@@ -64,6 +66,7 @@ class ResumeDetailControllerTest extends TestCase
             'user_id' => $candidate->id,
             'company_name' => '杭州示例科技有限公司',
             'position' => 'Laravel 工程师',
+            'position_code' => 'backend-developer',
             'start_date' => '2022-01-01',
             'description' => '负责后端 API 开发',
         ]);
@@ -75,6 +78,23 @@ class ResumeDetailControllerTest extends TestCase
             'major' => '软件工程',
             'start_date' => '2018-09-01',
         ]);
+
+        $connection = \Mockery::mock(Connection::class);
+        $connection->shouldReceive('pipeline')
+            ->once()
+            ->with(\Mockery::type('callable'))
+            ->andReturnUsing(function (callable $callback) use ($connection): void {
+                $callback($connection);
+            });
+        $connection->shouldReceive('incr')
+            ->once()
+            ->with('rc:view:resume:'.$resume->id.':pv:'.now()->toDateString());
+        $connection->shouldReceive('expire')->twice()->with(\Mockery::type('string'), \Mockery::type('int'));
+        $connection->shouldReceive('pfadd')
+            ->once()
+            ->with('rc:view:resume:'.$resume->id.':uv:'.now()->toDateString(), ['user:'.$recruiter->id]);
+
+        Redis::shouldReceive('connection')->once()->with('default')->andReturn($connection);
 
         $response = $this
             ->actingAs($recruiter, 'rc')

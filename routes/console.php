@@ -9,3 +9,4 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Schedule::command('attendance:generate-schedules')->dailyAt('00:05')->withoutOverlapping()->onOneServer();
+Schedule::command('rc:sync-view-stats')->dailyAt('00:30')->withoutOverlapping()->onOneServer();

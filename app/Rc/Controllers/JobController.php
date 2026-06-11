@@ -10,6 +10,7 @@ use App\Rc\Requests\JobStoreRequest;
 use App\Rc\Requests\JobUpdateRequest;
 use App\Resources\Rc\RcJobResource;
 use App\Services\RcJobService;
+use App\Services\RcViewStatsService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -40,8 +41,20 @@ class JobController extends Controller
             ],
         );
 
+        $viewTotals = RcViewStatsService::make()->getJobTotalViewsForIds(
+            $paginator->getCollection()->pluck('id')->map(fn (mixed $id): int => (int) $id)->all(),
+        );
+
         $paginator->getCollection()->transform(
-            static fn (Job $job): array => (new RcJobResource($job))->resolve($request),
+            function (Job $job) use ($request, $viewTotals): array {
+                $data = (new RcJobResource($job))->resolve($request);
+                $data['stats'] = [
+                    'views' => $viewTotals[(int) $job->id] ?? 0,
+                    'applications' => (int) $job->applications_count,
+                ];
+
+                return $data;
+            },
         );
 
         return $this->success($paginator);
@@ -65,6 +78,11 @@ class JobController extends Controller
         if (! $job instanceof Job) {
             return $this->error('职位不存在。', Response::HTTP_NOT_FOUND);
         }
+
+        /** @var User $user */
+        $user = $this->user();
+
+        RcViewStatsService::make()->recordJobView($job, $user);
 
         return $this->success((new RcJobResource($job))->resolve($request));
     }

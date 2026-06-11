@@ -393,6 +393,11 @@ class Resume extends Model
         return $this->hasMany(TalentPoolMember::class, 'resume_id');
     }
 
+    public function statsDaily(): HasMany
+    {
+        return $this->hasMany(ResumeStatsDaily::class, 'resume_id');
+    }
+
     #[Scope]
     protected function atHighestEducationLevel(Builder $query, int $level): void
     {
