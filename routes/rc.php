@@ -128,6 +128,10 @@ Route::middleware('auth:rc')->group(function (): void {
     Route::post('/applications', [ApplicationController::class, 'store']);
     Route::get('/applications/{id}', [ApplicationController::class, 'show'])->whereNumber('id');
     Route::post('/applications/{id}/withdraw', [ApplicationController::class, 'withdraw'])->whereNumber('id');
+    Route::post('/applications/{id}/invite-interview', [ApplicationController::class, 'inviteInterview'])->whereNumber('id');
+    Route::post('/applications/{id}/send-offer', [ApplicationController::class, 'sendOffer'])->whereNumber('id');
+    Route::post('/applications/{id}/hire', [ApplicationController::class, 'hire'])->whereNumber('id');
+    Route::post('/applications/{id}/reject', [ApplicationController::class, 'reject'])->whereNumber('id');
     // ==============================================================================
 
     // 招聘方-企业

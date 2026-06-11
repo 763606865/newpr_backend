@@ -3,6 +3,8 @@
 namespace App\Resources\Rc;
 
 use App\Models\Rc\Application;
+use App\Services\RcApplicationService;
+use App\Support\ContactMasker;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -39,12 +41,14 @@ class RcApplicationResource extends JsonResource
         }
 
         if ($this->resource->relationLoaded('resume') && $this->resource->getRelation('resume')) {
-            $data['resume'] = (new RcResumeResource($this->resource->getRelation('resume')))->resolve($request);
+            $data['resume'] = (new RcApplicationResumeResource($this->resource->getRelation('resume')))->resolve($request);
         } elseif (is_array($this->resource->resume_snapshot) && $this->resource->resume_snapshot !== []) {
             $data['candidate'] = $this->candidateSummary($this->resource->resume_snapshot);
 
             if ($this->shouldIncludeResumeSnapshot($request)) {
-                $data['resume_snapshot'] = $this->resource->resume_snapshot;
+                $data['resume_snapshot'] = ContactMasker::maskResumePayload(
+                    RcApplicationService::make()->resolveResumeSnapshotForDisplay($this->resource),
+                );
             }
         }
 

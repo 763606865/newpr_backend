@@ -7,6 +7,11 @@ use App\Models\Company;
 use App\Models\Rc\Application;
 use App\Models\Rc\Job;
 use App\Models\Rc\UserIdentity;
+use App\Models\User;
+use App\Rc\Requests\ApplicationHireRequest;
+use App\Rc\Requests\ApplicationInviteInterviewRequest;
+use App\Rc\Requests\ApplicationRejectRequest;
+use App\Rc\Requests\ApplicationSendOfferRequest;
 use App\Rc\Requests\ApplicationStoreRequest;
 use App\Resources\Rc\RcApplicationResource;
 use App\Services\RcApplicationService;
@@ -60,6 +65,10 @@ class ApplicationController extends Controller
 
         if (($company = $this->resolveCurrentRecruiterCompany()) instanceof Company) {
             $application = $service->findForCompany($company, $id);
+
+            if ($application instanceof Application) {
+                $application = $service->markScreeningOnRecruiterView($this->user(), $application);
+            }
         } elseif ($this->isCurrentJobSeeker()) {
             $application = $service->findForCandidate($this->user(), $id);
         } else {
@@ -122,6 +131,105 @@ class ApplicationController extends Controller
 
         try {
             $application = RcApplicationService::make()->withdraw($this->user(), $application);
+        } catch (InvalidArgumentException $exception) {
+            return $this->error($exception->getMessage(), Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        return $this->success((new RcApplicationResource($application))->resolve($request));
+    }
+
+    /**
+     * 邀请面试
+     *
+     * POST /rc/applications/{id}/invite-interview
+     */
+    public function inviteInterview(ApplicationInviteInterviewRequest $request, int $id): JsonResponse
+    {
+        return $this->handleRecruiterFlowAction(
+            $request,
+            $id,
+            static fn (RcApplicationService $service, User $user, Application $application): Application => $service->inviteInterview(
+                $user,
+                $application,
+                $request->validated(),
+            ),
+        );
+    }
+
+    /**
+     * 发送 Offer
+     *
+     * POST /rc/applications/{id}/send-offer
+     */
+    public function sendOffer(ApplicationSendOfferRequest $request, int $id): JsonResponse
+    {
+        return $this->handleRecruiterFlowAction(
+            $request,
+            $id,
+            static fn (RcApplicationService $service, User $user, Application $application): Application => $service->sendOffer(
+                $user,
+                $application,
+                $request->validated(),
+            ),
+        );
+    }
+
+    /**
+     * 确认录用
+     *
+     * POST /rc/applications/{id}/hire
+     */
+    public function hire(ApplicationHireRequest $request, int $id): JsonResponse
+    {
+        return $this->handleRecruiterFlowAction(
+            $request,
+            $id,
+            static fn (RcApplicationService $service, User $user, Application $application): Application => $service->hire(
+                $user,
+                $application,
+                $request->validated('note'),
+            ),
+        );
+    }
+
+    /**
+     * 淘汰
+     *
+     * POST /rc/applications/{id}/reject
+     */
+    public function reject(ApplicationRejectRequest $request, int $id): JsonResponse
+    {
+        return $this->handleRecruiterFlowAction(
+            $request,
+            $id,
+            static fn (RcApplicationService $service, User $user, Application $application): Application => $service->reject(
+                $user,
+                $application,
+                $request->validated('note'),
+            ),
+        );
+    }
+
+    /**
+     * @param  callable(RcApplicationService, User, Application): Application  $action
+     */
+    private function handleRecruiterFlowAction(Request $request, int $id, callable $action): JsonResponse
+    {
+        $company = $this->resolveCurrentRecruiterCompany();
+
+        if (! $company instanceof Company) {
+            return $this->error('请先切换为招聘方身份并绑定企业。', Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $service = RcApplicationService::make();
+        $application = $service->findForCompany($company, $id);
+
+        if (! $application instanceof Application) {
+            return $this->error('投递记录不存在。', Response::HTTP_NOT_FOUND);
+        }
+
+        try {
+            $application = $action($service, $this->user(), $application);
         } catch (InvalidArgumentException $exception) {
             return $this->error($exception->getMessage(), Response::HTTP_UNPROCESSABLE_ENTITY);
         }

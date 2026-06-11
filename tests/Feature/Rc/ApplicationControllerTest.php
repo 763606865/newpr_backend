@@ -7,16 +7,23 @@ use App\Enums\RcApplicationFlowActionType;
 use App\Enums\RcApplicationStatus;
 use App\Enums\RcIdentityStatus;
 use App\Enums\RcIdentityType;
+use App\Enums\RcInterviewMode;
 use App\Enums\RcJobEmploymentType;
 use App\Enums\RcJobStageStatus;
 use App\Enums\RcJobStatus;
+use App\Enums\RcOfferStatus;
 use App\Enums\RcResumeStatus;
 use App\Models\Company;
 use App\Models\Rc\Application;
 use App\Models\Rc\Job;
 use App\Models\Rc\JobStage;
+use App\Models\Rc\Offer;
 use App\Models\Rc\Position;
 use App\Models\Rc\Resume;
+use App\Models\Rc\ResumeEducation;
+use App\Models\Rc\ResumeLanguage;
+use App\Models\Rc\ResumeSkill;
+use App\Models\Rc\ResumeWork;
 use App\Models\Rc\UserIdentity;
 use App\Models\Token;
 use App\Models\User;
@@ -128,6 +135,10 @@ class ApplicationControllerTest extends TestCase
         $this->assertIsArray($application->resume_snapshot);
         $this->assertSame('求职者甲', $application->resume_snapshot['full_name']);
         $this->assertSame('13800138000', $application->resume_snapshot['phone']);
+        $this->assertArrayHasKey('works', $application->resume_snapshot);
+        $this->assertArrayHasKey('educations', $application->resume_snapshot);
+        $this->assertArrayHasKey('languages', $application->resume_snapshot);
+        $this->assertArrayHasKey('skills', $application->resume_snapshot);
 
         $this->assertDatabaseHas('rc_application_flows', [
             'application_id' => $application->id,
@@ -275,7 +286,7 @@ class ApplicationControllerTest extends TestCase
         $job = $this->createPublishedJob();
         [$recruiter, $recruiterIdentity] = $this->createRecruiterContext($job->company_id);
 
-        Resume::query()->create([
+        $resume = Resume::query()->create([
             'user_id' => $jobSeeker->id,
             'title' => '求职简历',
             'full_name' => '候选人甲',
@@ -284,6 +295,8 @@ class ApplicationControllerTest extends TestCase
             'status' => RcResumeStatus::Normal,
             'is_primary' => 1,
         ]);
+
+        $this->seedResumeSections($resume, $jobSeeker->id);
 
         $applyResponse = $this
             ->rcPostJson($jobSeeker, $jobSeekerIdentity, '/rc/applications', ['job_id' => $job->id])
@@ -303,8 +316,239 @@ class ApplicationControllerTest extends TestCase
         $this
             ->rcGetJson($recruiter, $recruiterIdentity, '/rc/applications/'.$applicationId)
             ->assertOk()
+            ->assertJsonPath('data.status', RcApplicationStatus::Screening->value)
+            ->assertJsonPath('data.status_label', '筛选中')
             ->assertJsonPath('data.resume_snapshot.full_name', '候选人甲')
-            ->assertJsonPath('data.resume_snapshot.phone', '13800138000');
+            ->assertJsonPath('data.resume_snapshot.phone', '138****8000')
+            ->assertJsonPath('data.resume_snapshot.email', 'can******@example.com')
+            ->assertJsonPath('data.resume_snapshot.works.0.position', '后端开发')
+            ->assertJsonPath('data.resume_snapshot.educations.0.school_name', '浙江大学')
+            ->assertJsonPath('data.resume_snapshot.languages.0.language', '英语')
+            ->assertJsonPath('data.resume_snapshot.skills.0.skill_name', 'Laravel');
+    }
+
+    public function test_recruiter_show_falls_back_to_resume_relations_when_snapshot_sections_empty(): void
+    {
+        [$jobSeeker, $jobSeekerIdentity] = $this->createJobSeekerContext();
+        $job = $this->createPublishedJob();
+        [$recruiter, $recruiterIdentity] = $this->createRecruiterContext($job->company_id);
+
+        $resume = Resume::query()->create([
+            'user_id' => $jobSeeker->id,
+            'title' => '求职简历',
+            'full_name' => '候选人甲',
+            'phone' => '13800138000',
+            'email' => 'candidate@example.com',
+            'status' => RcResumeStatus::Normal,
+            'is_primary' => 1,
+        ]);
+
+        $applicationId = $this
+            ->rcPostJson($jobSeeker, $jobSeekerIdentity, '/rc/applications', ['job_id' => $job->id])
+            ->json('data.id');
+
+        $this->seedResumeSections($resume, $jobSeeker->id);
+
+        Application::query()->whereKey($applicationId)->update([
+            'resume_snapshot' => [
+                'full_name' => '候选人甲',
+                'phone' => '13800138000',
+                'email' => 'candidate@example.com',
+                'works' => [],
+                'educations' => [],
+                'languages' => [],
+                'skills' => [],
+            ],
+        ]);
+
+        $this
+            ->rcGetJson($recruiter, $recruiterIdentity, '/rc/applications/'.$applicationId)
+            ->assertOk()
+            ->assertJsonPath('data.resume_snapshot.phone', '138****8000')
+            ->assertJsonPath('data.resume_snapshot.email', 'can******@example.com')
+            ->assertJsonPath('data.resume_snapshot.works.0.position', '后端开发')
+            ->assertJsonPath('data.resume_snapshot.educations.0.school_name', '浙江大学');
+    }
+
+    public function test_job_seeker_show_includes_structured_resume_sections(): void
+    {
+        [$user, $identity] = $this->createJobSeekerContext();
+        $job = $this->createPublishedJob();
+
+        $resume = Resume::query()->create([
+            'user_id' => $user->id,
+            'title' => '求职简历',
+            'full_name' => '求职者甲',
+            'phone' => '13800138000',
+            'email' => 'seeker@example.com',
+            'status' => RcResumeStatus::Normal,
+            'is_primary' => 1,
+        ]);
+
+        $this->seedResumeSections($resume, $user->id);
+
+        $applicationId = $this
+            ->rcPostJson($user, $identity, '/rc/applications', ['job_id' => $job->id])
+            ->json('data.id');
+
+        $this
+            ->rcGetJson($user, $identity, '/rc/applications/'.$applicationId)
+            ->assertOk()
+            ->assertJsonPath('data.resume.full_name', '求职者甲')
+            ->assertJsonPath('data.resume.works.0.position', '后端开发')
+            ->assertJsonPath('data.resume.educations.0.school_name', '浙江大学')
+            ->assertJsonPath('data.resume.languages.0.language', '英语')
+            ->assertJsonPath('data.resume.skills.0.skill_name', 'Laravel');
+    }
+
+    public function test_job_seeker_show_does_not_change_application_status(): void
+    {
+        [$user, $identity] = $this->createJobSeekerContext();
+        $job = $this->createPublishedJob();
+
+        Resume::query()->create([
+            'user_id' => $user->id,
+            'title' => '求职简历',
+            'full_name' => '求职者甲',
+            'phone' => '13800138000',
+            'email' => 'seeker@example.com',
+            'status' => RcResumeStatus::Normal,
+            'is_primary' => 1,
+        ]);
+
+        $applicationId = $this
+            ->rcPostJson($user, $identity, '/rc/applications', ['job_id' => $job->id])
+            ->json('data.id');
+
+        $this
+            ->rcGetJson($user, $identity, '/rc/applications/'.$applicationId)
+            ->assertOk()
+            ->assertJsonPath('data.status', RcApplicationStatus::Pending->value);
+    }
+
+    public function test_recruiter_can_run_application_flow_operations(): void
+    {
+        [$jobSeeker, $jobSeekerIdentity] = $this->createJobSeekerContext();
+        $job = $this->createPublishedJob();
+        [$recruiter, $recruiterIdentity] = $this->createRecruiterContext($job->company_id);
+
+        Resume::query()->create([
+            'user_id' => $jobSeeker->id,
+            'title' => '求职简历',
+            'full_name' => '候选人甲',
+            'phone' => '13800138000',
+            'email' => 'candidate@example.com',
+            'status' => RcResumeStatus::Normal,
+            'is_primary' => 1,
+        ]);
+
+        $applicationId = $this
+            ->rcPostJson($jobSeeker, $jobSeekerIdentity, '/rc/applications', ['job_id' => $job->id])
+            ->json('data.id');
+
+        $this
+            ->rcGetJson($recruiter, $recruiterIdentity, '/rc/applications/'.$applicationId)
+            ->assertOk()
+            ->assertJsonPath('data.status', RcApplicationStatus::Screening->value);
+
+        $this
+            ->rcPostJson($recruiter, $recruiterIdentity, '/rc/applications/'.$applicationId.'/invite-interview', [
+                'interview_at' => now()->addDay()->toDateTimeString(),
+                'mode' => RcInterviewMode::Online->value,
+                'meeting_url' => 'https://meet.example.com/room-1',
+                'interviewer_name' => '张经理',
+            ])
+            ->assertOk()
+            ->assertJsonPath('data.status', RcApplicationStatus::Interviewing->value);
+
+        $this->assertDatabaseHas('rc_interviews', [
+            'application_id' => $applicationId,
+            'interviewer_name' => '张经理',
+        ]);
+
+        $this
+            ->rcPostJson($recruiter, $recruiterIdentity, '/rc/applications/'.$applicationId.'/send-offer', [
+                'salary_min' => 15000,
+                'salary_max' => 20000,
+                'entry_date' => now()->addMonth()->toDateString(),
+            ])
+            ->assertOk()
+            ->assertJsonPath('data.status', RcApplicationStatus::Offering->value);
+
+        $offer = Offer::query()->where('application_id', $applicationId)->firstOrFail();
+        $this->assertSame(RcOfferStatus::Sent, $offer->status);
+
+        $this
+            ->rcPostJson($recruiter, $recruiterIdentity, '/rc/applications/'.$applicationId.'/hire')
+            ->assertOk()
+            ->assertJsonPath('data.status', RcApplicationStatus::Hired->value);
+
+        $offer->refresh();
+        $this->assertSame(RcOfferStatus::Accepted, $offer->status);
+    }
+
+    public function test_recruiter_can_reject_application(): void
+    {
+        [$jobSeeker, $jobSeekerIdentity] = $this->createJobSeekerContext();
+        $job = $this->createPublishedJob();
+        [$recruiter, $recruiterIdentity] = $this->createRecruiterContext($job->company_id);
+
+        Resume::query()->create([
+            'user_id' => $jobSeeker->id,
+            'title' => '求职简历',
+            'full_name' => '候选人甲',
+            'phone' => '13800138000',
+            'email' => 'candidate@example.com',
+            'status' => RcResumeStatus::Normal,
+            'is_primary' => 1,
+        ]);
+
+        $applicationId = $this
+            ->rcPostJson($jobSeeker, $jobSeekerIdentity, '/rc/applications', ['job_id' => $job->id])
+            ->json('data.id');
+
+        $this
+            ->rcGetJson($recruiter, $recruiterIdentity, '/rc/applications/'.$applicationId)
+            ->assertOk();
+
+        $this
+            ->rcPostJson($recruiter, $recruiterIdentity, '/rc/applications/'.$applicationId.'/reject', [
+                'note' => '与岗位不匹配',
+            ])
+            ->assertOk()
+            ->assertJsonPath('data.status', RcApplicationStatus::Rejected->value);
+
+        $this->assertDatabaseHas('rc_application_flows', [
+            'application_id' => $applicationId,
+            'action_type' => RcApplicationFlowActionType::Reject->value,
+            'note' => '与岗位不匹配',
+        ]);
+    }
+
+    public function test_recruiter_flow_action_requires_recruiter_identity(): void
+    {
+        [$user, $identity] = $this->createJobSeekerContext();
+        $job = $this->createPublishedJob();
+
+        Resume::query()->create([
+            'user_id' => $user->id,
+            'title' => '求职简历',
+            'full_name' => '求职者甲',
+            'phone' => '13800138000',
+            'email' => 'seeker@example.com',
+            'status' => RcResumeStatus::Normal,
+            'is_primary' => 1,
+        ]);
+
+        $applicationId = $this
+            ->rcPostJson($user, $identity, '/rc/applications', ['job_id' => $job->id])
+            ->json('data.id');
+
+        $this
+            ->rcPostJson($user, $identity, '/rc/applications/'.$applicationId.'/reject')
+            ->assertOk()
+            ->assertJsonPath('code', 422)
+            ->assertJsonPath('message', '请先切换为招聘方身份并绑定企业。');
     }
 
     public function test_apply_assigns_default_stage_when_configured(): void
@@ -337,6 +581,38 @@ class ApplicationControllerTest extends TestCase
         $response
             ->assertOk()
             ->assertJsonPath('data.current_stage_id', $stage->id);
+    }
+
+    private function seedResumeSections(Resume $resume, int $userId): void
+    {
+        ResumeWork::query()->create([
+            'resume_id' => $resume->id,
+            'user_id' => $userId,
+            'company_name' => '杭州示例科技有限公司',
+            'position' => 'Laravel 工程师',
+            'position_code' => 'backend-developer',
+            'start_date' => '2022-01-01',
+        ]);
+
+        ResumeEducation::query()->create([
+            'resume_id' => $resume->id,
+            'user_id' => $userId,
+            'school_name' => '浙江大学',
+            'major' => '软件工程',
+            'start_date' => '2018-09-01',
+        ]);
+
+        ResumeLanguage::query()->create([
+            'resume_id' => $resume->id,
+            'user_id' => $userId,
+            'language' => '英语',
+        ]);
+
+        ResumeSkill::query()->create([
+            'resume_id' => $resume->id,
+            'user_id' => $userId,
+            'skill_name' => 'Laravel',
+        ]);
     }
 
     private function createPublishedJob(): Job
