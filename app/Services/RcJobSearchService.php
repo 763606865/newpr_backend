@@ -34,7 +34,10 @@ class RcJobSearchService extends Service
 
         return $builder
             ->orderBy($sortColumn, $sortDirection)
-            ->query(fn ($query) => $query->with(['position', 'company']))
+            ->query(function ($query) use ($filters): void {
+                $query->with(['position', 'company']);
+                $this->filterApplier->applyExclusionFilters($query, $filters);
+            })
             ->paginate($perPage);
     }
 

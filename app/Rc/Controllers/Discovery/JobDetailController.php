@@ -6,7 +6,9 @@ use App\Models\Rc\Job;
 use App\Models\User;
 use App\Rc\Controllers\Controller;
 use App\Resources\Rc\RcJobResource;
+use App\Services\RcApplicationService;
 use App\Services\RcJobDiscoveryService;
+use App\Services\RcJobFavoriteService;
 use App\Services\RcViewStatsService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -33,6 +35,13 @@ class JobDetailController extends Controller
             $viewer instanceof User ? $viewer : null,
         );
 
-        return $this->success((new RcJobResource($job))->resolve($request));
+        $data = (new RcJobResource($job))->resolve($request);
+
+        if ($viewer instanceof User) {
+            $data['is_applied'] = RcApplicationService::make()->hasUserAppliedToJob($viewer, $job);
+            $data['is_favorited'] = RcJobFavoriteService::make()->isFavorited($viewer, $job->id);
+        }
+
+        return $this->success($data);
     }
 }

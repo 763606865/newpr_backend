@@ -3,6 +3,7 @@
 namespace Tests\Feature\Rc\Discovery;
 
 use App\Enums\CompanyStatus;
+use App\Enums\RcApplicationStatus;
 use App\Enums\RcEmploymentType;
 use App\Enums\RcIdentityStatus;
 use App\Enums\RcIdentityType;
@@ -10,6 +11,7 @@ use App\Enums\RcJobEmploymentType;
 use App\Enums\RcJobStatus;
 use App\Enums\RcResumeStatus;
 use App\Models\Company;
+use App\Models\Rc\Application;
 use App\Models\Rc\Job;
 use App\Models\Rc\Position;
 use App\Models\Rc\Resume;
@@ -92,6 +94,111 @@ class JobRecommendControllerTest extends TestCase
             ->assertJsonPath('data.recommendation.strategy', 'guest_local')
             ->assertJsonPath('data.total', 1)
             ->assertJsonPath('data.data.0.title', '高薪后端工程师');
+    }
+
+    public function test_logged_in_user_does_not_see_applied_jobs_in_recommendations(): void
+    {
+        $user = $this->createJobSeekerContext();
+        $company = $this->createCompany();
+
+        $resume = Resume::query()->create([
+            'user_id' => $user->id,
+            'title' => '求职简历',
+            'full_name' => '求职者甲',
+            'phone' => '13800138000',
+            'email' => 'seeker@example.com',
+            'status' => RcResumeStatus::Normal,
+            'is_primary' => 1,
+        ]);
+
+        $appliedJob = Job::query()->create([
+            'company_id' => $company->id,
+            'position_code' => 'backend-developer',
+            'code' => 'JOB-REC-APPLIED-001',
+            'title' => '已投递岗位',
+            'employment_type' => RcJobEmploymentType::FullTime,
+            'city_code' => '360100',
+            'salary_min' => 12000,
+            'salary_max' => 18000,
+            'description' => '已投递',
+            'status' => RcJobStatus::Published,
+            'published_at' => now(),
+        ]);
+
+        Job::query()->create([
+            'company_id' => $company->id,
+            'position_code' => 'backend-developer',
+            'code' => 'JOB-REC-OPEN-001',
+            'title' => '未投递岗位',
+            'employment_type' => RcJobEmploymentType::FullTime,
+            'city_code' => '360100',
+            'salary_min' => 12000,
+            'salary_max' => 18000,
+            'description' => '可推荐',
+            'status' => RcJobStatus::Published,
+            'published_at' => now(),
+        ]);
+
+        Application::query()->create([
+            'company_id' => $company->id,
+            'job_id' => $appliedJob->id,
+            'candidate_user_id' => $user->id,
+            'resume_id' => $resume->id,
+            'status' => RcApplicationStatus::Pending,
+            'applied_at' => now(),
+        ]);
+
+        $this->actingAs($user, 'rc')
+            ->getJson('/rc/talent/jobs/recommend?city_code=360100')
+            ->assertOk()
+            ->assertJsonPath('data.total', 1)
+            ->assertJsonPath('data.data.0.title', '未投递岗位');
+    }
+
+    public function test_logged_in_user_can_see_withdrawn_jobs_in_recommendations(): void
+    {
+        $user = $this->createJobSeekerContext();
+        $company = $this->createCompany();
+
+        $resume = Resume::query()->create([
+            'user_id' => $user->id,
+            'title' => '求职简历',
+            'full_name' => '求职者甲',
+            'phone' => '13800138000',
+            'email' => 'seeker@example.com',
+            'status' => RcResumeStatus::Normal,
+            'is_primary' => 1,
+        ]);
+
+        $withdrawnJob = Job::query()->create([
+            'company_id' => $company->id,
+            'position_code' => 'backend-developer',
+            'code' => 'JOB-REC-WITHDRAWN-001',
+            'title' => '已撤回投递岗位',
+            'employment_type' => RcJobEmploymentType::FullTime,
+            'city_code' => '360100',
+            'salary_min' => 12000,
+            'salary_max' => 18000,
+            'description' => '已撤回',
+            'status' => RcJobStatus::Published,
+            'published_at' => now(),
+        ]);
+
+        Application::query()->create([
+            'company_id' => $company->id,
+            'job_id' => $withdrawnJob->id,
+            'candidate_user_id' => $user->id,
+            'resume_id' => $resume->id,
+            'status' => RcApplicationStatus::Withdrawn,
+            'applied_at' => now()->subDay(),
+            'withdrawn_at' => now(),
+        ]);
+
+        $this->actingAs($user, 'rc')
+            ->getJson('/rc/talent/jobs/recommend?city_code=360100')
+            ->assertOk()
+            ->assertJsonPath('data.total', 1)
+            ->assertJsonPath('data.data.0.title', '已撤回投递岗位');
     }
 
     public function test_logged_in_user_with_intention_gets_intention_recommendations(): void

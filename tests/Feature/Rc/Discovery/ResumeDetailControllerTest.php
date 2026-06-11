@@ -109,7 +109,8 @@ class ResumeDetailControllerTest extends TestCase
             ->assertJsonMissingPath('data.phone')
             ->assertJsonMissingPath('data.email')
             ->assertJsonMissingPath('data.file_url')
-            ->assertJsonMissingPath('data.display_file_url');
+            ->assertJsonMissingPath('data.display_file_url')
+            ->assertJsonPath('data.is_favorited', false);
     }
 
     public function test_resume_search_list_does_not_expose_private_fields(): void

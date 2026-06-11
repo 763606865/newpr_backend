@@ -3,10 +3,14 @@
 use App\Rc\Controllers\ApplicationController;
 use App\Rc\Controllers\AuthController;
 use App\Rc\Controllers\CompanyController;
+use App\Rc\Controllers\Discovery\CompanyDetailController;
+use App\Rc\Controllers\Discovery\CompanyFavoriteController;
 use App\Rc\Controllers\Discovery\JobDetailController;
+use App\Rc\Controllers\Discovery\JobFavoriteController;
 use App\Rc\Controllers\Discovery\JobRecommendController;
 use App\Rc\Controllers\Discovery\JobSearchController;
 use App\Rc\Controllers\Discovery\ResumeDetailController;
+use App\Rc\Controllers\Discovery\ResumeFavoriteController;
 use App\Rc\Controllers\Discovery\ResumeRecommendController;
 use App\Rc\Controllers\Discovery\ResumeSearchController;
 use App\Rc\Controllers\HomeController;
@@ -37,6 +41,7 @@ Route::post('/auth/forgot-password', [AuthController::class, 'forgotPassword']);
 // Discovery - 职位推荐 / 详情（可选登录）
 Route::get('/talent/jobs/recommend', [JobRecommendController::class, 'index']);
 Route::get('/talent/jobs/{id}', [JobDetailController::class, 'show'])->whereNumber('id');
+Route::get('/talent/companies/{id}', [CompanyDetailController::class, 'show'])->whereNumber('id');
 
 Route::middleware('auth:rc')->group(function (): void {
     // 认证相关
@@ -110,6 +115,12 @@ Route::middleware('auth:rc')->group(function (): void {
 
     // Discovery - 职位搜索
     Route::get('/talent/jobs', [JobSearchController::class, 'index']);
+    Route::get('/talent/favorites/jobs', [JobFavoriteController::class, 'index']);
+    Route::get('/talent/favorites/companies', [CompanyFavoriteController::class, 'index']);
+    Route::post('/talent/companies/{id}/favorite', [CompanyFavoriteController::class, 'store'])->whereNumber('id');
+    Route::delete('/talent/companies/{id}/favorite', [CompanyFavoriteController::class, 'destroy'])->whereNumber('id');
+    Route::post('/talent/jobs/{id}/favorite', [JobFavoriteController::class, 'store'])->whereNumber('id');
+    Route::delete('/talent/jobs/{id}/favorite', [JobFavoriteController::class, 'destroy'])->whereNumber('id');
     // ==============================================================================
 
     // 投递（求职者 / 招聘方）
@@ -142,6 +153,9 @@ Route::middleware('auth:rc')->group(function (): void {
     Route::get('/talent/resumes/recommend', [ResumeRecommendController::class, 'index']);
     Route::get('/talent/resumes/{id}', [ResumeDetailController::class, 'show'])->whereNumber('id');
     Route::get('/talent/resumes', [ResumeSearchController::class, 'index']);
+    Route::get('/talent/favorites/resumes', [ResumeFavoriteController::class, 'index']);
+    Route::post('/talent/resumes/{id}/favorite', [ResumeFavoriteController::class, 'store'])->whereNumber('id');
+    Route::delete('/talent/resumes/{id}/favorite', [ResumeFavoriteController::class, 'destroy'])->whereNumber('id');
     // ==============================================================================
 
     // 工具功能

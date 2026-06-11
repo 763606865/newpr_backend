@@ -105,8 +105,8 @@ class Job extends Model
             'education_level' => 'integer',
             'headcount' => 'integer',
             'status' => RcJobStatus::class,
-            'published_at' => 'datetime',
-            'expired_at' => 'datetime',
+            'published_at' => 'datetime:Y-m-d H:i:s',
+            'expired_at' => 'datetime:Y-m-d H:i:s',
             'extra' => 'array',
         ];
     }

@@ -9,6 +9,7 @@ use App\Rc\Controllers\Controller;
 use App\Resources\Rc\RcResumePreviewResource;
 use App\Services\RcJobService;
 use App\Services\RcResumeDiscoveryService;
+use App\Services\RcResumeFavoriteService;
 use App\Services\RcViewStatsService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -40,7 +41,14 @@ class ResumeDetailController extends Controller
 
         RcViewStatsService::make()->recordResumeView($resume, $viewer);
 
-        return $this->success((new RcResumePreviewResource($resume))->resolve($request));
+        $data = (new RcResumePreviewResource($resume))->resolve($request);
+        $data['is_favorited'] = RcResumeFavoriteService::make()->isFavorited(
+            $viewer,
+            $company->id,
+            $resume->id,
+        );
+
+        return $this->success($data);
     }
 
     private function resolveCompany(): ?Company

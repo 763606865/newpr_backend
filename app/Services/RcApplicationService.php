@@ -21,6 +21,34 @@ use InvalidArgumentException;
 
 class RcApplicationService extends Service
 {
+    public function hasUserAppliedToJob(User $user, Job $job): bool
+    {
+        return isset($this->getAppliedJobIdsForUser($user, [$job->id])[$job->id]);
+    }
+
+    /**
+     * 批量查询用户已投递（非撤回）的职位 ID，返回 job_id => true 映射便于 O(1) 判断。
+     *
+     * @param  list<int>  $jobIds
+     * @return array<int, true>
+     */
+    public function getAppliedJobIdsForUser(User $user, array $jobIds): array
+    {
+        if ($jobIds === []) {
+            return [];
+        }
+
+        $appliedJobIds = Application::query()
+            ->where('candidate_user_id', $user->id)
+            ->whereIn('job_id', $jobIds)
+            ->where('status', '!=', RcApplicationStatus::Withdrawn->value)
+            ->pluck('job_id')
+            ->map(fn (mixed $jobId): int => (int) $jobId)
+            ->all();
+
+        return array_fill_keys($appliedJobIds, true);
+    }
+
     public function apply(User $user, Job $job, ?int $resumeId = null): Application
     {
         if (! $job->isPubliclySearchable()) {
@@ -111,8 +139,8 @@ class RcApplicationService extends Service
             $this->recordFlow(
                 application: $application,
                 user: $user,
-                fromStageId: $application->current_stage_id,
                 toStageId: null,
+                fromStageId: $application->current_stage_id,
                 actionType: RcApplicationFlowActionType::Withdraw,
                 note: '求职者撤回投递',
             );

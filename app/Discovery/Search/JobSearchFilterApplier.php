@@ -2,7 +2,9 @@
 
 namespace App\Discovery\Search;
 
+use App\Enums\RcApplicationStatus;
 use App\Enums\RcJobStatus;
+use App\Models\Rc\Application;
 use App\Models\Rc\Job;
 use Illuminate\Database\Eloquent\Builder;
 use Laravel\Scout\Builder as ScoutBuilder;
@@ -114,6 +116,24 @@ class JobSearchFilterApplier
 
         if (filled($filters['salary_max'] ?? null)) {
             $query->where('salary_min', '<=', (float) $filters['salary_max']);
+        }
+
+        $this->applyExclusionFilters($query, $filters);
+    }
+
+    /**
+     * @param  Builder<Job>  $query
+     * @param  array<string, mixed>  $filters
+     */
+    public function applyExclusionFilters(Builder $query, array $filters): void
+    {
+        if (filled($filters['exclude_applied_candidate_user_id'] ?? null)) {
+            $candidateUserId = (int) $filters['exclude_applied_candidate_user_id'];
+
+            $query->whereNotIn('id', Application::query()
+                ->select('job_id')
+                ->where('candidate_user_id', $candidateUserId)
+                ->where('status', '!=', RcApplicationStatus::Withdrawn->value));
         }
     }
 }
