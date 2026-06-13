@@ -16,6 +16,7 @@ use App\Rc\Controllers\Discovery\ResumeSearchController;
 use App\Rc\Controllers\HomeController;
 use App\Rc\Controllers\JobController;
 use App\Rc\Controllers\MetaController;
+use App\Rc\Controllers\NotificationController;
 use App\Rc\Controllers\ResumeCertificateController;
 use App\Rc\Controllers\ResumeController;
 use App\Rc\Controllers\ResumeEducationController;
@@ -128,10 +129,22 @@ Route::middleware('auth:rc')->group(function (): void {
     Route::post('/applications', [ApplicationController::class, 'store']);
     Route::get('/applications/{id}', [ApplicationController::class, 'show'])->whereNumber('id');
     Route::post('/applications/{id}/withdraw', [ApplicationController::class, 'withdraw'])->whereNumber('id');
+    Route::post('/applications/{id}/accept-interview', [ApplicationController::class, 'acceptInterview'])->whereNumber('id');
+    Route::post('/applications/{id}/reject-interview', [ApplicationController::class, 'rejectInterview'])->whereNumber('id');
     Route::post('/applications/{id}/invite-interview', [ApplicationController::class, 'inviteInterview'])->whereNumber('id');
     Route::post('/applications/{id}/send-offer', [ApplicationController::class, 'sendOffer'])->whereNumber('id');
+    Route::post('/applications/{id}/accept-offer', [ApplicationController::class, 'acceptOffer'])->whereNumber('id');
+    Route::post('/applications/{id}/reject-offer', [ApplicationController::class, 'rejectOffer'])->whereNumber('id');
     Route::post('/applications/{id}/hire', [ApplicationController::class, 'hire'])->whereNumber('id');
     Route::post('/applications/{id}/reject', [ApplicationController::class, 'reject'])->whereNumber('id');
+    // ==============================================================================
+
+    // 站内通知
+    Route::get('/notifications/unread-count', [NotificationController::class, 'unreadCount']);
+    Route::post('/notifications/read-all', [NotificationController::class, 'markAllRead']);
+    Route::get('/notifications', [NotificationController::class, 'index']);
+    Route::get('/notifications/{id}', [NotificationController::class, 'show'])->whereNumber('id');
+    Route::post('/notifications/{id}/read', [NotificationController::class, 'markRead'])->whereNumber('id');
     // ==============================================================================
 
     // 招聘方-企业

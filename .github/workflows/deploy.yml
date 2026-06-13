@@ -53,6 +53,7 @@ jobs:
           # 6. 目录权限
           chown -R www-data:www-data storage bootstrap/cache
           chmod -R ug+rwx storage bootstrap/cache
+          chmod 600 storage/oauth-private.key storage/oauth-public.key
 
           # 7. 优雅重启队列（Supervisor 会自动拉起，见 .supervisor/newpr-backend-horizon.conf）
           php artisan horizon:terminate || true

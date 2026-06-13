@@ -24,6 +24,7 @@ class BasicTableSeeder extends Seeder
         Area::query()->truncate();
 
         $areas = [
+            ['code' => '000000', 'name' => '全国', 'parent_code' => null, 'level' => 0],
             // ===================== 北京市 110000 =====================
             ['code' => '110000', 'name' => '北京市', 'parent_code' => '000000', 'level' => 1],
             ['code' => '110101', 'name' => '东城区', 'parent_code' => '110000', 'level' => 3],

@@ -8,11 +8,13 @@ use App\Enums\RcApplicationStatus;
 use App\Enums\RcIdentityStatus;
 use App\Enums\RcIdentityType;
 use App\Enums\RcInterviewMode;
+use App\Enums\RcInterviewStatus;
 use App\Enums\RcJobEmploymentType;
 use App\Enums\RcJobStageStatus;
 use App\Enums\RcJobStatus;
 use App\Enums\RcOfferStatus;
 use App\Enums\RcResumeStatus;
+use App\Enums\RcSalaryUnit;
 use App\Models\Company;
 use App\Models\Rc\Application;
 use App\Models\Rc\Job;
@@ -459,24 +461,69 @@ class ApplicationControllerTest extends TestCase
                 'interviewer_name' => '张经理',
             ])
             ->assertOk()
-            ->assertJsonPath('data.status', RcApplicationStatus::Interviewing->value);
+            ->assertJsonPath('data.status', RcApplicationStatus::Screening->value)
+            ->assertJsonPath('data.pending_interview_invitation.interviewer_name', '张经理');
 
         $this->assertDatabaseHas('rc_interviews', [
             'application_id' => $applicationId,
             'interviewer_name' => '张经理',
+            'status' => RcInterviewStatus::AwaitingCandidate->value,
+        ]);
+
+        $this
+            ->rcPostJson($jobSeeker, $jobSeekerIdentity, '/rc/applications/'.$applicationId.'/accept-interview')
+            ->assertOk()
+            ->assertJsonPath('data.status', RcApplicationStatus::Interviewing->value)
+            ->assertJsonMissingPath('data.pending_interview_invitation');
+
+        $this->assertDatabaseHas('rc_interviews', [
+            'application_id' => $applicationId,
+            'status' => RcInterviewStatus::Scheduled->value,
         ]);
 
         $this
             ->rcPostJson($recruiter, $recruiterIdentity, '/rc/applications/'.$applicationId.'/send-offer', [
-                'salary_min' => 15000,
-                'salary_max' => 20000,
+                'salary' => 18000,
+                'salary_unit' => RcSalaryUnit::Month->value,
+                'has_probation' => true,
+                'remuneration_note' => '五险一金，年终奖按公司制度',
+                'attendance_note' => '周一至周五 9:00-18:00',
                 'entry_date' => now()->addMonth()->toDateString(),
+                'extra' => [
+                    'probation_months' => 3,
+                    'probation_salary' => '15000.00',
+                ],
             ])
             ->assertOk()
             ->assertJsonPath('data.status', RcApplicationStatus::Offering->value);
 
         $offer = Offer::query()->where('application_id', $applicationId)->firstOrFail();
         $this->assertSame(RcOfferStatus::Sent, $offer->status);
+        $this->assertSame($jobSeeker->id, $offer->receive_user_id);
+        $this->assertSame($jobSeekerIdentity->id, $offer->receive_user_identity_id);
+        $this->assertSame('18000.00', (string) $offer->salary);
+        $this->assertTrue($offer->has_probation);
+        $this->assertSame('五险一金，年终奖按公司制度', $offer->remuneration_note);
+        $this->assertSame(3, $offer->extra['probation_months']);
+
+        $this
+            ->rcGetJson($recruiter, $recruiterIdentity, '/rc/applications/'.$applicationId)
+            ->assertOk()
+            ->assertJsonPath('data.offer.salary', '18000.00')
+            ->assertJsonPath('data.offer.status', RcOfferStatus::Sent->value)
+            ->assertJsonPath('data.offer.has_probation', true);
+
+        $this
+            ->rcPostJson($jobSeeker, $jobSeekerIdentity, '/rc/applications/'.$applicationId.'/accept-offer', [
+                'note' => '期待加入团队',
+            ])
+            ->assertOk()
+            ->assertJsonPath('data.status', RcApplicationStatus::Offering->value)
+            ->assertJsonPath('data.offer.status', RcOfferStatus::Accepted->value);
+
+        $offer->refresh();
+        $this->assertSame(RcOfferStatus::Accepted, $offer->status);
+        $this->assertNotNull($offer->replied_at);
 
         $this
             ->rcPostJson($recruiter, $recruiterIdentity, '/rc/applications/'.$applicationId.'/hire')
@@ -485,6 +532,178 @@ class ApplicationControllerTest extends TestCase
 
         $offer->refresh();
         $this->assertSame(RcOfferStatus::Accepted, $offer->status);
+    }
+
+    public function test_recruiter_cannot_hire_without_offer_accepted(): void
+    {
+        [$jobSeeker, $jobSeekerIdentity] = $this->createJobSeekerContext();
+        $job = $this->createPublishedJob();
+        [$recruiter, $recruiterIdentity] = $this->createRecruiterContext($job->company_id);
+
+        Resume::query()->create([
+            'user_id' => $jobSeeker->id,
+            'title' => '求职简历',
+            'full_name' => '候选人甲',
+            'phone' => '13800138000',
+            'email' => 'candidate@example.com',
+            'status' => RcResumeStatus::Normal,
+            'is_primary' => 1,
+        ]);
+
+        $applicationId = $this
+            ->rcPostJson($jobSeeker, $jobSeekerIdentity, '/rc/applications', ['job_id' => $job->id])
+            ->json('data.id');
+
+        $this->rcPostJson($recruiter, $recruiterIdentity, '/rc/applications/'.$applicationId.'/invite-interview', [
+            'interview_at' => now()->addDay()->toDateTimeString(),
+            'mode' => RcInterviewMode::Online->value,
+            'meeting_url' => 'https://meet.example.com/room-1',
+        ]);
+
+        $this->rcPostJson($jobSeeker, $jobSeekerIdentity, '/rc/applications/'.$applicationId.'/accept-interview');
+
+        $this->rcPostJson($recruiter, $recruiterIdentity, '/rc/applications/'.$applicationId.'/send-offer', [
+            'salary' => 18000,
+        ]);
+
+        $this
+            ->rcPostJson($recruiter, $recruiterIdentity, '/rc/applications/'.$applicationId.'/hire')
+            ->assertOk()
+            ->assertJsonPath('code', 422)
+            ->assertJsonPath('message', '候选人尚未接受 Offer。');
+    }
+
+    public function test_job_seeker_cannot_accept_offer_without_sent_offer(): void
+    {
+        [$jobSeeker, $jobSeekerIdentity] = $this->createJobSeekerContext();
+        $job = $this->createPublishedJob();
+        [$recruiter, $recruiterIdentity] = $this->createRecruiterContext($job->company_id);
+
+        Resume::query()->create([
+            'user_id' => $jobSeeker->id,
+            'title' => '求职简历',
+            'full_name' => '候选人甲',
+            'phone' => '13800138000',
+            'email' => 'candidate@example.com',
+            'status' => RcResumeStatus::Normal,
+            'is_primary' => 1,
+        ]);
+
+        $applicationId = $this
+            ->rcPostJson($jobSeeker, $jobSeekerIdentity, '/rc/applications', ['job_id' => $job->id])
+            ->json('data.id');
+
+        $this->rcPostJson($recruiter, $recruiterIdentity, '/rc/applications/'.$applicationId.'/invite-interview', [
+            'interview_at' => now()->addDay()->toDateTimeString(),
+            'mode' => RcInterviewMode::Online->value,
+            'meeting_url' => 'https://meet.example.com/room-1',
+        ]);
+
+        $this->rcPostJson($jobSeeker, $jobSeekerIdentity, '/rc/applications/'.$applicationId.'/accept-interview');
+
+        $this
+            ->rcPostJson($jobSeeker, $jobSeekerIdentity, '/rc/applications/'.$applicationId.'/accept-offer')
+            ->assertOk()
+            ->assertJsonPath('code', 422)
+            ->assertJsonPath('message', '当前状态不可接受 Offer。');
+    }
+
+    public function test_job_seeker_can_reject_offer_and_return_to_interviewing(): void
+    {
+        [$jobSeeker, $jobSeekerIdentity] = $this->createJobSeekerContext();
+        $job = $this->createPublishedJob();
+        [$recruiter, $recruiterIdentity] = $this->createRecruiterContext($job->company_id);
+
+        Resume::query()->create([
+            'user_id' => $jobSeeker->id,
+            'title' => '求职简历',
+            'full_name' => '候选人甲',
+            'phone' => '13800138000',
+            'email' => 'candidate@example.com',
+            'status' => RcResumeStatus::Normal,
+            'is_primary' => 1,
+        ]);
+
+        $applicationId = $this
+            ->rcPostJson($jobSeeker, $jobSeekerIdentity, '/rc/applications', ['job_id' => $job->id])
+            ->json('data.id');
+
+        $this->rcPostJson($recruiter, $recruiterIdentity, '/rc/applications/'.$applicationId.'/invite-interview', [
+            'interview_at' => now()->addDay()->toDateTimeString(),
+            'mode' => RcInterviewMode::Online->value,
+            'meeting_url' => 'https://meet.example.com/room-1',
+        ]);
+
+        $this->rcPostJson($jobSeeker, $jobSeekerIdentity, '/rc/applications/'.$applicationId.'/accept-interview');
+
+        $this->rcPostJson($recruiter, $recruiterIdentity, '/rc/applications/'.$applicationId.'/send-offer', [
+            'salary' => 18000,
+        ]);
+
+        $this
+            ->rcPostJson($jobSeeker, $jobSeekerIdentity, '/rc/applications/'.$applicationId.'/reject-offer', [
+                'note' => '薪资未达预期',
+            ])
+            ->assertOk()
+            ->assertJsonPath('data.status', RcApplicationStatus::Interviewing->value)
+            ->assertJsonMissingPath('data.offer');
+
+        $offer = Offer::query()->where('application_id', $applicationId)->firstOrFail();
+        $this->assertSame(RcOfferStatus::Rejected, $offer->status);
+        $this->assertNotNull($offer->replied_at);
+
+        $this
+            ->rcPostJson($recruiter, $recruiterIdentity, '/rc/applications/'.$applicationId.'/send-offer', [
+                'salary' => 20000,
+            ])
+            ->assertOk()
+            ->assertJsonPath('data.status', RcApplicationStatus::Offering->value);
+
+        $offer->refresh();
+        $this->assertSame(RcOfferStatus::Sent, $offer->status);
+        $this->assertSame('20000.00', (string) $offer->salary);
+    }
+
+    public function test_job_seeker_can_reject_interview_invitation_and_return_to_screening(): void
+    {
+        [$jobSeeker, $jobSeekerIdentity] = $this->createJobSeekerContext();
+        $job = $this->createPublishedJob();
+        [$recruiter, $recruiterIdentity] = $this->createRecruiterContext($job->company_id);
+
+        Resume::query()->create([
+            'user_id' => $jobSeeker->id,
+            'title' => '求职简历',
+            'full_name' => '候选人甲',
+            'phone' => '13800138000',
+            'email' => 'candidate@example.com',
+            'status' => RcResumeStatus::Normal,
+            'is_primary' => 1,
+        ]);
+
+        $applicationId = $this
+            ->rcPostJson($jobSeeker, $jobSeekerIdentity, '/rc/applications', ['job_id' => $job->id])
+            ->json('data.id');
+
+        $this->rcGetJson($recruiter, $recruiterIdentity, '/rc/applications/'.$applicationId);
+
+        $this->rcPostJson($recruiter, $recruiterIdentity, '/rc/applications/'.$applicationId.'/invite-interview', [
+            'interview_at' => now()->addDay()->toDateTimeString(),
+            'mode' => RcInterviewMode::Online->value,
+            'meeting_url' => 'https://meet.example.com/room-1',
+        ]);
+
+        $this
+            ->rcPostJson($jobSeeker, $jobSeekerIdentity, '/rc/applications/'.$applicationId.'/reject-interview', [
+                'note' => '时间冲突',
+            ])
+            ->assertOk()
+            ->assertJsonPath('data.status', RcApplicationStatus::Screening->value)
+            ->assertJsonMissingPath('data.pending_interview_invitation');
+
+        $this->assertDatabaseHas('rc_interviews', [
+            'application_id' => $applicationId,
+            'status' => RcInterviewStatus::Cancelled->value,
+        ]);
     }
 
     public function test_recruiter_can_reject_application(): void

@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Enums\RcApplicationFlowActionType;
 use App\Enums\RcApplicationSourceType;
 use App\Enums\RcApplicationStatus;
+use App\Enums\RcIdentityStatus;
+use App\Enums\RcIdentityType;
 use App\Enums\RcInterviewMode;
 use App\Enums\RcInterviewStatus;
 use App\Enums\RcJobStageStatus;
@@ -19,9 +21,11 @@ use App\Models\Rc\Job;
 use App\Models\Rc\JobStage;
 use App\Models\Rc\Offer;
 use App\Models\Rc\Resume;
+use App\Models\Rc\UserIdentity;
 use App\Models\User;
 use App\Resources\Rc\RcApplicationResumeResource;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 
@@ -235,8 +239,8 @@ class RcApplicationService extends Service
             $this->recordFlow(
                 application: $application,
                 user: $operator,
-                fromStageId: $fromStageId,
                 toStageId: $application->current_stage_id,
+                fromStageId: $fromStageId,
                 actionType: RcApplicationFlowActionType::Transfer,
                 note: '招聘方查看投递详情',
             );
@@ -256,6 +260,10 @@ class RcApplicationService extends Service
         ], '当前状态不可邀请面试。');
 
         return DB::transaction(function () use ($operator, $application, $payload): Application {
+            if ($this->findPendingInterviewInvitation($application) instanceof Interview) {
+                throw new InvalidArgumentException('已有待候选人确认的面试邀请，请等待对方处理后再发送。');
+            }
+
             $fromStageId = $application->current_stage_id;
 
             Interview::query()->create([
@@ -271,11 +279,59 @@ class RcApplicationService extends Service
                     ? (int) $payload['duration_mins']
                     : null,
                 'mode' => RcInterviewMode::from((int) $payload['mode']),
-                'status' => RcInterviewStatus::Scheduled,
+                'status' => RcInterviewStatus::AwaitingCandidate,
                 'location' => $payload['location'] ?? null,
                 'meeting_url' => $payload['meeting_url'] ?? null,
                 'note' => $payload['note'] ?? null,
             ]);
+
+            $application->fill([
+                'status' => RcApplicationStatus::Screening,
+            ]);
+            $application->save();
+
+            $this->recordFlow(
+                application: $application,
+                user: $operator,
+                toStageId: $application->current_stage_id,
+                fromStageId: $fromStageId,
+                actionType: RcApplicationFlowActionType::Transfer,
+                note: '招聘方邀请面试，待候选人确认',
+            );
+
+            $interview = $this->findPendingInterviewInvitation($application);
+
+            if ($interview instanceof Interview) {
+                RcNotificationService::make()->notifyInterviewInvitation($application, $interview);
+            }
+
+            return $this->refreshForRecruiter($application);
+        });
+    }
+
+    public function acceptInterviewInvitation(User $user, Application $application): Application
+    {
+        if ($application->candidate_user_id !== $user->id) {
+            throw new InvalidArgumentException('无权操作该投递记录。');
+        }
+
+        $this->assertStatusIn($application, [
+            RcApplicationStatus::Screening,
+        ], '当前状态不可确认面试邀请。');
+
+        $interview = $this->findPendingInterviewInvitation($application);
+
+        if (! $interview instanceof Interview) {
+            throw new InvalidArgumentException('暂无可确认的面试邀请。');
+        }
+
+        return DB::transaction(function () use ($user, $application, $interview): Application {
+            $fromStageId = $application->current_stage_id;
+
+            $interview->fill([
+                'status' => RcInterviewStatus::Scheduled,
+            ]);
+            $interview->save();
 
             $application->fill([
                 'status' => RcApplicationStatus::Interviewing,
@@ -284,19 +340,67 @@ class RcApplicationService extends Service
 
             $this->recordFlow(
                 application: $application,
-                user: $operator,
-                fromStageId: $fromStageId,
+                user: $user,
                 toStageId: $application->current_stage_id,
+                fromStageId: $fromStageId,
                 actionType: RcApplicationFlowActionType::Transfer,
-                note: '招聘方邀请面试',
+                note: '求职者接受面试邀请',
             );
 
-            return $this->refreshForRecruiter($application);
+            RcNotificationService::make()->notifyInterviewInvitationAccepted($application, $interview);
+
+            return $this->refreshWithRelations($application);
+        });
+    }
+
+    public function rejectInterviewInvitation(User $user, Application $application, ?string $note = null): Application
+    {
+        if ($application->candidate_user_id !== $user->id) {
+            throw new InvalidArgumentException('无权操作该投递记录。');
+        }
+
+        $this->assertStatusIn($application, [
+            RcApplicationStatus::Screening,
+        ], '当前状态不可拒绝面试邀请。');
+
+        $interview = $this->findPendingInterviewInvitation($application);
+
+        if (! $interview instanceof Interview) {
+            throw new InvalidArgumentException('暂无可拒绝的面试邀请。');
+        }
+
+        return DB::transaction(function () use ($user, $application, $interview, $note): Application {
+            $fromStageId = $application->current_stage_id;
+
+            $interview->fill([
+                'status' => RcInterviewStatus::Cancelled,
+            ]);
+            $interview->save();
+
+            $application->fill([
+                'status' => RcApplicationStatus::Screening,
+            ]);
+            $application->save();
+
+            $this->recordFlow(
+                application: $application,
+                user: $user,
+                toStageId: $application->current_stage_id,
+                fromStageId: $fromStageId,
+                actionType: RcApplicationFlowActionType::Transfer,
+                note: $note ?? '求职者拒绝面试邀请',
+            );
+
+            RcNotificationService::make()->notifyInterviewInvitationRejected($application, $interview);
+
+            return $this->refreshWithRelations($application);
         });
     }
 
     /**
      * @param  array<string, mixed>  $payload
+     *
+     * @throws \Throwable
      */
     public function sendOffer(User $operator, Application $application, array $payload): Application
     {
@@ -313,21 +417,10 @@ class RcApplicationService extends Service
                 ->where('application_id', $application->id)
                 ->first();
 
-            $offerAttributes = [
-                'salary_min' => $payload['salary_min'] ?? null,
-                'salary_max' => $payload['salary_max'] ?? null,
-                'salary_unit' => filled($payload['salary_unit'] ?? null)
-                    ? RcSalaryUnit::from((int) $payload['salary_unit'])
-                    : RcSalaryUnit::Month,
-                'entry_date' => $payload['entry_date'] ?? null,
-                'expire_date' => $payload['expire_date'] ?? null,
-                'status' => RcOfferStatus::Sent,
-                'sent_at' => $sentAt,
-                'note' => $payload['note'] ?? null,
-            ];
+            $offerAttributes = $this->buildOfferAttributesFromPayload($application, $payload, $sentAt);
 
             if ($offer instanceof Offer) {
-                if (in_array($offer->status, [RcOfferStatus::Accepted, RcOfferStatus::Rejected, RcOfferStatus::Revoked], true)) {
+                if (in_array($offer->status, [RcOfferStatus::Accepted, RcOfferStatus::Revoked], true)) {
                     throw new InvalidArgumentException('该投递的 Offer 已结束，无法重新发送。');
                 }
 
@@ -350,13 +443,100 @@ class RcApplicationService extends Service
             $this->recordFlow(
                 application: $application,
                 user: $operator,
-                fromStageId: $fromStageId,
                 toStageId: $application->current_stage_id,
+                fromStageId: $fromStageId,
                 actionType: RcApplicationFlowActionType::Transfer,
                 note: '招聘方发送 Offer',
             );
 
+            RcNotificationService::make()->notifyOfferSent($application);
+
             return $this->refreshForRecruiter($application);
+        });
+    }
+
+    public function acceptOfferInvitation(User $user, Application $application, ?string $note = null): Application
+    {
+        if ($application->candidate_user_id !== $user->id) {
+            throw new InvalidArgumentException('无权操作该投递记录。');
+        }
+
+        $this->assertStatusIn($application, [
+            RcApplicationStatus::Offering,
+        ], '当前状态不可接受 Offer。');
+
+        $offer = $this->findSentOffer($application);
+
+        if (! $offer instanceof Offer) {
+            throw new InvalidArgumentException('暂无可接受的 Offer。');
+        }
+
+        return DB::transaction(function () use ($user, $application, $offer, $note): Application {
+            $fromStageId = $application->current_stage_id;
+
+            $offer->fill([
+                'status' => RcOfferStatus::Accepted,
+                'replied_at' => now(),
+            ]);
+            $offer->save();
+
+            $this->recordFlow(
+                application: $application,
+                user: $user,
+                toStageId: $application->current_stage_id,
+                fromStageId: $fromStageId,
+                actionType: RcApplicationFlowActionType::Transfer,
+                note: $note ?? '求职者接受 Offer',
+            );
+
+            RcNotificationService::make()->notifyOfferAcceptedByCandidate($application);
+
+            return $this->refreshWithRelations($application);
+        });
+    }
+
+    public function rejectOfferInvitation(User $user, Application $application, ?string $note = null): Application
+    {
+        if ($application->candidate_user_id !== $user->id) {
+            throw new InvalidArgumentException('无权操作该投递记录。');
+        }
+
+        $this->assertStatusIn($application, [
+            RcApplicationStatus::Offering,
+        ], '当前状态不可拒绝 Offer。');
+
+        $offer = $this->findSentOffer($application);
+
+        if (! $offer instanceof Offer) {
+            throw new InvalidArgumentException('暂无可拒绝的 Offer。');
+        }
+
+        return DB::transaction(function () use ($user, $application, $offer, $note): Application {
+            $fromStageId = $application->current_stage_id;
+
+            $offer->fill([
+                'status' => RcOfferStatus::Rejected,
+                'replied_at' => now(),
+            ]);
+            $offer->save();
+
+            $application->fill([
+                'status' => RcApplicationStatus::Interviewing,
+            ]);
+            $application->save();
+
+            $this->recordFlow(
+                application: $application,
+                user: $user,
+                toStageId: $application->current_stage_id,
+                fromStageId: $fromStageId,
+                actionType: RcApplicationFlowActionType::Transfer,
+                note: $note ?? '求职者拒绝 Offer',
+            );
+
+            RcNotificationService::make()->notifyOfferRejectedByCandidate($application);
+
+            return $this->refreshWithRelations($application);
         });
     }
 
@@ -366,6 +546,12 @@ class RcApplicationService extends Service
             RcApplicationStatus::Offering,
         ], '当前状态不可确认录用。');
 
+        $offer = $this->findAcceptedOffer($application);
+
+        if (! $offer instanceof Offer) {
+            throw new InvalidArgumentException('候选人尚未接受 Offer。');
+        }
+
         return DB::transaction(function () use ($operator, $application, $note): Application {
             $fromStageId = $application->current_stage_id;
 
@@ -374,23 +560,16 @@ class RcApplicationService extends Service
             ]);
             $application->save();
 
-            Offer::query()
-                ->where('company_id', $application->company_id)
-                ->where('application_id', $application->id)
-                ->where('status', RcOfferStatus::Sent->value)
-                ->update([
-                    'status' => RcOfferStatus::Accepted->value,
-                    'replied_at' => now(),
-                ]);
-
             $this->recordFlow(
                 application: $application,
                 user: $operator,
-                fromStageId: $fromStageId,
                 toStageId: $application->current_stage_id,
+                fromStageId: $fromStageId,
                 actionType: RcApplicationFlowActionType::Hire,
                 note: $note ?? '招聘方确认录用',
             );
+
+            RcNotificationService::make()->notifyApplicationHired($application);
 
             return $this->refreshForRecruiter($application);
         });
@@ -416,11 +595,13 @@ class RcApplicationService extends Service
             $this->recordFlow(
                 application: $application,
                 user: $operator,
-                fromStageId: $fromStageId,
                 toStageId: $application->current_stage_id,
+                fromStageId: $fromStageId,
                 actionType: RcApplicationFlowActionType::Reject,
                 note: $note ?? '招聘方淘汰候选人',
             );
+
+            RcNotificationService::make()->notifyApplicationRejected($application);
 
             return $this->refreshForRecruiter($application);
         });
@@ -556,5 +737,72 @@ class RcApplicationService extends Service
     private function generateOfferNo(Application $application): string
     {
         return sprintf('OFFER-%d-%06d-%s', $application->company_id, $application->id, now()->format('YmdHis'));
+    }
+
+    /**
+     * @param  array<string, mixed>  $payload
+     * @return array<string, mixed>
+     */
+    private function buildOfferAttributesFromPayload(Application $application, array $payload, Carbon $sentAt): array
+    {
+        $recipientIdentity = $this->resolveJobSeekerIdentityForUser($application->candidate_user_id);
+
+        return [
+            'receive_user_id' => $application->candidate_user_id,
+            'receive_user_identity_id' => $recipientIdentity?->id,
+            'salary' => $payload['salary'],
+            'salary_unit' => filled($payload['salary_unit'] ?? null)
+                ? RcSalaryUnit::from((int) $payload['salary_unit'])
+                : RcSalaryUnit::Month,
+            'has_probation' => (bool) ($payload['has_probation'] ?? false),
+            'remuneration_note' => $payload['remuneration_note'] ?? null,
+            'attendance_note' => $payload['attendance_note'] ?? null,
+            'entry_date' => $payload['entry_date'] ?? null,
+            'expire_date' => $payload['expire_date'] ?? null,
+            'status' => RcOfferStatus::Sent,
+            'sent_at' => $sentAt,
+            'note' => $payload['note'] ?? null,
+            'extra' => $payload['extra'] ?? null,
+        ];
+    }
+
+    private function resolveJobSeekerIdentityForUser(int $userId): ?UserIdentity
+    {
+        return UserIdentity::query()
+            ->where('user_id', $userId)
+            ->where('identity_type', RcIdentityType::JobSeeker)
+            ->where('status', RcIdentityStatus::Enabled)
+            ->orderByDesc('is_default')
+            ->orderByDesc('id')
+            ->first();
+    }
+
+    private function findPendingInterviewInvitation(Application $application): ?Interview
+    {
+        return Interview::query()
+            ->where('application_id', $application->id)
+            ->where('status', RcInterviewStatus::AwaitingCandidate->value)
+            ->orderByDesc('id')
+            ->first();
+    }
+
+    private function findSentOffer(Application $application): ?Offer
+    {
+        return Offer::query()
+            ->where('company_id', $application->company_id)
+            ->where('application_id', $application->id)
+            ->where('status', RcOfferStatus::Sent->value)
+            ->orderByDesc('id')
+            ->first();
+    }
+
+    private function findAcceptedOffer(Application $application): ?Offer
+    {
+        return Offer::query()
+            ->where('company_id', $application->company_id)
+            ->where('application_id', $application->id)
+            ->where('status', RcOfferStatus::Accepted->value)
+            ->orderByDesc('id')
+            ->first();
     }
 }

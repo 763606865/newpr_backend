@@ -11,6 +11,8 @@ use App\Models\User;
 use App\Rc\Requests\ApplicationHireRequest;
 use App\Rc\Requests\ApplicationInviteInterviewRequest;
 use App\Rc\Requests\ApplicationRejectRequest;
+use App\Rc\Requests\ApplicationRespondInterviewRequest;
+use App\Rc\Requests\ApplicationRespondOfferRequest;
 use App\Rc\Requests\ApplicationSendOfferRequest;
 use App\Rc\Requests\ApplicationStoreRequest;
 use App\Resources\Rc\RcApplicationResource;
@@ -139,6 +141,77 @@ class ApplicationController extends Controller
     }
 
     /**
+     * 接受面试邀请
+     *
+     * POST /rc/applications/{id}/accept-interview
+     */
+    public function acceptInterview(ApplicationRespondInterviewRequest $request, int $id): JsonResponse
+    {
+        return $this->handleJobSeekerFlowAction(
+            $request,
+            $id,
+            static fn (RcApplicationService $service, User $user, Application $application): Application => $service->acceptInterviewInvitation(
+                $user,
+                $application,
+            ),
+        );
+    }
+
+    /**
+     * 拒绝面试邀请
+     *
+     * POST /rc/applications/{id}/reject-interview
+     */
+    public function rejectInterview(ApplicationRespondInterviewRequest $request, int $id): JsonResponse
+    {
+        return $this->handleJobSeekerFlowAction(
+            $request,
+            $id,
+            static fn (RcApplicationService $service, User $user, Application $application): Application => $service->rejectInterviewInvitation(
+                $user,
+                $application,
+                $request->validated('note'),
+            ),
+        );
+    }
+
+    /**
+     * 接受 Offer
+     *
+     * POST /rc/applications/{id}/accept-offer
+     */
+    public function acceptOffer(ApplicationRespondOfferRequest $request, int $id): JsonResponse
+    {
+        return $this->handleJobSeekerFlowAction(
+            $request,
+            $id,
+            static fn (RcApplicationService $service, User $user, Application $application): Application => $service->acceptOfferInvitation(
+                $user,
+                $application,
+                $request->validated('note'),
+            ),
+        );
+    }
+
+    /**
+     * 拒绝 Offer
+     *
+     * POST /rc/applications/{id}/reject-offer
+     */
+    public function rejectOffer(ApplicationRespondOfferRequest $request, int $id): JsonResponse
+    {
+        return $this->handleJobSeekerFlowAction(
+            $request,
+            $id,
+            static fn (RcApplicationService $service, User $user, Application $application): Application => $service->rejectOfferInvitation(
+                $user,
+                $application,
+                $request->validated('note'),
+            ),
+        );
+    }
+
+    /**
      * 邀请面试
      *
      * POST /rc/applications/{id}/invite-interview
@@ -208,6 +281,31 @@ class ApplicationController extends Controller
                 $request->validated('note'),
             ),
         );
+    }
+
+    /**
+     * @param  callable(RcApplicationService, User, Application): Application  $action
+     */
+    private function handleJobSeekerFlowAction(Request $request, int $id, callable $action): JsonResponse
+    {
+        if (! $this->isCurrentJobSeeker()) {
+            return $this->error('请先切换为求职者身份。', Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $service = RcApplicationService::make();
+        $application = $service->findForCandidate($this->user(), $id);
+
+        if (! $application instanceof Application) {
+            return $this->error('投递记录不存在。', Response::HTTP_NOT_FOUND);
+        }
+
+        try {
+            $application = $action($service, $this->user(), $application);
+        } catch (InvalidArgumentException $exception) {
+            return $this->error($exception->getMessage(), Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        return $this->success((new RcApplicationResource($application))->resolve($request));
     }
 
     /**

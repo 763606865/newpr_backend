@@ -2,7 +2,11 @@
 
 namespace App\Resources\Rc;
 
+use App\Enums\RcInterviewStatus;
+use App\Enums\RcOfferStatus;
 use App\Models\Rc\Application;
+use App\Models\Rc\Interview;
+use App\Models\Rc\Offer;
 use App\Services\RcApplicationService;
 use App\Support\ContactMasker;
 use Illuminate\Http\Request;
@@ -59,7 +63,49 @@ class RcApplicationResource extends JsonResource
             ];
         }
 
+        $pendingInterview = Interview::query()
+            ->where('application_id', $this->resource->id)
+            ->where('status', RcInterviewStatus::AwaitingCandidate->value)
+            ->orderByDesc('id')
+            ->first();
+
+        if ($pendingInterview instanceof Interview) {
+            $data['pending_interview_invitation'] = (new RcInterviewInvitationResource($pendingInterview))->resolve($request);
+        }
+
+        $offer = $this->resolveDisplayableOffer();
+
+        if ($offer instanceof Offer) {
+            $data['offer'] = (new RcOfferResource($offer))->resolve($request);
+        }
+
         return $data;
+    }
+
+    private function resolveDisplayableOffer(): ?Offer
+    {
+        if ($this->resource->relationLoaded('offer')) {
+            $offer = $this->resource->offer;
+
+            return $offer instanceof Offer && $this->isDisplayableOffer($offer) ? $offer : null;
+        }
+
+        return Offer::query()
+            ->where('application_id', $this->resource->id)
+            ->whereIn('status', [
+                RcOfferStatus::Sent->value,
+                RcOfferStatus::Accepted->value,
+            ])
+            ->orderByDesc('id')
+            ->first();
+    }
+
+    private function isDisplayableOffer(Offer $offer): bool
+    {
+        return in_array($offer->status, [
+            RcOfferStatus::Sent,
+            RcOfferStatus::Accepted,
+        ], true);
     }
 
     /**
