@@ -7,6 +7,7 @@ use App\Observers\Rc\IndustryMetaObserver;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\Table;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -46,11 +47,18 @@ class Industry extends Model
     protected function casts(): array
     {
         return [
-            'parent_id' => 'integer',
             'sort' => 'integer',
             'depth' => 'integer',
             'extra' => 'array',
         ];
+    }
+
+    protected function parentId(): Attribute
+    {
+        return Attribute::make(
+            get: static fn (?int $value): ?int => $value === 0 ? null : $value,
+            set: static fn (?int $value): ?int => $value === 0 ? null : $value,
+        );
     }
 
     /**

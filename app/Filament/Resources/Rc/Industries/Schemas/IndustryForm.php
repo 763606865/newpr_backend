@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Rc\Industries\Schemas;
 
+use App\Filament\Support\NullableParentIdSelect;
 use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -30,7 +31,8 @@ class IndustryForm
                     )
                     ->searchable()
                     ->preload()
-                    ->placeholder('无'),
+                    ->placeholder('无')
+                    ->tap(static fn (Select $select): Select => NullableParentIdSelect::configure($select)),
                 TextInput::make('sort')->label('排序')->numeric()->default(0)->required(),
                 KeyValue::make('extra')->label('扩展字段')->columnSpanFull(),
             ]);

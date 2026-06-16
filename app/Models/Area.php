@@ -114,4 +114,76 @@ class Area extends Model
 
         return filled($provinceCode) ? $provinceCode : null;
     }
+
+    /**
+     * @return array{province_code: ?string, city_code: ?string, district_code: ?string}
+     */
+    public static function resolveAreaHierarchy(?string $code): array
+    {
+        if (blank($code)) {
+            return [
+                'province_code' => null,
+                'city_code' => null,
+                'district_code' => null,
+            ];
+        }
+
+        $area = static::query()->where('code', $code)->first();
+
+        if ($area === null) {
+            return [
+                'province_code' => null,
+                'city_code' => null,
+                'district_code' => null,
+            ];
+        }
+
+        if ($area->level === AreaLevel::Province) {
+            return [
+                'province_code' => $code,
+                'city_code' => null,
+                'district_code' => null,
+            ];
+        }
+
+        if ($area->level === AreaLevel::City) {
+            return [
+                'province_code' => $area->parent_code,
+                'city_code' => $code,
+                'district_code' => null,
+            ];
+        }
+
+        if ($area->level === AreaLevel::District) {
+            $parent = $area->parent;
+
+            if ($parent === null) {
+                return [
+                    'province_code' => null,
+                    'city_code' => null,
+                    'district_code' => $code,
+                ];
+            }
+
+            if ($parent->level === AreaLevel::Province) {
+                return [
+                    'province_code' => $parent->code,
+                    'city_code' => null,
+                    'district_code' => $code,
+                ];
+            }
+
+            return [
+                'province_code' => $parent->parent_code,
+                'city_code' => $parent->code,
+                'district_code' => $code,
+            ];
+        }
+
+        return [
+            'province_code' => null,
+            'city_code' => null,
+            'district_code' => null,
+        ];
+    }
 }

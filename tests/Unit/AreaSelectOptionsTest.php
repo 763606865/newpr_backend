@@ -87,4 +87,50 @@ class AreaSelectOptionsTest extends TestCase
         $this->assertSame('360000', Area::resolveAnnouncementAreaCode('360000', null, null));
         $this->assertNull(Area::resolveAnnouncementAreaCode(null, null, null));
     }
+
+    public function test_resolve_area_hierarchy_from_city_and_district_codes(): void
+    {
+        Area::query()->create([
+            'code' => '360000',
+            'name' => '江西省',
+            'parent_code' => '000000',
+            'level' => AreaLevel::Province,
+        ]);
+        Area::query()->create([
+            'code' => '360100',
+            'name' => '南昌市',
+            'parent_code' => '360000',
+            'level' => AreaLevel::City,
+        ]);
+        Area::query()->create([
+            'code' => '360102',
+            'name' => '东湖区',
+            'parent_code' => '360100',
+            'level' => AreaLevel::District,
+        ]);
+        Area::query()->create([
+            'code' => '110000',
+            'name' => '北京市',
+            'parent_code' => '000000',
+            'level' => AreaLevel::Province,
+        ]);
+        Area::query()->create([
+            'code' => '110101',
+            'name' => '东城区',
+            'parent_code' => '110000',
+            'level' => AreaLevel::District,
+        ]);
+
+        $this->assertSame([
+            'province_code' => '360000',
+            'city_code' => '360100',
+            'district_code' => '360102',
+        ], Area::resolveAreaHierarchy('360102'));
+
+        $this->assertSame([
+            'province_code' => '110000',
+            'city_code' => null,
+            'district_code' => '110101',
+        ], Area::resolveAreaHierarchy('110101'));
+    }
 }

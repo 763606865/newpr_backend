@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Cms\Menus\Schemas;
 use App\Enums\CmsLinkType;
 use App\Enums\CmsOpenTarget;
 use App\Enums\CmsStatus;
+use App\Filament\Support\NullableParentIdSelect;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\Select;
@@ -23,7 +24,7 @@ class MenuForm
                     ->relationship('parent', 'name')
                     ->searchable()
                     ->placeholder('顶级菜单')
-                    ->dehydrateStateUsing(fn ($state): int => (int) ($state ?: 0)),
+                    ->tap(static fn (Select $select): Select => NullableParentIdSelect::configureForZeroRoot($select)),
                 TextInput::make('name')->label('菜单名称')->required(),
                 TextInput::make('code')->label('菜单编码')->maxLength(64),
                 Select::make('link_type')->label('链接类型')->options(CmsLinkType::class)->enum(CmsLinkType::class)->required(),

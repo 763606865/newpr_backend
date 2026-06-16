@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Cms\SiteConfigs\Schemas;
 
 use App\Enums\CmsStatus;
+use App\Filament\Support\AreaCascadeFormFields;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\Select;
@@ -17,7 +18,7 @@ class SiteConfigForm
         return $schema
             ->components([
                 TextInput::make('site_code')->label('站点编码')->required()->maxLength(64),
-                TextInput::make('city_code')->label('城市编码')->maxLength(32),
+                ...AreaCascadeFormFields::make(),
                 TextInput::make('name')->label('站点名称')->required(),
                 TextInput::make('short_name')->label('站点简称'),
                 TextInput::make('domain')->label('站点域名'),
