@@ -5,10 +5,10 @@ namespace App\Filament\Resources\Cms\Banners\Schemas;
 use App\Enums\CmsLinkType;
 use App\Enums\CmsOpenTarget;
 use App\Enums\CmsStatus;
+use App\Filament\Support\AreaCascadeFormFields;
 use App\Models\Cms\BannerPosition;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
@@ -24,7 +24,7 @@ class BannerForm
                     ->relationship('position', 'name')
                     ->required()
                     ->options(fn (): array => BannerPosition::query()->orderBy('name')->pluck('name', 'id')->all()),
-                TextInput::make('city_code')->label('城市编码')->maxLength(32),
+                ...AreaCascadeFormFields::makeTwoLevel(),
                 TextInput::make('title')->label('标题')->required(),
                 FileUpload::make('image')
                     ->label('图片')
@@ -61,7 +61,6 @@ class BannerForm
                 DateTimePicker::make('end_at')->label('生效结束时间'),
                 Select::make('status')->label('状态')->options(CmsStatus::class)->enum(CmsStatus::class)->required(),
                 TextInput::make('sort')->label('排序')->numeric()->default(0),
-                KeyValue::make('extra')->label('扩展字段'),
             ]);
     }
 }

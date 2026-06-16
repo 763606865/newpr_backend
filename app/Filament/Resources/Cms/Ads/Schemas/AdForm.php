@@ -4,10 +4,10 @@ namespace App\Filament\Resources\Cms\Ads\Schemas;
 
 use App\Enums\CmsAdType;
 use App\Enums\CmsStatus;
+use App\Filament\Support\AreaCascadeFormFields;
 use App\Models\Cms\AdSlot;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -24,7 +24,7 @@ class AdForm
                     ->relationship('slot', 'name')
                     ->required()
                     ->options(fn (): array => AdSlot::query()->orderBy('name')->pluck('name', 'id')->all()),
-                TextInput::make('city_code')->label('城市编码')->maxLength(32),
+                ...AreaCascadeFormFields::makeTwoLevel(),
                 TextInput::make('title')->label('广告标题')->required(),
                 Select::make('type')->label('广告类型')->options(CmsAdType::class)->enum(CmsAdType::class)->required(),
                 FileUpload::make('image')
@@ -62,7 +62,6 @@ class AdForm
                 DateTimePicker::make('end_at')->label('生效结束时间'),
                 Select::make('status')->label('状态')->options(CmsStatus::class)->enum(CmsStatus::class)->required(),
                 TextInput::make('sort')->label('排序')->numeric()->default(0),
-                KeyValue::make('extra')->label('扩展字段'),
             ]);
     }
 }
