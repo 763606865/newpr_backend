@@ -47,7 +47,9 @@ class AnnouncementControllerTest extends TestCase
             'created_at' => '2026-06-02 11:00:00',
         ]);
 
-        $response = $this->signedGet($client, '/sapi/announcements');
+        $response = $this->signedGet($client, '/sapi/announcements', [
+            'pagination_enabled' => 1,
+        ]);
 
         $response
             ->assertOk()
@@ -75,6 +77,7 @@ class AnnouncementControllerTest extends TestCase
         ]);
 
         $query = [
+            'pagination_enabled' => 1,
             'created_from' => '2026-06-01 00:00:00',
             'created_to' => '2026-06-03 23:59:59',
         ];
@@ -87,28 +90,37 @@ class AnnouncementControllerTest extends TestCase
             ->assertJsonPath('data.data.0.id', $inRange->id);
     }
 
-    public function test_index_filters_by_city_code(): void
+    public function test_index_filters_by_region_code_with_district_priority(): void
     {
         $client = Client::factory()->create();
 
-        $cityAnnouncement = $this->createAnnouncement([
-            'title' => '南昌公告',
+        $districtAnnouncement = $this->createAnnouncement([
+            'title' => '红谷滩公告',
+            'province_code' => '360000',
             'city_code' => '360100',
+            'district_code' => '360113',
             'status' => CmsPublishStatus::Published,
         ]);
         $this->createAnnouncement([
             'title' => '全站公告',
+            'province_code' => null,
             'city_code' => null,
+            'district_code' => null,
             'status' => CmsPublishStatus::Published,
         ]);
         $this->createAnnouncement([
-            'title' => '其他城市',
+            'title' => '其他地区',
+            'province_code' => '360000',
             'city_code' => '110100',
+            'district_code' => '110101',
             'status' => CmsPublishStatus::Published,
         ]);
 
         $response = $this->signedGet($client, '/sapi/announcements', [
+            'pagination_enabled' => 1,
+            'province_code' => '360000',
             'city_code' => '360100',
+            'district_code' => '360113',
         ]);
 
         $response
@@ -117,7 +129,7 @@ class AnnouncementControllerTest extends TestCase
 
         $ids = collect($response->json('data.data'))->pluck('id')->all();
 
-        $this->assertContains($cityAnnouncement->id, $ids);
+        $this->assertContains($districtAnnouncement->id, $ids);
     }
 
     public function test_index_rejects_invalid_created_at_format(): void
@@ -153,7 +165,7 @@ class AnnouncementControllerTest extends TestCase
 
         $announcement = Announcement::query()->create(array_merge([
             'title' => '测试公告',
-            'type' => CmsAnnouncementType::SelfPublished,
+            'type' => CmsAnnouncementType::System,
             'status' => CmsPublishStatus::Published,
             'published_at' => Carbon::parse('2026-06-02 09:00:00'),
         ], $overrides));

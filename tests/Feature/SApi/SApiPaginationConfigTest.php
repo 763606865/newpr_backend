@@ -140,7 +140,7 @@ class SApiPaginationConfigTest extends TestCase
         $client = Client::factory()->create();
         $announcement = Announcement::query()->create([
             'title' => '全量公告',
-            'type' => CmsAnnouncementType::SelfPublished,
+            'type' => CmsAnnouncementType::System,
             'status' => CmsPublishStatus::Published,
             'published_at' => Carbon::parse('2026-06-02 10:00:00'),
             'created_at' => Carbon::parse('2026-06-02 10:00:00'),

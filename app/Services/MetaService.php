@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Enums\CmsAnnouncementPublisherType;
+use App\Enums\CmsTagCategory;
 use App\Enums\CompanyBenefitTag;
 use App\Enums\CompanyFundingStage;
 use App\Enums\CompanyNatureType;
@@ -9,6 +11,7 @@ use App\Enums\CompanyScaleType;
 use App\Enums\MajorEducationType;
 use App\Enums\MajorLevel;
 use App\Models\Area;
+use App\Models\Cms\Tag;
 use App\Models\Major;
 use App\Models\Rc\Industry;
 use App\Models\Rc\Position;
@@ -16,6 +19,7 @@ use App\Resources\Rc\RcAreaResource;
 use App\Resources\Rc\RcIndustryResource;
 use App\Resources\Rc\RcMajorResource;
 use App\Resources\Rc\RcPositionResource;
+use App\Resources\SApi\SApiTagResource;
 use App\Support\EnumOptions;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -33,6 +37,8 @@ class MetaService extends Service
     private const POSITIONS_TREE_CACHE_KEY = 'rc:meta:positions:tree';
 
     private const MAJORS_TREE_CACHE_KEY = 'rc:meta:majors:tree';
+
+    private const TAGS_TREE_CACHE_KEY = 'cms:meta:tags:tree';
 
     /**
      * @return array<int, array<string, mixed>>
@@ -174,6 +180,55 @@ class MetaService extends Service
     }
 
     /**
+     * @return array<int, array<string, mixed>>
+     */
+    public function getTagsTree(): array
+    {
+        return Cache::rememberForever(self::TAGS_TREE_CACHE_KEY, function (): array {
+            $tags = Tag::query()
+                ->enabled()
+                ->orderBy('category')
+                ->orderBy('sort')
+                ->orderBy('id')
+                ->get();
+
+            return $tags
+                ->groupBy('category')
+                ->map(function ($group, string $category): array {
+                    $categoryEnum = CmsTagCategory::tryFrom($category);
+
+                    return [
+                        'category' => $category,
+                        'category_label' => $categoryEnum?->getLabel() ?? $category,
+                        'children' => SApiTagResource::collection($group)->resolve(new Request),
+                    ];
+                })
+                ->values()
+                ->all();
+        });
+    }
+
+    /**
+     * @return array<string, array<int, array{value: int|string, label: string|null}>>
+     */
+    public function getAnnouncementDictionaries(): array
+    {
+        return [
+            'announcement_publisher_types' => EnumOptions::from(CmsAnnouncementPublisherType::class),
+        ];
+    }
+
+    /**
+     * @return array<string, array<int, array{value: int|string, label: string|null}>>
+     */
+    public function getTagDictionaries(): array
+    {
+        return [
+            'tag_categories' => EnumOptions::from(CmsTagCategory::class),
+        ];
+    }
+
+    /**
      * @return array<string, array<int, array{value: int|string, label: string|null}>>
      */
     public function getMajorDictionaries(): array
@@ -251,11 +306,17 @@ class MetaService extends Service
         Cache::forget(self::MAJORS_TREE_CACHE_KEY);
     }
 
+    public function forgetTags(): void
+    {
+        Cache::forget(self::TAGS_TREE_CACHE_KEY);
+    }
+
     public function forgetAll(): void
     {
         $this->forgetAreas();
         $this->forgetIndustries();
         $this->forgetPositions();
         $this->forgetMajors();
+        $this->forgetTags();
     }
 }

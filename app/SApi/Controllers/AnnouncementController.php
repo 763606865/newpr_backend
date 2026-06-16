@@ -17,14 +17,12 @@ class AnnouncementController extends Controller
     public function index(AnnouncementIndexRequest $request): JsonResponse
     {
         $validated = $request->validated();
-
-        $cityCode = isset($validated['city_code']) && $validated['city_code'] !== ''
-            ? (string) $validated['city_code']
-            : null;
+        $regionCode = $request->regionCode();
 
         $query = Announcement::query()
+            ->with('tags')
             ->enabled()
-            ->forCity($cityCode)
+            ->forRegion($regionCode)
             ->createdBetween(
                 $validated['created_from'] ?? null,
                 $validated['created_to'] ?? null,

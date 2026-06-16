@@ -53,4 +53,65 @@ class Area extends Model
     {
         return $this->hasMany(self::class, 'parent_code', 'code');
     }
+
+    /**
+     * @return array<string, string>
+     */
+    public static function provinceOptions(): array
+    {
+        return static::query()
+            ->where('level', AreaLevel::Province)
+            ->orderBy('code')
+            ->pluck('name', 'code')
+            ->all();
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public static function cityOptions(?string $provinceCode): array
+    {
+        if (blank($provinceCode)) {
+            return [];
+        }
+
+        return static::query()
+            ->where('parent_code', $provinceCode)
+            ->where('level', AreaLevel::City)
+            ->orderBy('code')
+            ->pluck('name', 'code')
+            ->all();
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public static function districtOptions(?string $provinceCode, ?string $cityCode): array
+    {
+        $parentCode = filled($cityCode) ? $cityCode : $provinceCode;
+
+        if (blank($parentCode)) {
+            return [];
+        }
+
+        return static::query()
+            ->where('parent_code', $parentCode)
+            ->where('level', AreaLevel::District)
+            ->orderBy('code')
+            ->pluck('name', 'code')
+            ->all();
+    }
+
+    public static function resolveAnnouncementAreaCode(?string $provinceCode, ?string $cityCode, ?string $districtCode): ?string
+    {
+        if (filled($districtCode)) {
+            return $districtCode;
+        }
+
+        if (filled($cityCode)) {
+            return $cityCode;
+        }
+
+        return filled($provinceCode) ? $provinceCode : null;
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Cms;
 
+use App\Models\Cms\Tag;
 use App\Models\Major;
 use App\Services\MetaService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -34,8 +35,50 @@ class MetaControllerTest extends TestCase
             ->assertJsonPath('code', 200)
             ->assertJsonPath('data.majors.0.name', '装备制造大类')
             ->assertJsonPath('data.majors.0.children.0.name', '机械设计制造类')
-            ->assertJsonPath('data.major_levels.0.value', 1)
-            ->assertJsonPath('data.major_education_types.0.value', '中职');
+            ->assertJsonPath('data.major_levels.0.value', 1);
+
+        $educationTypes = collect($response->json('data.major_education_types'))->pluck('value')->all();
+
+        $this->assertContains('中职', $educationTypes);
+    }
+
+    public function test_index_returns_tags_grouped_by_category(): void
+    {
+        $this->seedTags();
+
+        $response = $this->getJson('/cms/meta');
+
+        $response
+            ->assertOk()
+            ->assertJsonPath('code', 200)
+            ->assertJsonPath('data.tags.0.category', 'rc')
+            ->assertJsonPath('data.tags.0.category_label', '招聘类型 (rc)')
+            ->assertJsonPath('data.tags.0.children.0.name', '校招')
+            ->assertJsonPath('data.tags.0.children.0.slug', 'campus-recruitment')
+            ->assertJsonPath('data.tag_categories.0.value', 'rc');
+    }
+
+    public function test_index_returns_announcement_publisher_type_dictionary(): void
+    {
+        $response = $this->getJson('/cms/meta');
+
+        $response
+            ->assertOk()
+            ->assertJsonPath('data.announcement_publisher_types.0.value', 0)
+            ->assertJsonPath('data.announcement_publisher_types.0.label', '系统');
+    }
+
+    public function test_tags_endpoint_returns_tag_tree(): void
+    {
+        $this->seedTags();
+
+        $response = $this->getJson('/cms/meta/tags');
+
+        $response
+            ->assertOk()
+            ->assertJsonPath('code', 200)
+            ->assertJsonPath('data.tags.0.children.0.name', '校招')
+            ->assertJsonPath('data.tag_categories.0.value', 'rc');
     }
 
     public function test_majors_endpoint_returns_major_tree(): void
@@ -77,6 +120,25 @@ class MetaControllerTest extends TestCase
             'level' => 3,
             'parent_code' => '5501',
             'type' => '中职',
+            'sort' => 1,
+        ]);
+    }
+
+    private function seedTags(): void
+    {
+        Tag::query()->create([
+            'category' => 'rc',
+            'name' => '校招',
+            'slug' => 'campus-recruitment',
+            'status' => 1,
+            'sort' => 1,
+        ]);
+
+        Tag::query()->create([
+            'category' => 'school_exam',
+            'name' => '高考',
+            'slug' => 'gaokao',
+            'status' => 1,
             'sort' => 1,
         ]);
     }

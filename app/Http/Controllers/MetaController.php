@@ -21,6 +21,9 @@ class MetaController extends Controller
      * - `areas`：地区树，字段见 `RcAreaResource`（含 `children` 子节点）
      * - `majors`：专业树，字段见 `RcMajorResource`（含 `children` 子节点）
      * - `major_levels` / `major_education_types`：专业层级与学历类型字典
+     * - `tags`：标签树，按分类分组（含 `children` 子节点，字段见 `SApiTagResource`）
+     * - `tag_categories`：标签分类字典
+     * - `announcement_publisher_types`：公告发布人类型字典
      *
      * @see docs/Cms/Meta.md
      *
@@ -31,7 +34,10 @@ class MetaController extends Controller
         return $this->success([
             'areas' => $this->areasPayload(),
             'majors' => $this->majorsPayload(),
+            'tags' => $this->tagsPayload(),
             ...$this->metaService->getMajorDictionaries(),
+            ...$this->metaService->getTagDictionaries(),
+            ...$this->metaService->getAnnouncementDictionaries(),
         ]);
     }
 
@@ -55,6 +61,25 @@ class MetaController extends Controller
     }
 
     /**
+     * 标签元数据
+     *
+     * GET /cms/meta/tags
+     *
+     * 无需鉴权。返回按分类分组的标签树及标签分类字典，供公告筛选等场景使用。
+     *
+     * @see docs/Cms/Meta.md
+     *
+     * @throws \Exception
+     */
+    public function tags(Request $request): JsonResponse
+    {
+        return $this->success([
+            'tags' => $this->tagsPayload(),
+            ...$this->metaService->getTagDictionaries(),
+        ]);
+    }
+
+    /**
      * @return array<int, array<string, mixed>>
      */
     private function areasPayload(): array
@@ -68,5 +93,13 @@ class MetaController extends Controller
     private function majorsPayload(): array
     {
         return $this->metaService->getMajorsTree();
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    private function tagsPayload(): array
+    {
+        return $this->metaService->getTagsTree();
     }
 }

@@ -23,11 +23,20 @@ class AnnouncementsTable
         return $table
             ->columns([
                 TextColumn::make('id')->label('ID'),
-                CmsTable::cityColumn(),
+                CmsTable::cityColumn('city_code', '城市编码'),
                 TextColumn::make('title')->label('公告标题')->searchable(),
-                CmsTable::enumBadge('type', '类型', CmsAnnouncementType::class, [1 => 'primary', 2 => 'warning', 3 => 'info']),
+                CmsTable::enumBadge('type', '公告类型', CmsAnnouncementType::class, [
+                    1 => 'gray',
+                    2 => 'primary',
+                    3 => 'warning',
+                    4 => 'success',
+                    5 => 'info',
+                    6 => 'violet',
+                ]),
+                TextColumn::make('publisher_name')->label('发布人')->toggleable(),
                 CmsTable::enumBadge('status', '状态', CmsPublishStatus::class, [1 => 'gray', 2 => 'success', 3 => 'danger']),
                 IconColumn::make('is_top')->label('置顶')->boolean(),
+                TextColumn::make('read_count')->label('阅读数')->numeric(),
                 TextColumn::make('published_at')->label('发布时间')->dateTime(),
                 TextColumn::make('updated_at')->label('更新时间')->dateTime(),
             ])

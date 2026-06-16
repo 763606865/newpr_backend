@@ -15,3 +15,4 @@ Route::get('/announcements/{id}', [AnnouncementController::class, 'show'])->name
 
 Route::get('/meta', [MetaController::class, 'index'])->name('meta');
 Route::get('/meta/majors', [MetaController::class, 'majors'])->name('meta.majors');
+Route::get('/meta/tags', [MetaController::class, 'tags'])->name('meta.tags');

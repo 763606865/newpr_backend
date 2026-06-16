@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AnnouncementIndexRequest;
 use App\Models\Cms\Announcement;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -15,17 +16,32 @@ class AnnouncementController extends Controller
      *
      * @throws \Exception
      */
-    public function index(Request $request): JsonResponse
+    public function index(AnnouncementIndexRequest $request): JsonResponse
     {
-        $perPage = (int) $request->integer('per_page', 15);
+        $validated = $request->validated();
+
+        $perPage = (int) ($validated['per_page'] ?? 15);
         $perPage = max(1, min($perPage, 50));
 
-        $cityCode = $request->string('city_code')->toString();
-        $cityCode = $cityCode !== '' ? $cityCode : null;
+        $regionCode = $request->regionCode();
 
-        $announcements = Announcement::query()
+        $query = Announcement::query()
             ->enabled()
-            ->forCity($cityCode)
+            ->forRegion($regionCode);
+
+        $tagIds = $request->tagIds();
+
+        if ($tagIds !== []) {
+            $query->withTags($tagIds, $request->tagsMatchAll());
+        }
+
+        $publisherTypes = $request->publisherTypes();
+
+        if ($publisherTypes !== []) {
+            $query->forPublisherTypes($publisherTypes);
+        }
+
+        $announcements = $query
             ->orderByDesc('is_top')
             ->orderBy('sort')
             ->orderByDesc('published_at')
@@ -33,7 +49,9 @@ class AnnouncementController extends Controller
                 perPage: $perPage,
                 columns: [
                     'id',
+                    'province_code',
                     'city_code',
+                    'district_code',
                     'title',
                     'sub_title',
                     'summary',
@@ -57,15 +75,37 @@ class AnnouncementController extends Controller
      */
     public function show(Request $request, int $id): JsonResponse
     {
-        $cityCode = $request->string('city_code')->toString();
-        $cityCode = $cityCode !== '' ? $cityCode : null;
+        $regionCode = $this->resolveRegionCode($request);
 
         $announcement = Announcement::query()
             ->enabled()
-            ->forCity($cityCode)
+            ->forRegion($regionCode)
             ->whereKey($id)
             ->firstOrFail();
 
         return api_response($announcement);
+    }
+
+    private function resolveRegionCode(Request $request): ?string
+    {
+        $districtCode = $request->string('district_code')->toString();
+
+        if ($districtCode !== '') {
+            return $districtCode;
+        }
+
+        $cityCode = $request->string('city_code')->toString();
+
+        if ($cityCode !== '') {
+            return $cityCode;
+        }
+
+        $provinceCode = $request->string('province_code')->toString();
+
+        if ($provinceCode !== '') {
+            return $provinceCode;
+        }
+
+        return null;
     }
 }
