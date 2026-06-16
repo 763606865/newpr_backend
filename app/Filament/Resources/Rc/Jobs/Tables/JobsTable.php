@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Rc\Jobs\Tables;
 
 use App\Enums\RcJobStatus;
+use App\Filament\Resources\Rc\RcTable;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Columns\TextColumn;
@@ -20,16 +21,11 @@ class JobsTable
             ->columns([
                 TextColumn::make('id')->label('ID'),
                 TextColumn::make('company.name')->label('企业')->placeholder('-')->searchable(),
-                TextColumn::make('code')->label('职位编码')->searchable(),
-                TextColumn::make('position_code')->label('岗位编码')->placeholder('-')->searchable(),
                 TextColumn::make('position.name')->label('常用职位')->placeholder('-'),
                 TextColumn::make('title')->label('职位名称')->searchable(),
-                TextColumn::make('city_code')->label('城市编码')->placeholder('-'),
+                TextColumn::make('cityArea.name')->label('城市名称')->placeholder('-'),
                 TextColumn::make('workplace')->label('工作地点')->placeholder('-'),
-                TextColumn::make('status')
-                    ->label('状态')
-                    ->badge()
-                    ->formatStateUsing(fn (mixed $state): string => RcJobStatus::tryFrom((int) $state)?->getLabel() ?? '-'),
+                RcTable::enumBadge('status', '状态', RcJobStatus::class),
                 TextColumn::make('published_at')->label('发布时间')->dateTime(),
                 TextColumn::make('updated_at')->label('更新时间')->dateTime(),
             ])

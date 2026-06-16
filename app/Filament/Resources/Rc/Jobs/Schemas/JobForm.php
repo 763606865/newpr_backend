@@ -6,7 +6,6 @@ use App\Enums\RcJobEmploymentType;
 use App\Enums\RcJobStatus;
 use App\Enums\RcSalaryUnit;
 use Filament\Forms\Components\DateTimePicker;
-use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -50,7 +49,6 @@ class JobForm
                 Textarea::make('description')->label('职位描述')->rows(4),
                 Textarea::make('requirement')->label('职位要求')->rows(4),
                 Textarea::make('benefit')->label('福利待遇')->rows(3),
-                KeyValue::make('extra')->label('扩展字段')->columnSpanFull(),
             ]);
     }
 }

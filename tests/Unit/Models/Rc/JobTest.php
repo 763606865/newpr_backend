@@ -2,7 +2,9 @@
 
 namespace Tests\Unit\Models\Rc;
 
+use App\Enums\AreaLevel;
 use App\Enums\CompanyStatus;
+use App\Models\Area;
 use App\Models\Company;
 use App\Models\Rc\Job;
 use App\Models\Rc\Position;
@@ -54,5 +56,31 @@ class JobTest extends TestCase
 
         $this->assertNull($job->position_code);
         $this->assertNull($job->position);
+    }
+
+    public function test_city_area_relationship_resolves_city_name(): void
+    {
+        Area::query()->create([
+            'code' => '360100',
+            'name' => '南昌市',
+            'parent_code' => '360000',
+            'level' => AreaLevel::City,
+        ]);
+
+        $company = Company::query()->create([
+            'name' => '示例企业',
+            'credit_code' => '91360100MA0000000Z',
+            'status' => CompanyStatus::Enabled,
+        ]);
+
+        $job = Job::query()->create([
+            'company_id' => $company->id,
+            'code' => 'JOB-20260604-003',
+            'title' => 'Java 工程师',
+            'city_code' => '360100',
+        ]);
+
+        $this->assertSame('360100', $job->city_code);
+        $this->assertSame('南昌市', $job->cityArea?->name);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Rc\UserIdentities\Tables;
 
 use App\Enums\RcIdentityStatus;
 use App\Enums\RcIdentityType;
+use App\Filament\Resources\Rc\RcTable;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Columns\TextColumn;
@@ -23,25 +24,12 @@ class UserIdentitiesTable
                 TextColumn::make('user_id')->label('用户ID')->sortable(),
                 TextColumn::make('organization_type')->label('机构类型')->placeholder('-'),
                 TextColumn::make('organization_id')->label('机构ID')->placeholder('-')->sortable(),
-                TextColumn::make('identity_type')
-                    ->label('身份类型')
-                    ->badge()
-                    ->formatStateUsing(fn (mixed $state): string => $state instanceof RcIdentityType
-                        ? $state->getLabel() ?? '-'
-                        : RcIdentityType::tryFrom((int) $state)?->getLabel() ?? '-'),
+                RcTable::enumBadge('identity_type', '身份类型', RcIdentityType::class),
                 TextColumn::make('identity_name')->label('身份名称')->searchable(),
                 TextColumn::make('organization_name')->label('所属机构')->placeholder('-')->searchable(),
                 TextColumn::make('job_title')->label('岗位头衔')->placeholder('-'),
-                TextColumn::make('is_default')
-                    ->label('默认')
-                    ->badge()
-                    ->formatStateUsing(fn (mixed $state): string => (int) $state === 1 ? '是' : '否'),
-                TextColumn::make('status')
-                    ->label('状态')
-                    ->badge()
-                    ->formatStateUsing(fn (mixed $state): string => $state instanceof RcIdentityStatus
-                        ? $state->getLabel() ?? '-'
-                        : RcIdentityStatus::tryFrom((int) $state)?->getLabel() ?? '-'),
+                RcTable::integerBooleanBadge('is_default', '默认'),
+                RcTable::enumBadge('status', '状态', RcIdentityStatus::class),
                 TextColumn::make('updated_at')->label('更新时间')->dateTime(),
             ])
             ->filters([

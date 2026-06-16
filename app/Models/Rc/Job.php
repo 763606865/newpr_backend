@@ -5,6 +5,7 @@ namespace App\Models\Rc;
 use App\Enums\RcJobEmploymentType;
 use App\Enums\RcJobStatus;
 use App\Enums\RcSalaryUnit;
+use App\Models\Area;
 use App\Models\Company;
 use App\Models\Department;
 use App\Models\Model;
@@ -50,6 +51,7 @@ use Laravel\Scout\Searchable;
  * @property Carbon|null $deleted_at 删除时间
  * @property-read Company $company 所属企业
  * @property-read Department|null $department 所属部门
+ * @property-read Area|null $cityArea 工作城市
  * @property-read Position|null $position 常用职位（字典）
  * @property-read User|null $creator 创建人
  */
@@ -119,6 +121,11 @@ class Job extends Model
     public function department(): BelongsTo
     {
         return $this->belongsTo(Department::class, 'department_id');
+    }
+
+    public function cityArea(): BelongsTo
+    {
+        return $this->belongsTo(Area::class, 'city_code', 'code');
     }
 
     public function position(): BelongsTo

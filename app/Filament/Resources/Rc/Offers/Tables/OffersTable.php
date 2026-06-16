@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Rc\Offers\Tables;
 
 use App\Enums\RcOfferStatus;
 use App\Enums\RcSalaryUnit;
+use App\Filament\Resources\Rc\RcTable;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Columns\TextColumn;
@@ -21,22 +22,11 @@ class OffersTable
             ->columns([
                 TextColumn::make('id')->label('ID')->sortable(),
                 TextColumn::make('offer_no')->label('Offer编号')->searchable(),
-                TextColumn::make('company_id')->label('企业ID')->sortable(),
-                TextColumn::make('application_id')->label('投递ID')->sortable(),
-                TextColumn::make('salary_min')->label('最低薪资')->numeric(2),
-                TextColumn::make('salary_max')->label('最高薪资')->numeric(2),
-                TextColumn::make('salary_unit')
-                    ->label('薪资单位')
-                    ->badge()
-                    ->formatStateUsing(fn (mixed $state): string => $state instanceof RcSalaryUnit
-                        ? $state->getLabel() ?? '-'
-                        : RcSalaryUnit::tryFrom((int) $state)?->getLabel() ?? '-'),
-                TextColumn::make('status')
-                    ->label('状态')
-                    ->badge()
-                    ->formatStateUsing(fn (mixed $state): string => $state instanceof RcOfferStatus
-                        ? $state->getLabel() ?? '-'
-                        : RcOfferStatus::tryFrom((int) $state)?->getLabel() ?? '-'),
+                TextColumn::make('company.name')->label('企业名称')->placeholder('-')->searchable(),
+                TextColumn::make('receiveUser.name')->label('应聘人用户名称')->placeholder('-')->searchable(),
+                TextColumn::make('salary')->label('薪资')->numeric(2),
+                RcTable::enumBadge('salary_unit', '薪资单位', RcSalaryUnit::class),
+                RcTable::enumBadge('status', '状态', RcOfferStatus::class),
                 TextColumn::make('sent_at')->label('发送时间')->dateTime()->placeholder('-')->sortable(),
                 TextColumn::make('replied_at')->label('回复时间')->dateTime()->placeholder('-'),
             ])

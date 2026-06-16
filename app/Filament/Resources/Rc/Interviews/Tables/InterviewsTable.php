@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Rc\Interviews\Tables;
 use App\Enums\RcInterviewMode;
 use App\Enums\RcInterviewResult;
 use App\Enums\RcInterviewStatus;
+use App\Filament\Resources\Rc\RcTable;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Columns\TextColumn;
@@ -27,24 +28,9 @@ class InterviewsTable
                 TextColumn::make('interviewer_name')->label('面试官')->placeholder('-')->searchable(),
                 TextColumn::make('interview_at')->label('面试时间')->dateTime()->sortable(),
                 TextColumn::make('duration_mins')->label('时长(分钟)')->placeholder('-'),
-                TextColumn::make('mode')
-                    ->label('方式')
-                    ->badge()
-                    ->formatStateUsing(fn (mixed $state): string => $state instanceof RcInterviewMode
-                        ? $state->getLabel() ?? '-'
-                        : RcInterviewMode::tryFrom((int) $state)?->getLabel() ?? '-'),
-                TextColumn::make('status')
-                    ->label('状态')
-                    ->badge()
-                    ->formatStateUsing(fn (mixed $state): string => $state instanceof RcInterviewStatus
-                        ? $state->getLabel() ?? '-'
-                        : RcInterviewStatus::tryFrom((int) $state)?->getLabel() ?? '-'),
-                TextColumn::make('result')
-                    ->label('结果')
-                    ->badge()
-                    ->formatStateUsing(fn (mixed $state): string => $state instanceof RcInterviewResult
-                        ? $state->getLabel() ?? '-'
-                        : RcInterviewResult::tryFrom((int) $state)?->getLabel() ?? '-'),
+                RcTable::enumBadge('mode', '方式', RcInterviewMode::class),
+                RcTable::enumBadge('status', '状态', RcInterviewStatus::class),
+                RcTable::enumBadge('result', '结果', RcInterviewResult::class),
             ])
             ->filters([
                 SelectFilter::make('mode')

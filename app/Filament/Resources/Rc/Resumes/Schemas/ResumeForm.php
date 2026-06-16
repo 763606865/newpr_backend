@@ -4,7 +4,6 @@ namespace App\Filament\Resources\Rc\Resumes\Schemas;
 
 use App\Enums\RcResumeSourceType;
 use App\Enums\RcResumeStatus;
-use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -30,14 +29,12 @@ class ResumeForm
                 TextInput::make('file_name')->label('文件名称'),
                 TextInput::make('file_ext')->label('文件后缀')->maxLength(16),
                 Textarea::make('text_content')->label('简历文本')->rows(8),
-                KeyValue::make('parsed_data')->label('解析数据')->columnSpanFull(),
                 Toggle::make('is_primary')->label('设为主简历')->inline(false),
                 Select::make('status')
                     ->label('状态')
                     ->options(RcResumeStatus::class)
                     ->enum(RcResumeStatus::class)
                     ->required(),
-                KeyValue::make('extra')->label('扩展字段')->columnSpanFull(),
             ]);
     }
 }

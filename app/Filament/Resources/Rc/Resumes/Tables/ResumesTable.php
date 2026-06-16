@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Rc\Resumes\Tables;
 
 use App\Enums\RcResumeSourceType;
 use App\Enums\RcResumeStatus;
+use App\Filament\Resources\Rc\RcTable;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Columns\IconColumn;
@@ -24,16 +25,9 @@ class ResumesTable
                 TextColumn::make('user_id')->label('用户ID')->sortable(),
                 TextColumn::make('resume_no')->label('简历编号')->searchable(),
                 TextColumn::make('title')->label('标题')->searchable(),
-                TextColumn::make('source_type')
-                    ->label('来源')
-                    ->badge()
-                    ->formatStateUsing(fn (mixed $state): string => RcResumeSourceType::tryFrom((int) $state)?->getLabel() ?? '-'),
+                RcTable::enumBadge('source_type', '来源', RcResumeSourceType::class),
                 IconColumn::make('is_primary')->label('主简历')->boolean(),
-                TextColumn::make('status')
-                    ->label('状态')
-                    ->badge()
-                    ->formatStateUsing(fn (mixed $state): string => RcResumeStatus::tryFrom((int) $state)?->getLabel() ?? '-')
-                    ->color(fn (mixed $state): string => RcResumeStatus::tryFrom((int) $state) === RcResumeStatus::Normal ? 'success' : 'gray'),
+                RcTable::enumBadge('status', '状态', RcResumeStatus::class, [1 => 'success']),
                 TextColumn::make('updated_at')->label('更新时间')->dateTime(),
             ])
             ->filters([

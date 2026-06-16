@@ -7,10 +7,16 @@ use App\Filament\Resources\Rc\Applications\ApplicationResource;
 use App\Filament\Resources\Rc\Widgets\RcResourceStats;
 use App\Models\Rc\Application;
 use Filament\Resources\Pages\ListRecords;
+use Illuminate\Database\Eloquent\Builder;
 
 class ListApplications extends ListRecords
 {
     protected static string $resource = ApplicationResource::class;
+
+    protected function getTableQuery(): Builder
+    {
+        return parent::getTableQuery()->with(['company', 'candidateUser', 'job']);
+    }
 
     protected function getHeaderActions(): array
     {

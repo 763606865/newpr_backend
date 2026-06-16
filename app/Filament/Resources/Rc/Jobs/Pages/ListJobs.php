@@ -7,10 +7,16 @@ use App\Filament\Resources\Rc\Jobs\JobResource;
 use App\Filament\Resources\Rc\Widgets\RcResourceStats;
 use App\Models\Rc\Job;
 use Filament\Resources\Pages\ListRecords;
+use Illuminate\Database\Eloquent\Builder;
 
 class ListJobs extends ListRecords
 {
     protected static string $resource = JobResource::class;
+
+    protected function getTableQuery(): Builder
+    {
+        return parent::getTableQuery()->with(['company', 'position', 'cityArea']);
+    }
 
     protected function getHeaderActions(): array
     {

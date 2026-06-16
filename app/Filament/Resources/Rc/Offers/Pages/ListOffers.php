@@ -7,10 +7,16 @@ use App\Filament\Resources\Rc\Offers\OfferResource;
 use App\Filament\Resources\Rc\Widgets\RcResourceStats;
 use App\Models\Rc\Offer;
 use Filament\Resources\Pages\ListRecords;
+use Illuminate\Database\Eloquent\Builder;
 
 class ListOffers extends ListRecords
 {
     protected static string $resource = OfferResource::class;
+
+    protected function getTableQuery(): Builder
+    {
+        return parent::getTableQuery()->with(['company', 'receiveUser']);
+    }
 
     protected function getHeaderActions(): array
     {
