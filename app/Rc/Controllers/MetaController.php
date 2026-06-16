@@ -26,6 +26,7 @@ class MetaController extends Controller
             'majors' => $this->majorsPayload(),
             ...$this->metaService->getCompanyDictionaries(),
             ...$this->metaService->getMajorDictionaries(),
+            ...$this->metaService->getSchools(),
         ]);
     }
 
@@ -96,6 +97,18 @@ class MetaController extends Controller
     public function companies(Request $request): JsonResponse
     {
         return $this->success($this->metaService->getCompanyDictionaries());
+    }
+
+    /**
+     * 学校资料字典
+     *
+     * GET /rc/meta/schools
+     *
+     * @throws \Exception
+     */
+    public function schools(Request $request): JsonResponse
+    {
+        return $this->success($this->metaService->getSchools());
     }
 
     /**

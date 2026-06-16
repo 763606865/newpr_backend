@@ -6,6 +6,7 @@ use App\Models\Area;
 use App\Models\Major;
 use App\Models\Rc\Industry;
 use App\Models\Rc\Position;
+use App\Models\School;
 use App\Models\User;
 use App\Services\MetaService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -45,7 +46,7 @@ class MetaControllerTest extends TestCase
             ->assertJsonPath('data.positions.0.name', 'Engineering')
             ->assertJsonPath('data.majors.0.name', '装备制造大类')
             ->assertJsonPath('data.major_levels.0.value', 1)
-            ->assertJsonPath('data.major_education_types.0.value', '中职')
+            ->assertJsonPath('data.major_education_types.0.value', '本科')
             ->assertJsonPath('data.company_scales.0.value', 1)
             ->assertJsonPath('data.company_natures.0.value', 1)
             ->assertJsonPath('data.company_benefit_tags.0.value', 'social_insurance');
@@ -54,6 +55,40 @@ class MetaControllerTest extends TestCase
             '000001' => 'Province A',
             '000001001' => 'City A',
         ], app(MetaService::class)->getAreaNameMap());
+    }
+
+    public function test_schools_endpoint_returns_flat_school_list(): void
+    {
+        $user = User::factory()->create();
+        $this->seedSchools();
+
+        $response = $this
+            ->actingAs($user, 'rc')
+            ->getJson('/rc/meta/schools');
+
+        $response
+            ->assertOk()
+            ->assertJsonPath('code', 200)
+            ->assertJsonPath('data.schools.0.value', '4111010002')
+            ->assertJsonPath('data.schools.0.label', '中国人民大学')
+            ->assertJsonPath('data.schools.1.value', '4111010001')
+            ->assertJsonPath('data.schools.1.label', '北京大学')
+            ->assertJsonPath('data.schools.2.value', '4131010003')
+            ->assertJsonPath('data.schools.2.label', '复旦大学');
+    }
+
+    public function test_index_includes_flat_school_list(): void
+    {
+        $user = User::factory()->create();
+        $this->seedSchools();
+
+        $this
+            ->actingAs($user, 'rc')
+            ->getJson('/rc/meta')
+            ->assertOk()
+            ->assertJsonPath('data.schools.0.label', '中国人民大学')
+            ->assertJsonPath('data.schools.1.label', '北京大学')
+            ->assertJsonPath('data.schools.2.label', '复旦大学');
     }
 
     public function test_companies_meta_endpoint_returns_company_dictionaries(): void
@@ -134,7 +169,7 @@ class MetaControllerTest extends TestCase
             ->assertJsonPath('code', 200)
             ->assertJsonPath('data.majors.0.name', '装备制造大类')
             ->assertJsonPath('data.majors.0.children.0.name', '机械设计制造类')
-            ->assertJsonPath('data.major_education_types.0.label', '中职');
+            ->assertJsonPath('data.major_education_types.0.label', '本科');
     }
 
     private function seedMetaData(): void
@@ -259,6 +294,53 @@ class MetaControllerTest extends TestCase
                 'tag' => '',
                 'sort' => 1,
                 'status' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ]);
+    }
+
+    private function seedSchools(): void
+    {
+        School::query()->delete();
+
+        School::query()->insert([
+            [
+                'school_code' => '4111010001',
+                'name' => '北京大学',
+                'province' => '北京市',
+                'city' => '北京市',
+                'area' => '',
+                'address' => '',
+                'competent_dept' => '教育部',
+                'type' => '本科',
+                'remark' => '',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'school_code' => '4111010002',
+                'name' => '中国人民大学',
+                'province' => '北京市',
+                'city' => '北京市',
+                'area' => '',
+                'address' => '',
+                'competent_dept' => '教育部',
+                'type' => '本科',
+                'remark' => '',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'school_code' => '4131010003',
+                'name' => '复旦大学',
+                'province' => '上海市',
+                'city' => '上海市',
+                'area' => '',
+                'address' => '',
+                'competent_dept' => '教育部',
+                'type' => '本科',
+                'remark' => '',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],

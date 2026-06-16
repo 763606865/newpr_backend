@@ -27,6 +27,7 @@ use App\Rc\Controllers\ResumeProjectController;
 use App\Rc\Controllers\ResumeSkillController;
 use App\Rc\Controllers\ResumeTrainingController;
 use App\Rc\Controllers\ResumeWorkController;
+use App\Rc\Controllers\SchoolController;
 use App\Rc\Controllers\ToolController;
 use App\Rc\Controllers\UploadController;
 use Illuminate\Support\Facades\Route;
@@ -59,6 +60,7 @@ Route::middleware('auth:rc')->group(function (): void {
     Route::get('/meta/positions', [MetaController::class, 'positions']);
     Route::get('/meta/majors', [MetaController::class, 'majors']);
     Route::get('/meta/companies', [MetaController::class, 'companies']);
+    Route::get('/meta/schools', [MetaController::class, 'schools']);
     // ==============================================================================
 
     // 求职者-简历
@@ -153,6 +155,12 @@ Route::middleware('auth:rc')->group(function (): void {
     Route::put('/companies/profile', [CompanyController::class, 'profileUpdate']);
     Route::post('/companies/bind', [CompanyController::class, 'bind']);
     Route::post('/companies', [CompanyController::class, 'store']);
+    // ==============================================================================
+
+    // 校招负责人-学校
+    Route::get('/schools/profile', [SchoolController::class, 'profileShow']);
+    Route::put('/schools/profile', [SchoolController::class, 'profileUpdate']);
+    Route::post('/schools/bind', [SchoolController::class, 'bind']);
     // ==============================================================================
 
     // 招聘方-职位

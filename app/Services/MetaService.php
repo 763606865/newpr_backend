@@ -15,6 +15,7 @@ use App\Models\Cms\Tag;
 use App\Models\Major;
 use App\Models\Rc\Industry;
 use App\Models\Rc\Position;
+use App\Models\School;
 use App\Resources\Rc\RcAreaResource;
 use App\Resources\Rc\RcIndustryResource;
 use App\Resources\Rc\RcMajorResource;
@@ -39,6 +40,8 @@ class MetaService extends Service
     private const MAJORS_TREE_CACHE_KEY = 'rc:meta:majors:tree';
 
     private const TAGS_TREE_CACHE_KEY = 'cms:meta:tags:tree';
+
+    private const SCHOOLS_MAP_CACHE_KEY = 'cms:meta:schools:map';
 
     /**
      * @return array<int, array<string, mixed>>
@@ -284,6 +287,32 @@ class MetaService extends Service
         ];
     }
 
+    /**
+     * @return array{schools: array<int, array{value: string, label: string}>}
+     */
+    public function getSchools(): array
+    {
+        return Cache::rememberForever(self::SCHOOLS_MAP_CACHE_KEY, function (): array {
+            return [
+                'schools' => School::query()
+                    ->whereNotNull('school_code')
+                    ->orderBy('name')
+                    ->get()
+                    ->map(fn (School $school): array => [
+                        'value' => (string) $school->school_code,
+                        'label' => $school->name,
+                    ])
+                    ->values()
+                    ->all(),
+            ];
+        });
+    }
+
+    public function forgetSchools(): void
+    {
+        Cache::forget(self::SCHOOLS_MAP_CACHE_KEY);
+    }
+
     public function forgetAreas(): void
     {
         Cache::forget(self::AREAS_TREE_CACHE_KEY);
@@ -318,5 +347,6 @@ class MetaService extends Service
         $this->forgetPositions();
         $this->forgetMajors();
         $this->forgetTags();
+        $this->forgetSchools();
     }
 }

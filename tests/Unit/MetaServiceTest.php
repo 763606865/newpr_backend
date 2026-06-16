@@ -6,6 +6,7 @@ use App\Models\Area;
 use App\Models\Major;
 use App\Models\Rc\Industry;
 use App\Models\Rc\Position;
+use App\Models\School;
 use App\Services\MetaService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -204,5 +205,31 @@ class MetaServiceTest extends TestCase
 
         $this->assertCount(1, $tree);
         $this->assertSame('装备制造大类', $tree[0]['name']);
+    }
+
+    public function test_it_builds_cached_flat_school_list(): void
+    {
+        School::query()->create([
+            'school_code' => '4111010001',
+            'name' => '北京大学',
+            'province' => '北京市',
+            'city' => '北京市',
+            'type' => '本科',
+        ]);
+        School::query()->create([
+            'school_code' => '4131010003',
+            'name' => '复旦大学',
+            'province' => '上海市',
+            'city' => '上海市',
+            'type' => '本科',
+        ]);
+
+        $schools = app(MetaService::class)->getSchools();
+
+        $this->assertCount(2, $schools['schools']);
+        $this->assertSame('4111010001', $schools['schools'][0]['value']);
+        $this->assertSame('北京大学', $schools['schools'][0]['label']);
+        $this->assertSame('4131010003', $schools['schools'][1]['value']);
+        $this->assertSame('复旦大学', $schools['schools'][1]['label']);
     }
 }

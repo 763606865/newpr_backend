@@ -2,71 +2,44 @@
 
 namespace App\Models;
 
-use App\Enums\AreaLevel;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
-use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Attributes\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
 
 /**
  * 学校表
  *
- * @property int $id
- * @property string $name 名称
- * @property string $code 学校编码
- * @property string|null $parent_code 父级code
- * @property AreaLevel $level 1省 2市 3区县
- * @property string|null $type 类型
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
- * @property-read School|null $parent
- * @property-read Collection<int, School> $children
- *
- * @method static Builder roots()
- * @method static Builder atLevel(int|AreaLevel $level)
+ * @property int $id 主键ID
+ * @property string|null $school_code 学校代码
+ * @property string $name 学校名称
+ * @property string|null $province 省
+ * @property string|null $city 市
+ * @property string|null $area 区/县
+ * @property string|null $address 地址
+ * @property string|null $competent_dept 主管部门
+ * @property string|null $type 类型（本科/专科/高中/小学）
+ * @property string|null $remark 备注
+ * @property Carbon|null $created_at 创建时间
+ * @property Carbon|null $updated_at 更新时间
+ * @property-read SchoolProfile|null $profile 学校资料
  */
 #[Table('schools')]
 #[Fillable([
+    'school_code',
     'name',
-    'code',
-    'parent_code',
-    'level',
+    'province',
+    'city',
+    'area',
+    'address',
+    'competent_dept',
     'type',
+    'remark',
 ])]
 class School extends Model
 {
-    protected function casts(): array
+    public function profile(): HasOne
     {
-        return [
-            'level' => AreaLevel::class,
-        ];
-    }
-
-    public function parent(): BelongsTo
-    {
-        return $this->belongsTo(self::class, 'parent_code', 'code');
-    }
-
-    public function children(): HasMany
-    {
-        return $this->hasMany(self::class, 'parent_code', 'code');
-    }
-
-    #[Scope]
-    protected function roots(Builder $query): void
-    {
-        $query->whereNull($this->getTable().'.parent_code');
-    }
-
-    #[Scope]
-    protected function atLevel(Builder $query, int|AreaLevel $level): void
-    {
-        $levelValue = $level instanceof AreaLevel ? $level->value : $level;
-
-        $query->where($this->getTable().'.level', '=', $levelValue);
+        return $this->hasOne(SchoolProfile::class, 'school_code', 'school_code');
     }
 }

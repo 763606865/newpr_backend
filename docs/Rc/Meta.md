@@ -71,13 +71,22 @@
 | `sort` | int | 排序 |
 | `children` | array | 子级专业 |
 
+### 学校字典项（School）
+
+学校接口统一输出扁平 `{ value, label }` 结构，用于简历教育经历中的毕业院校选择：
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| `value` | string | 学校代码（`school_code`） |
+| `label` | string | 学校名称 |
+
 ---
 
 ## 1) Meta 汇总
 
 - 接口：`GET /rc/meta`
 - 鉴权：Bearer Token（`auth:rc`）
-- 描述：一次性返回简历填写所需的地区、行业、职位、专业元数据，以及企业资料字典
+- 描述：一次性返回简历填写所需的地区、行业、职位、专业、学校元数据，以及企业资料字典
 
 ### 成功响应示例
 
@@ -180,6 +189,11 @@
     ],
     "company_benefit_tags": [
       { "value": "social_insurance", "label": "五险一金" }
+    ],
+    "schools": [
+      { "value": "4111010002", "label": "中国人民大学" },
+      { "value": "4111010001", "label": "北京大学" },
+      { "value": "4131010003", "label": "复旦大学" }
     ]
   },
   "meta": {
@@ -197,7 +211,9 @@
 - `majors`：来自 `majors` 表，仅返回 `status=1` 的启用数据
 - `major_levels` / `major_education_types`：来自 PHP Enum，结构为 `{ value, label }`
 - `company_scales` / `company_natures` / `company_funding_stages` / `company_benefit_tags`：来自 PHP Enum，结构为 `{ value, label }`
-- 所有树结构均通过 `tree()` 生成
+- `schools`：来自 `schools` 表，仅返回 `school_code` 不为空的记录，结构为 `{ value, label }`
+- 地区、行业、职位、专业树结构均通过 `tree()` 生成
+- `schools` 为扁平列表，按学校名称升序排列
 
 ---
 
@@ -465,14 +481,51 @@
 
 ---
 
-## 7) 前端使用建议
+## 7) 学校元数据
+
+- 接口：`GET /rc/meta/schools`
+- 鉴权：Bearer Token（`auth:rc`）
+- 描述：返回学校扁平字典，用于简历教育经历中的毕业院校选择
+
+### 成功响应示例
+
+```json
+{
+  "code": 200,
+  "data": {
+    "schools": [
+      { "value": "4111010002", "label": "中国人民大学" },
+      { "value": "4111010001", "label": "北京大学" },
+      { "value": "4131010003", "label": "复旦大学" }
+    ]
+  },
+  "meta": {
+    "timestamp": 1748865600.1234,
+    "response_time": 0.0123
+  }
+}
+```
+
+### 规则
+
+- 数据来源：`schools` 表
+- 仅返回 `school_code` 不为空的记录
+- 排序：按 `name asc`
+- 结构为扁平数组，`value` 为学校代码（string），`label` 为学校名称
+- 缓存：结果永久缓存
+
+---
+
+## 8) 前端使用建议
 
 - 简历创建页建议优先调用 `GET /rc/meta`
 - 企业资料编辑页可调用 `GET /rc/meta/companies` 或直接使用 `GET /rc/meta` 中的企业字典
+- 教育经历中的毕业院校选择可调用 `GET /rc/meta/schools` 或直接使用 `GET /rc/meta` 中的 `schools`
 - 如果页面只需要单一字典，可分别调用：
   - `GET /rc/meta/areas`
   - `GET /rc/meta/industries`
   - `GET /rc/meta/positions`
   - `GET /rc/meta/majors`
+  - `GET /rc/meta/schools`
 - 后续“填写简历”接口也可复用这份元数据结构，避免前端重复实现树转换逻辑
 
