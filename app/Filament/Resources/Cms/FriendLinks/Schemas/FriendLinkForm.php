@@ -4,8 +4,9 @@ namespace App\Filament\Resources\Cms\FriendLinks\Schemas;
 
 use App\Enums\CmsOpenTarget;
 use App\Enums\CmsStatus;
+use App\Filament\Support\AreaCascadeFormFields;
 use Filament\Forms\Components\DateTimePicker;
-use Filament\Forms\Components\KeyValue;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
@@ -16,10 +17,17 @@ class FriendLinkForm
     {
         return $schema
             ->components([
-                TextInput::make('city_code')->label('城市编码')->maxLength(32),
+                ...AreaCascadeFormFields::makeTwoLevel(),
                 TextInput::make('name')->label('友链名称')->required(),
                 TextInput::make('url')->label('友链地址')->required(),
-                TextInput::make('logo')->label('Logo'),
+                FileUpload::make('logo')
+                    ->label('Logo')
+                    ->image()
+                    ->disk('oss')
+                    ->directory('friend-link')
+                    ->visibility(config('filesystems.disks.oss.visibility', 'public'))
+                    ->formatStateUsing(static fn (mixed $state): ?string => self::normalizeOssPath($state))
+                    ->maxSize(2048),
                 Select::make('target')->label('打开方式')->options(CmsOpenTarget::class)->enum(CmsOpenTarget::class)->required(),
                 TextInput::make('rel')->label('rel属性'),
                 TextInput::make('description')->label('描述'),
@@ -27,7 +35,29 @@ class FriendLinkForm
                 DateTimePicker::make('end_at')->label('生效结束时间'),
                 Select::make('status')->label('状态')->options(CmsStatus::class)->enum(CmsStatus::class)->required(),
                 TextInput::make('sort')->label('排序')->numeric()->default(0),
-                KeyValue::make('extra')->label('扩展字段'),
             ]);
+    }
+
+    private static function normalizeOssPath(mixed $state): ?string
+    {
+        if (blank($state)) {
+            return null;
+        }
+
+        if (is_array($state)) {
+            $state = array_values($state)[0] ?? null;
+        }
+
+        if (! is_string($state) || $state === '') {
+            return null;
+        }
+
+        if (str_starts_with($state, 'http://') || str_starts_with($state, 'https://')) {
+            $path = parse_url($state, PHP_URL_PATH);
+
+            return is_string($path) ? ltrim($path, '/') : null;
+        }
+
+        return ltrim($state, '/');
     }
 }

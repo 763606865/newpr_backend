@@ -7,7 +7,6 @@ use App\Enums\CmsOpenTarget;
 use App\Enums\CmsStatus;
 use App\Filament\Support\NullableParentIdSelect;
 use Filament\Forms\Components\DateTimePicker;
-use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -37,7 +36,6 @@ class MenuForm
                 TextInput::make('sort')->label('排序')->numeric()->default(0),
                 DateTimePicker::make('start_at')->label('生效开始时间'),
                 DateTimePicker::make('end_at')->label('生效结束时间'),
-                KeyValue::make('extra')->label('扩展字段'),
             ]);
     }
 }

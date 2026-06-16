@@ -133,4 +133,26 @@ class AreaSelectOptionsTest extends TestCase
             'district_code' => '110101',
         ], Area::resolveAreaHierarchy('110101'));
     }
+
+    public function test_resolve_area_hierarchy_for_city_code_only(): void
+    {
+        Area::query()->create([
+            'code' => '360000',
+            'name' => '江西省',
+            'parent_code' => '000000',
+            'level' => AreaLevel::Province,
+        ]);
+        Area::query()->create([
+            'code' => '360100',
+            'name' => '南昌市',
+            'parent_code' => '360000',
+            'level' => AreaLevel::City,
+        ]);
+
+        $this->assertSame([
+            'province_code' => '360000',
+            'city_code' => '360100',
+            'district_code' => null,
+        ], Area::resolveAreaHierarchy('360100'));
+    }
 }
