@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Discovery\Recommendation\SchoolActivityRecommendationContext;
 use App\Models\Cms\AdSlot;
 use App\Models\Cms\Announcement;
 use App\Models\Cms\BannerPosition;
@@ -13,6 +14,8 @@ use App\Models\Rc\Position;
 use App\Resources\Cms\CmsMenuCollection;
 use App\Resources\Rc\RcIndustryResource;
 use App\Resources\Rc\RcPositionResource;
+use App\Resources\Rc\RcSchoolActivityResource;
+use App\Services\RcSchoolActivityRecommendationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -171,6 +174,49 @@ class HomeController extends Controller
 
         return api_response([
             'industries' => tree($payloads),
+        ]);
+    }
+
+    /**
+     * 中测校园
+     *
+     * GET /cms/home/schools
+     *
+     * @throws \Exception
+     */
+    public function school(Request $request): JsonResponse
+    {
+        $cityCode = $request->string('city_code')->toString();
+        $cityCode = $cityCode !== '' ? $cityCode : null;
+
+        $bannerPosition = BannerPosition::query()
+            ->enabled()
+            ->where('code', '=', 'zcgz.school.banner-1')
+            ->with([
+                'banners' => fn ($query) => $query->enabled()->forCity($cityCode)->orderBy('sort'),
+            ])
+            ->first();
+
+        $adSlot = AdSlot::query()
+            ->enabled()
+            ->whereLike('code', '%school.%')
+            ->with([
+                'ads' => fn ($query) => $query->enabled()->forCity($cityCode)->orderBy('sort'),
+            ])
+            ->orderBy('sort')
+            ->get();
+
+        $recommendations = RcSchoolActivityRecommendationService::make()->recommendGrouped(
+            new SchoolActivityRecommendationContext(cityHint: $cityCode),
+        );
+
+        return api_response([
+            'banner_position' => $bannerPosition?->makeVisible(['banners']),
+            'ad_slot' => $adSlot->makeVisible(['ads']),
+            'dual_selections' => RcSchoolActivityResource::collection($recommendations['dual_selections'])->resolve($request),
+            'presentations' => RcSchoolActivityResource::collection($recommendations['presentations'])->resolve($request),
+            'job_fairs' => RcSchoolActivityResource::collection($recommendations['job_fairs'])->resolve($request),
+            'recommendation' => $recommendations['criteria']->toRecommendationMeta(),
         ]);
     }
 }

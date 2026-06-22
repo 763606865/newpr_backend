@@ -86,6 +86,27 @@ class CompanyControllerTest extends TestCase
             ->assertJsonPath('data.company.id', $company->id);
     }
 
+    public function test_lookup_searches_companies_by_name(): void
+    {
+        $user = User::factory()->create();
+        $company = $this->createCompany(['name' => '南昌示例科技有限公司']);
+        $this->createCompany([
+            'name' => '上海未来科技有限公司',
+            'credit_code' => '91360100MA0000000A',
+        ]);
+
+        $response = $this
+            ->actingAs($user, 'rc')
+            ->getJson('/rc/companies/lookup?name='.urlencode('示例科技'));
+
+        $response
+            ->assertOk()
+            ->assertJsonPath('code', 200)
+            ->assertJsonCount(1, 'data.companies')
+            ->assertJsonPath('data.companies.0.id', $company->id)
+            ->assertJsonPath('data.companies.0.name', '南昌示例科技有限公司');
+    }
+
     public function test_bind_requires_recruiter_identity(): void
     {
         $user = User::factory()->create();

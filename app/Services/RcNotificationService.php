@@ -5,9 +5,11 @@ namespace App\Services;
 use App\Enums\RcIdentityStatus;
 use App\Enums\RcIdentityType;
 use App\Enums\RcNotificationType;
+use App\Enums\RcSchoolActivityOrganizerType;
 use App\Models\Rc\Application;
 use App\Models\Rc\Interview;
 use App\Models\Rc\Notification;
+use App\Models\Rc\SchoolActivityCompany;
 use App\Models\Rc\UserIdentity;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -248,6 +250,38 @@ class RcNotificationService extends Service
         );
     }
 
+    public function notifySchoolActivityCompanyInvited(SchoolActivityCompany $application): void
+    {
+        $context = $this->resolveSchoolActivityCompanyContext($application);
+
+        $this->notifyCompanyRecruitersForActivityCompany(
+            application: $application,
+            type: RcNotificationType::SchoolActivityCompanyInvited,
+            title: '校招活动邀约',
+            body: sprintf(
+                '%s邀请贵司参加「%s」',
+                $context['organizer_name'],
+                $context['activity_title'],
+            ),
+        );
+    }
+
+    public function notifySchoolActivityCompanyApproved(SchoolActivityCompany $application): void
+    {
+        $context = $this->resolveSchoolActivityCompanyContext($application);
+
+        $this->notifyCompanyRecruitersForActivityCompany(
+            application: $application,
+            type: RcNotificationType::SchoolActivityCompanyApproved,
+            title: '校招活动审批通过',
+            body: sprintf(
+                '%s已通过贵司参加「%s」的申请',
+                $context['organizer_name'],
+                $context['activity_title'],
+            ),
+        );
+    }
+
     /**
      * @param  array<string, mixed>  $payload
      */
@@ -334,6 +368,36 @@ class RcNotificationService extends Service
         }
     }
 
+    private function notifyCompanyRecruitersForActivityCompany(
+        SchoolActivityCompany $application,
+        RcNotificationType $type,
+        string $title,
+        string $body,
+    ): void {
+        $context = $this->resolveSchoolActivityCompanyContext($application);
+        $payload = [
+            'activity_id' => $context['activity_id'],
+            'company_id' => $context['company_id'],
+            'school_activity_company_id' => $application->id,
+            'activity_booth_id' => $application->activity_booth_id,
+            'join_source' => $application->join_source->value,
+            'apply_status' => $application->apply_status->value,
+        ];
+
+        $identities = $this->resolveRecruiterIdentitiesForCompany($application->company_id);
+
+        foreach ($identities as $identity) {
+            $this->create(
+                userId: $identity->user_id,
+                type: $type,
+                title: $title,
+                body: $body,
+                payload: $payload,
+                recipientIdentity: $identity,
+            );
+        }
+    }
+
     private function resolveCandidateDisplayName(Application $application): string
     {
         $application->loadMissing('resume');
@@ -358,6 +422,34 @@ class RcNotificationService extends Service
         return [
             'company_name' => $application->company?->name ?? '企业',
             'job_title' => $application->job?->title ?? '职位',
+        ];
+    }
+
+    /**
+     * @return array{
+     *     organizer_name: string,
+     *     activity_title: string,
+     *     activity_id: int,
+     *     company_id: int,
+     *     company_name: string
+     * }
+     */
+    private function resolveSchoolActivityCompanyContext(SchoolActivityCompany $application): array
+    {
+        $application->loadMissing(['activity.organizer', 'company']);
+
+        $organizerName = '院校';
+
+        if ($application->activity?->organizer_type === RcSchoolActivityOrganizerType::School && $application->activity->organizer) {
+            $organizerName = (string) ($application->activity->organizer->name ?? '院校');
+        }
+
+        return [
+            'organizer_name' => $organizerName,
+            'activity_title' => (string) ($application->activity?->title ?? '校招活动'),
+            'activity_id' => (int) $application->activity_id,
+            'company_id' => (int) $application->company_id,
+            'company_name' => (string) ($application->company?->name ?? '企业'),
         ];
     }
 }

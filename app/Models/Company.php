@@ -10,6 +10,8 @@ use App\Models\Oa\AttendanceSchedule;
 use App\Models\Oa\LeaveBalance;
 use App\Models\Oa\LeaveType;
 use App\Models\Pivot\CompanyBUsers;
+use App\Models\Rc\SchoolActivityBooth;
+use App\Models\Rc\SchoolActivityCompany;
 use App\Observers\CompanyObserver;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
@@ -237,6 +239,22 @@ class Company extends Model
     public function employees(): HasMany
     {
         return $this->hasMany(Employee::class, 'company_id');
+    }
+
+    /**
+     * 校园活动企业报名记录
+     */
+    public function schoolActivityCompanies(): HasMany
+    {
+        return $this->hasMany(SchoolActivityCompany::class, 'company_id');
+    }
+
+    /**
+     * 校园活动展位占用记录
+     */
+    public function schoolActivityBooths(): HasMany
+    {
+        return $this->hasMany(SchoolActivityBooth::class, 'company_id');
     }
 
     /**

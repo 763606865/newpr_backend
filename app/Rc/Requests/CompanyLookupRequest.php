@@ -18,7 +18,8 @@ class CompanyLookupRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'credit_code' => ['required', 'string', 'size:18'],
+            'credit_code' => ['nullable', 'string', 'size:18', 'required_without:name'],
+            'name' => ['nullable', 'string', 'min:2', 'max:255', 'required_without:credit_code'],
         ];
     }
 
@@ -29,6 +30,7 @@ class CompanyLookupRequest extends FormRequest
     {
         return [
             'credit_code' => '统一社会信用代码',
+            'name' => '企业名称',
         ];
     }
 }

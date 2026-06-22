@@ -143,6 +143,11 @@ class Job extends Model
         return $this->hasMany(Application::class, 'job_id');
     }
 
+    public function schoolActivityJobs(): HasMany
+    {
+        return $this->hasMany(SchoolActivityJob::class, 'job_id');
+    }
+
     public function statsDaily(): HasMany
     {
         return $this->hasMany(JobStatsDaily::class, 'job_id');

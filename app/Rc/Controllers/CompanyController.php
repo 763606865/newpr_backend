@@ -29,13 +29,26 @@ class CompanyController extends Controller
     public function lookup(CompanyLookupRequest $request): JsonResponse
     {
         $validated = $request->validated();
-        $result = RcCompanyService::make()->lookup((string) $validated['credit_code']);
+        $service = RcCompanyService::make();
+
+        if (filled($validated['credit_code'] ?? null)) {
+            $result = $service->lookup((string) $validated['credit_code']);
+
+            return $this->success([
+                'exists' => $result['exists'],
+                'company' => $result['company'] instanceof Company
+                    ? (new RcCompanyResource($result['company']))->resolve($request)
+                    : null,
+            ]);
+        }
+
+        $companies = $service->searchByName((string) $validated['name']);
 
         return $this->success([
-            'exists' => $result['exists'],
-            'company' => $result['company'] instanceof Company
-                ? (new RcCompanyResource($result['company']))->resolve($request)
-                : null,
+            'companies' => $companies
+                ->map(fn (Company $company): array => (new RcCompanyResource($company))->resolve($request))
+                ->values()
+                ->all(),
         ]);
     }
 

@@ -12,6 +12,7 @@ use App\Models\CompanyContact;
 use App\Models\CompanyLicense;
 use App\Models\Rc\UserIdentity;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 
 class RcCompanyService extends Service
@@ -33,6 +34,45 @@ class RcCompanyService extends Service
     public function findById(int $companyId): ?Company
     {
         return Company::query()->find($companyId);
+    }
+
+    /**
+     * @return Collection<int, Company>
+     */
+    public function searchByName(string $name, int $limit = 20): Collection
+    {
+        $keyword = trim($name);
+
+        return Company::query()
+            ->where('name', 'like', '%'.$keyword.'%')
+            ->orderBy('name')
+            ->orderBy('id')
+            ->limit($limit)
+            ->get();
+    }
+
+    /**
+     * @param  array{name: string, credit_code: string, contact_phone: string}  $companyData
+     */
+    public function findOrCreateFromInvite(array $companyData): Company
+    {
+        $existing = $this->findByCreditCode($companyData['credit_code']);
+
+        if ($existing instanceof Company) {
+            return $existing;
+        }
+
+        return DB::transaction(function () use ($companyData): Company {
+            $company = CompanyService::make()->create([
+                'name' => $companyData['name'],
+                'credit_code' => $this->normalizeCreditCode($companyData['credit_code']),
+                'contact_phone' => $companyData['contact_phone'],
+            ]);
+
+            CompanyProfileService::make()->ensureForCompany($company);
+
+            return $company->refresh();
+        });
     }
 
     /**
