@@ -118,6 +118,47 @@ class Area extends Model
     /**
      * @return array{province_code: ?string, city_code: ?string, district_code: ?string}
      */
+    public static function resolveFormAreaCodes(?string $provinceCode, ?string $cityCode, ?string $districtCode): array
+    {
+        if (filled($provinceCode) && filled($cityCode)) {
+            return [
+                'province_code' => $provinceCode,
+                'city_code' => $cityCode,
+                'district_code' => $districtCode,
+            ];
+        }
+
+        $hierarchy = static::resolveAreaHierarchy($districtCode ?? $cityCode ?? $provinceCode);
+
+        return [
+            'province_code' => $provinceCode ?? $hierarchy['province_code'],
+            'city_code' => $cityCode ?? $hierarchy['city_code'],
+            'district_code' => $districtCode ?? $hierarchy['district_code'],
+        ];
+    }
+
+    /**
+     * @param  array<string, string>  $options
+     * @return array<string, string>
+     */
+    public static function optionsWithSelected(array $options, ?string $selectedCode): array
+    {
+        if (blank($selectedCode) || array_key_exists($selectedCode, $options)) {
+            return $options;
+        }
+
+        $name = static::query()->where('code', $selectedCode)->value('name');
+
+        if (filled($name)) {
+            $options[$selectedCode] = $name;
+        }
+
+        return $options;
+    }
+
+    /**
+     * @return array{province_code: ?string, city_code: ?string, district_code: ?string}
+     */
     public static function resolveAreaHierarchy(?string $code): array
     {
         if (blank($code)) {
@@ -185,5 +226,33 @@ class Area extends Model
             'city_code' => null,
             'district_code' => null,
         ];
+    }
+
+    public static function formatRegionLabel(?string $provinceCode, ?string $cityCode, ?string $districtCode): ?string
+    {
+        $codes = array_values(array_filter(
+            [$provinceCode, $cityCode, $districtCode],
+            fn (?string $code): bool => filled($code),
+        ));
+
+        if ($codes === []) {
+            return null;
+        }
+
+        /** @var array<string, string> $names */
+        $names = static::query()
+            ->whereIn('code', $codes)
+            ->pluck('name', 'code')
+            ->all();
+
+        $parts = [];
+
+        foreach ($codes as $code) {
+            if (isset($names[$code])) {
+                $parts[] = $names[$code];
+            }
+        }
+
+        return $parts === [] ? null : implode('-', $parts);
     }
 }
