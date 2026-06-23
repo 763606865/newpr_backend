@@ -5,7 +5,9 @@ namespace App\Models\Cms;
 use App\Enums\CmsStatus;
 use App\Models\Cast\AliyunOss;
 use App\Models\Model;
+use App\Observers\ArticleCategoryMetaObserver;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Attributes\Visible;
@@ -37,6 +39,7 @@ use Illuminate\Support\Carbon;
  * @method static Builder enabled()
  */
 #[Table('cms_article_categories')]
+#[ObservedBy(ArticleCategoryMetaObserver::class)]
 #[Fillable(['parent_id', 'name', 'slug', 'cover', 'description', 'status', 'sort'])]
 #[Visible([
     'id',

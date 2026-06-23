@@ -23,6 +23,8 @@ class MetaController extends Controller
      * - `major_levels` / `major_education_types`：专业层级与学历类型字典
      * - `tags`：标签树，按分类分组（含 `children` 子节点，字段见 `SApiTagResource`）
      * - `tag_categories`：标签分类字典
+     * - `article_categories`：校园资讯分类树（字段见 `CmsArticleCategoryResource`）
+     * - `article_tags`：校园资讯标签列表（字段见 `CmsArticleTagResource`）
      * - `announcement_publisher_types`：公告发布人类型字典
      *
      * @see docs/Cms/Meta.md
@@ -35,6 +37,8 @@ class MetaController extends Controller
             'areas' => $this->areasPayload(),
             'majors' => $this->majorsPayload(),
             'tags' => $this->tagsPayload(),
+            'article_categories' => $this->articleCategoriesPayload(),
+            'article_tags' => $this->articleTagsPayload(),
             ...$this->metaService->getMajorDictionaries(),
             ...$this->metaService->getTagDictionaries(),
             ...$this->metaService->getAnnouncementDictionaries(),
@@ -80,6 +84,25 @@ class MetaController extends Controller
     }
 
     /**
+     * 校园资讯元数据
+     *
+     * GET /cms/meta/articles
+     *
+     * 无需鉴权。返回校园资讯分类树与标签列表，供资讯栏目筛选器使用。
+     *
+     * @see docs/Cms/Meta.md
+     *
+     * @throws \Exception
+     */
+    public function articles(Request $request): JsonResponse
+    {
+        return $this->success([
+            'article_categories' => $this->articleCategoriesPayload(),
+            'article_tags' => $this->articleTagsPayload(),
+        ]);
+    }
+
+    /**
      * @return array<int, array<string, mixed>>
      */
     private function areasPayload(): array
@@ -101,5 +124,21 @@ class MetaController extends Controller
     private function tagsPayload(): array
     {
         return $this->metaService->getTagsTree();
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    private function articleCategoriesPayload(): array
+    {
+        return $this->metaService->getArticleCategoriesTree();
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    private function articleTagsPayload(): array
+    {
+        return $this->metaService->getArticleTagsList();
     }
 }

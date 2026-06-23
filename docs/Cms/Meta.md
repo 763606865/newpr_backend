@@ -54,6 +54,33 @@
 | `category_label` | string | 分类展示名称 |
 | `children` | array | 该分类下的标签列表，元素为标签对象 |
 
+### 校园资讯分类对象（Article Category）
+
+分类树节点统一使用 `CmsArticleCategoryResource` 输出，字段如下：
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| `id` | int | 分类 ID，用于 `GET /cms/articles` 的 `category_id` 参数 |
+| `parent_id` | int | 父级分类 ID，根节点为 `0` |
+| `name` | string | 分类名称 |
+| `slug` | string\|null | 分类别名，用于 `category_slug` 参数 |
+| `cover` | string\|null | 封面 OSS 路径 |
+| `display_cover` | string\|null | 封面可访问 URL |
+| `description` | string\|null | 分类描述 |
+| `sort` | int | 排序 |
+| `children` | array | 子级分类 |
+
+### 校园资讯标签对象（Article Tag）
+
+标签列表统一使用 `CmsArticleTagResource` 输出，字段如下：
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| `id` | int | 标签 ID，用于 `GET /cms/articles` 的 `tag_ids` 参数 |
+| `name` | string | 标签名称 |
+| `slug` | string\|null | 标签别名 |
+| `sort` | int | 排序 |
+
 ---
 
 ## 1) 汇总元数据
@@ -152,6 +179,39 @@
       { "value": 4, "label": "政府机关" },
       { "value": 5, "label": "银行" },
       { "value": 6, "label": "学校" }
+    ],
+    "article_categories": [
+      {
+        "id": 1,
+        "parent_id": 0,
+        "name": "校园资讯",
+        "slug": "campus-news",
+        "cover": null,
+        "display_cover": null,
+        "description": null,
+        "sort": 1,
+        "children": [
+          {
+            "id": 2,
+            "parent_id": 1,
+            "name": "就业动态",
+            "slug": "employment-news",
+            "cover": null,
+            "display_cover": null,
+            "description": null,
+            "sort": 1,
+            "children": []
+          }
+        ]
+      }
+    ],
+    "article_tags": [
+      {
+        "id": 1,
+        "name": "校招",
+        "slug": "campus-recruitment",
+        "sort": 1
+      }
     ]
   },
   "meta": {
@@ -168,6 +228,10 @@
 - `majors`：来自 `majors` 表，仅返回启用数据；缓存策略同上，由 `MajorMetaObserver` 失效
 - `tags`：来自 `cms_tags` 表，仅返回启用数据；按 `category asc, sort asc, id asc` 排序；按分类分组后输出
 - `tags` 缓存：永久缓存，`cms_tags` 表变更时由 `TagMetaObserver` 自动失效
+- `article_categories`：来自 `cms_article_categories` 表，仅返回启用数据；按 `sort asc, id asc` 排序；通过 `tree()` 按 `parent_id` / `id` 组树
+- `article_categories` 缓存：永久缓存，`cms_article_categories` 变更时由 `ArticleCategoryMetaObserver` 自动失效
+- `article_tags`：来自 `cms_article_tags` 表，仅返回启用数据；按 `sort asc, id asc` 排序
+- `article_tags` 缓存：永久缓存，`cms_article_tags` 变更时由 `ArticleTagMetaObserver` 自动失效
 - `tag_categories`：来自 `CmsTagCategory` 枚举，供前端展示分类名称
 - `announcement_publisher_types`：来自 `CmsAnnouncementPublisherType` 枚举，供公告列表 `publisher_types` 筛选参数取值
 
@@ -297,12 +361,65 @@
 
 ---
 
-## 4) 前端使用建议
+## 4) 校园资讯元数据
+
+- 接口：`GET /cms/meta/articles`
+- 鉴权：无
+- Query 参数：无
+- 描述：返回校园资讯分类树与标签列表，供资讯栏目筛选器使用
+
+### 成功响应示例
+
+```json
+{
+  "code": 200,
+  "data": {
+    "article_categories": [
+      {
+        "id": 1,
+        "parent_id": 0,
+        "name": "校园资讯",
+        "slug": "campus-news",
+        "cover": null,
+        "display_cover": null,
+        "description": null,
+        "sort": 1,
+        "children": []
+      }
+    ],
+    "article_tags": [
+      {
+        "id": 1,
+        "name": "校招",
+        "slug": "campus-recruitment",
+        "sort": 1
+      }
+    ]
+  },
+  "meta": {
+    "timestamp": 1748865600.1234,
+    "response_time": 0.0123
+  }
+}
+```
+
+### 规则
+
+- 数据来源：`cms_article_categories`、`cms_article_tags`，仅返回 `status = 启用` 且未软删除的记录
+- 分类输出树结构，标签输出扁平列表
+- 缓存：永久缓存，表变更时由对应 Observer 自动失效
+- 资讯列表按分类筛选时，使用分类 `id` 作为 `category_id`，或使用 `slug` 作为 `category_slug` 传给 `GET /cms/articles`
+- 资讯列表按标签筛选时，使用标签 `id` 组成 `tag_ids`，详见 [校园资讯.md](./校园资讯.md)
+
+---
+
+## 5) 前端使用建议
 
 - 门户首页、公告页等接口的 `city_code` 参数，建议取 `areas` 树中**市级**节点 `code`
 - 首次进入站点时可调用 `GET /cms/meta` 加载地区、专业、标签字典，本地缓存后复用
 - 若页面仅需专业字典，可调用 `GET /cms/meta/majors`
 - 若页面仅需标签字典（如公告筛选），可调用 `GET /cms/meta/tags`
+- 若页面仅需校园资讯分类/标签字典，可调用 `GET /cms/meta/articles`
 - 公告列表按标签筛选时，使用标签 `id` 组成 `tag_ids`，详见 [公告页.md](./公告页.md)
 - 公告列表按发布人类型筛选时，使用 `announcement_publisher_types` 中的 `value` 组成 `publisher_types`
 - 若页面仅需行业或职位字典，可分别调用：

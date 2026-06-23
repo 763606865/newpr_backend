@@ -11,11 +11,15 @@ use App\Enums\CompanyScaleType;
 use App\Enums\MajorEducationType;
 use App\Enums\MajorLevel;
 use App\Models\Area;
+use App\Models\Cms\ArticleCategory;
+use App\Models\Cms\ArticleTag;
 use App\Models\Cms\Tag;
 use App\Models\Major;
 use App\Models\Rc\Industry;
 use App\Models\Rc\Position;
 use App\Models\School;
+use App\Resources\Cms\CmsArticleCategoryResource;
+use App\Resources\Cms\CmsArticleTagResource;
 use App\Resources\Rc\RcAreaResource;
 use App\Resources\Rc\RcIndustryResource;
 use App\Resources\Rc\RcMajorResource;
@@ -40,6 +44,10 @@ class MetaService extends Service
     private const MAJORS_TREE_CACHE_KEY = 'rc:meta:majors:tree';
 
     private const TAGS_TREE_CACHE_KEY = 'cms:meta:tags:tree';
+
+    private const ARTICLE_CATEGORIES_TREE_CACHE_KEY = 'cms:meta:article_categories:tree';
+
+    private const ARTICLE_TAGS_LIST_CACHE_KEY = 'cms:meta:article_tags:list';
 
     private const SCHOOLS_MAP_CACHE_KEY = 'cms:meta:schools:map';
 
@@ -212,6 +220,43 @@ class MetaService extends Service
     }
 
     /**
+     * @return array<int, array<string, mixed>>
+     */
+    public function getArticleCategoriesTree(): array
+    {
+        return Cache::rememberForever(self::ARTICLE_CATEGORIES_TREE_CACHE_KEY, function (): array {
+            $categories = ArticleCategory::query()
+                ->enabled()
+                ->orderBy('sort')
+                ->orderBy('id')
+                ->get();
+
+            return tree(
+                CmsArticleCategoryResource::collection($categories)->resolve(new Request),
+                'parent_id',
+                'id',
+                0,
+            );
+        });
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    public function getArticleTagsList(): array
+    {
+        return Cache::rememberForever(self::ARTICLE_TAGS_LIST_CACHE_KEY, function (): array {
+            $tags = ArticleTag::query()
+                ->enabled()
+                ->orderBy('sort')
+                ->orderBy('id')
+                ->get();
+
+            return CmsArticleTagResource::collection($tags)->resolve(new Request);
+        });
+    }
+
+    /**
      * @return array<string, array<int, array{value: int|string, label: string|null}>>
      */
     public function getAnnouncementDictionaries(): array
@@ -340,6 +385,16 @@ class MetaService extends Service
         Cache::forget(self::TAGS_TREE_CACHE_KEY);
     }
 
+    public function forgetArticleCategories(): void
+    {
+        Cache::forget(self::ARTICLE_CATEGORIES_TREE_CACHE_KEY);
+    }
+
+    public function forgetArticleTags(): void
+    {
+        Cache::forget(self::ARTICLE_TAGS_LIST_CACHE_KEY);
+    }
+
     public function forgetAll(): void
     {
         $this->forgetAreas();
@@ -347,6 +402,8 @@ class MetaService extends Service
         $this->forgetPositions();
         $this->forgetMajors();
         $this->forgetTags();
+        $this->forgetArticleCategories();
+        $this->forgetArticleTags();
         $this->forgetSchools();
     }
 }

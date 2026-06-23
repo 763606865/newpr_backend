@@ -3,8 +3,10 @@
 namespace App\Models\Cms;
 
 use App\Enums\CmsPublishStatus;
+use App\Enums\CmsStatus;
 use App\Models\Cast\AliyunOss;
 use App\Models\Model;
+use App\Models\School;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Attributes\Table;
@@ -24,6 +26,7 @@ use Illuminate\Support\Carbon;
  * @property int $id 主键ID
  * @property int $category_id 分类ID
  * @property string|null $city_code 城市编码
+ * @property string|null $school_code 院校代码
  * @property string $title 标题
  * @property string|null $sub_title 副标题
  * @property string|null $slug 文章别名
@@ -47,14 +50,20 @@ use Illuminate\Support\Carbon;
  * @property-read ArticleContent|null $content 正文内容
  * @property-read Collection<int, ArticleTag> $tags 标签列表
  * @property-read Collection<int, ArticleTagRelation> $articleTagRelations 标签关联
+ * @property-read School|null $school 关联院校
  *
  * @method static Builder forCity(?string $cityCode)
+ * @method static Builder forSchool(?string $schoolCode)
+ * @method static Builder forCategory(?int $categoryId)
+ * @method static Builder forCategorySlug(?string $slug)
+ * @method static Builder withArticleTags(array $tagIds, bool $matchAll = true)
  * @method static Builder published()
  */
 #[Table('cms_articles')]
 #[Fillable([
     'category_id',
     'city_code',
+    'school_code',
     'title',
     'sub_title',
     'slug',
@@ -76,6 +85,7 @@ use Illuminate\Support\Carbon;
     'id',
     'category_id',
     'city_code',
+    'school_code',
     'title',
     'sub_title',
     'slug',
@@ -142,6 +152,11 @@ class Article extends Model
         return $this->hasMany(ArticleTagRelation::class, 'article_id');
     }
 
+    public function school(): BelongsTo
+    {
+        return $this->belongsTo(School::class, 'school_code', 'school_code');
+    }
+
     #[Scope]
     protected function forCity(Builder $query, ?string $cityCode): void
     {
@@ -153,6 +168,60 @@ class Article extends Model
             $builder->where($this->getTable().'.city_code', '=', $cityCode)
                 ->orWhereNull($this->getTable().'.city_code');
         });
+    }
+
+    #[Scope]
+    protected function forSchool(Builder $query, ?string $schoolCode): void
+    {
+        if (blank($schoolCode)) {
+            return;
+        }
+
+        $query->where($this->getTable().'.school_code', '=', $schoolCode);
+    }
+
+    #[Scope]
+    protected function forCategory(Builder $query, ?int $categoryId): void
+    {
+        if ($categoryId === null || $categoryId <= 0) {
+            return;
+        }
+
+        $query->where($this->getTable().'.category_id', '=', $categoryId);
+    }
+
+    #[Scope]
+    protected function forCategorySlug(Builder $query, ?string $slug): void
+    {
+        if (blank($slug)) {
+            return;
+        }
+
+        $query->whereHas('category', function (Builder $builder) use ($slug): void {
+            $builder->where('slug', $slug)
+                ->where('status', CmsStatus::Enabled->value);
+        });
+    }
+
+    /**
+     * @param  array<int, int>  $tagIds
+     */
+    #[Scope]
+    protected function withArticleTags(Builder $query, array $tagIds, bool $matchAll = true): void
+    {
+        if ($tagIds === []) {
+            return;
+        }
+
+        if ($matchAll) {
+            foreach ($tagIds as $tagId) {
+                $query->whereHas('tags', fn (Builder $builder): Builder => $builder->where('cms_article_tags.id', $tagId));
+            }
+
+            return;
+        }
+
+        $query->whereHas('tags', fn (Builder $builder): Builder => $builder->whereIn('cms_article_tags.id', $tagIds));
     }
 
     #[Scope]

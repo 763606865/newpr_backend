@@ -4,7 +4,9 @@ namespace App\Models\Cms;
 
 use App\Enums\CmsStatus;
 use App\Models\Model;
+use App\Observers\ArticleTagMetaObserver;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Attributes\Visible;
@@ -32,6 +34,7 @@ use Illuminate\Support\Carbon;
  * @method static Builder enabled()
  */
 #[Table('cms_article_tags')]
+#[ObservedBy(ArticleTagMetaObserver::class)]
 #[Fillable(['name', 'slug', 'status', 'sort'])]
 #[Visible([
     'id',

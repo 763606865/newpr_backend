@@ -31,6 +31,7 @@ use App\Rc\Controllers\ResumeWorkController;
 use App\Rc\Controllers\SchoolActivityCompanyController;
 use App\Rc\Controllers\SchoolActivityController;
 use App\Rc\Controllers\SchoolActivityJobController;
+use App\Rc\Controllers\SchoolArticleController;
 use App\Rc\Controllers\SchoolBoothAreaController;
 use App\Rc\Controllers\SchoolBoothController;
 use App\Rc\Controllers\SchoolController;
@@ -204,6 +205,13 @@ Route::middleware('auth:rc')->group(function (): void {
     Route::get('/schools/activities/{activityId}/job-applications', [SchoolActivityJobController::class, 'index'])->whereNumber('activityId');
     Route::post('/schools/activities/{activityId}/job-applications/{id}/approve', [SchoolActivityJobController::class, 'approve'])->whereNumber('activityId')->whereNumber('id');
     Route::post('/schools/activities/{activityId}/job-applications/{id}/reject', [SchoolActivityJobController::class, 'reject'])->whereNumber('activityId')->whereNumber('id');
+    Route::get('/schools/articles', [SchoolArticleController::class, 'index']);
+    Route::post('/schools/articles', [SchoolArticleController::class, 'store']);
+    Route::get('/schools/articles/{id}', [SchoolArticleController::class, 'show'])->whereNumber('id');
+    Route::put('/schools/articles/{id}', [SchoolArticleController::class, 'update'])->whereNumber('id');
+    Route::delete('/schools/articles/{id}', [SchoolArticleController::class, 'destroy'])->whereNumber('id');
+    Route::post('/schools/articles/{id}/publish', [SchoolArticleController::class, 'publish'])->whereNumber('id');
+    Route::post('/schools/articles/{id}/offline', [SchoolArticleController::class, 'offline'])->whereNumber('id');
     // ==============================================================================
 
     // 招聘方-职位

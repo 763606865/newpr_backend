@@ -2,6 +2,8 @@
 
 namespace Tests\Feature\Cms;
 
+use App\Models\Cms\ArticleCategory;
+use App\Models\Cms\ArticleTag;
 use App\Models\Cms\Tag;
 use App\Models\Major;
 use App\Services\MetaService;
@@ -66,6 +68,33 @@ class MetaControllerTest extends TestCase
             ->assertOk()
             ->assertJsonPath('data.announcement_publisher_types.0.value', 0)
             ->assertJsonPath('data.announcement_publisher_types.0.label', '系统');
+    }
+
+    public function test_index_returns_article_categories_and_tags(): void
+    {
+        $this->seedArticleMeta();
+
+        $response = $this->getJson('/cms/meta');
+
+        $response
+            ->assertOk()
+            ->assertJsonPath('data.article_categories.0.name', '校园资讯')
+            ->assertJsonPath('data.article_categories.0.children.0.name', '就业动态')
+            ->assertJsonPath('data.article_tags.0.name', '校招')
+            ->assertJsonPath('data.article_tags.0.slug', 'campus-recruitment');
+    }
+
+    public function test_articles_endpoint_returns_article_meta(): void
+    {
+        $this->seedArticleMeta();
+
+        $response = $this->getJson('/cms/meta/articles');
+
+        $response
+            ->assertOk()
+            ->assertJsonPath('code', 200)
+            ->assertJsonPath('data.article_categories.0.name', '校园资讯')
+            ->assertJsonPath('data.article_tags.0.name', '校招');
     }
 
     public function test_tags_endpoint_returns_tag_tree(): void
@@ -141,5 +170,36 @@ class MetaControllerTest extends TestCase
             'status' => 1,
             'sort' => 1,
         ]);
+    }
+
+    private function seedArticleMeta(): void
+    {
+        $parent = ArticleCategory::query()->create([
+            'name' => '校园资讯',
+            'slug' => 'campus-news',
+            'sort' => 1,
+        ]);
+
+        ArticleCategory::query()->create([
+            'parent_id' => $parent->id,
+            'name' => '就业动态',
+            'slug' => 'employment-news',
+            'sort' => 1,
+        ]);
+
+        ArticleTag::query()->create([
+            'name' => '校招',
+            'slug' => 'campus-recruitment',
+            'sort' => 1,
+        ]);
+
+        ArticleTag::query()->create([
+            'name' => '政策解读',
+            'slug' => 'policy',
+            'sort' => 2,
+        ]);
+
+        app(MetaService::class)->forgetArticleCategories();
+        app(MetaService::class)->forgetArticleTags();
     }
 }

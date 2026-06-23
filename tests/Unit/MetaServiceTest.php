@@ -3,6 +3,8 @@
 namespace Tests\Unit;
 
 use App\Models\Area;
+use App\Models\Cms\ArticleCategory;
+use App\Models\Cms\ArticleTag;
 use App\Models\Major;
 use App\Models\Rc\Industry;
 use App\Models\Rc\Position;
@@ -231,5 +233,60 @@ class MetaServiceTest extends TestCase
         $this->assertSame('北京大学', $schools['schools'][0]['label']);
         $this->assertSame('4131010003', $schools['schools'][1]['value']);
         $this->assertSame('复旦大学', $schools['schools'][1]['label']);
+    }
+
+    public function test_it_builds_cached_article_categories_tree_and_tags_list(): void
+    {
+        $parent = ArticleCategory::query()->create([
+            'name' => '校园资讯',
+            'slug' => 'campus-news',
+            'sort' => 1,
+        ]);
+
+        ArticleCategory::query()->create([
+            'parent_id' => $parent->id,
+            'name' => '就业动态',
+            'slug' => 'employment-news',
+            'sort' => 1,
+        ]);
+
+        ArticleTag::query()->create([
+            'name' => '校招',
+            'slug' => 'campus-recruitment',
+            'sort' => 1,
+        ]);
+
+        $service = app(MetaService::class);
+
+        $this->assertSame('校园资讯', $service->getArticleCategoriesTree()[0]['name']);
+        $this->assertSame('就业动态', $service->getArticleCategoriesTree()[0]['children'][0]['name']);
+        $this->assertSame('校招', $service->getArticleTagsList()[0]['name']);
+
+        ArticleTag::query()->create([
+            'name' => '政策解读',
+            'slug' => 'policy',
+            'sort' => 2,
+        ]);
+
+        $this->assertSame('政策解读', $service->getArticleTagsList()[1]['name']);
+    }
+
+    public function test_article_meta_observer_invalidates_cache(): void
+    {
+        $service = app(MetaService::class);
+
+        ArticleCategory::query()->create([
+            'name' => '校园资讯',
+            'slug' => 'campus-news',
+        ]);
+
+        $this->assertSame('校园资讯', $service->getArticleCategoriesTree()[0]['name']);
+
+        ArticleCategory::query()->create([
+            'name' => '新闻时事',
+            'slug' => 'news',
+        ]);
+
+        $this->assertSame('新闻时事', $service->getArticleCategoriesTree()[1]['name']);
     }
 }
