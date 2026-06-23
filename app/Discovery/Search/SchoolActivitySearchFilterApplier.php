@@ -18,6 +18,10 @@ class SchoolActivitySearchFilterApplier
         match ($filters['context'] ?? null) {
             'available' => $query->availableForRecruiter(),
             'public' => $query->published(),
+            'company_organizer' => $query->forOrganizer(
+                RcSchoolActivityOrganizerType::Company,
+                (int) ($filters['organizer_id'] ?? 0),
+            ),
             'school_organizer' => $query
                 ->forOrganizer(
                     RcSchoolActivityOrganizerType::School,
@@ -54,6 +58,9 @@ class SchoolActivitySearchFilterApplier
         match ($filters['context'] ?? null) {
             'available' => $builder->where('is_available', 1),
             'public' => $builder->where('is_public', 1),
+            'company_organizer' => $builder
+                ->where('organizer_type', RcSchoolActivityOrganizerType::Company->value)
+                ->where('organizer_id', (int) ($filters['organizer_id'] ?? 0)),
             'school_organizer' => $builder
                 ->where('organizer_type', RcSchoolActivityOrganizerType::School->value)
                 ->where('organizer_id', (int) ($filters['organizer_id'] ?? 0)),

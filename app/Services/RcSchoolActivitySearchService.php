@@ -82,6 +82,10 @@ class RcSchoolActivitySearchService extends Service
                     return;
                 }
 
+                if (($filters['context'] ?? null) === 'company_organizer') {
+                    $query->with(['schools']);
+                }
+
                 $this->filterApplier->applyDatabaseFilters($query, $filters);
             })
             ->paginate($perPage);

@@ -78,6 +78,17 @@ class RcSchoolActivityResource extends JsonResource
             $data['booth'] = (new RcSchoolBoothResource($this->resource->booth))->resolve($request);
         }
 
+        if ($this->resource->relationLoaded('schools')) {
+            $data['schools'] = $this->resource->schools
+                ->map(static fn ($school): array => [
+                    'id' => $school->id,
+                    'school_code' => $school->school_code,
+                    'name' => $school->name,
+                ])
+                ->values()
+                ->all();
+        }
+
         return $data;
     }
 }

@@ -16,6 +16,9 @@ Route::get('/announcements', [AnnouncementController::class, 'index'])->name('an
 Route::get('/announcements/{id}', [AnnouncementController::class, 'show'])->name('announcement.show');
 
 Route::get('/school-activities', [SchoolActivityController::class, 'index'])->name('school-activity.index');
+Route::get('/school-activities/invite/{inviteCode}', [SchoolActivityController::class, 'showByInviteCode'])->name('school-activity.invite.show');
+Route::post('/school-activities/invite/{inviteCode}/companies', [SchoolActivityController::class, 'registerCompanyByInviteCode'])->name('school-activity.invite.register-company');
+Route::post('/school-activities/invite/{inviteCode}/schools', [SchoolActivityController::class, 'registerSchoolByInviteCode'])->name('school-activity.invite.register-school');
 Route::get('/school-activities/{id}', [SchoolActivityController::class, 'show'])->whereNumber('id')->name('school-activity.show');
 
 Route::get('/meta', [MetaController::class, 'index'])->name('meta');

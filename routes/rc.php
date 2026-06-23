@@ -46,9 +46,6 @@ Route::post('/auth/phone-login', [AuthController::class, 'phoneLogin']);
 Route::post('/auth/email-login', [AuthController::class, 'emailLogin']);
 Route::post('/auth/forgot-password', [AuthController::class, 'forgotPassword']);
 
-Route::get('/activities/invite/{inviteCode}', [SchoolActivityCompanyController::class, 'showByInviteCode']);
-Route::post('/activities/invite/{inviteCode}', [SchoolActivityCompanyController::class, 'registerByInviteCode']);
-
 // Discovery - 职位推荐 / 详情（可选登录）
 Route::get('/talent/jobs/recommend', [JobRecommendController::class, 'index']);
 Route::get('/talent/jobs/{id}', [JobDetailController::class, 'show'])->whereNumber('id');
@@ -165,12 +162,18 @@ Route::middleware('auth:rc')->group(function (): void {
     Route::post('/companies/bind', [CompanyController::class, 'bind']);
     Route::post('/companies', [CompanyController::class, 'store']);
     Route::get('/companies/school-activities', [CompanySchoolActivityController::class, 'index']);
+    Route::get('/companies/school-activities/organized', [CompanySchoolActivityController::class, 'organized']);
     Route::get('/companies/school-activities/available', [CompanySchoolActivityController::class, 'available']);
+    Route::post('/companies/school-activities', [CompanySchoolActivityController::class, 'store']);
     Route::get('/companies/school-activities/{id}', [CompanySchoolActivityController::class, 'show'])->whereNumber('id');
+    Route::put('/companies/school-activities/{id}', [CompanySchoolActivityController::class, 'update'])->whereNumber('id');
+    Route::delete('/companies/school-activities/{id}', [CompanySchoolActivityController::class, 'destroy'])->whereNumber('id');
+    Route::post('/companies/school-activities/{id}/publish', [CompanySchoolActivityController::class, 'publish'])->whereNumber('id');
+    Route::post('/companies/school-activities/{id}/end', [CompanySchoolActivityController::class, 'end'])->whereNumber('id');
     Route::post('/companies/school-activities/{activityId}/apply', [CompanySchoolActivityController::class, 'apply'])->whereNumber('activityId');
     Route::get('/companies/school-activities/{activityId}/my-application', [CompanySchoolActivityController::class, 'myApplication'])->whereNumber('activityId');
     Route::get('/companies/school-activities/{activityId}/jobs', [CompanySchoolActivityController::class, 'myJobs'])->whereNumber('activityId');
-    Route::post('/companies/school-activities/{activityId}/jobs', [CompanySchoolActivityController::class, 'store'])->whereNumber('activityId');
+    Route::post('/companies/school-activities/{activityId}/jobs', [CompanySchoolActivityController::class, 'storeJobs'])->whereNumber('activityId');
     // ==============================================================================
 
     // 校招负责人-学校

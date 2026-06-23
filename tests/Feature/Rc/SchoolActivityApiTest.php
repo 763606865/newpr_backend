@@ -23,7 +23,6 @@ use App\Models\School;
 use App\Models\SchoolProfile;
 use App\Models\User;
 use App\Services\RcSchoolActivityApplicationService;
-use App\Support\SchoolActivityInviteCode;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -280,57 +279,144 @@ class SchoolActivityApiTest extends TestCase
         $this->assertContains('可报名活动', $availableTitles);
     }
 
-    public function test_public_invite_page_can_show_activity_and_register_company(): void
+    public function test_recruiter_can_create_and_manage_company_organized_activity(): void
     {
         $school = $this->createSchool();
-        $campusUser = User::factory()->create();
-        $this->createCampusManagerIdentity($campusUser, $school);
-
-        $activityId = (int) $this->actingAs($campusUser, 'rc')
-            ->postJson('/rc/schools/activities', [
-                'title' => '2026 春季双选会',
-                'booth_id' => $this->createBoothWithAreas($school)->id,
-            ])
-            ->json('data.activity.id');
-
-        $this->actingAs($campusUser, 'rc')
-            ->postJson("/rc/schools/activities/{$activityId}/publish")
-            ->assertOk();
-
-        $inviteCode = SchoolActivityInviteCode::encode($activityId);
-
-        $this->getJson('/rc/activities/invite/'.urlencode($inviteCode))
-            ->assertOk()
-            ->assertJsonPath('data.inviter_name', '北京大学')
-            ->assertJsonPath('data.invitation_message', '北京大学邀请你参加2026 春季双选会')
-            ->assertJsonPath('data.activity.id', $activityId)
-            ->assertJsonPath('data.activity.invite_code', $inviteCode);
-
-        $registerResponse = $this->postJson('/rc/activities/invite/'.urlencode($inviteCode), [
-            'name' => '新邀约企业有限公司',
-            'credit_code' => '91360100MA0000000C',
-            'contact_phone' => '13800000000',
-        ])->assertOk()
-            ->assertJsonPath('data.company.name', '新邀约企业有限公司')
-            ->assertJsonPath('data.company.credit_code', '91360100MA0000000C')
-            ->assertJsonPath('data.application.apply_status', RcSchoolActivityApplyStatus::Approved->value)
-            ->assertJsonPath('data.application.join_source', RcSchoolActivityJoinSource::SchoolInvite->value);
-
-        $companyId = (int) $registerResponse->json('data.company.id');
-
-        $this->assertDatabaseHas('companies', [
-            'id' => $companyId,
-            'name' => '新邀约企业有限公司',
-            'credit_code' => '91360100MA0000000C',
-            'contact_phone' => '13800000000',
+        SchoolProfile::query()->create([
+            'school_code' => $school->school_code,
+            'allow_company_apply_activity' => true,
         ]);
+        $company = $this->createCompany();
+        $recruiterUser = User::factory()->create();
+        $this->createRecruiterIdentity($recruiterUser, $company);
+
+        $createResponse = $this->actingAs($recruiterUser, 'rc')
+            ->postJson('/rc/companies/school-activities', [
+                'type' => RcSchoolActivityType::Presentation->value,
+                'title' => '企业进校宣讲会',
+                'school_codes' => [$school->school_code],
+                'start_time' => now()->addWeek()->toDateTimeString(),
+            ])
+            ->assertOk()
+            ->assertJsonPath('data.activity.status', RcSchoolActivityStatus::Draft->value)
+            ->assertJsonPath('data.activity.organizer_type', RcSchoolActivityOrganizerType::Company->value)
+            ->assertJsonPath('data.activity.schools.0.school_code', $school->school_code);
+
+        $activityId = (int) $createResponse->json('data.activity.id');
+
+        $this->actingAs($recruiterUser, 'rc')
+            ->postJson('/rc/companies/school-activities', [
+                'type' => RcSchoolActivityType::DualSelection->value,
+                'title' => '非法双选会',
+                'school_codes' => [$school->school_code],
+            ])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors(['type']);
+
+        $this->actingAs($recruiterUser, 'rc')
+            ->getJson('/rc/companies/school-activities/organized')
+            ->assertOk()
+            ->assertJsonCount(1, 'data.data')
+            ->assertJsonPath('data.data.0.title', '企业进校宣讲会');
+
+        $this->actingAs($recruiterUser, 'rc')
+            ->getJson("/rc/companies/school-activities/{$activityId}")
+            ->assertOk()
+            ->assertJsonPath('data.activity.title', '企业进校宣讲会');
+
+        $this->actingAs($recruiterUser, 'rc')
+            ->putJson("/rc/companies/school-activities/{$activityId}", [
+                'title' => '企业进校宣讲会（更新）',
+            ])
+            ->assertOk()
+            ->assertJsonPath('data.activity.title', '企业进校宣讲会（更新）');
+
+        $this->actingAs($recruiterUser, 'rc')
+            ->postJson("/rc/companies/school-activities/{$activityId}/publish")
+            ->assertOk()
+            ->assertJsonPath('data.activity.status', RcSchoolActivityStatus::Published->value);
 
         $this->assertDatabaseHas('rc_school_activity_companies', [
             'activity_id' => $activityId,
-            'company_id' => $companyId,
-            'join_source' => RcSchoolActivityJoinSource::SchoolInvite->value,
+            'company_id' => $company->id,
+            'join_source' => RcSchoolActivityJoinSource::Organizer->value,
             'apply_status' => RcSchoolActivityApplyStatus::Approved->value,
         ]);
+
+        $this->actingAs($recruiterUser, 'rc')
+            ->getJson('/rc/companies/school-activities')
+            ->assertOk()
+            ->assertJsonPath('data.data.0.is_organizer', true);
+
+        $this->actingAs($recruiterUser, 'rc')
+            ->postJson("/rc/companies/school-activities/{$activityId}/end")
+            ->assertOk()
+            ->assertJsonPath('data.activity.status', RcSchoolActivityStatus::Ended->value);
+    }
+
+    public function test_recruiter_can_create_offline_job_fair_without_school_codes(): void
+    {
+        $company = $this->createCompany();
+        $recruiterUser = User::factory()->create();
+        $this->createRecruiterIdentity($recruiterUser, $company);
+
+        $createResponse = $this->actingAs($recruiterUser, 'rc')
+            ->postJson('/rc/companies/school-activities', [
+                'type' => RcSchoolActivityType::JobFair->value,
+                'title' => '企业线下招聘会',
+                'address' => '企业总部大厅',
+            ])
+            ->assertOk()
+            ->assertJsonPath('data.activity.type', RcSchoolActivityType::JobFair->value)
+            ->assertJsonPath('data.activity.schools', []);
+
+        $activityId = (int) $createResponse->json('data.activity.id');
+
+        $this->actingAs($recruiterUser, 'rc')
+            ->postJson("/rc/companies/school-activities/{$activityId}/publish")
+            ->assertOk()
+            ->assertJsonPath('data.activity.status', RcSchoolActivityStatus::Published->value);
+
+        $this->assertDatabaseMissing('rc_school_activity_schools', [
+            'activity_id' => $activityId,
+        ]);
+    }
+
+    public function test_recruiter_cannot_create_presentation_without_school_codes(): void
+    {
+        $company = $this->createCompany();
+        $recruiterUser = User::factory()->create();
+        $this->createRecruiterIdentity($recruiterUser, $company);
+
+        $this->actingAs($recruiterUser, 'rc')
+            ->postJson('/rc/companies/school-activities', [
+                'type' => RcSchoolActivityType::Presentation->value,
+                'title' => '缺少院校的宣讲会',
+            ])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors(['school_codes']);
+    }
+
+    public function test_recruiter_cannot_create_on_campus_job_fair_when_school_disallows_apply(): void
+    {
+        $school = $this->createSchool();
+        SchoolProfile::query()->create([
+            'school_code' => $school->school_code,
+            'allow_company_apply_activity' => false,
+        ]);
+        $company = $this->createCompany();
+        $recruiterUser = User::factory()->create();
+        $this->createRecruiterIdentity($recruiterUser, $company);
+
+        $this->actingAs($recruiterUser, 'rc')
+            ->postJson('/rc/companies/school-activities', [
+                'type' => RcSchoolActivityType::JobFair->value,
+                'title' => '企业招聘会',
+                'school_codes' => [$school->school_code],
+            ])
+            ->assertOk()
+            ->assertJsonPath('code', 422)
+            ->assertJsonPath('message', '院校「北京大学」暂未开放企业自主进校申请。');
     }
 
     public function test_activity_show_returns_activity_booths_list(): void

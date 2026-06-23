@@ -7,6 +7,8 @@ use App\Models\Rc\SchoolActivity;
 use App\Models\Rc\SchoolActivityCompany;
 use App\Models\Rc\SchoolActivityJob;
 use App\Rc\Controllers\Concerns\ResolvesRcOrganizations;
+use App\Rc\Requests\CompanySchoolActivityStoreRequest;
+use App\Rc\Requests\CompanySchoolActivityUpdateRequest;
 use App\Rc\Requests\SchoolActivityCompanyApplyRequest;
 use App\Rc\Requests\SchoolActivityJobSubmitRequest;
 use App\Resources\Rc\RcRecruiterParticipatedActivityResource;
@@ -56,6 +58,36 @@ class CompanySchoolActivityController extends Controller
     }
 
     /**
+     * 我企业主办的活动列表
+     *
+     * GET /rc/companies/school-activities/organized
+     */
+    public function organized(Request $request): JsonResponse
+    {
+        $company = $this->resolveRecruiterCompany();
+
+        if (! $company instanceof Company) {
+            return $this->error('请先切换为招聘方身份并绑定企业。', Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $paginator = RcSchoolActivityService::make()->paginateForCompanyOrganizer(
+            $company,
+            $this->getPerPage($request),
+            [
+                'status' => $request->input('status'),
+                'type' => $request->input('type'),
+                'keyword' => $request->input('keyword'),
+            ],
+        );
+
+        $paginator->getCollection()->transform(
+            fn (SchoolActivity $activity): array => (new RcSchoolActivityResource($activity))->resolve($request),
+        );
+
+        return $this->success($paginator);
+    }
+
+    /**
      * 可报名活动列表
      *
      * GET /rc/companies/school-activities/available
@@ -82,17 +114,44 @@ class CompanySchoolActivityController extends Controller
     }
 
     /**
+     * 创建企业主办活动
+     *
+     * POST /rc/companies/school-activities
+     */
+    public function store(CompanySchoolActivityStoreRequest $request): JsonResponse
+    {
+        $company = $this->resolveRecruiterCompany();
+
+        if (! $company instanceof Company) {
+            return $this->error('请先切换为招聘方身份并绑定企业。', Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        try {
+            $activity = RcSchoolActivityService::make()->createForCompany($company, $request->validated());
+        } catch (InvalidArgumentException $exception) {
+            return $this->error($exception->getMessage(), Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        return $this->success([
+            'activity' => (new RcSchoolActivityResource($activity))->resolve($request),
+        ]);
+    }
+
+    /**
      * 活动详情
      *
      * GET /rc/companies/school-activities/{id}
      */
     public function show(Request $request, int $id): JsonResponse
     {
-        if ($this->resolveRecruiterCompany() === null) {
+        $company = $this->resolveRecruiterCompany();
+
+        if (! $company instanceof Company) {
             return $this->error('请先切换为招聘方身份并绑定企业。', Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $activity = RcSchoolActivityService::make()->findPublished($id);
+        $activity = RcSchoolActivityService::make()->findDetailForCompanyOrganizer($company, $id)
+            ?? RcSchoolActivityService::make()->findPublished($id);
 
         if (! $activity instanceof SchoolActivity) {
             return $this->error('活动不存在或未发布。', Response::HTTP_NOT_FOUND);
@@ -100,6 +159,100 @@ class CompanySchoolActivityController extends Controller
 
         return $this->success([
             'activity' => (new RcSchoolActivityResource($activity))->resolve($request),
+        ]);
+    }
+
+    /**
+     * 更新企业主办活动
+     *
+     * PUT /rc/companies/school-activities/{id}
+     */
+    public function update(CompanySchoolActivityUpdateRequest $request, int $id): JsonResponse
+    {
+        $activity = $this->resolveOwnedOrganizerActivity($id);
+
+        if ($activity instanceof JsonResponse) {
+            return $activity;
+        }
+
+        try {
+            $activity = RcSchoolActivityService::make()->update($activity, $request->validated());
+        } catch (InvalidArgumentException $exception) {
+            return $this->error($exception->getMessage(), Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        return $this->success([
+            'activity' => (new RcSchoolActivityResource($activity->load('schools')))->resolve($request),
+        ]);
+    }
+
+    /**
+     * 删除企业主办活动
+     *
+     * DELETE /rc/companies/school-activities/{id}
+     */
+    public function destroy(int $id): JsonResponse
+    {
+        $activity = $this->resolveOwnedOrganizerActivity($id);
+
+        if ($activity instanceof JsonResponse) {
+            return $activity;
+        }
+
+        try {
+            RcSchoolActivityService::make()->delete($activity);
+        } catch (InvalidArgumentException $exception) {
+            return $this->error($exception->getMessage(), Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        return $this->success();
+    }
+
+    /**
+     * 发布企业主办活动
+     *
+     * POST /rc/companies/school-activities/{id}/publish
+     */
+    public function publish(Request $request, int $id): JsonResponse
+    {
+        $activity = $this->resolveOwnedOrganizerActivity($id);
+
+        if ($activity instanceof JsonResponse) {
+            return $activity;
+        }
+
+        try {
+            $activity = RcSchoolActivityService::make()->publish($activity);
+        } catch (InvalidArgumentException $exception) {
+            return $this->error($exception->getMessage(), Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        return $this->success([
+            'activity' => (new RcSchoolActivityResource($activity->load('schools')))->resolve($request),
+        ]);
+    }
+
+    /**
+     * 结束企业主办活动
+     *
+     * POST /rc/companies/school-activities/{id}/end
+     */
+    public function end(Request $request, int $id): JsonResponse
+    {
+        $activity = $this->resolveOwnedOrganizerActivity($id);
+
+        if ($activity instanceof JsonResponse) {
+            return $activity;
+        }
+
+        try {
+            $activity = RcSchoolActivityService::make()->end($activity);
+        } catch (InvalidArgumentException $exception) {
+            return $this->error($exception->getMessage(), Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        return $this->success([
+            'activity' => (new RcSchoolActivityResource($activity->load('schools')))->resolve($request),
         ]);
     }
 
@@ -174,7 +327,7 @@ class CompanySchoolActivityController extends Controller
      *
      * POST /rc/companies/school-activities/{activityId}/jobs
      */
-    public function store(SchoolActivityJobSubmitRequest $request, int $activityId): JsonResponse
+    public function storeJobs(SchoolActivityJobSubmitRequest $request, int $activityId): JsonResponse
     {
         $company = $this->resolveRecruiterCompany();
 
@@ -243,5 +396,22 @@ class CompanySchoolActivityController extends Controller
         );
 
         return $this->success($paginator);
+    }
+
+    private function resolveOwnedOrganizerActivity(int $activityId): SchoolActivity|JsonResponse
+    {
+        $company = $this->resolveRecruiterCompany();
+
+        if (! $company instanceof Company) {
+            return $this->error('请先切换为招聘方身份并绑定企业。', Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $activity = RcSchoolActivityService::make()->findForCompanyOrganizer($company, $activityId);
+
+        if (! $activity instanceof SchoolActivity) {
+            return $this->error('活动不存在。', Response::HTTP_NOT_FOUND);
+        }
+
+        return $activity;
     }
 }

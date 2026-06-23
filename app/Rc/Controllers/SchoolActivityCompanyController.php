@@ -6,15 +6,11 @@ use App\Models\Rc\SchoolActivity;
 use App\Models\Rc\SchoolActivityCompany;
 use App\Models\School;
 use App\Rc\Controllers\Concerns\ResolvesRcOrganizations;
-use App\Rc\Requests\SchoolActivityCompanyInviteRegisterRequest;
 use App\Rc\Requests\SchoolActivityCompanyInviteRequest;
 use App\Rc\Requests\SchoolActivityCompanyReviewRequest;
-use App\Resources\Rc\RcCompanyResource;
 use App\Resources\Rc\RcSchoolActivityCompanyResource;
-use App\Resources\Rc\RcSchoolActivityResource;
 use App\Services\RcSchoolActivityApplicationService;
 use App\Services\RcSchoolActivityService;
-use App\Support\SchoolActivityInviteCode;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -147,72 +143,6 @@ class SchoolActivityCompanyController extends Controller
         ]);
     }
 
-    /**
-     * 邀请页-活动详情（无需认证）
-     *
-     * GET /rc/activities/invite/{inviteCode}
-     */
-    public function showByInviteCode(Request $request, string $inviteCode): JsonResponse
-    {
-        $activity = $this->resolveActivityByInviteCode($inviteCode);
-
-        if ($activity instanceof JsonResponse) {
-            return $activity;
-        }
-
-        $activity->load('organizer');
-
-        $inviterName = $activity->organizer instanceof School
-            ? $activity->organizer->name
-            : null;
-
-        return $this->success([
-            'inviter_name' => $inviterName,
-            'invitation_message' => filled($inviterName)
-                ? "{$inviterName}邀请你参加{$activity->title}"
-                : "邀请你参加{$activity->title}",
-            'activity' => (new RcSchoolActivityResource($activity))->resolve($request),
-        ]);
-    }
-
-    /**
-     * 邀请页-提交企业信息并加入活动（无需认证）
-     *
-     * POST /rc/activities/invite/{inviteCode}
-     */
-    public function registerByInviteCode(
-        SchoolActivityCompanyInviteRegisterRequest $request,
-        string $inviteCode,
-    ): JsonResponse {
-        $activity = $this->resolveActivityByInviteCode($inviteCode);
-
-        if ($activity instanceof JsonResponse) {
-            return $activity;
-        }
-
-        $validated = $request->validated();
-
-        try {
-            $application = RcSchoolActivityApplicationService::make()->registerCompanyViaInvite(
-                $activity,
-                [
-                    'name' => (string) $validated['name'],
-                    'credit_code' => (string) $validated['credit_code'],
-                    'contact_phone' => (string) $validated['contact_phone'],
-                ],
-            );
-        } catch (InvalidArgumentException $exception) {
-            return $this->error($exception->getMessage(), Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
-
-        $application->load(['company', 'activityBooth']);
-
-        return $this->success([
-            'company' => (new RcCompanyResource($application->company))->resolve($request),
-            'application' => (new RcSchoolActivityCompanyResource($application))->resolve($request),
-        ]);
-    }
-
     private function resolveOwnedActivity(int $activityId): SchoolActivity|JsonResponse
     {
         $school = $this->resolveCampusManagerSchool();
@@ -245,22 +175,5 @@ class SchoolActivityCompanyController extends Controller
         }
 
         return $application;
-    }
-
-    private function resolveActivityByInviteCode(string $inviteCode): SchoolActivity|JsonResponse
-    {
-        $activityId = SchoolActivityInviteCode::decode($inviteCode);
-
-        if ($activityId === null) {
-            return $this->error('邀请码无效。', Response::HTTP_NOT_FOUND);
-        }
-
-        $activity = RcSchoolActivityService::make()->findPublished($activityId);
-
-        if (! $activity instanceof SchoolActivity) {
-            return $this->error('活动不存在或未发布。', Response::HTTP_NOT_FOUND);
-        }
-
-        return $activity;
     }
 }

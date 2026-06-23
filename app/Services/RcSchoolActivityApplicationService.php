@@ -7,12 +7,14 @@ use App\Enums\RcSchoolActivityJobAuditStatus;
 use App\Enums\RcSchoolActivityJoinSource;
 use App\Enums\RcSchoolActivityOrganizerType;
 use App\Enums\RcSchoolActivityStatus;
+use App\Enums\RcSchoolActivityType;
 use App\Models\Company;
 use App\Models\Rc\Job;
 use App\Models\Rc\SchoolActivity;
 use App\Models\Rc\SchoolActivityBooth;
 use App\Models\Rc\SchoolActivityCompany;
 use App\Models\Rc\SchoolActivityJob;
+use App\Models\Rc\SchoolActivitySchool;
 use App\Models\School;
 use App\Models\SchoolProfile;
 use App\Support\ScoutQuery;
@@ -118,6 +120,8 @@ class RcSchoolActivityApplicationService extends Service
      */
     public function registerCompanyViaInvite(SchoolActivity $activity, array $companyData): SchoolActivityCompany
     {
+        $this->assertSchoolOrganizerActivity($activity);
+
         if ($activity->status !== RcSchoolActivityStatus::Published) {
             throw new InvalidArgumentException('活动未发布，暂不可接受邀请。');
         }
@@ -131,6 +135,61 @@ class RcSchoolActivityApplicationService extends Service
         }
 
         return $this->inviteCompany($activity, $company->id);
+    }
+
+    /**
+     * @param  array{
+     *     school_code: string,
+     *     contact_name: string,
+     *     contact_phone: string,
+     *     contact_email?: string|null,
+     *     remark?: string|null
+     * }  $schoolData
+     */
+    public function registerSchoolViaInvite(SchoolActivity $activity, array $schoolData): SchoolActivitySchool
+    {
+        $this->assertCompanyOrganizerActivity($activity);
+
+        if ($activity->status !== RcSchoolActivityStatus::Published) {
+            throw new InvalidArgumentException('活动未发布，暂不可提交。');
+        }
+
+        $school = School::query()
+            ->where('school_code', $schoolData['school_code'])
+            ->first();
+
+        if (! $school instanceof School) {
+            throw new InvalidArgumentException('院校不存在。');
+        }
+
+        $profile = filled($school->school_code)
+            ? SchoolProfile::query()->where('school_code', $school->school_code)->first()
+            : null;
+
+        if ($profile !== null && ! $profile->allow_company_apply_activity) {
+            throw new InvalidArgumentException("院校「{$school->name}」暂未开放企业进校申请。");
+        }
+
+        $link = $this->resolveSchoolActivityLink($activity, $school);
+
+        if ($link->apply_status === RcSchoolActivityApplyStatus::Approved) {
+            throw new InvalidArgumentException('该院校已确认参与此活动。');
+        }
+
+        if ($link->apply_status === RcSchoolActivityApplyStatus::Pending) {
+            throw new InvalidArgumentException('该院校已提交申请，请等待审核。');
+        }
+
+        $link->fill([
+            'contact_name' => $schoolData['contact_name'],
+            'contact_phone' => $schoolData['contact_phone'],
+            'contact_email' => $schoolData['contact_email'] ?? null,
+            'apply_status' => RcSchoolActivityApplyStatus::Pending,
+            'apply_at' => now(),
+            'remark' => $schoolData['remark'] ?? null,
+        ])->save();
+
+        return $link->refresh()->load('school');
     }
 
     public function inviteCompany(
@@ -396,10 +455,40 @@ class RcSchoolActivityApplicationService extends Service
         return $activityJob->refresh();
     }
 
+    private function resolveSchoolActivityLink(SchoolActivity $activity, School $school): SchoolActivitySchool
+    {
+        if ($activity->type === RcSchoolActivityType::JobFair) {
+            return SchoolActivitySchool::query()->firstOrCreate(
+                [
+                    'activity_id' => $activity->id,
+                    'school_id' => $school->id,
+                ],
+            );
+        }
+
+        $link = SchoolActivitySchool::query()
+            ->where('activity_id', $activity->id)
+            ->where('school_id', $school->id)
+            ->first();
+
+        if (! $link instanceof SchoolActivitySchool) {
+            throw new InvalidArgumentException('该院校不在活动申请入校名单内。');
+        }
+
+        return $link;
+    }
+
     private function assertSchoolOrganizerActivity(SchoolActivity $activity): void
     {
         if ($activity->organizer_type !== RcSchoolActivityOrganizerType::School || ! $activity->organizer_id) {
             throw new InvalidArgumentException('仅学校主办的活动支持此操作。');
+        }
+    }
+
+    private function assertCompanyOrganizerActivity(SchoolActivity $activity): void
+    {
+        if ($activity->organizer_type !== RcSchoolActivityOrganizerType::Company || ! $activity->organizer_id) {
+            throw new InvalidArgumentException('仅企业主办的活动支持此操作。');
         }
     }
 
