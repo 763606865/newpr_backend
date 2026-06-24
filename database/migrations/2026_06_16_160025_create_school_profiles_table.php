@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('school_profiles', function (Blueprint $table) {
+        Schema::create('rc_school_profiles', function (Blueprint $table) {
             $table->id();
             $table->string('school_code', 30)->nullable()->comment('学校代码')->index();
             $table->string('short_name', 100)->nullable()->comment('学校简称');
@@ -47,6 +47,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('school_profiles');
+        Schema::dropIfExists('rc_school_profiles');
     }
 };

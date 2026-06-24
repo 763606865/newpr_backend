@@ -205,7 +205,7 @@ class SchoolControllerTest extends TestCase
             ->assertOk()
             ->assertJsonPath('data.school.profile.status', SchoolProfileStatus::Reviewing->value);
 
-        $this->assertDatabaseHas('school_profiles', [
+        $this->assertDatabaseHas('rc_school_profiles', [
             'school_code' => $school->school_code,
             'status' => SchoolProfileStatus::Reviewing->value,
         ]);
@@ -291,7 +291,7 @@ class SchoolControllerTest extends TestCase
             ->assertJsonPath('data.profile.education_levels.0', RcEducationLevel::Bachelor->value)
             ->assertJsonPath('data.profile.allow_company_apply_activity', false);
 
-        $this->assertDatabaseHas('school_profiles', [
+        $this->assertDatabaseHas('rc_school_profiles', [
             'school_code' => $school->school_code,
             'short_name' => '北大',
             'contact_name' => '张老师',

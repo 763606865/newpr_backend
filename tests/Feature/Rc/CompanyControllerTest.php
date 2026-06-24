@@ -338,7 +338,7 @@ class CompanyControllerTest extends TestCase
 
         $companyId = Company::query()->where('credit_code', self::CREDIT_CODE)->value('id');
 
-        $this->assertDatabaseHas('company_profiles', [
+        $this->assertDatabaseHas('rc_company_profiles', [
             'company_id' => $companyId,
             'profile_status' => CompanyProfileStatus::Draft->value,
         ]);
@@ -395,7 +395,7 @@ class CompanyControllerTest extends TestCase
             ->assertOk()
             ->assertJsonPath('data.company.profile.profile_status', CompanyProfileStatus::Draft->value);
 
-        $this->assertDatabaseHas('company_profiles', [
+        $this->assertDatabaseHas('rc_company_profiles', [
             'company_id' => $company->id,
             'profile_status' => CompanyProfileStatus::Draft->value,
         ]);
@@ -446,7 +446,7 @@ class CompanyControllerTest extends TestCase
             ->assertJsonPath('data.profile.profile_status', CompanyProfileStatus::Complete->value)
             ->assertJsonPath('data.profile.benefit_tags.0', 'social_insurance');
 
-        $this->assertDatabaseHas('company_profiles', [
+        $this->assertDatabaseHas('rc_company_profiles', [
             'company_id' => $company->id,
             'short_name' => '示例科技',
             'profile_status' => CompanyProfileStatus::Complete->value,

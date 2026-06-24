@@ -28,12 +28,14 @@ use Illuminate\Support\Carbon;
  * @property array<int, string>|null $benefit_tags
  * @property CompanyFundingStage|null $funding_stage
  * @property CompanyProfileStatus $profile_status
+ * @property bool $is_brand 是否名企
+ * @property int $brand_sort 名企排序
  * @property array<string, mixed>|null $extra
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read Company $company
  */
-#[Table('company_profiles')]
+#[Table('rc_company_profiles')]
 #[Fillable([
     'company_id',
     'short_name',
@@ -48,12 +50,16 @@ use Illuminate\Support\Carbon;
     'benefit_tags',
     'funding_stage',
     'profile_status',
+    'is_brand',
+    'brand_sort',
     'extra',
 ])]
 class CompanyProfile extends Model
 {
     protected $attributes = [
         'profile_status' => CompanyProfileStatus::Draft,
+        'is_brand' => false,
+        'brand_sort' => 0,
     ];
 
     protected function casts(): array
@@ -67,6 +73,8 @@ class CompanyProfile extends Model
             'benefit_tags' => 'array',
             'funding_stage' => CompanyFundingStage::class,
             'profile_status' => CompanyProfileStatus::class,
+            'is_brand' => 'boolean',
+            'brand_sort' => 'integer',
             'extra' => 'array',
         ];
     }

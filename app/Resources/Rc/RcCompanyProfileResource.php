@@ -42,6 +42,8 @@ class RcCompanyProfileResource extends JsonResource
             'funding_stage_label' => $this->resource->funding_stage?->getLabel(),
             'profile_status' => $this->resource->profile_status->value,
             'profile_status_label' => $this->resource->profile_status->getLabel(),
+            'is_brand' => $this->resource->is_brand,
+            'brand_sort' => $this->resource->brand_sort,
             'extra' => $this->resource->extra,
             'created_at' => $this->resource->created_at,
             'updated_at' => $this->resource->updated_at,

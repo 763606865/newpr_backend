@@ -2,6 +2,8 @@
 
 use App\B\Middleware\BizPlanMiddleware;
 use App\Exceptions\UnauthenticatedException;
+use App\Http\Middleware\EnsureCmsHomeMenuAccess;
+use App\Http\Middleware\OptionalRcAuthenticate;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -27,6 +29,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->use([HandleCors::class]);
         $middleware->alias([
             'biz-plan' => BizPlanMiddleware::class,
+            'optional-rc-auth' => OptionalRcAuthenticate::class,
+            'cms-home-menu' => EnsureCmsHomeMenuAccess::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

@@ -3,8 +3,10 @@
 namespace App\Models\Cms;
 
 use App\Enums\CmsLinkType;
+use App\Enums\CmsMenuAudienceType;
 use App\Enums\CmsOpenTarget;
 use App\Enums\CmsStatus;
+use App\Enums\RcIdentityType;
 use App\Models\Cast\AliyunOss;
 use App\Models\Model;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -41,9 +43,12 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $deleted_at 删除时间
  * @property-read Menu|null $parent 父级菜单
  * @property-read Collection<int, Menu> $children 子级菜单
+ * @property-read Collection<int, MenuIdentity> $menuIdentities 可见身份
  *
  * @method static Builder enabled()
  * @method static Builder shown()
+ * @method static Builder visibleToAudience(CmsMenuAudienceType $audience)
+ * @method static Builder forIdentity(?RcIdentityType $identity)
  */
 #[Table('cms_menus')]
 #[Fillable([
@@ -120,6 +125,44 @@ class Menu extends Model
         return $this->hasMany(self::class, 'parent_id');
     }
 
+    public function menuIdentities(): HasMany
+    {
+        return $this->hasMany(MenuIdentity::class, 'menu_id');
+    }
+
+    /**
+     * @return array<int, CmsMenuAudienceType>
+     */
+    public function allowedAudiences(): array
+    {
+        return $this->menuIdentities
+            ->pluck('identity_type')
+            ->filter(static fn (mixed $audience): bool => $audience instanceof CmsMenuAudienceType)
+            ->values()
+            ->all();
+    }
+
+    public function isVisibleToAudience(CmsMenuAudienceType $audience): bool
+    {
+        if ($this->relationLoaded('menuIdentities')) {
+            if ($this->menuIdentities->isEmpty()) {
+                return true;
+            }
+
+            return $this->menuIdentities->contains(
+                static fn (MenuIdentity $menuIdentity): bool => $menuIdentity->identity_type === $audience,
+            );
+        }
+
+        if (! $this->menuIdentities()->exists()) {
+            return true;
+        }
+
+        return $this->menuIdentities()
+            ->where('identity_type', $audience)
+            ->exists();
+    }
+
     #[Scope]
     protected function enabled(Builder $query): void
     {
@@ -132,5 +175,22 @@ class Menu extends Model
     {
         // 仅查询前台展示的菜单（is_show = 1）。
         $query->where($this->getTable().'.is_show', '=', true);
+    }
+
+    #[Scope]
+    protected function visibleToAudience(Builder $query, CmsMenuAudienceType $audience): void
+    {
+        $query->where(function (Builder $builder) use ($audience): void {
+            $builder->whereDoesntHave('menuIdentities')
+                ->orWhereHas('menuIdentities', function (Builder $identityQuery) use ($audience): void {
+                    $identityQuery->where('identity_type', $audience);
+                });
+        });
+    }
+
+    #[Scope]
+    protected function forIdentity(Builder $query, ?RcIdentityType $identity): void
+    {
+        $query->visibleToAudience(CmsMenuAudienceType::fromRcIdentity($identity));
     }
 }

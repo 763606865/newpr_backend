@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Cms\Menus\Tables;
 
 use App\Enums\CmsLinkType;
+use App\Enums\CmsMenuAudienceType;
 use App\Enums\CmsStatus;
 use App\Filament\Resources\Cms\CmsTable;
 use Filament\Actions\BulkActionGroup;
@@ -21,6 +22,7 @@ class MenusTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn ($query) => $query->with('menuIdentities'))
             ->columns([
                 TextColumn::make('id')->label('ID'),
                 TextColumn::make('parent.name')->label('父级')->placeholder('顶级'),
@@ -29,6 +31,14 @@ class MenusTable
                 CmsTable::enumBadge('link_type', '链接类型', CmsLinkType::class, [1 => 'primary', 2 => 'info', 3 => 'gray']),
                 IconColumn::make('is_show')->label('展示')->boolean(),
                 CmsTable::enumBadge('status', '状态', CmsStatus::class, [1 => 'success', 0 => 'gray']),
+                TextColumn::make('menuIdentities.identity_type')
+                    ->label('可见身份')
+                    ->badge()
+                    ->placeholder('全部身份')
+                    ->formatStateUsing(fn (mixed $state): ?string => $state instanceof CmsMenuAudienceType ? $state->getLabel() : CmsMenuAudienceType::tryFrom((int) $state)?->getLabel())
+                    ->listWithLineBreaks()
+                    ->limitList(3)
+                    ->expandableLimitedList(),
                 TextColumn::make('sort')->label('排序')->sortable(),
             ])
             ->filters([

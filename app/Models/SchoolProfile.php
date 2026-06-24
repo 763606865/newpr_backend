@@ -41,7 +41,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at 更新时间
  * @property-read School|null $school 所属学校
  */
-#[Table('school_profiles')]
+#[Table('rc_school_profiles')]
 #[Fillable([
     'school_code',
     'short_name',

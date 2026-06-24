@@ -25,7 +25,7 @@ class CompanyProfileServiceTest extends TestCase
 
         $this->assertSame($profile->id, $again->id);
         $this->assertSame(CompanyProfileStatus::Draft, $profile->profile_status);
-        $this->assertDatabaseCount('company_profiles', 1);
+        $this->assertDatabaseCount('rc_company_profiles', 1);
     }
 
     public function test_update_marks_profile_complete_when_required_fields_present(): void

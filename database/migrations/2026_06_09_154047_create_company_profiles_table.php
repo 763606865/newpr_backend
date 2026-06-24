@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('company_profiles', function (Blueprint $table) {
+        Schema::create('rc_company_profiles', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('company_id')->unique()->comment('企业ID');
             $table->string('short_name', 100)->nullable()->comment('企业简称/品牌名');
@@ -38,6 +38,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('company_profiles');
+        Schema::dropIfExists('rc_company_profiles');
     }
 };

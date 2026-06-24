@@ -9,6 +9,7 @@ use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
 
 class JobForm
@@ -46,6 +47,11 @@ class JobForm
                     ->required(),
                 DateTimePicker::make('published_at')->label('发布时间'),
                 DateTimePicker::make('expired_at')->label('过期时间'),
+                Toggle::make('is_urgent')
+                    ->label('紧急招聘')
+                    ->default(false),
+                DateTimePicker::make('urgent_until')
+                    ->label('紧急招聘截止时间'),
                 Textarea::make('description')->label('职位描述')->rows(4),
                 Textarea::make('requirement')->label('职位要求')->rows(4),
                 Textarea::make('benefit')->label('福利待遇')->rows(3),

@@ -43,6 +43,8 @@ use Laravel\Scout\Searchable;
  * @property string|null $requirement 职位要求
  * @property string|null $benefit 福利待遇
  * @property int $status 状态
+ * @property bool $is_urgent 是否紧急招聘
+ * @property Carbon|null $urgent_until 紧急招聘截止时间
  * @property Carbon|null $published_at 发布时间
  * @property Carbon|null $expired_at 过期时间
  * @property array<string, mixed>|null $extra 扩展字段
@@ -77,6 +79,8 @@ use Laravel\Scout\Searchable;
     'requirement',
     'benefit',
     'status',
+    'is_urgent',
+    'urgent_until',
     'published_at',
     'expired_at',
     'extra',
@@ -107,6 +111,8 @@ class Job extends Model
             'education_level' => 'integer',
             'headcount' => 'integer',
             'status' => RcJobStatus::class,
+            'is_urgent' => 'boolean',
+            'urgent_until' => 'datetime',
             'published_at' => 'datetime:Y-m-d H:i:s',
             'expired_at' => 'datetime:Y-m-d H:i:s',
             'extra' => 'array',

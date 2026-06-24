@@ -7,6 +7,7 @@ use App\Models\Area;
 use App\Models\BUser;
 use App\Models\Company;
 use App\Models\Employee;
+use App\Models\Rc\Job;
 use App\Models\School;
 use App\Models\Token;
 use App\Observers\EmployeeObserver;
@@ -33,6 +34,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Relation::morphMap([
+            'job' => Job::class,
             'company' => Company::class,
             'school' => School::class,
             'area' => Area::class,

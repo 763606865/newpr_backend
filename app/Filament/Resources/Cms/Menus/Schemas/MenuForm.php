@@ -3,9 +3,11 @@
 namespace App\Filament\Resources\Cms\Menus\Schemas;
 
 use App\Enums\CmsLinkType;
+use App\Enums\CmsMenuAudienceType;
 use App\Enums\CmsOpenTarget;
 use App\Enums\CmsStatus;
 use App\Filament\Support\NullableParentIdSelect;
+use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -25,7 +27,10 @@ class MenuForm
                     ->placeholder('顶级菜单')
                     ->tap(static fn (Select $select): Select => NullableParentIdSelect::configureForZeroRoot($select)),
                 TextInput::make('name')->label('菜单名称')->required(),
-                TextInput::make('code')->label('菜单编码')->maxLength(64),
+                TextInput::make('code')
+                    ->label('菜单编码')
+                    ->maxLength(64)
+                    ->helperText('建议与 CMS 路由名称一致，如 home、home.school，用于 /cms/home/* 接口权限控制。'),
                 Select::make('link_type')->label('链接类型')->options(CmsLinkType::class)->enum(CmsLinkType::class)->required(),
                 TextInput::make('link_url')->label('跳转地址'),
                 TextInput::make('icon')->label('菜单图标'),
@@ -36,6 +41,12 @@ class MenuForm
                 TextInput::make('sort')->label('排序')->numeric()->default(0),
                 DateTimePicker::make('start_at')->label('生效开始时间'),
                 DateTimePicker::make('end_at')->label('生效结束时间'),
+                CheckboxList::make('identity_types')
+                    ->label('可见身份')
+                    ->options(CmsMenuAudienceType::options())
+                    ->columns(3)
+                    ->helperText('未选择时，所有身份均可见。')
+                    ->columnSpanFull(),
             ]);
     }
 }

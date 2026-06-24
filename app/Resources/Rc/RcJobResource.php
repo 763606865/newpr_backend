@@ -48,6 +48,8 @@ class RcJobResource extends JsonResource
             'benefit' => $this->resource->benefit,
             'status' => $this->resource->status?->value,
             'status_label' => $this->resource->status?->getLabel(),
+            'is_urgent' => $this->resource->is_urgent,
+            'urgent_until' => $this->resource->urgent_until,
             'published_at' => $this->resource->published_at,
             'expired_at' => $this->resource->expired_at,
             'keywords' => $extra['keywords'] ?? [],
