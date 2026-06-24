@@ -42,8 +42,7 @@ class HomeRecommendationForm
                     ->searchable()
                     ->preload()
                     ->visible(fn (Get $get): bool => self::isJobModule($get('module_type')))
-                    ->required(fn (Get $get): bool => self::isJobModule($get('module_type')))
-                    ->dehydrated(false),
+                    ->required(fn (Get $get): bool => self::isJobModule($get('module_type'))),
                 Select::make('company_id')
                     ->label('推荐企业')
                     ->options(fn (): array => Company::query()
@@ -64,8 +63,7 @@ class HomeRecommendationForm
                     ->searchable()
                     ->preload()
                     ->visible(fn (Get $get): bool => self::isFamousCompanyModule($get('module_type')))
-                    ->required(fn (Get $get): bool => self::isFamousCompanyModule($get('module_type')))
-                    ->dehydrated(false),
+                    ->required(fn (Get $get): bool => self::isFamousCompanyModule($get('module_type'))),
                 ...AreaCascadeFormFields::makeTwoLevel(),
                 TextInput::make('title')
                     ->label('推荐标题')

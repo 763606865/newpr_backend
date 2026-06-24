@@ -30,7 +30,7 @@ trait InteractsWithHomeRecommendationForm
      */
     protected function applyRecommendableToFormData(array $data): array
     {
-        $moduleType = CmsHomeRecommendationModuleType::tryFrom((int) ($data['module_type'] ?? 0));
+        $moduleType = $this->resolveModuleType($data['module_type'] ?? null);
 
         if ($moduleType === null) {
             return $data;
@@ -49,5 +49,14 @@ trait InteractsWithHomeRecommendationForm
         unset($data['job_id'], $data['company_id']);
 
         return $data;
+    }
+
+    private function resolveModuleType(mixed $moduleType): ?CmsHomeRecommendationModuleType
+    {
+        if ($moduleType instanceof CmsHomeRecommendationModuleType) {
+            return $moduleType;
+        }
+
+        return CmsHomeRecommendationModuleType::tryFrom((int) $moduleType);
     }
 }
