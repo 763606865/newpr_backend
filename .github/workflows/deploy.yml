@@ -50,18 +50,21 @@ jobs:
           # 5. 数据库迁移
           php artisan migrate
 
-          # 6. 目录权限
+          # 6. 生成admin权限
+          php artisan shield:generate --all --panel=admin --no-interaction
+
+          # 7. 目录权限
           chown -R www-data:www-data storage bootstrap/cache
           chmod -R ug+rwx storage bootstrap/cache
           chmod 600 storage/oauth-private.key storage/oauth-public.key
 
-          # 7. 优雅重启队列（Supervisor 会自动拉起，见 .supervisor/newpr-backend-horizon.conf）
+          # 8. 优雅重启队列（Supervisor 会自动拉起，见 .supervisor/newpr-backend-horizon.conf）
           php artisan horizon:terminate || true
 
-          # 8. 重启 PHP-FPM
+          # 9. 重启 PHP-FPM
           sudo systemctl restart php8.5-fpm
 
-          # 9. 确保 Horizon 进程运行（程序名 = newpr-backend-horizon，不是 horizon）
+          # 10. 确保 Horizon 进程运行（程序名 = newpr-backend-horizon，不是 horizon）
           sudo supervisorctl reread
           sudo supervisorctl update || true
           sudo supervisorctl restart newpr-backend-horizon:* || sudo supervisorctl start newpr-backend-horizon:* || true
