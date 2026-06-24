@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies\Rc;
 
+use Illuminate\Foundation\Auth\User as AuthUser;
 use App\Models\Rc\Position;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use Illuminate\Foundation\Auth\User as AuthUser;
 
 class PositionPolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser): bool
     {
         return $authUser->can('ViewAny:Position');
@@ -71,4 +71,5 @@ class PositionPolicy
     {
         return $authUser->can('Reorder:Position');
     }
+
 }

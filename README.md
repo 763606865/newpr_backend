@@ -115,7 +115,7 @@ php artisan scout:flush "App\Models\Rc\Job"
 ### 生成Filament模块权限
 ```bash
 # 1.全量
-php artisan shield:generate --all --panel=admin --no-interac
+php artisan shield:generate --all --panel=admin --no-interaction
 # 2.单个资源
 php artisan shield:generate --resource=YourResource --panel=admin --no-interaction
 # 3.生成超级管理员权限

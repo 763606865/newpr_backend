@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies\Cms;
 
+use Illuminate\Foundation\Auth\User as AuthUser;
 use App\Models\Cms\SiteConfig;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use Illuminate\Foundation\Auth\User as AuthUser;
 
 class SiteConfigPolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser): bool
     {
         return $authUser->can('ViewAny:SiteConfig');
@@ -71,4 +71,5 @@ class SiteConfigPolicy
     {
         return $authUser->can('Reorder:SiteConfig');
     }
+
 }

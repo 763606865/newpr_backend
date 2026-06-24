@@ -48,7 +48,7 @@ jobs:
           php artisan optimize
 
           # 5. 数据库迁移
-          php artisan migrate --force
+          php artisan migrate
 
           # 6. 目录权限
           chown -R www-data:www-data storage bootstrap/cache

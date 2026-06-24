@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies\Cms;
 
+use Illuminate\Foundation\Auth\User as AuthUser;
 use App\Models\Cms\Article;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use Illuminate\Foundation\Auth\User as AuthUser;
 
 class ArticlePolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser): bool
     {
         return $authUser->can('ViewAny:Article');
@@ -71,4 +71,5 @@ class ArticlePolicy
     {
         return $authUser->can('Reorder:Article');
     }
+
 }

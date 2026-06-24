@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies\Oa;
 
+use Illuminate\Foundation\Auth\User as AuthUser;
 use App\Models\Oa\AttendanceRule;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use Illuminate\Foundation\Auth\User as AuthUser;
 
 class AttendanceRulePolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser): bool
     {
         return $authUser->can('ViewAny:AttendanceRule');
@@ -71,4 +71,5 @@ class AttendanceRulePolicy
     {
         return $authUser->can('Reorder:AttendanceRule');
     }
+
 }

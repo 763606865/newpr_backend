@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies\Cms;
 
+use Illuminate\Foundation\Auth\User as AuthUser;
 use App\Models\Cms\FriendLink;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use Illuminate\Foundation\Auth\User as AuthUser;
 
 class FriendLinkPolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser): bool
     {
         return $authUser->can('ViewAny:FriendLink');
@@ -71,4 +71,5 @@ class FriendLinkPolicy
     {
         return $authUser->can('Reorder:FriendLink');
     }
+
 }

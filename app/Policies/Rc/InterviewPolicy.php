@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies\Rc;
 
+use Illuminate\Foundation\Auth\User as AuthUser;
 use App\Models\Rc\Interview;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use Illuminate\Foundation\Auth\User as AuthUser;
 
 class InterviewPolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser): bool
     {
         return $authUser->can('ViewAny:Interview');
@@ -71,4 +71,5 @@ class InterviewPolicy
     {
         return $authUser->can('Reorder:Interview');
     }
+
 }

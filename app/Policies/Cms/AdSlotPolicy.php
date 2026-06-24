@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies\Cms;
 
+use Illuminate\Foundation\Auth\User as AuthUser;
 use App\Models\Cms\AdSlot;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use Illuminate\Foundation\Auth\User as AuthUser;
 
 class AdSlotPolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser): bool
     {
         return $authUser->can('ViewAny:AdSlot');
@@ -71,4 +71,5 @@ class AdSlotPolicy
     {
         return $authUser->can('Reorder:AdSlot');
     }
+
 }
