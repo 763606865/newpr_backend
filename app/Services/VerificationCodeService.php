@@ -101,7 +101,8 @@ class VerificationCodeService extends Service
                     'signature' => '【中测高科人才测评】',
                     'tpId' => config('sms.jucai.template_id'),
                     'tpContent' => [
-                        'others' => Str::mask($account, '*', 3, strlen($account)-4),
+                        'app_name' => '中测易聘',
+                        'others' => '300',
                         'valid_code' => $code
                     ],
                 ]);
