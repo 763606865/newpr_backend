@@ -4,6 +4,7 @@ namespace App\Resources\Rc;
 
 use App\Enums\RcEducationLevel;
 use App\Models\Rc\Job;
+use App\Models\Rc\UserIdentity;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -60,10 +61,17 @@ class RcJobResource extends JsonResource
         ];
 
         if ($this->resource->relationLoaded('company') && $this->resource->company) {
+            $company = $this->resource->company;
+
             $data['company'] = [
-                'id' => $this->resource->company->id,
-                'name' => $this->resource->company->name,
+                'id' => $company->id,
+                'name' => $company->name,
             ];
+
+            if ($company->relationLoaded('profile') && $company->profile) {
+                $data['company']['profile'] = (new RcCompanyProfileResource($company->profile))
+                    ->resolve($request);
+            }
         }
 
         if ($this->resource->relationLoaded('position') && $this->resource->position) {
@@ -78,11 +86,22 @@ class RcJobResource extends JsonResource
         }
 
         if ($this->resource->relationLoaded('creator') && $this->resource->creator) {
+            $creator = $this->resource->creator;
+
             $data['creator'] = [
-                'id' => $this->resource->creator->id,
-                'name' => $this->resource->creator->name,
-                'nickname' => $this->resource->creator->nickname,
+                'id' => $creator->id,
+                'mask_name' => $creator->mask_name,
+                'display_avatar' => $creator->display_avatar,
+                'last_login_at' => $creator->last_login_at ?? null,
             ];
+
+            if ($creator->relationLoaded('recruiterCompanyIdentities')) {
+                $identity = $creator->recruiterCompanyIdentities->first(
+                    fn (UserIdentity $identity): bool => (int) $identity->organization_id === (int) $this->resource->company_id,
+                );
+
+                $data['creator']['job_title'] = $identity?->job_title;
+            }
         }
 
         return $data;

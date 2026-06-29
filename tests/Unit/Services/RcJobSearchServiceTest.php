@@ -117,7 +117,124 @@ class RcJobSearchServiceTest extends TestCase
         ]);
 
         $this->assertSame(1, $paginator->total());
-        $this->assertSame('深圳后端工程师', $paginator->items()[0]->title);
+        $this->assertSame('440300', $paginator->items()[0]->city_code);
+    }
+
+    public function test_search_sorts_urgent_jobs_before_newer_non_urgent_jobs(): void
+    {
+        $company = $this->createCompany('广州示例科技有限公司');
+
+        Job::query()->create([
+            'company_id' => $company->id,
+            'position_code' => 'backend-developer',
+            'code' => 'JOB-NORMAL-001',
+            'title' => '普通岗位',
+            'employment_type' => RcJobEmploymentType::FullTime,
+            'description' => '普通招聘',
+            'status' => RcJobStatus::Published,
+            'is_urgent' => false,
+            'published_at' => now(),
+        ]);
+
+        Job::query()->create([
+            'company_id' => $company->id,
+            'position_code' => 'backend-developer',
+            'code' => 'JOB-URGENT-001',
+            'title' => '紧急岗位',
+            'employment_type' => RcJobEmploymentType::FullTime,
+            'description' => '紧急招聘',
+            'status' => RcJobStatus::Published,
+            'is_urgent' => true,
+            'published_at' => now()->subDay(),
+        ]);
+
+        $paginator = RcJobSearchService::make()->search(15, [
+            'keyword' => '岗位',
+        ]);
+
+        $this->assertSame(2, $paginator->total());
+        $this->assertSame('紧急岗位', $paginator->items()[0]->title);
+        $this->assertSame('普通岗位', $paginator->items()[1]->title);
+    }
+
+    public function test_search_without_keyword_sorts_urgent_jobs_via_database_when_elastic_driver(): void
+    {
+        config(['scout.driver' => 'elastic']);
+
+        $company = $this->createCompany('成都示例科技有限公司');
+
+        Job::query()->create([
+            'company_id' => $company->id,
+            'position_code' => 'backend-developer',
+            'code' => 'JOB-DB-NORMAL-001',
+            'title' => '普通筛选岗位',
+            'employment_type' => RcJobEmploymentType::FullTime,
+            'description' => '普通招聘',
+            'status' => RcJobStatus::Published,
+            'is_urgent' => false,
+            'published_at' => now(),
+        ]);
+
+        Job::query()->create([
+            'company_id' => $company->id,
+            'position_code' => 'backend-developer',
+            'code' => 'JOB-DB-URGENT-001',
+            'title' => '紧急筛选岗位',
+            'employment_type' => RcJobEmploymentType::FullTime,
+            'description' => '紧急招聘',
+            'status' => RcJobStatus::Published,
+            'is_urgent' => true,
+            'published_at' => now()->subDay(),
+        ]);
+
+        $paginator = RcJobSearchService::make()->search(15, [
+            'company_id' => $company->id,
+        ]);
+
+        $this->assertSame(2, $paginator->total());
+        $this->assertSame('紧急筛选岗位', $paginator->items()[0]->title);
+        $this->assertSame('普通筛选岗位', $paginator->items()[1]->title);
+    }
+
+    public function test_search_ignores_expired_urgent_highlight_when_sorting(): void
+    {
+        config(['scout.driver' => 'elastic']);
+
+        $company = $this->createCompany('重庆示例科技有限公司');
+
+        Job::query()->create([
+            'company_id' => $company->id,
+            'position_code' => 'backend-developer',
+            'code' => 'JOB-EXPIRED-URGENT-001',
+            'title' => '过期紧急岗位',
+            'employment_type' => RcJobEmploymentType::FullTime,
+            'description' => '紧急已过期',
+            'status' => RcJobStatus::Published,
+            'is_urgent' => true,
+            'urgent_until' => Carbon::yesterday(),
+            'published_at' => now(),
+        ]);
+
+        Job::query()->create([
+            'company_id' => $company->id,
+            'position_code' => 'backend-developer',
+            'code' => 'JOB-ACTIVE-URGENT-001',
+            'title' => '有效紧急岗位',
+            'employment_type' => RcJobEmploymentType::FullTime,
+            'description' => '紧急有效',
+            'status' => RcJobStatus::Published,
+            'is_urgent' => true,
+            'urgent_until' => Carbon::tomorrow(),
+            'published_at' => now()->subDay(),
+        ]);
+
+        $paginator = RcJobSearchService::make()->search(15, [
+            'company_id' => $company->id,
+        ]);
+
+        $this->assertSame(2, $paginator->total());
+        $this->assertSame('有效紧急岗位', $paginator->items()[0]->title);
+        $this->assertSame('过期紧急岗位', $paginator->items()[1]->title);
     }
 
     private function createCompany(string $name): Company

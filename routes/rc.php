@@ -4,6 +4,8 @@ use App\Rc\Controllers\ApplicationController;
 use App\Rc\Controllers\AuthController;
 use App\Rc\Controllers\CompanyController;
 use App\Rc\Controllers\CompanySchoolActivityController;
+use App\Rc\Controllers\Discovery\AnnouncementRecommendController;
+use App\Rc\Controllers\Discovery\AnnouncementSearchController;
 use App\Rc\Controllers\Discovery\CompanyDetailController;
 use App\Rc\Controllers\Discovery\CompanyFavoriteController;
 use App\Rc\Controllers\Discovery\JobDetailController;
@@ -49,6 +51,7 @@ Route::post('/auth/forgot-password', [AuthController::class, 'forgotPassword']);
 
 // Discovery - 职位推荐 / 详情（可选登录）
 Route::get('/talent/jobs/recommend', [JobRecommendController::class, 'index']);
+Route::get('/talent/announcements/recommend', [AnnouncementRecommendController::class, 'index']);
 Route::get('/talent/jobs/{id}', [JobDetailController::class, 'show'])->whereNumber('id');
 Route::get('/talent/companies/{id}', [CompanyDetailController::class, 'show'])->whereNumber('id');
 
@@ -125,6 +128,7 @@ Route::middleware('auth:rc')->group(function (): void {
 
     // Discovery - 职位搜索
     Route::get('/talent/jobs', [JobSearchController::class, 'index']);
+    Route::get('/talent/announcements', [AnnouncementSearchController::class, 'index']);
     Route::get('/talent/favorites/jobs', [JobFavoriteController::class, 'index']);
     Route::get('/talent/favorites/companies', [CompanyFavoriteController::class, 'index']);
     Route::post('/talent/companies/{id}/favorite', [CompanyFavoriteController::class, 'store'])->whereNumber('id');

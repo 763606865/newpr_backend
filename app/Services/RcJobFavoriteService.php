@@ -61,7 +61,7 @@ class RcJobFavoriteService extends Service
         return JobFavorite::query()
             ->where('user_id', $user->id)
             ->whereHas('job')
-            ->with(['job.company', 'job.position'])
+            ->with(Job::discoveryRelationsWithPrefix('job'))
             ->orderByDesc('created_at')
             ->orderByDesc('id')
             ->paginate($perPage);

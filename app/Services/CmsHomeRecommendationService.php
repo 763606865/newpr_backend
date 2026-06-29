@@ -83,10 +83,7 @@ class CmsHomeRecommendationService extends Service
     private function recommendationRelations(CmsHomeRecommendationModuleType $moduleType): array
     {
         if ($moduleType->isJobModule()) {
-            return [
-                'recommendable.company',
-                'recommendable.position',
-            ];
+            return Job::discoveryRelationsWithPrefix('recommendable');
         }
 
         return [

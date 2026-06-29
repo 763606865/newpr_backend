@@ -102,7 +102,7 @@ class RcApplicationService extends Service
                     note: '求职者重新投递',
                 );
 
-                return $existing->refresh()->load(['job.company', 'job.position', 'resume', 'company']);
+                return $existing->refresh()->load([...Job::discoveryRelationsWithPrefix('job'), 'resume', 'company']);
             }
 
             $application = Application::query()->create([
@@ -125,7 +125,7 @@ class RcApplicationService extends Service
                 note: '求职者主动投递',
             );
 
-            return $application->load(['job.company', 'job.position', 'resume', 'company']);
+            return $application->load([...Job::discoveryRelationsWithPrefix('job'), 'resume', 'company']);
         });
     }
 
@@ -155,7 +155,7 @@ class RcApplicationService extends Service
                 note: '求职者撤回投递',
             );
 
-            return $application->refresh()->load(['job.company', 'job.position', 'resume', 'company']);
+            return $application->refresh()->load([...Job::discoveryRelationsWithPrefix('job'), 'resume', 'company']);
         });
     }
 
@@ -166,7 +166,7 @@ class RcApplicationService extends Service
     {
         return Application::query()
             ->where('candidate_user_id', $user->id)
-            ->with(['job.company', 'job.position', 'resume', 'company'])
+            ->with([...Job::discoveryRelationsWithPrefix('job'), 'resume', 'company'])
             ->orderByDesc('applied_at')
             ->orderByDesc('id')
             ->paginate($perPage);
@@ -177,8 +177,7 @@ class RcApplicationService extends Service
         return Application::query()
             ->where('candidate_user_id', $user->id)
             ->with([
-                'job.company',
-                'job.position',
+                ...Job::discoveryRelationsWithPrefix('job'),
                 'resume.works' => static fn ($relation) => $relation->orderByDesc('sort')->orderByDesc('id'),
                 'resume.educations' => static fn ($relation) => $relation->orderByDesc('sort')->orderByDesc('id'),
                 'resume.languages' => static fn ($relation) => $relation->orderByDesc('sort')->orderByDesc('id'),
@@ -217,7 +216,7 @@ class RcApplicationService extends Service
     {
         return Application::query()
             ->where('company_id', $company->id)
-            ->with(['job.company', 'job.position', 'company'])
+            ->with([...Job::discoveryRelationsWithPrefix('job'), 'company'])
             ->whereKey($applicationId)
             ->first();
     }
@@ -726,12 +725,12 @@ class RcApplicationService extends Service
 
     private function refreshWithRelations(Application $application): Application
     {
-        return $application->refresh()->load(['job.company', 'job.position', 'resume', 'company']);
+        return $application->refresh()->load([...Job::discoveryRelationsWithPrefix('job'), 'resume', 'company']);
     }
 
     private function refreshForRecruiter(Application $application): Application
     {
-        return $application->refresh()->load(['job.company', 'job.position', 'company']);
+        return $application->refresh()->load([...Job::discoveryRelationsWithPrefix('job'), 'company']);
     }
 
     private function generateOfferNo(Application $application): string

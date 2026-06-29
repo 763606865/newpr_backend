@@ -29,8 +29,7 @@ class RcJobRecommendationService extends Service
         $paginator = RcJobSearchService::make()->search(
             $perPage,
             $filters,
-            $criteria->sortColumn,
-            $criteria->sortDirection,
+            $criteria->resolvedSortCriteria(),
         );
 
         return [

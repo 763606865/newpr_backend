@@ -2,9 +2,9 @@
 
 namespace App\Discovery\Recommendation;
 
-use App\Discovery\Search\JobSearchSortCriteria;
+use App\Discovery\Search\AnnouncementSearchSortCriteria;
 
-final class JobRecommendationCriteria
+final class AnnouncementRecommendationCriteria
 {
     /**
      * @param  array<string, mixed>  $searchFilters
@@ -14,12 +14,12 @@ final class JobRecommendationCriteria
         public readonly string $strategy,
         public readonly array $searchFilters = [],
         public readonly array $meta = [],
-        public readonly ?JobSearchSortCriteria $sortCriteria = null,
+        public readonly ?AnnouncementSearchSortCriteria $sortCriteria = null,
     ) {}
 
-    public function resolvedSortCriteria(): JobSearchSortCriteria
+    public function resolvedSortCriteria(): AnnouncementSearchSortCriteria
     {
-        return $this->sortCriteria ?? JobSearchSortCriteria::default();
+        return $this->sortCriteria ?? AnnouncementSearchSortCriteria::default();
     }
 
     /**

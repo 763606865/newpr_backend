@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Models;
 
+use App\Enums\UserGender;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
@@ -41,5 +42,25 @@ class UserTest extends TestCase
 
         $this->assertNull($user->avatar);
         $this->assertNull($user->display_avatar);
+    }
+
+    public function test_mask_name_uses_gender_suffix(): void
+    {
+        $male = User::factory()->create([
+            'name' => '刘阳',
+            'gender' => UserGender::Male,
+        ]);
+        $female = User::factory()->create([
+            'name' => '刘阳',
+            'gender' => UserGender::Female,
+        ]);
+        $unknown = User::factory()->create([
+            'name' => '刘阳',
+            'gender' => UserGender::Unknown,
+        ]);
+
+        $this->assertSame('刘先生', $male->mask_name);
+        $this->assertSame('刘女士', $female->mask_name);
+        $this->assertSame('刘总', $unknown->mask_name);
     }
 }

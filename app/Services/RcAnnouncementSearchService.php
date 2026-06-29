@@ -2,32 +2,32 @@
 
 namespace App\Services;
 
-use App\Discovery\Search\JobSearchFilterApplier;
-use App\Discovery\Search\JobSearchSortCriteria;
-use App\Models\Rc\Job;
+use App\Discovery\Search\AnnouncementSearchFilterApplier;
+use App\Discovery\Search\AnnouncementSearchSortCriteria;
+use App\Models\Rc\Announcement;
 use App\Support\ScoutQuery;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Laravel\Scout\Builder as ScoutBuilder;
 
-class RcJobSearchService extends Service
+class RcAnnouncementSearchService extends Service
 {
     public function __construct(
-        private readonly JobSearchFilterApplier $filterApplier = new JobSearchFilterApplier,
+        private readonly AnnouncementSearchFilterApplier $filterApplier = new AnnouncementSearchFilterApplier,
     ) {}
 
     /**
-     * 求职者搜索已发布职位。
+     * 求职者搜索已发布招聘公告。
      *
      * @param  array<string, mixed>  $filters
-     * @return LengthAwarePaginator<int, Job>
+     * @return LengthAwarePaginator<int, Announcement>
      */
     public function search(
         int $perPage,
         array $filters = [],
-        ?JobSearchSortCriteria $sortCriteria = null,
+        ?AnnouncementSearchSortCriteria $sortCriteria = null,
     ): LengthAwarePaginator {
-        $sortCriteria ??= JobSearchSortCriteria::default();
+        $sortCriteria ??= AnnouncementSearchSortCriteria::default();
 
         if ($this->shouldSearchViaDatabase($filters)) {
             return $this->searchViaDatabase($perPage, $filters, $sortCriteria);
@@ -50,30 +50,30 @@ class RcJobSearchService extends Service
 
     /**
      * @param  array<string, mixed>  $filters
-     * @return LengthAwarePaginator<int, Job>
+     * @return LengthAwarePaginator<int, Announcement>
      */
     private function searchViaDatabase(
         int $perPage,
         array $filters,
-        JobSearchSortCriteria $sortCriteria,
+        AnnouncementSearchSortCriteria $sortCriteria,
     ): LengthAwarePaginator {
-        $query = Job::query();
+        $query = Announcement::query();
         $this->filterApplier->applyDatabaseConstraints($query, $filters);
         $sortCriteria->applyToQuery($query);
 
         return $query
-            ->with(Job::discoveryRelations())
+            ->with(Announcement::discoveryRelations())
             ->paginate($perPage);
     }
 
     /**
      * @param  array<string, mixed>  $filters
-     * @return LengthAwarePaginator<int, Job>
+     * @return LengthAwarePaginator<int, Announcement>
      */
     private function searchViaElasticsearch(
         int $perPage,
         array $filters,
-        JobSearchSortCriteria $sortCriteria,
+        AnnouncementSearchSortCriteria $sortCriteria,
     ): LengthAwarePaginator {
         $keyword = ScoutQuery::escape((string) ($filters['keyword'] ?? ''));
 
@@ -82,13 +82,13 @@ class RcJobSearchService extends Service
 
         $paginator = $builder
             ->query(function (Builder $query) use ($filters): void {
-                $query->with(Job::discoveryRelations());
-                $this->filterApplier->applyExclusionFilters($query, $filters);
+                $query->with(Announcement::discoveryRelations());
+                $this->filterApplier->applyDatabaseFilters($query, $filters);
             })
             ->paginate($perPage);
 
         $paginator->setCollection(
-            $sortCriteria->sortJobCollection($paginator->getCollection()),
+            $sortCriteria->sortAnnouncementCollection($paginator->getCollection()),
         );
 
         return $paginator;
@@ -100,12 +100,12 @@ class RcJobSearchService extends Service
     private function makeSearchBuilder(string $keyword, array $filters): ScoutBuilder
     {
         if (config('scout.driver') === 'collection') {
-            return Job::search($keyword, function ($query) use ($filters): void {
+            return Announcement::search($keyword, function ($query) use ($filters): void {
                 $this->filterApplier->applyDatabaseConstraints($query, $filters);
             });
         }
 
-        $builder = Job::search($keyword);
+        $builder = Announcement::search($keyword);
 
         $this->filterApplier->applyIndexedFilters($builder, $filters);
 

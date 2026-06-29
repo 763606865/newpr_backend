@@ -3,13 +3,17 @@
 namespace Tests\Feature\Rc\Discovery;
 
 use App\Enums\CompanyStatus;
+use App\Enums\RcApplicationStatus;
 use App\Enums\RcIdentityStatus;
 use App\Enums\RcIdentityType;
 use App\Enums\RcJobEmploymentType;
 use App\Enums\RcJobStatus;
 use App\Models\Company;
+use App\Models\Rc\Application;
 use App\Models\Rc\Job;
+use App\Models\Rc\JobFavorite;
 use App\Models\Rc\Position;
+use App\Models\Rc\Resume;
 use App\Models\Rc\UserIdentity;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -88,6 +92,76 @@ class JobSearchControllerTest extends TestCase
             ->assertJsonPath('data.total', 1)
             ->assertJsonPath('data.data.0.title', '高级 Laravel 工程师')
             ->assertJsonPath('data.data.0.company.name', '南昌示例科技有限公司');
+    }
+
+    public function test_index_returns_applied_and_favorited_flags_for_each_job(): void
+    {
+        $jobSeeker = $this->createJobSeekerContext();
+        $company = Company::query()->create([
+            'name' => '南昌示例科技有限公司',
+            'credit_code' => '91360100MA0000000X',
+            'status' => CompanyStatus::Enabled,
+        ]);
+
+        $appliedJob = Job::query()->create([
+            'company_id' => $company->id,
+            'position_code' => 'backend-developer',
+            'code' => 'JOB-SEEK-APPLIED',
+            'title' => '已投递岗位',
+            'employment_type' => RcJobEmploymentType::FullTime,
+            'description' => '负责后端研发',
+            'status' => RcJobStatus::Published,
+            'published_at' => now(),
+        ]);
+
+        $favoriteJob = Job::query()->create([
+            'company_id' => $company->id,
+            'position_code' => 'backend-developer',
+            'code' => 'JOB-SEEK-FAVORITE',
+            'title' => '已收藏岗位',
+            'employment_type' => RcJobEmploymentType::FullTime,
+            'description' => '负责后端研发',
+            'status' => RcJobStatus::Published,
+            'published_at' => now()->subMinute(),
+        ]);
+
+        JobFavorite::query()->create([
+            'user_id' => $jobSeeker->id,
+            'job_id' => $favoriteJob->id,
+        ]);
+
+        $resume = Resume::query()->create([
+            'user_id' => $jobSeeker->id,
+            'title' => '求职简历',
+            'full_name' => '求职者甲',
+            'phone' => '13800138000',
+            'email' => 'seeker@example.com',
+        ]);
+
+        Application::query()->create([
+            'company_id' => $company->id,
+            'job_id' => $appliedJob->id,
+            'candidate_user_id' => $jobSeeker->id,
+            'resume_id' => $resume->id,
+            'status' => RcApplicationStatus::Pending,
+            'applied_at' => now(),
+        ]);
+
+        $response = $this
+            ->actingAs($jobSeeker, 'rc')
+            ->getJson('/rc/talent/jobs?company_id='.$company->id);
+
+        $response
+            ->assertOk()
+            ->assertJsonPath('code', 200)
+            ->assertJsonPath('data.total', 2);
+
+        $jobs = collect($response->json('data.data'))->keyBy('title');
+
+        $this->assertTrue($jobs['已投递岗位']['is_applied']);
+        $this->assertFalse($jobs['已投递岗位']['is_favorited']);
+        $this->assertFalse($jobs['已收藏岗位']['is_applied']);
+        $this->assertTrue($jobs['已收藏岗位']['is_favorited']);
     }
 
     private function createJobSeekerContext(): User

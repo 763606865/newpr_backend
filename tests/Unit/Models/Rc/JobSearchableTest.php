@@ -52,6 +52,7 @@ class JobSearchableTest extends TestCase
         $this->assertSame('Java Laravel', $searchable['keywords']);
         $this->assertSame(RcJobStatus::Published->value, $searchable['status']);
         $this->assertSame(1, $searchable['is_public']);
+        $this->assertSame(0, $searchable['is_urgent']);
         $this->assertTrue($job->isPubliclySearchable());
     }
 }

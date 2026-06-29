@@ -2,27 +2,26 @@
 
 namespace App\Rc\Controllers\Discovery;
 
-use App\Discovery\Recommendation\JobRecommendationContext;
-use App\Models\Cms\AdSlot;
-use App\Models\Rc\Job;
+use App\Discovery\Recommendation\AnnouncementRecommendationContext;
+use App\Models\Rc\Announcement;
 use App\Models\User;
 use App\Rc\Controllers\Controller;
-use App\Resources\Rc\RcJobResource;
-use App\Services\RcJobRecommendationService;
+use App\Resources\Rc\RcAnnouncementResource;
+use App\Services\RcAnnouncementRecommendationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class JobRecommendController extends Controller
+class AnnouncementRecommendController extends Controller
 {
     /**
-     * 求职者职位推荐（支持未登录访问）
+     * 求职者招聘公告推荐（支持未登录访问）
      *
-     * GET /rc/talent/jobs/recommend
+     * GET /rc/talent/announcements/recommend
      */
     public function index(Request $request): JsonResponse
     {
-        $result = RcJobRecommendationService::make()->recommend(
-            new JobRecommendationContext(
+        $result = RcAnnouncementRecommendationService::make()->recommend(
+            new AnnouncementRecommendationContext(
                 user: $this->optionalUser(),
                 cityHint: $request->input('city_code') ?? $request->header('X-City-Code'),
             ),
@@ -31,19 +30,11 @@ class JobRecommendController extends Controller
 
         $paginator = $result['paginator'];
         $paginator->getCollection()->transform(
-            static fn (Job $job): array => (new RcJobResource($job))->resolve($request),
+            static fn (Announcement $announcement): array => (new RcAnnouncementResource($announcement))->resolve($request),
         );
 
         $payload = $paginator->toArray();
         $payload['recommendation'] = $result['criteria']->toRecommendationMeta();
-        $payload['ad_slots'] = AdSlot::query()
-            ->with([
-                'ads' => fn ($query) => $query->enabled()->orderBy('sort'),
-            ])
-            ->enabled()
-            ->whereLike('code', '%discovery.jobs.%')
-            ->orderBy('sort')
-            ->get()->makeVisible(['ads']);
 
         return $this->success($payload);
     }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\RcIdentityStatus;
 use App\Enums\UserGender;
 use App\Enums\UserStatus;
 use App\Models\Cast\AliyunOss;
@@ -40,6 +41,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property int $gender
  * @property string|null $avatar
  * @property-read string|null $display_avatar
+ * @property-read string $mask_name
  * @property string $password
  * @property string $status
  * @property string|null $last_login_ip
@@ -173,6 +175,16 @@ class User extends Authenticatable implements FilamentUser
     }
 
     /**
+     * 招聘方企业身份（用于职位发布者信息展示）。
+     */
+    public function recruiterCompanyIdentities(): HasMany
+    {
+        return $this->hasMany(UserIdentity::class, 'user_id')
+            ->where('organization_type', 'company')
+            ->where('status', RcIdentityStatus::Enabled->value);
+    }
+
+    /**
      * 主身份
      */
     public function defaultIdentity(): HasOne
@@ -194,6 +206,33 @@ class User extends Authenticatable implements FilamentUser
                 }
 
                 return AliyunOss::fromModel($this, 'avatar')->toDisplayUrl($path);
+            },
+        );
+    }
+
+    /**
+     * 脱敏称呼（取姓名首字 + 性别后缀）。
+     */
+    protected function maskName(): Attribute
+    {
+        return Attribute::make(
+            get: function (): string {
+                $name = trim((string) $this->name);
+
+                if ($name === '') {
+                    return '';
+                }
+
+                $surname = mb_substr($name, 0, 1);
+                $gender = $this->gender instanceof UserGender
+                    ? $this->gender
+                    : UserGender::tryFrom((int) $this->gender) ?? UserGender::Unknown;
+
+                return match ($gender) {
+                    UserGender::Male => $surname.'先生',
+                    UserGender::Female => $surname.'女士',
+                    UserGender::Unknown => $surname.'总',
+                };
             },
         );
     }

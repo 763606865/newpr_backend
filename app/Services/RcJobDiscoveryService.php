@@ -9,7 +9,7 @@ class RcJobDiscoveryService extends Service
     public function findPublicJob(int $jobId): ?Job
     {
         $job = Job::query()
-            ->with(['company', 'position'])
+            ->with(Job::discoveryRelations())
             ->find($jobId);
 
         if (! $job instanceof Job) {

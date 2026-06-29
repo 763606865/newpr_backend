@@ -144,6 +144,29 @@ class Job extends Model
         return $this->belongsTo(User::class, 'creator_user_id');
     }
 
+    /**
+     * @return list<string>
+     */
+    public static function discoveryRelations(): array
+    {
+        return [
+            'position',
+            'company.profile',
+            'creator.recruiterCompanyIdentities',
+        ];
+    }
+
+    /**
+     * @return list<string>
+     */
+    public static function discoveryRelationsWithPrefix(string $prefix): array
+    {
+        return array_map(
+            static fn (string $relation): string => "{$prefix}.{$relation}",
+            self::discoveryRelations(),
+        );
+    }
+
     public function applications(): HasMany
     {
         return $this->hasMany(Application::class, 'job_id');
@@ -186,6 +209,19 @@ class Job extends Model
         $expiredAt = ScoutQuery::timestamp($this->expired_at);
 
         return $expiredAt === null || $expiredAt >= now()->getTimestamp();
+    }
+
+    public function hasActiveUrgentHighlight(): bool
+    {
+        if (! $this->is_urgent) {
+            return false;
+        }
+
+        if ($this->urgent_until === null) {
+            return true;
+        }
+
+        return $this->urgent_until->greaterThanOrEqualTo(now());
     }
 
     /**
@@ -232,6 +268,7 @@ class Job extends Model
                 ? $this->status->value
                 : (int) $this->status,
             'is_public' => $this->isPubliclySearchable() ? 1 : 0,
+            'is_urgent' => $this->hasActiveUrgentHighlight() ? 1 : 0,
             'published_at' => ScoutQuery::timestamp($this->published_at),
             'expired_at' => ScoutQuery::timestamp($this->expired_at),
             'updated_at' => ScoutQuery::timestamp($this->getAttributes()['updated_at'] ?? null),

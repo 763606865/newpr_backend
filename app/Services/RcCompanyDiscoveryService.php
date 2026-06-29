@@ -32,7 +32,7 @@ class RcCompanyDiscoveryService extends Service
     public function paginatePublicJobs(Company $company, int $perPage): LengthAwarePaginator
     {
         return $this->publicJobsQuery($company)
-            ->with(['position'])
+            ->with(['position', 'creator.recruiterCompanyIdentities'])
             ->orderByDesc('published_at')
             ->orderByDesc('id')
             ->paginate($perPage);

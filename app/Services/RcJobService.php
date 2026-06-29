@@ -34,7 +34,7 @@ class RcJobService extends Service
     {
         return Job::query()
             ->where('company_id', $company->id)
-            ->with(['position', 'department', 'creator'])
+            ->with(['position', 'department', 'creator.recruiterCompanyIdentities'])
             ->find($jobId);
     }
 
