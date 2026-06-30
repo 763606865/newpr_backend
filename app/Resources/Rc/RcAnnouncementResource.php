@@ -4,6 +4,7 @@ namespace App\Resources\Rc;
 
 use App\Models\Area;
 use App\Models\Rc\Announcement;
+use DateTimeInterface;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -39,19 +40,19 @@ class RcAnnouncementResource extends JsonResource
             'education_level_label' => $announcement->education_level?->getLabel(),
             'major_requirement' => $announcement->major_requirement,
             'is_nationwide' => $announcement->is_nationwide,
-            'apply_start_at' => $announcement->apply_start_at,
-            'apply_end_at' => $announcement->apply_end_at,
+            'apply_start_at' => $this->formatDateTime($announcement->apply_start_at),
+            'apply_end_at' => $this->formatDateTime($announcement->apply_end_at),
             'apply_deadline_type' => $announcement->apply_deadline_type?->value,
             'apply_deadline_type_label' => $announcement->apply_deadline_type?->getLabel(),
             'apply_status' => $announcement->applyStatusLabel(),
-            'published_at' => $announcement->published_at,
-            'expired_at' => $announcement->expired_at,
+            'published_at' => $this->formatDateTime($announcement->published_at),
+            'expired_at' => $this->formatDateTime($announcement->expired_at),
             'is_top' => $announcement->is_top,
             'source_name' => $announcement->source_name,
             'source_url' => $announcement->source_url,
             'read_count' => $announcement->read_count,
-            'created_at' => $announcement->created_at,
-            'updated_at' => $announcement->updated_at,
+            'created_at' => $this->formatDateTime($announcement->created_at),
+            'updated_at' => $this->formatDateTime($announcement->updated_at),
         ];
 
         if ($announcement->is_nationwide) {
@@ -94,5 +95,18 @@ class RcAnnouncementResource extends JsonResource
         }
 
         return $data;
+    }
+
+    private function formatDateTime(mixed $value): ?string
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        if ($value instanceof DateTimeInterface) {
+            return $value->format('Y-m-d H:i:s');
+        }
+
+        return (string) $value;
     }
 }

@@ -15,6 +15,7 @@ use App\Models\Rc\ResumeIntention;
 use App\Models\User;
 use App\Services\RcResumeAggregateService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
 use Tests\TestCase;
 
 class AnnouncementRecommendControllerTest extends TestCase
@@ -32,6 +33,8 @@ class AnnouncementRecommendControllerTest extends TestCase
 
     public function test_guest_can_get_local_open_announcement_recommendations_without_auth(): void
     {
+        Carbon::setTestNow('2026-06-30 10:00:00');
+
         Area::query()->create([
             'name' => '南昌市',
             'code' => '360100',
@@ -72,7 +75,8 @@ class AnnouncementRecommendControllerTest extends TestCase
             ->assertJsonPath('code', 200)
             ->assertJsonPath('data.recommendation.strategy', 'guest_local')
             ->assertJsonPath('data.total', 1)
-            ->assertJsonPath('data.data.0.title', '南昌央企招聘');
+            ->assertJsonPath('data.data.0.title', '南昌央企招聘')
+            ->assertJsonPath('data.data.0.apply_start_at', '2026-06-29 10:00:00');
     }
 
     public function test_logged_in_user_with_intention_and_education_gets_recommendations(): void
