@@ -2,7 +2,9 @@
 
 namespace App\Rc\Requests;
 
+use App\Enums\RcIdentityType;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class PhoneLoginRequest extends FormRequest
 {
@@ -19,6 +21,7 @@ class PhoneLoginRequest extends FormRequest
         return [
             'phone' => ['required', 'string', 'max:30'],
             'code' => ['required', 'digits:6'],
+            'rc_user_identity_type' => ['sometimes', Rule::enum(RcIdentityType::class)],
         ];
     }
 }

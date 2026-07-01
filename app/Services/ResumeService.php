@@ -100,10 +100,52 @@ class ResumeService extends Service
         return $resume->fresh();
     }
 
+    /**
+     * 上传并绑定简历头像。
+     */
+    public function attachAvatar(Resume $resume, UploadedFile $file): Resume
+    {
+        $path = $this->storeResumeAvatar($file);
+
+        $resume->forceFill([
+            'avatar' => $path,
+        ])->save();
+
+        $freshResume = $resume->fresh();
+
+        if ($freshResume instanceof Resume && (int) $freshResume->is_primary === 1) {
+            $freshResume->loadMissing('user');
+
+            if ($freshResume->user instanceof User) {
+                $this->syncUserProfileFromResume($freshResume->user, $freshResume);
+            }
+        }
+
+        return $freshResume;
+    }
+
     private function storeResumeAttachment(UploadedFile $file): string
     {
         $path = sprintf(
             'uploads/rc/resume/%s/%s.%s',
+            now()->format('Y/m/d'),
+            Str::random(20),
+            strtolower($file->extension())
+        );
+
+        Storage::disk('oss')->put(
+            $path,
+            file_get_contents($file->getRealPath()),
+            ['ContentType' => $file->getMimeType()]
+        );
+
+        return $path;
+    }
+
+    private function storeResumeAvatar(UploadedFile $file): string
+    {
+        $path = sprintf(
+            'uploads/rc/avatar/%s/%s.%s',
             now()->format('Y/m/d'),
             Str::random(20),
             strtolower($file->extension())

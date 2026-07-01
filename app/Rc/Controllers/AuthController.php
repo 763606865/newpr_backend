@@ -69,8 +69,27 @@ class AuthController extends Controller
                 'phone' => $phone,
             ]);
         }
+        $loginIdentity = null;
 
-        return $this->respondWithToken($request, $user);
+        // 带身份类型登录
+        if ($request->has('rc_user_identity_type')) {
+            $identityType = RcIdentityType::from((int) $validated['rc_user_identity_type']);
+            $isFirstIdentity = ! $user->identities()->exists();
+
+            /** @var UserIdentity $loginIdentity */
+            $loginIdentity = $user->identities()->firstOrCreate(
+                ['identity_type' => $identityType->value],
+                [
+                    'identity_name' => $identityType->getLabel() ?? '身份',
+                    'is_default' => $isFirstIdentity ? 1 : 0,
+                    'status' => RcIdentityStatus::Enabled->value,
+                ],
+            );
+
+            $this->setDefaultIdentity($user, $loginIdentity);
+        }
+
+        return $this->respondWithToken($request, $user, $loginIdentity);
     }
 
     /**
@@ -251,7 +270,7 @@ class AuthController extends Controller
         $identity->forceFill(['is_default' => 1]);
     }
 
-    private function respondWithToken(Request $request, User $user): JsonResponse
+    private function respondWithToken(Request $request, User $user, ?UserIdentity $loginIdentity = null): JsonResponse
     {
         $user->forceFill([
             'last_login_ip' => (string) $request->ip(),
@@ -260,7 +279,7 @@ class AuthController extends Controller
 
         $tokenResult = $this->createRcToken($user);
 
-        $userIdentity = $user->defaultIdentity()->first();
+        $userIdentity = $loginIdentity ?? $user->defaultIdentity()->first();
         $userIdentity?->load('organization');
 
         if ($userIdentity) {
