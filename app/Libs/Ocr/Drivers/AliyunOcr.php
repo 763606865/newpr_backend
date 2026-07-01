@@ -229,11 +229,18 @@ class AliyunOcr implements OcrDriver
             'accessKeySecret' => $accessKeySecret,
             'endpoint' => (string) ($this->config['endpoint'] ?? 'ocr-api.cn-hangzhou.aliyuncs.com'),
             'regionId' => (string) ($this->config['region_id'] ?? 'cn-hangzhou'),
-            'connectTimeout' => (int) ($this->config['connect_timeout'] ?? 5),
-            'readTimeout' => (int) ($this->config['read_timeout'] ?? 10),
+            'connectTimeout' => $this->timeoutMilliseconds('connect_timeout', 5),
+            'readTimeout' => $this->timeoutMilliseconds('read_timeout', 10),
         ]);
 
         return new Ocrapi($config);
+    }
+
+    protected function timeoutMilliseconds(string $key, int $defaultSeconds): int
+    {
+        $seconds = (float) ($this->config[$key] ?? $defaultSeconds);
+
+        return max(1, (int) round($seconds * 1000));
     }
 
     protected function logger(): LoggerInterface

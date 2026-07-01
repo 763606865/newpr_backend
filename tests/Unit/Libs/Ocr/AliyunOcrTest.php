@@ -157,6 +157,21 @@ class AliyunOcrTest extends TestCase
         ]))->recognizeGeneralByUrl('https://example.com/image.png');
     }
 
+    public function test_timeout_config_seconds_are_converted_to_sdk_milliseconds(): void
+    {
+        $driver = new AliyunOcr([
+            'access_key_id' => 'test-key-id',
+            'access_key_secret' => 'test-key-secret',
+            'connect_timeout' => 5,
+            'read_timeout' => 10,
+        ]);
+
+        $method = new \ReflectionMethod($driver, 'timeoutMilliseconds');
+
+        $this->assertSame(5000, $method->invoke($driver, 'connect_timeout', 5));
+        $this->assertSame(10000, $method->invoke($driver, 'read_timeout', 10));
+    }
+
     public function test_parse_response_throws_when_api_returns_error_code(): void
     {
         $logger = $this->createRecordingLogger();
