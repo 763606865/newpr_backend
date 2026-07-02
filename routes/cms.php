@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdController;
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\HomeController;
@@ -19,6 +20,8 @@ Route::middleware(['optional-rc-auth', 'cms-home-menu'])->group(function (): voi
 
     Route::get('/articles', [ArticleController::class, 'index'])->name('article.index');
     Route::get('/articles/{id}', [ArticleController::class, 'show'])->whereNumber('id')->name('article.show');
+
+    Route::get('/ads', [AdController::class, 'index'])->name('ad.index');
 
     Route::get('/school-activities', [SchoolActivityController::class, 'index'])->name('school-activity.index');
     Route::get('/school-activities/invite/{inviteCode}', [SchoolActivityController::class, 'showByInviteCode'])->name('school-activity.invite.show');
