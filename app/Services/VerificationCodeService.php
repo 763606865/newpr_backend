@@ -7,7 +7,6 @@ use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Str;
 use Random\RandomException;
 
 class VerificationCodeService extends Service
@@ -103,7 +102,7 @@ class VerificationCodeService extends Service
                     'tpContent' => [
                         'app_name' => '中测易聘',
                         'others' => '300',
-                        'valid_code' => $code
+                        'valid_code' => $code,
                     ],
                 ]);
             }
@@ -138,6 +137,7 @@ class VerificationCodeService extends Service
     {
         return match ($scene) {
             'forgot_password' => '重置密码',
+            'change_phone' => '修改手机号',
             default => '登录',
         };
     }

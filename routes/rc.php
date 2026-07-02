@@ -39,6 +39,7 @@ use App\Rc\Controllers\SchoolBoothController;
 use App\Rc\Controllers\SchoolController;
 use App\Rc\Controllers\ToolController;
 use App\Rc\Controllers\UploadController;
+use App\Rc\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index']);
@@ -61,6 +62,9 @@ Route::middleware('auth:rc')->group(function (): void {
     Route::post('/auth/logout', [AuthController::class, 'logout']);
     Route::get('/auth/me', [AuthController::class, 'me']);
     Route::get('/auth/organizations', [AuthController::class, 'organizations']);
+    Route::get('/users/phone/lookup', [UserController::class, 'lookupPhone']);
+    Route::post('/users/phone/verification-code', [UserController::class, 'sendPhoneVerificationCode']);
+    Route::put('/users/phone', [UserController::class, 'updatePhone']);
     // ==============================================================================
 
     // 元数据
