@@ -9,6 +9,8 @@ use App\Rc\Controllers\Discovery\AnnouncementRecommendController;
 use App\Rc\Controllers\Discovery\AnnouncementSearchController;
 use App\Rc\Controllers\Discovery\CompanyDetailController;
 use App\Rc\Controllers\Discovery\CompanyFavoriteController;
+use App\Rc\Controllers\Discovery\CompanyRecommendController;
+use App\Rc\Controllers\Discovery\CompanySearchController;
 use App\Rc\Controllers\Discovery\JobDetailController;
 use App\Rc\Controllers\Discovery\JobFavoriteController;
 use App\Rc\Controllers\Discovery\JobRecommendController;
@@ -54,6 +56,7 @@ Route::post('/auth/forgot-password', [AuthController::class, 'forgotPassword']);
 
 // Discovery - 职位推荐 / 详情（可选登录）
 Route::get('/talent/jobs/recommend', [JobRecommendController::class, 'index']);
+Route::get('/talent/companies/recommend', [CompanyRecommendController::class, 'index']);
 Route::get('/talent/announcements/recommend', [AnnouncementRecommendController::class, 'index']);
 Route::get('/talent/jobs/{id}', [JobDetailController::class, 'show'])->whereNumber('id');
 Route::get('/talent/companies/{id}', [CompanyDetailController::class, 'show'])->whereNumber('id');
@@ -67,6 +70,7 @@ Route::middleware('auth:rc')->group(function (): void {
     // ==============================================================================
 
     // 用户相关
+    Route::get('/users/jobseeker/stats', [UserController::class, 'jobSeekerStats']);
     Route::get('/users/phone/lookup', [UserController::class, 'lookupPhone']);
     Route::post('/users/phone/verification-code', [UserController::class, 'sendPhoneVerificationCode']);
     Route::put('/users/phone', [UserController::class, 'updatePhone']);
@@ -144,6 +148,7 @@ Route::middleware('auth:rc')->group(function (): void {
 
     // Discovery - 职位搜索
     Route::get('/talent/jobs', [JobSearchController::class, 'index']);
+    Route::get('/talent/companies', [CompanySearchController::class, 'index']);
     Route::get('/talent/announcements', [AnnouncementSearchController::class, 'index']);
     Route::get('/talent/favorites/jobs', [JobFavoriteController::class, 'index']);
     Route::get('/talent/favorites/companies', [CompanyFavoriteController::class, 'index']);

@@ -49,8 +49,8 @@ class HomeController extends Controller
             ->with([
                 'banners' => fn ($query) => $query->enabled()->orderBy('sort'),
             ])
-            ->where('code', '=', 'zcgz.index.banner-1')
-            ->first();
+            ->whereLike('code', 'zcyp.index.%')
+            ->get();
 
         $adSlot = AdSlot::query()
             ->with([
