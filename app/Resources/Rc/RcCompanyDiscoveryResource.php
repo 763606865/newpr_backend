@@ -36,6 +36,10 @@ class RcCompanyDiscoveryResource extends JsonResource
             }
         }
 
+        if ($this->resource->relationLoaded('albums')) {
+            $data['albums'] = RcCompanyAlbumResource::collection($this->resource->albums)->resolve($request);
+        }
+
         if (array_key_exists('public_job_count', $this->resource->getAttributes())) {
             $data['stat'] = [
                 'public_jobs' => (int) $this->resource->getAttribute('public_job_count'),

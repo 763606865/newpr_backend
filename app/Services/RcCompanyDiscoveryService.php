@@ -14,7 +14,10 @@ class RcCompanyDiscoveryService extends Service
     {
         $company = Company::query()
             ->enabled()
-            ->with('profile')
+            ->with([
+                'profile',
+                'albums' => fn ($query) => $query->enabled()->ordered(),
+            ])
             ->find($companyId);
 
         if (! $company instanceof Company) {

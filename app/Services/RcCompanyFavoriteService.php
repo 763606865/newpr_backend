@@ -42,7 +42,10 @@ class RcCompanyFavoriteService extends Service
         return CompanyFavorite::query()
             ->where('user_id', $user->id)
             ->whereHas('company')
-            ->with(['company.profile'])
+            ->with([
+                'company.profile',
+                'company.albums' => fn ($query) => $query->enabled()->ordered(),
+            ])
             ->orderByDesc('created_at')
             ->orderByDesc('id')
             ->paginate($perPage);

@@ -2,6 +2,7 @@
 
 use App\Rc\Controllers\ApplicationController;
 use App\Rc\Controllers\AuthController;
+use App\Rc\Controllers\CompanyAlbumController;
 use App\Rc\Controllers\CompanyController;
 use App\Rc\Controllers\CompanySchoolActivityController;
 use App\Rc\Controllers\Discovery\AnnouncementRecommendController;
@@ -181,6 +182,12 @@ Route::middleware('auth:rc')->group(function (): void {
     Route::put('/companies/profile', [CompanyController::class, 'profileUpdate']);
     Route::post('/companies/bind', [CompanyController::class, 'bind']);
     Route::post('/companies', [CompanyController::class, 'store']);
+    Route::get('/companies/albums', [CompanyAlbumController::class, 'index']);
+    Route::post('/companies/albums', [CompanyAlbumController::class, 'store']);
+    Route::get('/companies/albums/{id}', [CompanyAlbumController::class, 'show'])->whereNumber('id');
+    Route::put('/companies/albums/{id}', [CompanyAlbumController::class, 'update'])->whereNumber('id');
+    Route::patch('/companies/albums/{id}', [CompanyAlbumController::class, 'update'])->whereNumber('id');
+    Route::delete('/companies/albums/{id}', [CompanyAlbumController::class, 'destroy'])->whereNumber('id');
     Route::get('/companies/school-activities', [CompanySchoolActivityController::class, 'index']);
     Route::get('/companies/school-activities/organized', [CompanySchoolActivityController::class, 'organized']);
     Route::get('/companies/school-activities/available', [CompanySchoolActivityController::class, 'available']);

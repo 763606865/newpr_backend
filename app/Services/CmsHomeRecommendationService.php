@@ -88,6 +88,7 @@ class CmsHomeRecommendationService extends Service
 
         return [
             'recommendable.profile',
+            'recommendable.albums' => fn ($query) => $query->enabled()->ordered(),
         ];
     }
 

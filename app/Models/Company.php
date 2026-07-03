@@ -10,6 +10,7 @@ use App\Models\Oa\AttendanceSchedule;
 use App\Models\Oa\LeaveBalance;
 use App\Models\Oa\LeaveType;
 use App\Models\Pivot\CompanyBUsers;
+use App\Models\Rc\CompanyAlbum;
 use App\Models\Rc\SchoolActivityBooth;
 use App\Models\Rc\SchoolActivityCompany;
 use App\Observers\CompanyObserver;
@@ -130,6 +131,16 @@ class Company extends Model
     public function contacts(): HasMany
     {
         return $this->hasMany(CompanyContact::class, 'company_id');
+    }
+
+    /**
+     * 企业相册
+     */
+    public function albums(): HasMany
+    {
+        return $this->hasMany(CompanyAlbum::class, 'company_id')
+            ->orderBy('sort')
+            ->orderByDesc('id');
     }
 
     /**

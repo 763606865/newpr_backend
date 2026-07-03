@@ -13,6 +13,7 @@ use App\Enums\RcJobStatus;
 use App\Models\Company;
 use App\Models\CompanyProfile;
 use App\Models\Rc\Application;
+use App\Models\Rc\CompanyAlbum;
 use App\Models\Rc\CompanyFavorite;
 use App\Models\Rc\Job;
 use App\Models\Rc\JobFavorite;
@@ -66,6 +67,23 @@ class CompanyDetailControllerTest extends TestCase
             'status' => RcJobStatus::Draft,
         ]);
 
+        CompanyAlbum::query()->create([
+            'company_id' => $company->id,
+            'title' => '办公环境',
+            'image' => 'uploads/rc/company-albums/office.jpg',
+            'type' => 1,
+            'sort' => 20,
+            'status' => 1,
+        ]);
+        CompanyAlbum::query()->create([
+            'company_id' => $company->id,
+            'title' => '停用图片',
+            'image' => 'uploads/rc/company-albums/disabled.jpg',
+            'type' => 4,
+            'sort' => 10,
+            'status' => 0,
+        ]);
+
         $response = $this->getJson('/rc/talent/companies/'.$company->id);
 
         $response
@@ -74,6 +92,10 @@ class CompanyDetailControllerTest extends TestCase
             ->assertJsonPath('data.company.id', $company->id)
             ->assertJsonPath('data.company.display_name', '示例科技')
             ->assertJsonPath('data.company.profile.introduction', '专注招聘系统研发')
+            ->assertJsonPath('data.company.albums.0.title', '办公环境')
+            ->assertJsonPath('data.company.albums.0.image', 'uploads/rc/company-albums/office.jpg')
+            ->assertJsonPath('data.company.albums.0.type_label', '办公环境')
+            ->assertJsonCount(1, 'data.company.albums')
             ->assertJsonPath('data.company.stat.public_jobs', 1)
             ->assertJsonPath('data.jobs.total', 1)
             ->assertJsonPath('data.jobs.data.0.title', 'Laravel 工程师')
