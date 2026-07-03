@@ -31,7 +31,7 @@ class JobSearchController extends Controller
 
         $paginator = RcJobSearchService::make()->search(
             $this->getPerPage($request),
-            $request->only([
+            array_merge($request->only([
                 'keyword',
                 'city_code',
                 'employment_type',
@@ -42,6 +42,8 @@ class JobSearchController extends Controller
                 'experience_max',
                 'salary_min',
                 'salary_max',
+            ]), [
+                'exclude_blacklisted_company_for_user_id' => $user->id,
             ]),
         );
 

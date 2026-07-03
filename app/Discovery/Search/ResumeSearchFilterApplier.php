@@ -4,6 +4,7 @@ namespace App\Discovery\Search;
 
 use App\Enums\RcResumeStatus;
 use App\Models\Rc\Resume;
+use App\Models\Rc\UserCompanyBlacklist;
 use Illuminate\Database\Eloquent\Builder;
 use Laravel\Scout\Builder as ScoutBuilder;
 
@@ -72,6 +73,23 @@ class ResumeSearchFilterApplier
 
         if (filled($filters['work_years_max'] ?? null)) {
             $query->where('work_years', '<=', (int) $filters['work_years_max']);
+        }
+
+        $this->applyExclusionFilters($query, $filters);
+    }
+
+    /**
+     * @param  Builder<Resume>  $query
+     * @param  array<string, mixed>  $filters
+     */
+    public function applyExclusionFilters(Builder $query, array $filters): void
+    {
+        if (filled($filters['exclude_blacklisted_users_for_company_id'] ?? null)) {
+            $companyId = (int) $filters['exclude_blacklisted_users_for_company_id'];
+
+            $query->whereNotIn('user_id', UserCompanyBlacklist::query()
+                ->select('user_id')
+                ->where('company_id', $companyId));
         }
     }
 }

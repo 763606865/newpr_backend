@@ -6,6 +6,7 @@ use App\Enums\RcApplicationStatus;
 use App\Enums\RcJobStatus;
 use App\Models\Rc\Application;
 use App\Models\Rc\Job;
+use App\Models\Rc\UserCompanyBlacklist;
 use Illuminate\Database\Eloquent\Builder;
 use Laravel\Scout\Builder as ScoutBuilder;
 
@@ -134,6 +135,14 @@ class JobSearchFilterApplier
                 ->select('job_id')
                 ->where('candidate_user_id', $candidateUserId)
                 ->where('status', '!=', RcApplicationStatus::Withdrawn->value));
+        }
+
+        if (filled($filters['exclude_blacklisted_company_for_user_id'] ?? null)) {
+            $userId = (int) $filters['exclude_blacklisted_company_for_user_id'];
+
+            $query->whereNotIn('company_id', UserCompanyBlacklist::query()
+                ->select('company_id')
+                ->where('user_id', $userId));
         }
     }
 }

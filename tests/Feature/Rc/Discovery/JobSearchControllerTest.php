@@ -14,6 +14,7 @@ use App\Models\Rc\Job;
 use App\Models\Rc\JobFavorite;
 use App\Models\Rc\Position;
 use App\Models\Rc\Resume;
+use App\Models\Rc\UserCompanyBlacklist;
 use App\Models\Rc\UserIdentity;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -162,6 +163,58 @@ class JobSearchControllerTest extends TestCase
         $this->assertFalse($jobs['已投递岗位']['is_favorited']);
         $this->assertFalse($jobs['已收藏岗位']['is_applied']);
         $this->assertTrue($jobs['已收藏岗位']['is_favorited']);
+    }
+
+    public function test_index_excludes_jobs_from_blacklisted_companies(): void
+    {
+        $jobSeeker = $this->createJobSeekerContext();
+        $blockedCompany = Company::query()->create([
+            'name' => '黑名单企业',
+            'credit_code' => '91360100MA0000000B',
+            'status' => CompanyStatus::Enabled,
+        ]);
+        $visibleCompany = Company::query()->create([
+            'name' => '可见企业',
+            'credit_code' => '91360100MA0000000C',
+            'status' => CompanyStatus::Enabled,
+        ]);
+
+        UserCompanyBlacklist::query()->create([
+            'user_id' => $jobSeeker->id,
+            'company_id' => $blockedCompany->id,
+        ]);
+
+        Job::query()->create([
+            'company_id' => $blockedCompany->id,
+            'position_code' => 'backend-developer',
+            'code' => 'JOB-BLOCKED-001',
+            'title' => '不可见岗位',
+            'employment_type' => RcJobEmploymentType::FullTime,
+            'description' => '被拉黑企业岗位',
+            'status' => RcJobStatus::Published,
+            'published_at' => now(),
+        ]);
+
+        Job::query()->create([
+            'company_id' => $visibleCompany->id,
+            'position_code' => 'backend-developer',
+            'code' => 'JOB-VISIBLE-001',
+            'title' => '可见岗位',
+            'employment_type' => RcJobEmploymentType::FullTime,
+            'description' => '可见企业岗位',
+            'status' => RcJobStatus::Published,
+            'published_at' => now(),
+        ]);
+
+        $response = $this
+            ->actingAs($jobSeeker, 'rc')
+            ->getJson('/rc/talent/jobs');
+
+        $response
+            ->assertOk()
+            ->assertJsonPath('code', 200)
+            ->assertJsonPath('data.total', 1)
+            ->assertJsonPath('data.data.0.title', '可见岗位');
     }
 
     private function createJobSeekerContext(): User

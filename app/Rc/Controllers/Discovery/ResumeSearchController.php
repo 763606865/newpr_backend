@@ -29,13 +29,15 @@ class ResumeSearchController extends Controller
 
         $paginator = RcResumeSearchService::make()->search(
             $this->getPerPage($request),
-            $request->only([
+            array_merge($request->only([
                 'keyword',
                 'highest_education_level',
                 'current_city_code',
                 'is_fresh_graduate',
                 'work_years_min',
                 'work_years_max',
+            ]), [
+                'exclude_blacklisted_users_for_company_id' => $company->id,
             ]),
         );
 

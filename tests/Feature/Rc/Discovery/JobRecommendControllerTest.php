@@ -16,6 +16,7 @@ use App\Models\Rc\Job;
 use App\Models\Rc\Position;
 use App\Models\Rc\Resume;
 use App\Models\Rc\ResumeIntention;
+use App\Models\Rc\UserCompanyBlacklist;
 use App\Models\Rc\UserIdentity;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -153,6 +154,60 @@ class JobRecommendControllerTest extends TestCase
             ->assertOk()
             ->assertJsonPath('data.total', 1)
             ->assertJsonPath('data.data.0.title', '未投递岗位');
+    }
+
+    public function test_logged_in_user_does_not_see_jobs_from_blacklisted_companies_in_recommendations(): void
+    {
+        $user = $this->createJobSeekerContext();
+        $blockedCompany = Company::query()->create([
+            'name' => '黑名单企业',
+            'credit_code' => '91360100MA0000000B',
+            'status' => CompanyStatus::Enabled,
+        ]);
+        $visibleCompany = Company::query()->create([
+            'name' => '可见企业',
+            'credit_code' => '91360100MA0000000C',
+            'status' => CompanyStatus::Enabled,
+        ]);
+
+        UserCompanyBlacklist::query()->create([
+            'user_id' => $user->id,
+            'company_id' => $blockedCompany->id,
+        ]);
+
+        Job::query()->create([
+            'company_id' => $blockedCompany->id,
+            'position_code' => 'backend-developer',
+            'code' => 'JOB-REC-BLOCKED-001',
+            'title' => '黑名单企业岗位',
+            'employment_type' => RcJobEmploymentType::FullTime,
+            'city_code' => '360100',
+            'salary_min' => 12000,
+            'salary_max' => 18000,
+            'description' => '不应推荐',
+            'status' => RcJobStatus::Published,
+            'published_at' => now(),
+        ]);
+
+        Job::query()->create([
+            'company_id' => $visibleCompany->id,
+            'position_code' => 'backend-developer',
+            'code' => 'JOB-REC-VISIBLE-001',
+            'title' => '可推荐岗位',
+            'employment_type' => RcJobEmploymentType::FullTime,
+            'city_code' => '360100',
+            'salary_min' => 12000,
+            'salary_max' => 18000,
+            'description' => '可推荐',
+            'status' => RcJobStatus::Published,
+            'published_at' => now(),
+        ]);
+
+        $this->actingAs($user, 'rc')
+            ->getJson('/rc/talent/jobs/recommend?city_code=360100')
+            ->assertOk()
+            ->assertJsonPath('data.total', 1)
+            ->assertJsonPath('data.data.0.title', '可推荐岗位');
     }
 
     public function test_logged_in_user_can_see_withdrawn_jobs_in_recommendations(): void

@@ -24,6 +24,7 @@ class RcJobRecommendationService extends Service
 
         if ($context->user instanceof User) {
             $filters['exclude_applied_candidate_user_id'] = $context->user->id;
+            $filters['exclude_blacklisted_company_for_user_id'] = $context->user->id;
         }
 
         $paginator = RcJobSearchService::make()->search(

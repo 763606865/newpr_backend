@@ -6,6 +6,7 @@ use App\Discovery\Search\ResumeSearchFilterApplier;
 use App\Models\Rc\Resume;
 use App\Support\ScoutQuery;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Laravel\Scout\Builder;
 
 class RcResumeSearchService extends Service
@@ -33,6 +34,9 @@ class RcResumeSearchService extends Service
         $builder = $this->makeSearchBuilder($keyword, $filters);
 
         return $builder
+            ->query(function (EloquentBuilder $query) use ($filters): void {
+                $this->filterApplier->applyExclusionFilters($query, $filters);
+            })
             ->orderBy($sortColumn, $sortDirection)
             ->paginate($perPage);
     }

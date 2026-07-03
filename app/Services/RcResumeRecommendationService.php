@@ -19,10 +19,12 @@ class RcResumeRecommendationService extends Service
     public function recommend(ResumeRecommendationContext $context, int $perPage): array
     {
         $criteria = (new ResumeRecommendationCriteriaResolver)->resolve($context);
+        $filters = $criteria->toSearchFilters();
+        $filters['exclude_blacklisted_users_for_company_id'] = $context->company->id;
 
         $paginator = RcResumeSearchService::make()->search(
             $perPage,
-            $criteria->toSearchFilters(),
+            $filters,
             $criteria->sortColumn,
             $criteria->sortDirection,
         );

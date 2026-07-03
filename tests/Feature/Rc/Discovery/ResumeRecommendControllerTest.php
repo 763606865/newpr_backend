@@ -14,6 +14,7 @@ use App\Models\Rc\Job;
 use App\Models\Rc\Resume;
 use App\Models\Rc\ResumeEducation;
 use App\Models\Rc\ResumeWork;
+use App\Models\Rc\UserCompanyBlacklist;
 use App\Models\Rc\UserIdentity;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -80,6 +81,7 @@ class ResumeRecommendControllerTest extends TestCase
             'resume_id' => $matchedResume->id,
             'user_id' => $matchedCandidate->id,
             'company_name' => '南昌示例科技有限公司',
+            'position_code' => 'backend-developer',
             'position' => 'Laravel 工程师',
             'start_date' => '2020-01-01',
             'description' => '负责 Laravel API 开发',
@@ -145,6 +147,42 @@ class ResumeRecommendControllerTest extends TestCase
             ->assertJsonPath('data.recommendation.strategy', 'default')
             ->assertJsonPath('data.total', 1)
             ->assertJsonPath('data.data.0.full_name', '默认推荐候选人');
+    }
+
+    public function test_recommendations_exclude_candidates_who_blacklisted_recruiter_company(): void
+    {
+        [$recruiter, $company] = $this->createRecruiterContext();
+        $blockedCandidate = User::factory()->create();
+        $visibleCandidate = User::factory()->create();
+
+        UserCompanyBlacklist::query()->create([
+            'user_id' => $blockedCandidate->id,
+            'company_id' => $company->id,
+        ]);
+
+        Resume::query()->create([
+            'user_id' => $blockedCandidate->id,
+            'title' => '被屏蔽简历',
+            'full_name' => '候选人甲',
+            'phone' => '13800138010',
+            'email' => 'blocked@example.com',
+            'status' => RcResumeStatus::Normal,
+        ]);
+
+        Resume::query()->create([
+            'user_id' => $visibleCandidate->id,
+            'title' => '可见简历',
+            'full_name' => '候选人乙',
+            'phone' => '13800138011',
+            'email' => 'visible@example.com',
+            'status' => RcResumeStatus::Normal,
+        ]);
+
+        $this->actingAs($recruiter, 'rc')
+            ->getJson('/rc/talent/resumes/recommend')
+            ->assertOk()
+            ->assertJsonPath('data.total', 1)
+            ->assertJsonPath('data.data.0.full_name', '候选人乙');
     }
 
     /**
