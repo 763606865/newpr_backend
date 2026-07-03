@@ -197,6 +197,122 @@ class CompanyDetailControllerTest extends TestCase
             ->assertJsonPath('data.is_favorited', true);
     }
 
+    public function test_authenticated_user_can_filter_company_public_jobs(): void
+    {
+        $user = User::factory()->create();
+        $company = $this->createDiscoverableCompany();
+        $otherCompany = Company::query()->create([
+            'name' => '其他企业',
+            'credit_code' => '91360100MA0000000Y',
+            'status' => CompanyStatus::Enabled,
+        ]);
+
+        $matchedJob = Job::query()->create([
+            'company_id' => $company->id,
+            'position_code' => 'backend-developer',
+            'code' => 'JOB-COMPANY-MATCHED',
+            'title' => '匹配岗位',
+            'employment_type' => RcJobEmploymentType::FullTime,
+            'city_code' => '360100',
+            'workplace' => '南昌市高新区',
+            'salary_min' => 15000,
+            'salary_max' => 22000,
+            'experience_min' => 3,
+            'experience_max' => 5,
+            'description' => '负责后端开发',
+            'status' => RcJobStatus::Published,
+            'published_at' => now(),
+        ]);
+
+        Job::query()->create([
+            'company_id' => $company->id,
+            'position_code' => 'backend-developer',
+            'code' => 'JOB-COMPANY-WRONG-CITY',
+            'title' => '城市不匹配岗位',
+            'employment_type' => RcJobEmploymentType::FullTime,
+            'city_code' => '310100',
+            'salary_min' => 15000,
+            'salary_max' => 22000,
+            'experience_min' => 3,
+            'experience_max' => 5,
+            'description' => '负责后端开发',
+            'status' => RcJobStatus::Published,
+            'published_at' => now(),
+        ]);
+
+        Job::query()->create([
+            'company_id' => $company->id,
+            'position_code' => 'backend-developer',
+            'code' => 'JOB-COMPANY-DRAFT',
+            'title' => '草稿岗位',
+            'employment_type' => RcJobEmploymentType::FullTime,
+            'city_code' => '360100',
+            'salary_min' => 15000,
+            'salary_max' => 22000,
+            'experience_min' => 3,
+            'experience_max' => 5,
+            'description' => '负责后端开发',
+            'status' => RcJobStatus::Draft,
+        ]);
+
+        Job::query()->create([
+            'company_id' => $otherCompany->id,
+            'position_code' => 'backend-developer',
+            'code' => 'JOB-OTHER-COMPANY',
+            'title' => '其他企业岗位',
+            'employment_type' => RcJobEmploymentType::FullTime,
+            'city_code' => '360100',
+            'salary_min' => 15000,
+            'salary_max' => 22000,
+            'experience_min' => 3,
+            'experience_max' => 5,
+            'description' => '负责后端开发',
+            'status' => RcJobStatus::Published,
+            'published_at' => now(),
+        ]);
+
+        $resume = Resume::query()->create([
+            'user_id' => $user->id,
+            'title' => '求职简历',
+            'full_name' => '求职者甲',
+            'phone' => '13800138000',
+            'email' => 'seeker-jobs@example.com',
+        ]);
+
+        Application::query()->create([
+            'company_id' => $company->id,
+            'job_id' => $matchedJob->id,
+            'candidate_user_id' => $user->id,
+            'resume_id' => $resume->id,
+            'status' => RcApplicationStatus::Pending,
+            'applied_at' => now(),
+        ]);
+
+        JobFavorite::query()->create([
+            'user_id' => $user->id,
+            'job_id' => $matchedJob->id,
+        ]);
+
+        $this->actingAs($user, 'rc')
+            ->getJson('/rc/talent/companies/'.$company->id.'/jobs?'.http_build_query([
+                'per_page' => 2,
+                'employment_type' => RcJobEmploymentType::FullTime->value,
+                'experience_min' => 2,
+                'experience_max' => 5,
+                'salary_min' => 12000,
+                'salary_max' => 18000,
+                'city_code' => '360100',
+            ]))
+            ->assertOk()
+            ->assertJsonPath('code', 200)
+            ->assertJsonPath('data.total', 1)
+            ->assertJsonPath('data.per_page', 2)
+            ->assertJsonPath('data.data.0.id', $matchedJob->id)
+            ->assertJsonPath('data.data.0.title', '匹配岗位')
+            ->assertJsonPath('data.data.0.is_applied', true)
+            ->assertJsonPath('data.data.0.is_favorited', true);
+    }
+
     public function test_disabled_company_returns_not_found(): void
     {
         $company = Company::query()->create([

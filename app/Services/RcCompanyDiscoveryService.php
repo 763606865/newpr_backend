@@ -30,11 +30,12 @@ class RcCompanyDiscoveryService extends Service
     }
 
     /**
+     * @param  array<string, mixed>  $filters
      * @return LengthAwarePaginator<int, Job>
      */
-    public function paginatePublicJobs(Company $company, int $perPage): LengthAwarePaginator
+    public function paginatePublicJobs(Company $company, int $perPage, array $filters = []): LengthAwarePaginator
     {
-        return $this->publicJobsQuery($company)
+        return $this->publicJobsQuery($company, $filters)
             ->with(['position', 'creator.recruiterCompanyIdentities'])
             ->orderByDesc('published_at')
             ->orderByDesc('id')
@@ -47,13 +48,14 @@ class RcCompanyDiscoveryService extends Service
     }
 
     /**
+     * @param  array<string, mixed>  $filters
      * @return Builder<Job>
      */
-    private function publicJobsQuery(Company $company): Builder
+    private function publicJobsQuery(Company $company, array $filters = []): Builder
     {
         $query = Job::query()->where('company_id', $company->id);
 
-        (new JobSearchFilterApplier)->applyDatabaseConstraints($query);
+        (new JobSearchFilterApplier)->applyDatabaseConstraints($query, $filters);
 
         return $query;
     }

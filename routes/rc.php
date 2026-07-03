@@ -149,6 +149,7 @@ Route::middleware('auth:rc')->group(function (): void {
     Route::get('/talent/favorites/companies', [CompanyFavoriteController::class, 'index']);
     Route::post('/talent/companies/{id}/favorite', [CompanyFavoriteController::class, 'store'])->whereNumber('id');
     Route::delete('/talent/companies/{id}/favorite', [CompanyFavoriteController::class, 'destroy'])->whereNumber('id');
+    Route::get('/talent/companies/{id}/jobs', [CompanyDetailController::class, 'jobs'])->whereNumber('id');
     Route::post('/talent/jobs/{id}/favorite', [JobFavoriteController::class, 'store'])->whereNumber('id');
     Route::delete('/talent/jobs/{id}/favorite', [JobFavoriteController::class, 'destroy'])->whereNumber('id');
     // ==============================================================================
