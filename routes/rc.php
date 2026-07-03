@@ -39,6 +39,7 @@ use App\Rc\Controllers\SchoolBoothController;
 use App\Rc\Controllers\SchoolController;
 use App\Rc\Controllers\ToolController;
 use App\Rc\Controllers\UploadController;
+use App\Rc\Controllers\UserCompanyBlacklistController;
 use App\Rc\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -62,9 +63,18 @@ Route::middleware('auth:rc')->group(function (): void {
     Route::post('/auth/logout', [AuthController::class, 'logout']);
     Route::get('/auth/me', [AuthController::class, 'me']);
     Route::get('/auth/organizations', [AuthController::class, 'organizations']);
+    // ==============================================================================
+
+    // 用户相关
     Route::get('/users/phone/lookup', [UserController::class, 'lookupPhone']);
     Route::post('/users/phone/verification-code', [UserController::class, 'sendPhoneVerificationCode']);
     Route::put('/users/phone', [UserController::class, 'updatePhone']);
+    Route::get('/users/company-blacklists', [UserCompanyBlacklistController::class, 'index']);
+    Route::post('/users/company-blacklists', [UserCompanyBlacklistController::class, 'store']);
+    Route::get('/users/company-blacklists/{id}', [UserCompanyBlacklistController::class, 'show'])->whereNumber('id');
+    Route::put('/users/company-blacklists/{id}', [UserCompanyBlacklistController::class, 'update'])->whereNumber('id');
+    Route::patch('/users/company-blacklists/{id}', [UserCompanyBlacklistController::class, 'update'])->whereNumber('id');
+    Route::delete('/users/company-blacklists/{id}', [UserCompanyBlacklistController::class, 'destroy'])->whereNumber('id');
     // ==============================================================================
 
     // 元数据
