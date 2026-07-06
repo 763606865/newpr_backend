@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Cms\HomeRecommendations\Schemas;
 
 use App\Enums\CmsHomeRecommendationModuleType;
 use App\Enums\CmsStatus;
+use App\Enums\RcJobEmploymentType;
 use App\Enums\RcJobStatus;
 use App\Filament\Support\AreaCascadeFormFields;
 use App\Models\Company;
@@ -29,20 +30,18 @@ class HomeRecommendationForm
                     ->live(),
                 Select::make('job_id')
                     ->label('推荐职位')
-                    ->options(fn (): array => Job::query()
-                        ->where('status', RcJobStatus::Published)
-                        ->orderByDesc('published_at')
-                        ->orderByDesc('id')
-                        ->limit(200)
-                        ->get()
-                        ->mapWithKeys(fn (Job $job): array => [
-                            $job->id => sprintf('%s（#%d）', $job->title, $job->id),
-                        ])
-                        ->all())
+                    ->options(fn (): array => self::jobOptionsForModule(CmsHomeRecommendationModuleType::HotJob))
                     ->searchable()
                     ->preload()
-                    ->visible(fn (Get $get): bool => self::isJobModule($get('module_type')))
-                    ->required(fn (Get $get): bool => self::isJobModule($get('module_type'))),
+                    ->visible(fn (Get $get): bool => self::isNormalJobModule($get('module_type')))
+                    ->required(fn (Get $get): bool => self::isNormalJobModule($get('module_type'))),
+                Select::make('campus_job_id')
+                    ->label('推荐职位（热门校招）')
+                    ->options(fn (): array => self::jobOptionsForModule(CmsHomeRecommendationModuleType::CampusHotJob))
+                    ->searchable()
+                    ->preload()
+                    ->visible(fn (Get $get): bool => self::isCampusJobModule($get('module_type')))
+                    ->required(fn (Get $get): bool => self::isCampusJobModule($get('module_type'))),
                 Select::make('company_id')
                     ->label('推荐企业')
                     ->options(fn (): array => Company::query()
@@ -128,6 +127,22 @@ class HomeRecommendationForm
         return $enum?->isJobModule() ?? false;
     }
 
+    private static function isNormalJobModule(mixed $moduleType): bool
+    {
+        $enum = self::resolveModuleType($moduleType);
+
+        return $enum instanceof CmsHomeRecommendationModuleType && in_array(
+            $enum,
+            [CmsHomeRecommendationModuleType::UrgentJob, CmsHomeRecommendationModuleType::HotJob],
+            true,
+        );
+    }
+
+    private static function isCampusJobModule(mixed $moduleType): bool
+    {
+        return self::resolveModuleType($moduleType) === CmsHomeRecommendationModuleType::CampusHotJob;
+    }
+
     private static function isCompanyModule(mixed $moduleType): bool
     {
         return self::resolveModuleType($moduleType)?->isCompanyModule() ?? false;
@@ -140,5 +155,28 @@ class HomeRecommendationForm
         }
 
         return CmsHomeRecommendationModuleType::tryFrom((int) $moduleType);
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    private static function jobOptionsForModule(CmsHomeRecommendationModuleType $moduleType): array
+    {
+        $query = Job::query()
+            ->where('status', RcJobStatus::Published)
+            ->orderByDesc('published_at')
+            ->orderByDesc('id')
+            ->limit(200);
+
+        match ($moduleType) {
+            CmsHomeRecommendationModuleType::CampusHotJob => $query->where('employment_type', RcJobEmploymentType::Campus),
+            default => $query,
+        };
+
+        return $query->get()
+            ->mapWithKeys(fn (Job $job): array => [
+                $job->id => sprintf('%s（#%d）', $job->title, $job->id),
+            ])
+            ->all();
     }
 }

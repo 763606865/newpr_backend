@@ -15,6 +15,7 @@ trait InteractsWithHomeRecommendationForm
     {
         if ($recommendation->recommendable_type === 'job') {
             $data['job_id'] = $recommendation->recommendable_id;
+            $data['campus_job_id'] = $recommendation->recommendable_id;
         }
 
         if ($recommendation->recommendable_type === 'company') {
@@ -38,7 +39,10 @@ trait InteractsWithHomeRecommendationForm
 
         if ($moduleType->isJobModule()) {
             $data['recommendable_type'] = 'job';
-            $data['recommendable_id'] = (int) ($data['job_id'] ?? 0);
+            $data['recommendable_id'] = (int) match ($moduleType) {
+                CmsHomeRecommendationModuleType::CampusHotJob => ($data['campus_job_id'] ?? 0),
+                default => ($data['job_id'] ?? 0),
+            };
         }
 
         if ($moduleType->isCompanyModule()) {
@@ -46,7 +50,7 @@ trait InteractsWithHomeRecommendationForm
             $data['recommendable_id'] = (int) ($data['company_id'] ?? 0);
         }
 
-        unset($data['job_id'], $data['company_id']);
+        unset($data['job_id'], $data['campus_job_id'], $data['company_id']);
 
         return $data;
     }

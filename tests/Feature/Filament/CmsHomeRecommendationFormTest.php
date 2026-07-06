@@ -112,4 +112,42 @@ class CmsHomeRecommendationFormTest extends TestCase
         $this->assertSame('company', $recommendation->recommendable_type);
         $this->assertSame($company->id, $recommendation->recommendable_id);
     }
+
+    public function test_create_home_recommendation_for_campus_hot_job(): void
+    {
+        $this->actingAsFilamentAdmin($this->homeRecommendationPermissions());
+
+        $company = Company::query()->create([
+            'name' => '校招示例科技有限公司',
+            'credit_code' => '91360100MA0000000Y',
+            'status' => CompanyStatus::Enabled,
+        ]);
+
+        $campusJob = Job::query()->create([
+            'company_id' => $company->id,
+            'code' => 'JOB-FILAMENT-CAMPUS-001',
+            'title' => 'Filament 热门校招职位',
+            'employment_type' => RcJobEmploymentType::Campus,
+            'status' => RcJobStatus::Published,
+            'published_at' => now(),
+        ]);
+
+        Livewire::test(CreateHomeRecommendation::class)
+            ->fillForm([
+                'module_type' => CmsHomeRecommendationModuleType::CampusHotJob,
+                'campus_job_id' => $campusJob->id,
+                'title' => 'Filament 热门校招职位',
+                'status' => CmsStatus::Enabled,
+                'sort' => 8,
+            ])
+            ->call('create')
+            ->assertNotified();
+
+        $recommendation = HomeRecommendation::query()->first();
+
+        $this->assertNotNull($recommendation);
+        $this->assertSame(CmsHomeRecommendationModuleType::CampusHotJob, $recommendation->module_type);
+        $this->assertSame('job', $recommendation->recommendable_type);
+        $this->assertSame($campusJob->id, $recommendation->recommendable_id);
+    }
 }

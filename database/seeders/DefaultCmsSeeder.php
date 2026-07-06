@@ -25,8 +25,9 @@ class DefaultCmsSeeder extends Seeder
     private function resolveCmsArticleCategories(): void
     {
         $data = [
-            ['name' => '校园资讯'],
-            ['name' => '新闻时事'],
+            ['name' => '校园资讯', 'slug' => 'campus'],
+            ['name' => '新闻时事', 'slug' => 'news'],
+            ['name' => '就业动态', 'slug' => 'employment'],
         ];
         foreach ($data as $datum) {
             ArticleCategory::query()->firstOrCreate($datum);

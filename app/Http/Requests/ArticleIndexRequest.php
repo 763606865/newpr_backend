@@ -34,7 +34,7 @@ class ArticleIndexRequest extends FormRequest
             'city_code' => ['sometimes', 'nullable', 'string', 'max:32'],
             'school_code' => ['sometimes', 'nullable', 'string', 'max:32', Rule::exists('schools', 'school_code')],
             'category_id' => ['sometimes', 'nullable', 'integer', 'min:1', Rule::exists('cms_article_categories', 'id')->whereNull('deleted_at')],
-            'category_slug' => ['sometimes', 'nullable', 'string', 'max:128'],
+            'category_slug' => ['sometimes', 'nullable', 'string', 'max:128', Rule::exists('cms_article_categories', 'slug')->whereNull('deleted_at')],
             'keyword' => ['sometimes', 'nullable', 'string', 'max:100'],
             'is_recommend' => ['sometimes', 'nullable', 'boolean'],
             'page' => ['sometimes', 'integer', 'min:1'],
