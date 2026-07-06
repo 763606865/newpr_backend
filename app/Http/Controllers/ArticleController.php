@@ -21,9 +21,7 @@ class ArticleController extends Controller
     public function index(ArticleIndexRequest $request): JsonResponse
     {
         $validated = $request->validated();
-
-        $perPage = (int) ($validated['per_page'] ?? 15);
-        $perPage = max(1, min($perPage, 50));
+        $perPage = $this->resolvePerPage($validated);
 
         $paginator = CmsArticleService::make()->paginate(
             $perPage,
@@ -46,8 +44,7 @@ class ArticleController extends Controller
      */
     public function show(Request $request, int $id): JsonResponse
     {
-        $cityCode = $request->string('city_code')->toString();
-        $cityCode = $cityCode !== '' ? $cityCode : null;
+        $cityCode = $this->resolveCityCode($request);
 
         $article = CmsArticleService::make()->findPublished($id, $cityCode);
 

@@ -51,7 +51,7 @@ class CmsHomeRecommendationResource extends JsonResource
             }
         }
 
-        if ($moduleType === CmsHomeRecommendationModuleType::FamousCompany) {
+        if ($moduleType instanceof CmsHomeRecommendationModuleType && $moduleType->isCompanyModule()) {
             $company = $this->resource->recommendable;
 
             if ($company instanceof Company) {

@@ -19,9 +19,7 @@ class AnnouncementController extends Controller
     public function index(AnnouncementIndexRequest $request): JsonResponse
     {
         $validated = $request->validated();
-
-        $perPage = (int) ($validated['per_page'] ?? 15);
-        $perPage = max(1, min($perPage, 50));
+        $perPage = $this->resolvePerPage($validated);
 
         $regionCode = $request->regionCode();
 
@@ -94,9 +92,9 @@ class AnnouncementController extends Controller
             return $districtCode;
         }
 
-        $cityCode = $request->string('city_code')->toString();
+        $cityCode = $this->resolveCityCode($request);
 
-        if ($cityCode !== '') {
+        if ($cityCode !== null) {
             return $cityCode;
         }
 

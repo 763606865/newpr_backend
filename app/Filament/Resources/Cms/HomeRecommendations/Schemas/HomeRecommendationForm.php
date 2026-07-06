@@ -62,8 +62,8 @@ class HomeRecommendationForm
                         ->all())
                     ->searchable()
                     ->preload()
-                    ->visible(fn (Get $get): bool => self::isFamousCompanyModule($get('module_type')))
-                    ->required(fn (Get $get): bool => self::isFamousCompanyModule($get('module_type'))),
+                    ->visible(fn (Get $get): bool => self::isCompanyModule($get('module_type')))
+                    ->required(fn (Get $get): bool => self::isCompanyModule($get('module_type'))),
                 ...AreaCascadeFormFields::makeTwoLevel(),
                 TextInput::make('title')
                     ->label('推荐标题')
@@ -128,9 +128,9 @@ class HomeRecommendationForm
         return $enum?->isJobModule() ?? false;
     }
 
-    private static function isFamousCompanyModule(mixed $moduleType): bool
+    private static function isCompanyModule(mixed $moduleType): bool
     {
-        return self::resolveModuleType($moduleType) === CmsHomeRecommendationModuleType::FamousCompany;
+        return self::resolveModuleType($moduleType)?->isCompanyModule() ?? false;
     }
 
     private static function resolveModuleType(mixed $moduleType): ?CmsHomeRecommendationModuleType

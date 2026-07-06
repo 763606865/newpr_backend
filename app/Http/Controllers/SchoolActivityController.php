@@ -34,9 +34,7 @@ class SchoolActivityController extends Controller
     public function index(SchoolActivityIndexRequest $request): JsonResponse
     {
         $validated = $request->validated();
-
-        $perPage = (int) ($validated['per_page'] ?? 15);
-        $perPage = max(1, min($perPage, 50));
+        $perPage = $this->resolvePerPage($validated);
 
         $paginator = CmsSchoolActivityService::make()->paginate(
             $perPage,
@@ -236,9 +234,9 @@ class SchoolActivityController extends Controller
             return $districtCode;
         }
 
-        $cityCode = $request->string('city_code')->toString();
+        $cityCode = $this->resolveCityCode($request);
 
-        if ($cityCode !== '') {
+        if ($cityCode !== null) {
             return $cityCode;
         }
 

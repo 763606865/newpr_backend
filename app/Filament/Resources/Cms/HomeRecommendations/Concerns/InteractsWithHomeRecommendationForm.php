@@ -41,7 +41,7 @@ trait InteractsWithHomeRecommendationForm
             $data['recommendable_id'] = (int) ($data['job_id'] ?? 0);
         }
 
-        if ($moduleType === CmsHomeRecommendationModuleType::FamousCompany) {
+        if ($moduleType->isCompanyModule()) {
             $data['recommendable_type'] = 'company';
             $data['recommendable_id'] = (int) ($data['company_id'] ?? 0);
         }

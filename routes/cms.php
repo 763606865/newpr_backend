@@ -5,6 +5,7 @@ use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MetaController;
+use App\Http\Controllers\RecommendationController;
 use App\Http\Controllers\SchoolActivityController;
 use Illuminate\Support\Facades\Route;
 
@@ -34,3 +35,6 @@ Route::get('/meta', [MetaController::class, 'index'])->name('meta');
 Route::get('/meta/majors', [MetaController::class, 'majors'])->name('meta.majors');
 Route::get('/meta/tags', [MetaController::class, 'tags'])->name('meta.tags');
 Route::get('/meta/articles', [MetaController::class, 'articles'])->name('meta.articles');
+
+// 首页推荐位
+Route::get('/home/recommendations', [RecommendationController::class, 'index'])->name('home.recommendations');

@@ -32,8 +32,7 @@ class HomeController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $cityCode = $request->string('city_code')->toString();
-        $cityCode = $cityCode !== '' ? $cityCode : null;
+        $cityCode = $this->resolveCityCode($request);
 
         $audienceService = CmsMenuAudienceService::make();
 
@@ -102,8 +101,7 @@ class HomeController extends Controller
      */
     public function announcement(Request $request): JsonResponse
     {
-        $cityCode = $request->string('city_code')->toString();
-        $cityCode = $cityCode !== '' ? $cityCode : null;
+        $cityCode = $this->resolveCityCode($request);
 
         $bannerPosition = BannerPosition::query()
             ->enabled()
@@ -201,12 +199,11 @@ class HomeController extends Controller
      */
     public function school(Request $request): JsonResponse
     {
-        $cityCode = $request->string('city_code')->toString();
-        $cityCode = $cityCode !== '' ? $cityCode : null;
+        $cityCode = $this->resolveCityCode($request);
 
         $bannerPosition = BannerPosition::query()
             ->enabled()
-            ->where('code', '=', 'zcgz.school.banner-1')
+            ->where('code', '=', 'zcyp.school.banner-1')
             ->with([
                 'banners' => fn ($query) => $query->enabled()->forCity($cityCode)->orderBy('sort'),
             ])

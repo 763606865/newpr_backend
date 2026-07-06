@@ -43,6 +43,28 @@ class CmsHomeRecommendationService extends Service
     }
 
     /**
+     * @return array{
+     *     hot_companies: list<array<string, mixed>>,
+     *     hot_jobs: list<array<string, mixed>>
+     * }
+     */
+    public function groupedForSchool(?string $cityCode, Request $request): array
+    {
+        return [
+            'hot_companies' => $this->resolveModulePayloads(
+                CmsHomeRecommendationModuleType::CampusHotCompany,
+                $cityCode,
+                $request,
+            ),
+            'hot_jobs' => $this->resolveModulePayloads(
+                CmsHomeRecommendationModuleType::CampusHotJob,
+                $cityCode,
+                $request,
+            ),
+        ];
+    }
+
+    /**
      * @return list<array<string, mixed>>
      */
     private function resolveModulePayloads(
