@@ -42,7 +42,7 @@ class RcCompanyDiscoveryResource extends JsonResource
 
         if (array_key_exists('public_job_count', $this->resource->getAttributes())) {
             $data['stat'] = [
-                'public_jobs' => (int) $this->resource->getAttribute('public_job_count'),
+                'public_job_count' => (int) $this->resource->getAttribute('public_job_count'),
             ];
         }
 
