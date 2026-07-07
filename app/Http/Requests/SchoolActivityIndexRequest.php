@@ -46,6 +46,8 @@ class SchoolActivityIndexRequest extends FormRequest
             'page' => ['sometimes', 'integer', 'min:1'],
             'per_page' => ['sometimes', 'integer', 'min:1', 'max:50'],
             'keyword' => ['sometimes', 'nullable', 'string', 'max:100'],
+            'start_time' => ['sometimes', 'nullable', 'date_format:Y-m-d H:i:s'],
+            'end_time' => ['sometimes', 'nullable', 'date_format:Y-m-d H:i:s'],
             'type' => ['sometimes', 'nullable', 'integer', Rule::enum(RcSchoolActivityType::class)],
             'types' => ['sometimes', 'array'],
             'types.*' => [
@@ -76,6 +78,8 @@ class SchoolActivityIndexRequest extends FormRequest
             'page' => '页码',
             'per_page' => '每页条数',
             'keyword' => '关键词',
+            'start_time' => '开始时间',
+            'end_time' => '结束时间',
             'type' => '活动类型',
             'types' => '活动类型列表',
             'organizer_type' => '主办方类型',
@@ -112,6 +116,8 @@ class SchoolActivityIndexRequest extends FormRequest
     {
         $filters = [
             'keyword' => $this->validated('keyword'),
+            'start_time' => $this->validated('start_time'),
+            'end_time' => $this->validated('end_time'),
             'type' => $this->validated('type'),
             'is_hot' => $this->validated('is_hot'),
             'region_code' => $this->regionCode(),

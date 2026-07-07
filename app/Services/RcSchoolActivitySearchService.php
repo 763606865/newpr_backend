@@ -72,11 +72,19 @@ class RcSchoolActivitySearchService extends Service
             ->orderBy('updated_at', 'desc')
             ->query(function ($query) use ($filters): void {
                 if (($filters['context'] ?? null) === 'school_organizer') {
-                    $query->withCount(['companyApplications', 'jobs', 'activityBooths']);
+                    $query->withCount([
+                        'companyApplications as company_applications_count',
+                        'jobs as jobs_count',
+                        'activityBooths as activity_booths_count',
+                    ]);
                 }
 
                 if (($filters['context'] ?? null) === 'public') {
-                    $query->with(['organizer']);
+                    $query->with(['organizer'])->withCount([
+                        'companyApplications as company_applications_count',
+                        'jobs as jobs_count',
+                        'activityBooths as activity_booths_count',
+                    ]);
                     $this->filterApplier->applyPublicFilters($query, $filters);
 
                     return;

@@ -2,13 +2,23 @@
 
 namespace Tests\Feature;
 
+use App\Enums\RcSchoolActivityApplyStatus;
 use App\Enums\RcSchoolActivityOrganizerType;
 use App\Enums\RcSchoolActivityStatus;
 use App\Enums\RcSchoolActivityType;
+use App\Models\Company;
+use App\Models\CompanyProfile;
+use App\Models\Rc\Job;
 use App\Models\Rc\SchoolActivity;
+use App\Models\Rc\SchoolActivityBooth;
+use App\Models\Rc\SchoolActivityCompany;
+use App\Models\Rc\SchoolActivityJob;
 use App\Models\Rc\SchoolActivitySchool;
 use App\Models\School;
+use App\Models\SchoolProfile;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Storage;
+use Mockery;
 use Tests\TestCase;
 
 class SchoolActivityControllerTest extends TestCase
@@ -31,6 +41,9 @@ class SchoolActivityControllerTest extends TestCase
             'name' => '北京大学',
         ]);
 
+        $startTime = now()->addMonth()->setTime(9, 0, 0);
+        $endTime = now()->addMonth()->setTime(17, 0, 0);
+
         $activity = SchoolActivity::query()->create([
             'type' => RcSchoolActivityType::DualSelection,
             'title' => '2026 春季双选会',
@@ -40,8 +53,42 @@ class SchoolActivityControllerTest extends TestCase
             'organizer_id' => $school->id,
             'register_start_date' => now()->subDay(),
             'register_end_date' => now()->addMonth(),
-            'start_time' => now()->addMonth(),
+            'start_time' => $startTime,
+            'end_time' => $endTime,
             'is_hot' => true,
+        ]);
+
+        $company = Company::query()->create([
+            'name' => '示例科技有限公司',
+            'credit_code' => '91360100MA0000000X',
+        ]);
+
+        $job = Job::query()->create([
+            'company_id' => $company->id,
+            'code' => 'JOB-CMS-ACT-001',
+            'title' => '校园宣讲岗位',
+            'status' => 1,
+            'published_at' => now(),
+        ]);
+
+        $companyApplication = SchoolActivityCompany::query()->create([
+            'activity_id' => $activity->id,
+            'company_id' => $company->id,
+        ]);
+
+        SchoolActivityJob::query()->create([
+            'activity_id' => $activity->id,
+            'company_id' => $company->id,
+            'school_activity_company_id' => $companyApplication->id,
+            'job_id' => $job->id,
+        ]);
+
+        SchoolActivityBooth::query()->create([
+            'activity_id' => $activity->id,
+            'booth_id' => 1,
+            'booth_area_code' => 'A',
+            'booth_area_name' => 'A 区',
+            'booth_no' => 'A-01',
         ]);
 
         SchoolActivity::query()->create([
@@ -63,7 +110,15 @@ class SchoolActivityControllerTest extends TestCase
             ->assertJsonPath('data.data.0.title', '2026 春季双选会')
             ->assertJsonPath('data.data.0.type', RcSchoolActivityType::DualSelection->value)
             ->assertJsonPath('data.data.0.organizer_name', '北京大学')
+            ->assertJsonPath('data.data.0.company_applications_count', 1)
+            ->assertJsonPath('data.data.0.jobs_count', 1)
+            ->assertJsonPath('data.data.0.activity_booths_count', 1)
             ->assertJsonMissingPath('data.data.0.description');
+
+        $this->getJson('/cms/school-activities?city_code=110100&type=2&start_time='.$startTime->toDateTimeString().'&end_time='.$endTime->toDateTimeString())
+            ->assertOk()
+            ->assertJsonPath('data.total', 1)
+            ->assertJsonPath('data.data.0.id', $activity->id);
     }
 
     public function test_index_supports_types_and_organizer_type_filters(): void
@@ -90,10 +145,29 @@ class SchoolActivityControllerTest extends TestCase
 
     public function test_show_returns_published_activity_detail(): void
     {
+        $disk = Mockery::mock();
+        $disk->shouldReceive('url')
+            ->twice()
+            ->andReturnUsing(static fn (string $path): string => 'https://cdn.example.com/'.$path);
+
+        Storage::shouldReceive('disk')
+            ->twice()
+            ->with('oss')
+            ->andReturn($disk);
+
         $school = School::query()->create([
             'school_code' => '4111010001',
             'name' => '北京大学',
         ]);
+
+        SchoolProfile::query()->create([
+            'school_code' => $school->school_code,
+            'short_name' => '北大',
+            'logo' => 'uploads/schools/logo.png',
+        ]);
+
+        $startTime = now()->addMonth()->setSecond(0);
+        $endTime = now()->addMonths(2)->setSecond(0);
 
         $activity = SchoolActivity::query()->create([
             'type' => RcSchoolActivityType::DualSelection,
@@ -103,6 +177,48 @@ class SchoolActivityControllerTest extends TestCase
             'status' => RcSchoolActivityStatus::Published,
             'organizer_type' => RcSchoolActivityOrganizerType::School,
             'organizer_id' => $school->id,
+            'start_time' => $startTime,
+            'end_time' => $endTime,
+        ]);
+
+        $company = Company::query()->create([
+            'name' => '示例科技有限公司',
+            'credit_code' => '91360100MA0000000Z',
+        ]);
+
+        CompanyProfile::query()->create([
+            'company_id' => $company->id,
+            'short_name' => '示例科技',
+            'logo' => 'uploads/companies/logo.png',
+        ]);
+
+        $job = Job::query()->create([
+            'company_id' => $company->id,
+            'code' => 'JOB-CMS-ACT-002',
+            'title' => '详情校园岗位',
+            'status' => 1,
+            'published_at' => now(),
+        ]);
+
+        $companyApplication = SchoolActivityCompany::query()->create([
+            'activity_id' => $activity->id,
+            'company_id' => $company->id,
+            'apply_status' => RcSchoolActivityApplyStatus::Approved,
+        ]);
+
+        SchoolActivityJob::query()->create([
+            'activity_id' => $activity->id,
+            'company_id' => $company->id,
+            'school_activity_company_id' => $companyApplication->id,
+            'job_id' => $job->id,
+        ]);
+
+        SchoolActivityBooth::query()->create([
+            'activity_id' => $activity->id,
+            'booth_id' => 2,
+            'booth_area_code' => 'B',
+            'booth_area_name' => 'B 区',
+            'booth_no' => 'B-01',
         ]);
 
         SchoolActivitySchool::query()->create([
@@ -115,7 +231,15 @@ class SchoolActivityControllerTest extends TestCase
             ->assertJsonPath('data.id', $activity->id)
             ->assertJsonPath('data.description', '<p>活动详情</p>')
             ->assertJsonPath('data.organizer_name', '北京大学')
+            ->assertJsonPath('data.company_applications_count', 1)
+            ->assertJsonPath('data.jobs_count', 1)
+            ->assertJsonPath('data.activity_booths_count', 1)
             ->assertJsonPath('data.schools.0.name', '北京大学')
+            ->assertJsonPath('data.schools.0.display_name', '北大')
+            ->assertJsonPath('data.schools.0.display_logo', 'https://cdn.example.com/uploads/schools/logo.png')
+            ->assertJsonPath('data.companies.0.id', $company->id)
+            ->assertJsonPath('data.companies.0.display_name', '示例科技')
+            ->assertJsonPath('data.companies.0.display_logo', 'https://cdn.example.com/uploads/companies/logo.png')
             ->assertJsonMissingPath('data.invite_code');
     }
 

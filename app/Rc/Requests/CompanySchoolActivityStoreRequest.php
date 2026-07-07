@@ -2,6 +2,7 @@
 
 namespace App\Rc\Requests;
 
+use App\Enums\RcSchoolActivityMode;
 use App\Enums\RcSchoolActivityType;
 use App\Rc\Requests\Concerns\ValidatesRegionCodes;
 use Illuminate\Contracts\Validation\ValidationRule;
@@ -43,6 +44,7 @@ class CompanySchoolActivityStoreRequest extends FormRequest
             'end_time' => ['nullable', 'date', 'after_or_equal:start_time'],
             'contact_name' => ['nullable', 'string', 'max:50'],
             'contact_phone' => ['nullable', 'string', 'max:20'],
+            'activity_mode' => ['nullable', 'integer', Rule::enum(RcSchoolActivityMode::class)],
             'is_hot' => ['nullable', 'boolean'],
             'sort' => ['nullable', 'integer'],
             'files' => ['nullable', 'array', 'max:20'],
@@ -63,6 +65,7 @@ class CompanySchoolActivityStoreRequest extends FormRequest
         return [
             'type' => '活动类型',
             'school_codes' => '申请入校院校',
+            'activity_mode' => '活动模式',
         ];
     }
 }

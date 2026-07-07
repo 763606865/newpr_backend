@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdController;
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\BannerController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MetaController;
 use App\Http\Controllers\RecommendationController;
@@ -38,3 +39,4 @@ Route::get('/meta/articles', [MetaController::class, 'articles'])->name('meta.ar
 
 // 首页推荐位
 Route::get('/home/recommendations', [RecommendationController::class, 'index'])->name('home.recommendations');
+Route::get('/home/banners', [BannerController::class, 'index'])->name('home.banners');

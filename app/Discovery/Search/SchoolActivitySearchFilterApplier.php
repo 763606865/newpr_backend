@@ -4,6 +4,7 @@ namespace App\Discovery\Search;
 
 use App\Enums\RcSchoolActivityOrganizerType;
 use App\Models\Rc\SchoolActivity;
+use App\Support\ScoutQuery;
 use Illuminate\Database\Eloquent\Builder;
 use Laravel\Scout\Builder as ScoutBuilder;
 
@@ -125,6 +126,14 @@ class SchoolActivitySearchFilterApplier
             $query->where('district_code', (string) $filters['district_code']);
         }
 
+        if (filled($filters['start_time'] ?? null)) {
+            $query->where('start_time', '>=', (string) $filters['start_time']);
+        }
+
+        if (filled($filters['end_time'] ?? null)) {
+            $query->where('end_time', '<=', (string) $filters['end_time']);
+        }
+
         if (filled($filters['is_hot'] ?? null)) {
             $query->where('is_hot', (bool) $filters['is_hot']);
         }
@@ -153,6 +162,14 @@ class SchoolActivitySearchFilterApplier
 
         if (filled($filters['province_code'] ?? null)) {
             $builder->where('province_code', (string) $filters['province_code']);
+        }
+
+        if (filled($filters['start_time'] ?? null)) {
+            $builder->where('start_time', ScoutQuery::timestamp($filters['start_time']));
+        }
+
+        if (filled($filters['end_time'] ?? null)) {
+            $builder->where('end_time', ScoutQuery::timestamp($filters['end_time']));
         }
 
         if (filled($filters['is_hot'] ?? null)) {

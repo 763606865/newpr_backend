@@ -116,6 +116,9 @@ class RcSchoolActivityService extends Service
             ->withCount(['companyApplications', 'jobs', 'activityBooths'])
             ->with([
                 'booth.areas' => fn ($query) => $query->ordered(),
+                'companyApplications' => fn ($query) => $query
+                    ->approved()
+                    ->with(['company.profile']),
                 'activityBooths' => fn ($query) => $query
                     ->with('company:id,name')
                     ->orderBy('booth_no')
@@ -144,6 +147,11 @@ class RcSchoolActivityService extends Service
     {
         return SchoolActivity::query()
             ->published()
+            ->with([
+                'companyApplications' => fn ($query) => $query
+                    ->approved()
+                    ->with(['company.profile']),
+            ])
             ->find($activityId);
     }
 
@@ -176,6 +184,7 @@ class RcSchoolActivityService extends Service
                     'end_time',
                     'contact_name',
                     'contact_phone',
+                    'activity_mode',
                     'is_hot',
                     'sort',
                     'files',
@@ -228,6 +237,7 @@ class RcSchoolActivityService extends Service
                     'end_time',
                     'contact_name',
                     'contact_phone',
+                    'activity_mode',
                     'is_hot',
                     'sort',
                     'files',
@@ -302,6 +312,7 @@ class RcSchoolActivityService extends Service
                 'end_time',
                 'contact_name',
                 'contact_phone',
+                'activity_mode',
                 'is_hot',
                 'sort',
                 'files',

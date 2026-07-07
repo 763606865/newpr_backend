@@ -2,6 +2,8 @@
 
 namespace App\Models\Rc;
 
+use App\Enums\RcSchoolActivityBusinessStatus;
+use App\Enums\RcSchoolActivityMode;
 use App\Enums\RcSchoolActivityOrganizerType;
 use App\Enums\RcSchoolActivityStatus;
 use App\Enums\RcSchoolActivityType;
@@ -46,6 +48,7 @@ use Laravel\Scout\Searchable;
  * @property int|null $booth_id 采用的展位模板ID
  * @property string|null $contact_name 对接负责人
  * @property string|null $contact_phone 联系电话
+ * @property RcSchoolActivityMode $activity_mode 活动模式
  * @property RcSchoolActivityStatus $status 状态
  * @property bool $is_hot 热门活动
  * @property int $sort 排序
@@ -56,6 +59,7 @@ use Laravel\Scout\Searchable;
  * @property Carbon|null $updated_at 更新时间
  * @property Carbon|null $deleted_at 删除时间
  * @property-read string $invite_code 活动邀请码
+ * @property-read RcSchoolActivityBusinessStatus $business_status 活动业务状态
  * @property-read \Illuminate\Database\Eloquent\Model|null $organizer 主办方
  * @property-read SchoolBooth|null $booth 采用的展位模板
  *
@@ -89,6 +93,7 @@ use Laravel\Scout\Searchable;
     'booth_id',
     'contact_name',
     'contact_phone',
+    'activity_mode',
     'status',
     'is_hot',
     'sort',
@@ -102,6 +107,7 @@ class SchoolActivity extends Model
 
     protected $attributes = [
         'type' => RcSchoolActivityType::JobFair,
+        'activity_mode' => RcSchoolActivityMode::Offline->value,
         'status' => RcSchoolActivityStatus::Draft,
         'is_hot' => false,
         'sort' => 0,
@@ -142,6 +148,7 @@ class SchoolActivity extends Model
             'organizer_type' => RcSchoolActivityOrganizerType::class,
             'organizer_id' => 'integer',
             'booth_id' => 'integer',
+            'activity_mode' => RcSchoolActivityMode::class,
             'status' => RcSchoolActivityStatus::class,
             'is_hot' => 'boolean',
             'sort' => 'integer',
@@ -305,6 +312,13 @@ class SchoolActivity extends Model
     {
         return Attribute::get(
             fn (): string => SchoolActivityInviteCode::encode($this->id),
+        );
+    }
+
+    protected function businessStatus(): Attribute
+    {
+        return Attribute::get(
+            fn (): RcSchoolActivityBusinessStatus => RcSchoolActivityBusinessStatus::fromActivity($this),
         );
     }
 

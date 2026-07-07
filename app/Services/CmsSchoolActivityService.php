@@ -24,7 +24,17 @@ class CmsSchoolActivityService extends Service
 
         $query = SchoolActivity::query()
             ->published()
-            ->with(['organizer'])
+            ->with([
+                'organizer',
+                'companyApplications' => fn ($query) => $query
+                    ->approved()
+                    ->with(['company.profile']),
+            ])
+            ->withCount([
+                'companyApplications as company_applications_count',
+                'jobs as jobs_count',
+                'activityBooths as activity_booths_count',
+            ])
             ->orderByDesc('is_hot')
             ->orderByDesc('sort')
             ->orderByDesc('start_time')
@@ -39,7 +49,18 @@ class CmsSchoolActivityService extends Service
     {
         $query = SchoolActivity::query()
             ->published()
-            ->with(['organizer', 'schools'])
+            ->with([
+                'organizer',
+                'schools.profile',
+                'companyApplications' => fn ($query) => $query
+                    ->approved()
+                    ->with(['company.profile']),
+            ])
+            ->withCount([
+                'companyApplications as company_applications_count',
+                'jobs as jobs_count',
+                'activityBooths as activity_booths_count',
+            ])
             ->whereKey($activityId);
 
         if ($regionCode !== null) {

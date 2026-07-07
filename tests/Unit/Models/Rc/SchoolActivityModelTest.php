@@ -3,8 +3,10 @@
 namespace Tests\Unit\Models\Rc;
 
 use App\Enums\RcSchoolActivityApplyStatus;
+use App\Enums\RcSchoolActivityBusinessStatus;
 use App\Enums\RcSchoolActivityJobAuditStatus;
 use App\Enums\RcSchoolActivityJoinSource;
+use App\Enums\RcSchoolActivityMode;
 use App\Enums\RcSchoolActivityOrganizerType;
 use App\Enums\RcSchoolActivityStatus;
 use App\Enums\RcSchoolActivityType;
@@ -21,6 +23,7 @@ use App\Models\Rc\SchoolBoothArea;
 use App\Models\School;
 use App\Support\SchoolActivityInviteCode;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
 use Tests\TestCase;
 
 class SchoolActivityModelTest extends TestCase
@@ -53,6 +56,63 @@ class SchoolActivityModelTest extends TestCase
         $this->assertCount(1, $activity->schools);
         $this->assertSame('北京大学', $activity->schools->first()?->name);
         $this->assertTrue($activity->schoolLinks->first()?->school->is($school));
+    }
+
+    public function test_business_status_is_derived_from_activity_window_and_activity_mode_defaults_to_offline(): void
+    {
+        Carbon::setTestNow('2026-07-06 12:00:00');
+
+        try {
+            $draft = SchoolActivity::query()->create([
+                'title' => '草稿活动',
+                'status' => RcSchoolActivityStatus::Draft,
+            ]);
+
+            $upcoming = SchoolActivity::query()->create([
+                'title' => '未开始活动',
+                'status' => RcSchoolActivityStatus::Published,
+                'register_start_date' => now()->addDay(),
+                'register_end_date' => now()->addDays(2),
+                'start_time' => now()->addDays(3),
+                'end_time' => now()->addDays(4),
+            ]);
+
+            $registering = SchoolActivity::query()->create([
+                'title' => '报名中活动',
+                'status' => RcSchoolActivityStatus::Published,
+                'activity_mode' => RcSchoolActivityMode::Online,
+                'register_start_date' => now()->subDay(),
+                'register_end_date' => now()->addDay(),
+                'start_time' => now()->addDays(2),
+                'end_time' => now()->addDays(3),
+            ]);
+
+            $ongoing = SchoolActivity::query()->create([
+                'title' => '进行中活动',
+                'status' => RcSchoolActivityStatus::Published,
+                'register_start_date' => now()->subDays(3),
+                'register_end_date' => now()->subDay(),
+                'start_time' => now()->subHour(),
+                'end_time' => now()->addDay(),
+            ]);
+
+            $ended = SchoolActivity::query()->create([
+                'title' => '已结束活动',
+                'status' => RcSchoolActivityStatus::Published,
+                'start_time' => now()->subDays(2),
+                'end_time' => now()->subDay(),
+            ]);
+
+            $this->assertSame(RcSchoolActivityMode::Offline, $draft->activity_mode);
+            $this->assertSame(RcSchoolActivityBusinessStatus::Draft, $draft->business_status);
+            $this->assertSame(RcSchoolActivityBusinessStatus::Upcoming, $upcoming->business_status);
+            $this->assertSame(RcSchoolActivityMode::Online, $registering->activity_mode);
+            $this->assertSame(RcSchoolActivityBusinessStatus::Registering, $registering->business_status);
+            $this->assertSame(RcSchoolActivityBusinessStatus::Ongoing, $ongoing->business_status);
+            $this->assertSame(RcSchoolActivityBusinessStatus::Ended, $ended->business_status);
+        } finally {
+            Carbon::setTestNow();
+        }
     }
 
     public function test_company_application_links_activity_booth_and_jobs(): void

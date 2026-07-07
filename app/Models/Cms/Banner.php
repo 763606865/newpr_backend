@@ -12,9 +12,12 @@ use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Attributes\Visible;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Storage;
+use Throwable;
 
 /**
  * 门户Banner表
@@ -24,6 +27,7 @@ use Illuminate\Support\Carbon;
  * @property string|null $city_code 城市编码
  * @property string $title 标题
  * @property string $image 图片地址
+ * @property-read string|null $image_url 图片访问地址
  * @property CmsLinkType $link_type 链接类型
  * @property string|null $link_url 跳转地址
  * @property CmsOpenTarget $target 打开方式
@@ -46,6 +50,7 @@ use Illuminate\Support\Carbon;
     'city_code',
     'title',
     'image',
+    'image_url',
     'link_type',
     'link_url',
     'target',
@@ -101,6 +106,33 @@ class Banner extends Model
     public function position(): BelongsTo
     {
         return $this->belongsTo(BannerPosition::class, 'position_id');
+    }
+
+    protected function imageUrl(): Attribute
+    {
+        return Attribute::make(
+            get: function (): ?string {
+                if (blank($this->image)) {
+                    return null;
+                }
+
+                $path = ltrim($this->image, '/');
+                $visibility = (string) config('filesystems.disks.oss.visibility', 'public');
+
+                try {
+                    if ($visibility === 'private') {
+                        return Storage::disk('oss')->temporaryUrl(
+                            $path,
+                            now()->addSeconds((int) config('filesystems.disks.oss.temporary_url_ttl', 3600)),
+                        );
+                    }
+
+                    return Storage::disk('oss')->url($path);
+                } catch (Throwable) {
+                    return $path;
+                }
+            },
+        );
     }
 
     #[Scope]

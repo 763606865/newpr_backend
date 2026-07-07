@@ -7,12 +7,15 @@ use App\Enums\RcIdentityStatus;
 use App\Enums\RcIdentityType;
 use App\Enums\RcNotificationType;
 use App\Enums\RcSchoolActivityApplyStatus;
+use App\Enums\RcSchoolActivityBusinessStatus;
 use App\Enums\RcSchoolActivityJobAuditStatus;
 use App\Enums\RcSchoolActivityJoinSource;
+use App\Enums\RcSchoolActivityMode;
 use App\Enums\RcSchoolActivityOrganizerType;
 use App\Enums\RcSchoolActivityStatus;
 use App\Enums\RcSchoolActivityType;
 use App\Models\Company;
+use App\Models\CompanyProfile;
 use App\Models\Rc\Job;
 use App\Models\Rc\Notification;
 use App\Models\Rc\SchoolActivity;
@@ -24,6 +27,8 @@ use App\Models\SchoolProfile;
 use App\Models\User;
 use App\Services\RcSchoolActivityApplicationService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Storage;
+use Mockery;
 use Tests\TestCase;
 
 class SchoolActivityApiTest extends TestCase
@@ -85,10 +90,13 @@ class SchoolActivityApiTest extends TestCase
                 'type' => RcSchoolActivityType::DualSelection->value,
                 'title' => '2026 春季双选会',
                 'booth_id' => $booth->id,
+                'activity_mode' => RcSchoolActivityMode::Online->value,
             ])
             ->assertOk()
             ->assertJsonPath('data.activity.status', RcSchoolActivityStatus::Draft->value)
-            ->assertJsonPath('data.activity.booth_id', $booth->id);
+            ->assertJsonPath('data.activity.booth_id', $booth->id)
+            ->assertJsonPath('data.activity.activity_mode', RcSchoolActivityMode::Online->value)
+            ->assertJsonPath('data.activity.business_status', RcSchoolActivityBusinessStatus::Draft->value);
 
         $activityId = (int) $activityResponse->json('data.activity.id');
 
@@ -119,6 +127,29 @@ class SchoolActivityApiTest extends TestCase
             'id' => $activityBoothId,
             'company_id' => $company->id,
         ]);
+    }
+
+    public function test_campus_manager_can_update_activity_mode_and_receive_business_status(): void
+    {
+        $school = $this->createSchool();
+        $user = User::factory()->create();
+        $this->createCampusManagerIdentity($user, $school);
+
+        $activityId = (int) $this->actingAs($user, 'rc')
+            ->postJson('/rc/schools/activities', [
+                'title' => '活动模式测试',
+                'booth_id' => $this->createBoothWithAreas($school)->id,
+            ])
+            ->json('data.activity.id');
+
+        $this->actingAs($user, 'rc')
+            ->putJson("/rc/schools/activities/{$activityId}", [
+                'activity_mode' => RcSchoolActivityMode::Online->value,
+            ])
+            ->assertOk()
+            ->assertJsonPath('data.activity.activity_mode', RcSchoolActivityMode::Online->value)
+            ->assertJsonPath('data.activity.activity_mode_label', RcSchoolActivityMode::Online->getLabel())
+            ->assertJsonPath('data.activity.business_status', RcSchoolActivityBusinessStatus::Draft->value);
     }
 
     public function test_recruiter_can_apply_submit_jobs_and_campus_manager_can_review(): void
@@ -296,11 +327,13 @@ class SchoolActivityApiTest extends TestCase
                 'title' => '企业进校宣讲会',
                 'school_codes' => [$school->school_code],
                 'start_time' => now()->addWeek()->toDateTimeString(),
+                'activity_mode' => RcSchoolActivityMode::Online->value,
             ])
             ->assertOk()
             ->assertJsonPath('data.activity.status', RcSchoolActivityStatus::Draft->value)
             ->assertJsonPath('data.activity.organizer_type', RcSchoolActivityOrganizerType::Company->value)
-            ->assertJsonPath('data.activity.schools.0.school_code', $school->school_code);
+            ->assertJsonPath('data.activity.schools.0.school_code', $school->school_code)
+            ->assertJsonPath('data.activity.business_status', RcSchoolActivityBusinessStatus::Draft->value);
 
         $activityId = (int) $createResponse->json('data.activity.id');
 
@@ -327,9 +360,12 @@ class SchoolActivityApiTest extends TestCase
         $this->actingAs($recruiterUser, 'rc')
             ->putJson("/rc/companies/school-activities/{$activityId}", [
                 'title' => '企业进校宣讲会（更新）',
+                'activity_mode' => RcSchoolActivityMode::Offline->value,
             ])
             ->assertOk()
-            ->assertJsonPath('data.activity.title', '企业进校宣讲会（更新）');
+            ->assertJsonPath('data.activity.title', '企业进校宣讲会（更新）')
+            ->assertJsonPath('data.activity.activity_mode', RcSchoolActivityMode::Offline->value)
+            ->assertJsonPath('data.activity.business_status', RcSchoolActivityBusinessStatus::Draft->value);
 
         $this->actingAs($recruiterUser, 'rc')
             ->postJson("/rc/companies/school-activities/{$activityId}/publish")
@@ -368,7 +404,8 @@ class SchoolActivityApiTest extends TestCase
             ])
             ->assertOk()
             ->assertJsonPath('data.activity.type', RcSchoolActivityType::JobFair->value)
-            ->assertJsonPath('data.activity.schools', []);
+            ->assertJsonPath('data.activity.schools', [])
+            ->assertJsonPath('data.activity.activity_mode', RcSchoolActivityMode::Offline->value);
 
         $activityId = (int) $createResponse->json('data.activity.id');
 
@@ -421,8 +458,24 @@ class SchoolActivityApiTest extends TestCase
 
     public function test_activity_show_returns_activity_booths_list(): void
     {
+        $disk = Mockery::mock();
+        $disk->shouldReceive('url')
+            ->once()
+            ->with('uploads/companies/logo.png')
+            ->andReturn('https://cdn.example.com/uploads/companies/logo.png');
+
+        Storage::shouldReceive('disk')
+            ->once()
+            ->with('oss')
+            ->andReturn($disk);
+
         $school = $this->createSchool();
         $company = $this->createCompany();
+        CompanyProfile::query()->create([
+            'company_id' => $company->id,
+            'short_name' => '示例科技',
+            'logo' => 'uploads/companies/logo.png',
+        ]);
         $booth = $this->createBoothWithAreas($school);
         $user = User::factory()->create();
         $this->createCampusManagerIdentity($user, $school);
@@ -461,7 +514,10 @@ class SchoolActivityApiTest extends TestCase
             ->assertOk()
             ->assertJsonPath('data.activity.activity_booths.0.company_id', $company->id)
             ->assertJsonPath('data.activity.activity_booths.0.company.id', $company->id)
-            ->assertJsonPath('data.activity.activity_booths.0.company.name', $company->name);
+            ->assertJsonPath('data.activity.activity_booths.0.company.name', $company->name)
+            ->assertJsonPath('data.activity.companies.0.id', $company->id)
+            ->assertJsonPath('data.activity.companies.0.display_name', '示例科技')
+            ->assertJsonPath('data.activity.companies.0.display_logo', 'https://cdn.example.com/uploads/companies/logo.png');
     }
 
     public function test_invite_company_notifies_all_company_recruiters(): void

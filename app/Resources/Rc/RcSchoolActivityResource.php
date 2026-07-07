@@ -2,6 +2,7 @@
 
 namespace App\Resources\Rc;
 
+use App\Models\Company;
 use App\Models\Rc\SchoolActivity;
 use App\Resources\Concerns\SerializesOssAttributes;
 use Illuminate\Http\Request;
@@ -44,8 +45,12 @@ class RcSchoolActivityResource extends JsonResource
             'organizer_id' => $this->resource->organizer_id,
             'contact_name' => $this->resource->contact_name,
             'contact_phone' => $this->resource->contact_phone,
+            'activity_mode' => $this->resource->activity_mode->value,
+            'activity_mode_label' => $this->resource->activity_mode?->getLabel(),
             'status' => $this->resource->status->value,
             'status_label' => $this->resource->status->getLabel(),
+            'business_status' => $this->resource->business_status->value,
+            'business_status_label' => $this->resource->business_status->getLabel(),
             'is_hot' => $this->resource->is_hot,
             'sort' => $this->resource->sort,
             'files' => $this->resource->files ?? [],
@@ -89,6 +94,43 @@ class RcSchoolActivityResource extends JsonResource
                 ->all();
         }
 
+        if ($this->resource->relationLoaded('companyApplications')) {
+            $data['companies'] = $this->resource->companyApplications
+                ->filter(static fn ($application): bool => $application->relationLoaded('company') && $application->company !== null)
+                ->map(function ($application) use ($request): array {
+                    $company = $application->company;
+
+                    return [
+                        'id' => $company->id,
+                        'name' => $company->name,
+                        'display_name' => $this->resolveCompanyDisplayName($company),
+                        'display_logo' => $this->resolveCompanyDisplayLogo($company, $request),
+                    ];
+                })
+                ->values()
+                ->all();
+        }
+
         return $data;
+    }
+
+    private function resolveCompanyDisplayName(Company $company): string
+    {
+        if (! $company->relationLoaded('profile') || ! $company->profile) {
+            return $company->name;
+        }
+
+        return filled($company->profile->short_name)
+            ? (string) $company->profile->short_name
+            : $company->name;
+    }
+
+    private function resolveCompanyDisplayLogo(Company $company, Request $request): ?string
+    {
+        if (! $company->relationLoaded('profile') || ! $company->profile) {
+            return null;
+        }
+
+        return (new RcCompanyProfileResource($company->profile))->resolve($request)['display_logo'] ?? null;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Rc\Requests;
 
+use App\Enums\RcSchoolActivityMode;
 use App\Enums\RcSchoolActivityType;
 use App\Rc\Requests\Concerns\ValidatesRegionCodes;
 use Illuminate\Contracts\Validation\ValidationRule;
@@ -35,6 +36,7 @@ class SchoolActivityUpdateRequest extends FormRequest
             'end_time' => ['sometimes', 'nullable', 'date', 'after_or_equal:start_time'],
             'contact_name' => ['sometimes', 'nullable', 'string', 'max:50'],
             'contact_phone' => ['sometimes', 'nullable', 'string', 'max:20'],
+            'activity_mode' => ['sometimes', 'nullable', 'integer', Rule::enum(RcSchoolActivityMode::class)],
             'is_hot' => ['sometimes', 'nullable', 'boolean'],
             'sort' => ['sometimes', 'nullable', 'integer'],
             'files' => ['sometimes', 'nullable', 'array', 'max:20'],
@@ -53,6 +55,7 @@ class SchoolActivityUpdateRequest extends FormRequest
     {
         return [
             'booth_id' => '展位模板',
+            'activity_mode' => '活动模式',
         ];
     }
 }
