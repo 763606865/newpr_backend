@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\CompanyNatureType;
+use App\Enums\CompanyScaleType;
 use App\Enums\RcSchoolActivityOrganizerType;
 use App\Http\Requests\SchoolActivityCompanyInviteRegisterRequest;
 use App\Http\Requests\SchoolActivityIndexRequest;
 use App\Http\Requests\SchoolActivitySchoolInviteRegisterRequest;
 use App\Models\Company;
 use App\Models\Rc\SchoolActivity;
+use App\Models\Rc\SchoolActivityCompany;
 use App\Models\School;
 use App\Resources\Cms\CmsSchoolActivityResource;
 use App\Resources\Rc\RcCompanyResource;
@@ -20,6 +23,7 @@ use App\Services\RcSchoolActivityService;
 use App\Support\SchoolActivityInviteCode;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use InvalidArgumentException;
 
 class SchoolActivityController extends Controller
@@ -171,6 +175,55 @@ class SchoolActivityController extends Controller
         return api_response([
             'school_application' => (new RcSchoolActivitySchoolResource($schoolLink))->resolve($request),
         ]);
+    }
+
+    public function getCompanies(Request $request, int $id): JsonResponse
+    {
+        $validated = $request->validate([
+            'scale_type' => ['nullable', 'integer', Rule::enum(CompanyScaleType::class)],
+            'nature_type' => ['nullable', 'integer', Rule::enum(CompanyNatureType::class)],
+            'per_page' => ['nullable', 'integer', 'min:1', 'max:50'],
+        ]);
+
+        $activity = CmsSchoolActivityService::make()->findPublished(
+            $id,
+            $this->resolveRegionCode($request),
+        );
+
+        if (! $activity instanceof SchoolActivity) {
+            abort(404);
+        }
+
+        $query = SchoolActivityCompany::query()
+            ->where('activity_id', $activity->id)
+            ->approved()
+            ->with([
+                'company.profile',
+                'activityJobs' => fn ($query) => $query
+                    ->approved()
+                    ->with(['job.company.profile']),
+            ])
+            ->withCount([
+                'activityJobs as activity_jobs_count' => fn ($query) => $query->approved(),
+            ])
+            ->orderByDesc('apply_at')
+            ->orderByDesc('id');
+
+        if (filled($validated['scale_type'] ?? null)) {
+            $query->whereHas('company.profile', fn ($profileQuery) => $profileQuery->where('scale_type', (int) $validated['scale_type']));
+        }
+
+        if (filled($validated['nature_type'] ?? null)) {
+            $query->whereHas('company.profile', fn ($profileQuery) => $profileQuery->where('nature_type', (int) $validated['nature_type']));
+        }
+
+        $paginator = $query->paginate($this->resolvePerPage($validated));
+
+        $paginator->getCollection()->transform(
+            fn (SchoolActivityCompany $application): array => (new RcSchoolActivityCompanyResource($application))->resolve($request),
+        );
+
+        return api_response($paginator);
     }
 
     /**

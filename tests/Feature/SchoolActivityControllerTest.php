@@ -2,7 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Enums\CompanyNatureType;
+use App\Enums\CompanyScaleType;
 use App\Enums\RcSchoolActivityApplyStatus;
+use App\Enums\RcSchoolActivityJobAuditStatus;
 use App\Enums\RcSchoolActivityOrganizerType;
 use App\Enums\RcSchoolActivityStatus;
 use App\Enums\RcSchoolActivityType;
@@ -262,6 +265,129 @@ class SchoolActivityControllerTest extends TestCase
 
         $this->getJson('/cms/school-activities/'.$published->id.'?city_code=360100')
             ->assertNotFound();
+    }
+
+    public function test_get_companies_returns_approved_companies_with_profiles_and_approved_jobs(): void
+    {
+        $activity = SchoolActivity::query()->create([
+            'title' => '企业参会活动',
+            'city_code' => '110100',
+            'status' => RcSchoolActivityStatus::Published,
+        ]);
+
+        $companyA = Company::query()->create([
+            'name' => '企业甲',
+            'credit_code' => '91360100MA0000001A',
+        ]);
+
+        CompanyProfile::query()->create([
+            'company_id' => $companyA->id,
+            'short_name' => '甲公司',
+            'logo' => 'uploads/company-a.png',
+            'scale_type' => CompanyScaleType::Under20,
+            'nature_type' => CompanyNatureType::Private,
+        ]);
+
+        $companyB = Company::query()->create([
+            'name' => '企业乙',
+            'credit_code' => '91360100MA0000001B',
+        ]);
+
+        CompanyProfile::query()->create([
+            'company_id' => $companyB->id,
+            'short_name' => '乙公司',
+            'logo' => 'uploads/company-b.png',
+            'scale_type' => CompanyScaleType::From100To499,
+            'nature_type' => CompanyNatureType::StateOwned,
+        ]);
+
+        $companyAApplication = SchoolActivityCompany::query()->create([
+            'activity_id' => $activity->id,
+            'company_id' => $companyA->id,
+            'apply_status' => RcSchoolActivityApplyStatus::Approved,
+            'apply_at' => now()->subMinutes(5),
+        ]);
+
+        $companyBApplication = SchoolActivityCompany::query()->create([
+            'activity_id' => $activity->id,
+            'company_id' => $companyB->id,
+            'apply_status' => RcSchoolActivityApplyStatus::Approved,
+            'apply_at' => now(),
+        ]);
+
+        $approvedJobA = Job::query()->create([
+            'company_id' => $companyA->id,
+            'code' => 'JOB-COMPANY-A-APPROVED',
+            'title' => '甲公司岗位A',
+            'status' => 1,
+            'published_at' => now(),
+        ]);
+
+        $pendingJobA = Job::query()->create([
+            'company_id' => $companyA->id,
+            'code' => 'JOB-COMPANY-A-PENDING',
+            'title' => '甲公司岗位B',
+            'status' => 1,
+            'published_at' => now(),
+        ]);
+
+        $approvedJobB = Job::query()->create([
+            'company_id' => $companyB->id,
+            'code' => 'JOB-COMPANY-B-APPROVED',
+            'title' => '乙公司岗位A',
+            'status' => 1,
+            'published_at' => now(),
+        ]);
+
+        SchoolActivityJob::query()->create([
+            'activity_id' => $activity->id,
+            'company_id' => $companyA->id,
+            'school_activity_company_id' => $companyAApplication->id,
+            'job_id' => $approvedJobA->id,
+            'audit_status' => RcSchoolActivityJobAuditStatus::Approved,
+        ]);
+
+        SchoolActivityJob::query()->create([
+            'activity_id' => $activity->id,
+            'company_id' => $companyA->id,
+            'school_activity_company_id' => $companyAApplication->id,
+            'job_id' => $pendingJobA->id,
+            'audit_status' => RcSchoolActivityJobAuditStatus::Pending,
+        ]);
+
+        SchoolActivityJob::query()->create([
+            'activity_id' => $activity->id,
+            'company_id' => $companyB->id,
+            'school_activity_company_id' => $companyBApplication->id,
+            'job_id' => $approvedJobB->id,
+            'audit_status' => RcSchoolActivityJobAuditStatus::Approved,
+        ]);
+
+        $this->getJson('/cms/school-activities/'.$activity->id.'/companies?per_page=1')
+            ->assertOk()
+            ->assertJsonPath('data.per_page', 1)
+            ->assertJsonPath('data.total', 2)
+            ->assertJsonPath('data.data.0.company.id', $companyB->id)
+            ->assertJsonPath('data.data.0.company.profile.short_name', '乙公司')
+            ->assertJsonPath('data.data.0.company.profile.scale_type', CompanyScaleType::From100To499->value)
+            ->assertJsonPath('data.data.0.activity_jobs.0.job.title', '乙公司岗位A')
+            ->assertJsonCount(1, 'data.data.0.activity_jobs');
+
+        $this->getJson('/cms/school-activities/'.$activity->id.'/companies?page=2&per_page=1')
+            ->assertOk()
+            ->assertJsonPath('data.data.0.company.id', $companyA->id)
+            ->assertJsonPath('data.data.0.activity_jobs.0.job.title', '甲公司岗位A')
+            ->assertJsonCount(1, 'data.data.0.activity_jobs');
+
+        $this->getJson('/cms/school-activities/'.$activity->id.'/companies?scale_type='.CompanyScaleType::Under20->value)
+            ->assertOk()
+            ->assertJsonPath('data.total', 1)
+            ->assertJsonPath('data.data.0.company.id', $companyA->id);
+
+        $this->getJson('/cms/school-activities/'.$activity->id.'/companies?nature_type='.CompanyNatureType::StateOwned->value)
+            ->assertOk()
+            ->assertJsonPath('data.total', 1)
+            ->assertJsonPath('data.data.0.company.id', $companyB->id);
     }
 
     public function test_index_returns_validation_error_for_invalid_type(): void

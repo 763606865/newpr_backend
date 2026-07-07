@@ -30,6 +30,7 @@ Route::middleware(['optional-rc-auth', 'cms-home-menu'])->group(function (): voi
     Route::post('/school-activities/invite/{inviteCode}/companies', [SchoolActivityController::class, 'registerCompanyByInviteCode'])->name('school-activity.invite.register-company');
     Route::post('/school-activities/invite/{inviteCode}/schools', [SchoolActivityController::class, 'registerSchoolByInviteCode'])->name('school-activity.invite.register-school');
     Route::get('/school-activities/{id}', [SchoolActivityController::class, 'show'])->whereNumber('id')->name('school-activity.show');
+    Route::get('/school-activities/{id}/companies', [SchoolActivityController::class, 'getCompanies'])->whereNumber('id')->name('school-activity.list-companies');
 });
 
 Route::get('/meta', [MetaController::class, 'index'])->name('meta');
