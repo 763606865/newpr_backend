@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\System\Features\Schemas;
 
-use App\Models\Client\Menu;
+use App\Models\Oa\Menu;
 use App\Services\PassportClientService;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;

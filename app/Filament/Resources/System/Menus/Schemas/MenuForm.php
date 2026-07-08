@@ -3,7 +3,7 @@
 namespace App\Filament\Resources\System\Menus\Schemas;
 
 use App\Enums\SystemMenuType;
-use App\Models\Client\Menu;
+use App\Models\Oa\Menu;
 use App\Services\PassportClientService;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;

@@ -3,9 +3,9 @@
 namespace App\Models\Biz;
 
 use App\Enums\SystemPlanStatus;
-use App\Models\Client\Feature;
 use App\Models\CompanyPlan;
 use App\Models\Model;
+use App\Models\Oa\Feature;
 use App\Models\ShipCompanyPlan;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
@@ -25,7 +25,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int $status 0=未开始 1=进行中 2=已完成 3=已取消
  * @property string|null $extra 其他扩展属性
  */
-#[Table('biz_plans')]
+#[Table('oa_biz_plans')]
 #[Fillable(['plan_name', 'plan_code', 'price', 'duration', 'sort', 'remark', 'status', 'extra'])]
 class Plan extends Model
 {

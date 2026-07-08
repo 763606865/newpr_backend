@@ -2,8 +2,8 @@
 
 namespace App\Models\Biz;
 
-use App\Models\Client\Feature;
 use App\Models\Model;
+use App\Models\Oa\Feature;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $plan_id 方案ID
  * @property int $feature_id 功能ID
  */
-#[Table('biz_plan_client_features')]
+#[Table('oa_biz_plan_client_features')]
 class PlanFeature extends Model
 {
     /**

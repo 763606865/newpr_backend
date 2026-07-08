@@ -65,14 +65,14 @@ class CompaniesTableBindPlanActionTest extends TestCase
             ])
             ->assertNotified();
 
-        $this->assertDatabaseHas('company_biz_plans', [
+        $this->assertDatabaseHas('oa_company_biz_plans', [
             'company_id' => $company->id,
             'plan_id' => $plan->id,
             'is_current' => 1,
             'status' => CompanyPlanStatus::Enabled->value,
         ]);
 
-        $this->assertDatabaseHas('ship_company_biz_plans', [
+        $this->assertDatabaseHas('oa_ship_company_biz_plans', [
             'company_id' => $company->id,
             'plan_id' => $plan->id,
             'pay_amount' => 888.00,

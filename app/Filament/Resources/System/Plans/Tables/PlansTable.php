@@ -3,7 +3,7 @@
 namespace App\Filament\Resources\System\Plans\Tables;
 
 use App\Enums\SystemPlanStatus;
-use App\Models\Client\Feature;
+use App\Models\Oa\Feature;
 use App\Services\PassportClientService;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
@@ -155,7 +155,7 @@ class PlansTable
     {
         $selectedByGroup = [];
 
-        foreach ($record->features()->get(['client_features.id', 'client_features.client_id', 'client_features.menu_id']) as $feature) {
+        foreach ($record->features()->get(['oa_client_features.id', 'oa_client_features.client_id', 'oa_client_features.menu_id']) as $feature) {
             $groupKey = self::resolveGroupKey((string) $feature->client_id, (int) $feature->menu_id);
             $selectedByGroup[$groupKey] ??= [];
             $selectedByGroup[$groupKey][] = (string) $feature->id;

@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  *
  * @property CompanyPlanStatus $status
  */
-#[Table('company_biz_plans')]
+#[Table('oa_company_biz_plans')]
 #[Fillable(['company_id', 'ship_id', 'plan_id', 'start_time', 'end_time', 'is_current', 'status', 'extra'])]
 class CompanyPlan extends Model
 {

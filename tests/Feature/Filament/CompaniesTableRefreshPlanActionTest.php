@@ -52,7 +52,7 @@ class CompaniesTableRefreshPlanActionTest extends TestCase
 
         $this->assertNotSame($originalShipId, $currentShipId);
         $this->assertSame(2, ShipCompanyPlan::query()->where('company_id', $company->id)->count());
-        $this->assertDatabaseHas('company_biz_plans', [
+        $this->assertDatabaseHas('oa_company_biz_plans', [
             'company_id' => $company->id,
             'plan_id' => $plan->id,
             'is_current' => 1,

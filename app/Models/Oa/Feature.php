@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Client;
+namespace App\Models\Oa;
 
 use App\Models\Biz\Plan;
 use App\Models\Biz\PlanFeature;
@@ -20,7 +20,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @property string|null $description 权限描述
  * @property int $status 0=禁用 1=启用
  */
-#[Table('client_features')]
+#[Table('oa_client_features')]
 #[Fillable(['client_id', 'feature_name', 'feature_code', 'menu_id', 'description', 'status'])]
 class Feature extends Model
 {

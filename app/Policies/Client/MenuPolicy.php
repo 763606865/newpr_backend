@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies\Client;
 
-use Illuminate\Foundation\Auth\User as AuthUser;
-use App\Models\Client\Menu;
+use App\Models\Oa\Menu;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Foundation\Auth\User as AuthUser;
 
 class MenuPolicy
 {
     use HandlesAuthorization;
-    
+
     public function viewAny(AuthUser $authUser): bool
     {
         return $authUser->can('ViewAny:Menu');
@@ -71,5 +71,4 @@ class MenuPolicy
     {
         return $authUser->can('Reorder:Menu');
     }
-
 }

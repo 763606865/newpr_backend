@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('client_menus', static function (Blueprint $table) {
+        Schema::create('oa_client_menus', static function (Blueprint $table) {
             $table->id();
             $table->string('client_id', 36)->nullable()->comment('客户端ID');
             $table->unsignedBigInteger('parent_id')->default(0)->comment('父菜单ID 0=顶级');
@@ -28,7 +28,7 @@ return new class extends Migration
             $table->timestamps();
             $table->comment('功能菜单表');
         });
-        Schema::create('client_features', static function (Blueprint $table) {
+        Schema::create('oa_client_features', static function (Blueprint $table) {
             $table->id();
             $table->string('client_id', 36)->nullable()->comment('客户端ID');
             $table->string('feature_name', 50)->comment('功能名称');
@@ -39,7 +39,7 @@ return new class extends Migration
             $table->timestamps();
             $table->comment('系统功能点表');
         });
-        Schema::create('biz_plans', static function (Blueprint $table) {
+        Schema::create('oa_biz_plans', static function (Blueprint $table) {
             $table->id();
             $table->string('plan_name', 50)->comment('方案名称');
             $table->string('plan_code', 50)->comment('唯一标识')->unique();
@@ -52,14 +52,14 @@ return new class extends Migration
             $table->timestamps();
             $table->comment('企业方案表');
         });
-        Schema::create('biz_plan_client_features', static function (Blueprint $table) {
+        Schema::create('oa_biz_plan_client_features', static function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('plan_id')->comment('方案ID');
             $table->unsignedBigInteger('feature_id')->comment('功能ID');
             $table->timestamps();
             $table->comment('方案功能关联表');
         });
-        Schema::create('company_biz_plans', static function (Blueprint $table) {
+        Schema::create('oa_company_biz_plans', static function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('company_id')->comment('企业ID')->index();
             $table->unsignedBigInteger('ship_id')->comment('企业历史方案关联ID')->index();
@@ -72,7 +72,7 @@ return new class extends Migration
             $table->timestamps();
             $table->comment('企业当前方案关联表');
         });
-        Schema::create('ship_company_biz_plans', static function (Blueprint $table) {
+        Schema::create('oa_ship_company_biz_plans', static function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('company_id')->comment('企业ID')->index();
             $table->unsignedBigInteger('plan_id')->comment('方案ID')->index();
@@ -97,11 +97,11 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ship_company_biz_plans');
-        Schema::dropIfExists('company_biz_plans');
-        Schema::dropIfExists('biz_plan_client_features');
-        Schema::dropIfExists('biz_plans');
-        Schema::dropIfExists('client_features');
-        Schema::dropIfExists('client_menus');
+        Schema::dropIfExists('oa_ship_company_biz_plans');
+        Schema::dropIfExists('oa_company_biz_plans');
+        Schema::dropIfExists('oa_biz_plan_client_features');
+        Schema::dropIfExists('oa_biz_plans');
+        Schema::dropIfExists('oa_client_features');
+        Schema::dropIfExists('oa_client_menus');
     }
 };

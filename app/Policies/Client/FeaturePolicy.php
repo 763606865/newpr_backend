@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies\Client;
 
-use Illuminate\Foundation\Auth\User as AuthUser;
-use App\Models\Client\Feature;
+use App\Models\Oa\Feature;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Foundation\Auth\User as AuthUser;
 
 class FeaturePolicy
 {
     use HandlesAuthorization;
-    
+
     public function viewAny(AuthUser $authUser): bool
     {
         return $authUser->can('ViewAny:Feature');
@@ -71,5 +71,4 @@ class FeaturePolicy
     {
         return $authUser->can('Reorder:Feature');
     }
-
 }

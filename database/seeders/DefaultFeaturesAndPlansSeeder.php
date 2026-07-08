@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\Biz\Plan;
-use App\Models\Client\Feature;
-use App\Models\Client\Menu;
+use App\Models\Oa\Feature;
+use App\Models\Oa\Menu;
 use Illuminate\Database\Seeder;
 use Laravel\Passport\Client;
 
