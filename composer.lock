@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "57bfd2c659376c25fa4662ab15f46558",
+    "content-hash": "e55b64a1d6bd7b4cb74d22d845cb1833",
     "packages": [
         {
             "name": "adbario/php-dot-notation",
@@ -10982,6 +10982,103 @@
                 }
             ],
             "time": "2026-03-31T07:15:36+00:00"
+        },
+        {
+            "name": "tc-net/tim",
+            "version": "v1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://gitee.com/tc_net/tim.git",
+                "reference": "7e6ecb83620965dbde79549db85a7ad745dd274e"
+            },
+            "require": {
+                "ext-json": "*",
+                "ext-simplexml": "*",
+                "guzzlehttp/guzzle": "^6.4|^7.0",
+                "php": ">=7.0",
+                "tencent/tls-sig-api-v2": "^1.1"
+            },
+            "require-dev": {
+                "roave/security-advisories": "dev-latest"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "TcNet\\Tim\\ServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "TcNet\\Tim\\": "./src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "tc_net",
+                    "email": "tc_net@163.com"
+                }
+            ],
+            "description": "腾讯云即时通信 SDK for PHP",
+            "keywords": [
+                "im",
+                "php",
+                "即时通信",
+                "腾讯云"
+            ],
+            "time": "2021-12-28T06:31:57+00:00"
+        },
+        {
+            "name": "tencent/tls-sig-api-v2",
+            "version": "v1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/tencentyun/tls-sig-api-v2-php.git",
+                "reference": "cae9aa1f6ef04c64b451ef72cdbc004b87a800d4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/tencentyun/tls-sig-api-v2-php/zipball/cae9aa1f6ef04c64b451ef72cdbc004b87a800d4",
+                "reference": "cae9aa1f6ef04c64b451ef72cdbc004b87a800d4",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Tencent\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "weijunyi",
+                    "email": "weijunyi@tencent.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "tls-sig-api-v2 适用于腾讯云通信生成用户账号签名。",
+            "homepage": "https://github.com/tencentyun/tls-sig-api-v2-php",
+            "keywords": [
+                "im",
+                "tencent",
+                "trtc"
+            ],
+            "support": {
+                "issues": "https://github.com/tencentyun/tls-sig-api-v2-php/issues",
+                "source": "https://github.com/tencentyun/tls-sig-api-v2-php/tree/v1.1"
+            },
+            "time": "2020-12-02T07:22:57+00:00"
         },
         {
             "name": "tijsverkoyen/css-to-inline-styles",
