@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Biz;
+namespace App\Models\Oa\Biz;
 
 use App\Enums\SystemPlanStatus;
 use App\Models\CompanyPlan;

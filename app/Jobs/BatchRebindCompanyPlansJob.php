@@ -3,8 +3,8 @@
 namespace App\Jobs;
 
 use App\Models\AdminUser;
-use App\Models\Biz\Plan;
 use App\Models\Company;
+use App\Models\Oa\Biz\Plan;
 use App\Services\CompanyOperationLogService;
 use App\Services\SysPlanService;
 use Illuminate\Contracts\Queue\ShouldQueue;

@@ -4,9 +4,9 @@ namespace App\Services;
 
 use App\Enums\CompanyPlanStatus;
 use App\Exceptions\BadRequestException;
-use App\Models\Biz\Plan;
 use App\Models\Company;
 use App\Models\CompanyPlan;
+use App\Models\Oa\Biz\Plan;
 use App\Models\Oa\Feature;
 use App\Models\Oa\Menu;
 use App\Models\ShipCompanyPlan;

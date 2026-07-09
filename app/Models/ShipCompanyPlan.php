@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Models\Biz\Plan;
+use App\Models\Oa\Biz\Plan;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Model;

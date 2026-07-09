@@ -5,7 +5,7 @@ namespace Tests\Feature\Filament;
 use App\Enums\SystemPlanStatus;
 use App\Filament\Resources\Companies\Pages\ListCompanies;
 use App\Jobs\BatchRebindCompanyPlansJob;
-use App\Models\Biz\Plan;
+use App\Models\Oa\Biz\Plan;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
 use Livewire\Livewire;

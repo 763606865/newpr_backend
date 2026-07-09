@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Biz;
+namespace App\Models\Oa\Biz;
 
 use App\Models\Model;
 use App\Models\Oa\Feature;

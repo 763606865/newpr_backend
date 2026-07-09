@@ -4,7 +4,6 @@ namespace App\Filament\Widgets;
 
 use App\Filament\Widgets\Concerns\InteractsWithMonthlyModelData;
 use App\Models\AdminUser;
-use App\Models\Biz\Plan;
 use App\Models\Cms\Ad;
 use App\Models\Cms\Announcement;
 use App\Models\Cms\Article;
@@ -20,6 +19,7 @@ use App\Models\Department;
 use App\Models\Employee;
 use App\Models\Oa\AttendanceRule;
 use App\Models\Oa\AttendanceSchedule;
+use App\Models\Oa\Biz\Plan;
 use App\Models\Oa\Feature;
 use App\Models\Oa\LeaveType;
 use App\Models\Oa\Menu as ClientMenu;

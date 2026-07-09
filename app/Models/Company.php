@@ -3,10 +3,10 @@
 namespace App\Models;
 
 use App\Enums\CompanyStatus;
-use App\Models\Biz\Plan;
 use App\Models\Oa\AttendanceClockLog;
 use App\Models\Oa\AttendanceRule;
 use App\Models\Oa\AttendanceSchedule;
+use App\Models\Oa\Biz\Plan;
 use App\Models\Oa\LeaveBalance;
 use App\Models\Oa\LeaveType;
 use App\Models\Pivot\CompanyBUsers;

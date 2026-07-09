@@ -5,7 +5,7 @@ namespace App\Filament\Resources\Companies\Pages;
 use App\Enums\SystemPlanStatus;
 use App\Filament\Resources\Companies\CompanyResource;
 use App\Jobs\BatchRebindCompanyPlansJob;
-use App\Models\Biz\Plan;
+use App\Models\Oa\Biz\Plan;
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Forms\Components\Select;

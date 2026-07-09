@@ -2,9 +2,9 @@
 
 namespace App\Models\Oa;
 
-use App\Models\Biz\Plan;
-use App\Models\Biz\PlanFeature;
 use App\Models\Model;
+use App\Models\Oa\Biz\Plan;
+use App\Models\Oa\Biz\PlanFeature;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

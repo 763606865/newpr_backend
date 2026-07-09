@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Biz\Plan;
+use App\Models\Oa\Biz\Plan;
 use App\Models\Oa\Feature;
 use App\Models\Oa\Menu;
 use Illuminate\Database\Seeder;
