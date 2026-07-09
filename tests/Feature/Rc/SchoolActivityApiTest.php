@@ -19,6 +19,7 @@ use App\Models\CompanyProfile;
 use App\Models\Rc\Job;
 use App\Models\Rc\Notification;
 use App\Models\Rc\SchoolActivity;
+use App\Models\Rc\SchoolActivitySchool;
 use App\Models\Rc\SchoolBooth;
 use App\Models\Rc\SchoolBoothArea;
 use App\Models\Rc\UserIdentity;
@@ -152,6 +153,65 @@ class SchoolActivityApiTest extends TestCase
             ->assertJsonPath('data.activity.business_status', RcSchoolActivityBusinessStatus::Draft->value);
     }
 
+    public function test_campus_manager_can_list_school_participated_activities(): void
+    {
+        $school = $this->createSchool();
+        $company = $this->createCompany();
+        $campusUser = User::factory()->create();
+        $this->createCampusManagerIdentity($campusUser, $school);
+
+        $participatedActivity = SchoolActivity::query()->create([
+            'type' => RcSchoolActivityType::Presentation,
+            'title' => '企业宣讲活动',
+            'status' => RcSchoolActivityStatus::Published,
+            'organizer_type' => RcSchoolActivityOrganizerType::Company,
+            'organizer_id' => $company->id,
+        ]);
+
+        $organizedActivity = SchoolActivity::query()->create([
+            'type' => RcSchoolActivityType::DualSelection,
+            'title' => '本校双选会',
+            'status' => RcSchoolActivityStatus::Published,
+            'organizer_type' => RcSchoolActivityOrganizerType::School,
+            'organizer_id' => $school->id,
+        ]);
+
+        SchoolActivitySchool::query()->create([
+            'activity_id' => $participatedActivity->id,
+            'school_id' => $school->id,
+            'apply_status' => RcSchoolActivityApplyStatus::Pending,
+            'apply_at' => now()->subHour(),
+            'contact_name' => '李老师',
+            'contact_phone' => '13800138000',
+        ]);
+
+        SchoolActivitySchool::query()->create([
+            'activity_id' => $organizedActivity->id,
+            'school_id' => $school->id,
+            'apply_status' => RcSchoolActivityApplyStatus::Approved,
+            'apply_at' => now(),
+            'contact_name' => '王老师',
+            'contact_phone' => '13800138001',
+        ]);
+
+        $this->actingAs($campusUser, 'rc')
+            ->getJson('/rc/schools/activities/participated')
+            ->assertOk()
+            ->assertJsonPath('data.total', 2)
+            ->assertJsonPath('data.data.0.activity.title', '本校双选会')
+            ->assertJsonPath('data.data.0.school_application.apply_status', RcSchoolActivityApplyStatus::Approved->value)
+            ->assertJsonPath('data.data.0.is_organizer', true)
+            ->assertJsonPath('data.data.1.activity.title', '企业宣讲活动')
+            ->assertJsonPath('data.data.1.school_application.apply_status', RcSchoolActivityApplyStatus::Pending->value)
+            ->assertJsonPath('data.data.1.is_organizer', false);
+
+        $this->actingAs($campusUser, 'rc')
+            ->getJson('/rc/schools/activities/participated?apply_status='.RcSchoolActivityApplyStatus::Pending->value.'&type='.RcSchoolActivityType::Presentation->value)
+            ->assertOk()
+            ->assertJsonPath('data.total', 1)
+            ->assertJsonPath('data.data.0.activity.title', '企业宣讲活动');
+    }
+
     public function test_recruiter_can_apply_submit_jobs_and_campus_manager_can_review(): void
     {
         $school = $this->createSchool();
@@ -167,6 +227,7 @@ class SchoolActivityApiTest extends TestCase
 
         $activityId = (int) $this->actingAs($campusUser, 'rc')
             ->postJson('/rc/schools/activities', [
+                'type' => RcSchoolActivityType::DualSelection->value,
                 'title' => '春季招聘会',
                 'booth_id' => $this->createBoothWithAreas($school)->id,
             ])
@@ -219,6 +280,60 @@ class SchoolActivityApiTest extends TestCase
             ->getJson("/rc/companies/school-activities/{$activityId}/jobs")
             ->assertOk()
             ->assertJsonPath('data.data.0.job.title', '后端工程师');
+    }
+
+    public function test_recruiter_submitted_jobs_are_auto_approved_for_job_fair_and_presentation(): void
+    {
+        $school = $this->createSchool();
+        SchoolProfile::query()->create([
+            'school_code' => $school->school_code,
+            'allow_company_apply_activity' => true,
+        ]);
+        $company = $this->createCompany();
+        $campusUser = User::factory()->create();
+        $recruiterUser = User::factory()->create();
+        $this->createCampusManagerIdentity($campusUser, $school);
+        $this->createRecruiterIdentity($recruiterUser, $company);
+
+        $job = Job::query()->create([
+            'company_id' => $company->id,
+            'code' => 'JOB-AUTO-001',
+            'title' => '自动通过岗位',
+        ]);
+
+        foreach ([RcSchoolActivityType::JobFair, RcSchoolActivityType::Presentation] as $activityType) {
+            $activityId = (int) $this->actingAs($campusUser, 'rc')
+                ->postJson('/rc/schools/activities', [
+                    'type' => $activityType->value,
+                    'title' => "{$activityType->getLabel()}自动过审活动",
+                    'booth_id' => $this->createBoothWithAreas($school)->id,
+                ])
+                ->json('data.activity.id');
+
+            $this->actingAs($campusUser, 'rc')
+                ->postJson("/rc/schools/activities/{$activityId}/publish")
+                ->assertOk();
+
+            $applicationResponse = $this->actingAs($recruiterUser, 'rc')
+                ->postJson("/rc/companies/school-activities/{$activityId}/apply", [
+                    'remark' => '希望参加',
+                ])
+                ->assertOk();
+
+            $applicationId = (int) $applicationResponse->json('data.application.id');
+
+            $this->actingAs($campusUser, 'rc')
+                ->postJson("/rc/schools/activities/{$activityId}/company-applications/{$applicationId}/approve")
+                ->assertOk()
+                ->assertJsonPath('data.application.apply_status', RcSchoolActivityApplyStatus::Approved->value);
+
+            $this->actingAs($recruiterUser, 'rc')
+                ->postJson("/rc/companies/school-activities/{$activityId}/jobs", [
+                    'job_ids' => [$job->id],
+                ])
+                ->assertOk()
+                ->assertJsonPath('data.activity_jobs.0.audit_status', RcSchoolActivityJobAuditStatus::Approved->value);
+        }
     }
 
     public function test_recruiter_can_list_participated_and_available_school_activities(): void

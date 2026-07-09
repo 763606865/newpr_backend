@@ -224,6 +224,7 @@ Route::middleware('auth:rc')->group(function (): void {
     Route::put('/schools/booths/{boothId}/areas/{id}', [SchoolBoothAreaController::class, 'update'])->whereNumber('boothId')->whereNumber('id');
     Route::delete('/schools/booths/{boothId}/areas/{id}', [SchoolBoothAreaController::class, 'destroy'])->whereNumber('boothId')->whereNumber('id');
     Route::get('/schools/activities', [SchoolActivityController::class, 'index']);
+    Route::get('/schools/activities/participated', [SchoolActivityController::class, 'participated']);
     Route::post('/schools/activities', [SchoolActivityController::class, 'store']);
     Route::get('/schools/activities/{id}', [SchoolActivityController::class, 'show'])->whereNumber('id');
     Route::put('/schools/activities/{id}', [SchoolActivityController::class, 'update'])->whereNumber('id');

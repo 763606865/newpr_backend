@@ -3,11 +3,13 @@
 namespace App\Rc\Controllers;
 
 use App\Models\Rc\SchoolActivity;
+use App\Models\Rc\SchoolActivitySchool;
 use App\Models\School;
 use App\Rc\Controllers\Concerns\ResolvesRcOrganizations;
 use App\Rc\Requests\SchoolActivityStoreRequest;
 use App\Rc\Requests\SchoolActivityUpdateRequest;
 use App\Resources\Rc\RcSchoolActivityResource;
+use App\Resources\Rc\RcSchoolParticipatedActivityResource;
 use App\Services\RcSchoolActivityService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -43,6 +45,37 @@ class SchoolActivityController extends Controller
 
         $paginator->getCollection()->transform(
             fn (SchoolActivity $activity): array => (new RcSchoolActivityResource($activity))->resolve($request),
+        );
+
+        return $this->success($paginator);
+    }
+
+    /**
+     * 校招负责人-参与的活动列表
+     *
+     * GET /rc/schools/activities/participated
+     */
+    public function participated(Request $request): JsonResponse
+    {
+        $school = $this->resolveCampusManagerSchool();
+
+        if (! $school instanceof School) {
+            return $this->error('请先切换为校招负责人身份并绑定学校。', Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $paginator = RcSchoolActivityService::make()->paginateParticipatedForSchool(
+            $school,
+            $this->getPerPage($request),
+            [
+                'apply_status' => $request->input('apply_status'),
+                'activity_status' => $request->input('activity_status'),
+                'type' => $request->input('type'),
+                'keyword' => $request->input('keyword'),
+            ],
+        );
+
+        $paginator->getCollection()->transform(
+            fn (SchoolActivitySchool $schoolApplication): array => (new RcSchoolParticipatedActivityResource($schoolApplication))->resolve($request),
         );
 
         return $this->success($paginator);

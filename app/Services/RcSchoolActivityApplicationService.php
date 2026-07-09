@@ -349,7 +349,11 @@ class RcSchoolActivityApplicationService extends Service
             throw new InvalidArgumentException('存在不属于当前企业的职位。');
         }
 
-        return DB::transaction(function () use ($application, $jobIds): Collection {
+        $application->loadMissing('activity');
+        $initialAuditStatus = $this->resolveInitialJobAuditStatus($application);
+        $auditAt = $initialAuditStatus === RcSchoolActivityJobAuditStatus::Approved ? now() : null;
+
+        return DB::transaction(function () use ($application, $jobIds, $initialAuditStatus, $auditAt): Collection {
             $created = collect();
 
             foreach ($jobIds as $jobId) {
@@ -361,7 +365,8 @@ class RcSchoolActivityApplicationService extends Service
                     [
                         'company_id' => $application->company_id,
                         'school_activity_company_id' => $application->id,
-                        'audit_status' => RcSchoolActivityJobAuditStatus::Pending,
+                        'audit_status' => $initialAuditStatus,
+                        'audit_at' => $auditAt,
                     ],
                 );
 
@@ -369,9 +374,9 @@ class RcSchoolActivityApplicationService extends Service
                     $activityJob->restore();
                     $activityJob->update([
                         'school_activity_company_id' => $application->id,
-                        'audit_status' => RcSchoolActivityJobAuditStatus::Pending,
+                        'audit_status' => $initialAuditStatus,
                         'reject_reason' => null,
-                        'audit_at' => null,
+                        'audit_at' => $auditAt,
                     ]);
                 }
 
@@ -380,6 +385,17 @@ class RcSchoolActivityApplicationService extends Service
 
             return $created;
         });
+    }
+
+    private function resolveInitialJobAuditStatus(SchoolActivityCompany $application): RcSchoolActivityJobAuditStatus
+    {
+        $activityType = $application->activity?->type;
+
+        if ($activityType === RcSchoolActivityType::DualSelection) {
+            return RcSchoolActivityJobAuditStatus::Pending;
+        }
+
+        return RcSchoolActivityJobAuditStatus::Approved;
     }
 
     /**

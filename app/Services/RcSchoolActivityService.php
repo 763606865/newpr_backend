@@ -50,6 +50,41 @@ class RcSchoolActivityService extends Service
     }
 
     /**
+     * @return LengthAwarePaginator<int, SchoolActivitySchool>
+     */
+    public function paginateParticipatedForSchool(School $school, int $perPage, array $filters = []): LengthAwarePaginator
+    {
+        $query = SchoolActivitySchool::query()
+            ->where('school_id', $school->id)
+            ->with([
+                'activity' => fn ($activityQuery) => $activityQuery
+                    ->withCount(['companyApplications', 'jobs', 'activityBooths'])
+                    ->with('organizer'),
+            ])
+            ->orderByDesc('apply_at')
+            ->orderByDesc('id');
+
+        if (filled($filters['apply_status'] ?? null)) {
+            $query->where('apply_status', (int) $filters['apply_status']);
+        }
+
+        if (filled($filters['type'] ?? null)) {
+            $query->whereHas('activity', fn ($activityQuery) => $activityQuery->where('type', (int) $filters['type']));
+        }
+
+        if (filled($filters['activity_status'] ?? null)) {
+            $query->whereHas('activity', fn ($activityQuery) => $activityQuery->where('status', (int) $filters['activity_status']));
+        }
+
+        if (filled($filters['keyword'] ?? null)) {
+            $keyword = trim((string) $filters['keyword']);
+            $query->whereHas('activity', fn ($activityQuery) => $activityQuery->where('title', 'like', "%{$keyword}%"));
+        }
+
+        return $query->paginate($perPage);
+    }
+
+    /**
      * @return LengthAwarePaginator<int, SchoolActivity>
      */
     public function paginateForCompanyOrganizer(Company $company, int $perPage, array $filters = []): LengthAwarePaginator
