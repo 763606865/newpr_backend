@@ -24,4 +24,25 @@ abstract class AbstractDriver implements ImClientInterface
         // Default not implemented; drivers should override
         return ['success' => false, 'message' => 'not_implemented'];
     }
+
+    // Default user management methods - drivers should override if supported
+    public function createOrUpdateUser(array $payload): array
+    {
+        return ['success' => false, 'message' => 'not_implemented'];
+    }
+
+    public function listUsers(int $limit = 50): array
+    {
+        return ['success' => false, 'message' => 'not_implemented'];
+    }
+
+    public function getUser(string $externalUserId): array
+    {
+        return ['success' => false, 'message' => 'not_implemented'];
+    }
+
+    public function updateUserStatus(string $externalUserId, string $status): array
+    {
+        return ['success' => false, 'message' => 'not_implemented'];
+    }
 }
