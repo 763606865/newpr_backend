@@ -5,7 +5,21 @@ namespace App\Models\Rc;
 use App\Models\Model;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
+use Illuminate\Support\Carbon;
 
+/**
+ * RC 资产账户
+ *
+ * @property int $id
+ * @property int $owner_type
+ * @property int $owner_id
+ * @property string $asset_code
+ * @property string $asset_name
+ * @property int $balance
+ * @property int $frozen_balance
+ * @property Carbon|null $expired_at
+ * @property array|null $extra
+ */
 #[Table('rc_asset_accounts')]
 #[Fillable([
     'owner_type',

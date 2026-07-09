@@ -7,7 +7,21 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
+/**
+ * 用户 VIP / 增值权益
+ *
+ * @property int $id
+ * @property int $user_id
+ * @property int $vip_level
+ * @property int $refresh_quota
+ * @property int $exposure_quota
+ * @property Carbon|null $last_refresh_at
+ * @property int|null $plan_id
+ * @property Carbon|null $expires_at
+ * @property array|null $extra
+ */
 #[Table('rc_user_vips')]
 #[Fillable([
     'user_id',

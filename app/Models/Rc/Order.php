@@ -7,7 +7,33 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 
+/**
+ * RC 订单
+ *
+ * @property int $id
+ * @property string $order_no
+ * @property int $payer_type
+ * @property int $payer_id
+ * @property int|null $buyer_user_id
+ * @property int $scene_type
+ * @property string $product_code
+ * @property string $product_name
+ * @property int $quantity
+ * @property float $original_amount
+ * @property float $discount_amount
+ * @property float $payable_amount
+ * @property float $paid_amount
+ * @property string $currency
+ * @property int $pay_channel
+ * @property int $pay_status
+ * @property int $order_status
+ * @property Carbon|null $expired_at
+ * @property Carbon|null $paid_at
+ * @property Carbon|null $canceled_at
+ * @property array|null $extra
+ */
 #[Table('rc_orders')]
 #[Fillable([
     'order_no',

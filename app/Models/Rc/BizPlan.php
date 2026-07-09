@@ -6,6 +6,20 @@ use App\Models\Model;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 
+/**
+ * RC 商业化方案（BizPlan）
+ *
+ * @property int $id
+ * @property string $plan_name
+ * @property string $plan_code
+ * @property float $price
+ * @property int $duration
+ * @property int $target_side
+ * @property int $product_type
+ * @property int $billing_cycle
+ * @property array|null $quota_rules
+ * @property array|null $extra
+ */
 #[Table('rc_biz_plans')]
 #[Fillable([
     'plan_name',

@@ -8,6 +8,18 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * 用户配额使用记录
+ *
+ * @property int $id
+ * @property int $entitlement_id
+ * @property int $user_id
+ * @property string $action
+ * @property int $delta
+ * @property int|null $balance_after
+ * @property int|null $related_order_id
+ * @property array|null $extra
+ */
 #[Table('rc_user_entitlement_usages')]
 #[Fillable([
     'entitlement_id',

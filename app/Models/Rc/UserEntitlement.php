@@ -8,7 +8,22 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 
+/**
+ * 用户配额/权益（entitlement）
+ *
+ * @property int $id
+ * @property int $user_id
+ * @property string $entitlement_type
+ * @property int $quantity
+ * @property int $remaining
+ * @property int|null $plan_id
+ * @property string|null $source
+ * @property int|null $source_id
+ * @property Carbon|null $expires_at
+ * @property array|null $extra
+ */
 #[Table('rc_user_entitlements')]
 #[Fillable([
     'user_id',

@@ -5,7 +5,25 @@ namespace App\Models\Rc;
 use App\Models\Model;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
+use Illuminate\Support\Carbon;
 
+/**
+ * RC 资产流水 (ledger)
+ *
+ * @property int $id
+ * @property int $account_id
+ * @property int $owner_type
+ * @property int $owner_id
+ * @property string $asset_code
+ * @property int $change_type
+ * @property int $delta
+ * @property int $balance_after
+ * @property int $source_type
+ * @property int|null $source_id
+ * @property string|null $biz_no
+ * @property Carbon|null $happened_at
+ * @property array|null $extra
+ */
 #[Table('rc_asset_ledgers')]
 #[Fillable([
     'account_id',

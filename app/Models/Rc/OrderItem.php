@@ -7,6 +7,20 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * RC 订单条目
+ *
+ * @property int $id
+ * @property int $order_id
+ * @property string $item_code
+ * @property string $item_name
+ * @property int $item_type
+ * @property float $unit_price
+ * @property int $quantity
+ * @property float $line_amount
+ * @property array|null $entitlement_snapshot
+ * @property array|null $extra
+ */
 #[Table('rc_order_items')]
 #[Fillable([
     'order_id',
