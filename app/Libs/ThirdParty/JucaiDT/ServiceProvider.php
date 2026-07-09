@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Libs\ThirdParty\Jucai;
+namespace App\Libs\ThirdParty\JucaiDT;
 
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
@@ -12,8 +12,8 @@ class ServiceProvider extends BaseServiceProvider
      */
     public function register(): void
     {
-        $this->app->singleton(Jucai::class, function (Application $app) {
-            return new Jucai(app: $app, config: config('jucai.default'));
+        $this->app->singleton(JucaiDT::class, function (Application $app) {
+            return new JucaiDT(app: $app, config: config('jucai.dt'));
         });
     }
 

@@ -11,6 +11,7 @@ return [
     App\Libs\Ocr\ServiceProvider::class,
     App\Libs\Oss\ServiceProvider::class,
     App\Libs\ThirdParty\Jucai\ServiceProvider::class,
+    App\Libs\ThirdParty\JucaiDT\ServiceProvider::class,
     AppServiceProvider::class,
     DbLogServerProvider::class,
     AdminPanelProvider::class,
