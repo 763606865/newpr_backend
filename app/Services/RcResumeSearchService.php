@@ -36,6 +36,13 @@ class RcResumeSearchService extends Service
         return $builder
             ->query(function (EloquentBuilder $query) use ($filters): void {
                 $this->filterApplier->applyExclusionFilters($query, $filters);
+
+                // eager-load relevant resume relations so resources can access them without N+1
+                $query->with([
+                    'works' => static fn ($rel) => $rel->orderByDesc('sort')->orderByDesc('id'),
+                    'educations' => static fn ($rel) => $rel->orderByDesc('sort')->orderByDesc('id'),
+                    'intentions' => static fn ($rel) => $rel->orderByDesc('updated_at')->orderByDesc('id'),
+                ]);
             })
             ->orderBy($sortColumn, $sortDirection)
             ->paginate($perPage);
@@ -49,6 +56,13 @@ class RcResumeSearchService extends Service
         if (config('scout.driver') === 'collection') {
             return Resume::search($keyword, function ($query) use ($filters): void {
                 $this->filterApplier->applyDatabaseConstraints($query, $filters);
+
+                // ensure relations are eager-loaded when using the collection driver
+                $query->with([
+                    'works' => static fn ($rel) => $rel->orderByDesc('sort')->orderByDesc('id'),
+                    'educations' => static fn ($rel) => $rel->orderByDesc('sort')->orderByDesc('id'),
+                    'intentions' => static fn ($rel) => $rel->orderByDesc('updated_at')->orderByDesc('id'),
+                ]);
             });
         }
 
