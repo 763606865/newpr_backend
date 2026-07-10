@@ -121,6 +121,10 @@ class RcApplicationResource extends JsonResource
             'highest_education_level' => $snapshot['highest_education_level'] ?? null,
             'current_residence_city' => $snapshot['current_residence_city'] ?? null,
             'current_city_code' => $snapshot['current_city_code'] ?? null,
+            // include collections when available (snapshot stores arrays for resume snapshot path)
+            'works' => $snapshot['works'] ?? [],
+            'educations' => $snapshot['educations'] ?? [],
+            'intentions' => $snapshot['intentions'] ?? [],
         ];
     }
 
