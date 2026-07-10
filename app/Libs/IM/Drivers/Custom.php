@@ -2,132 +2,36 @@
 
 namespace App\Libs\IM\Drivers;
 
-use Illuminate\Http\Client\ConnectionException;
-use Illuminate\Support\Facades\Http;
+use App\Libs\IM\Api\AbstractApi;
+use App\Libs\IM\Api\Custom\User;
+use Illuminate\Http\Client\Response;
 
 class Custom extends AbstractDriver
 {
-    protected function baseUrl(): string
+    public function getAppCode(): string
     {
-        return rtrim($this->config['end_point'] ?? '', '\/');
+        return $this->config['app_code'] ?? ($this->config['app_id'] ?? ($this->config['app_key'] ?? '')) ?? '';
     }
 
-    protected function appCode(): string
+    /**
+     * @param string $method
+     * @param string $path
+     * @param array $options
+     * @return Response
+     * @throws \Illuminate\Http\Client\ConnectionException
+     */
+    public function httpRequest(string $method, string $path, array $options = []): Response
     {
-        return $this->config['app_code'] ?? ($this->config['app_id'] ?? '');
+        $options['headers']['X-App-Code'] = $this->getAppCode();
+        $options['headers']['X-App-Key'] = $this->config['app_key'];
+        return parent::httpRequest($method, $path, $options);
     }
 
-    public function ping(): bool
+    public function api(string $name): AbstractApi
     {
-        $base = $this->baseUrl();
-        if ($base === '') {
-            return false;
-        }
-
-        try {
-            $resp = Http::withHeaders(['Accept' => 'application/json'])
-                ->timeout(3)
-                ->get($base.'/health');
-
-            return $resp->successful();
-        } catch (ConnectionException $e) {
-            return false;
-        }
-    }
-
-    public function sendMessage(string $from, string $to, string $message, array $options = []): array
-    {
-        $base = $this->baseUrl();
-        $app = $this->appCode();
-        $url = $base.'/admin/apps/'.$app.'/messages';
-
-        $payload = array_merge(['from' => $from, 'to' => $to, 'message' => $message], $options);
-
-        $resp = Http::withHeaders(['Accept' => 'application/json'])
-            ->timeout(5)
-            ->post($url, $payload);
-
-        if (! $resp->successful()) {
-            return ['success' => false, 'status' => $resp->status(), 'body' => $resp->body()];
-        }
-
-        return $resp->json();
-    }
-
-    public function createOrUpdateUser(array $payload): array
-    {
-        $base = $this->baseUrl();
-        $app = $this->appCode();
-        $url = $base.'/admin/apps/'.$app.'/users';
-
-        $resp = Http::withHeaders(['Accept' => 'application/json'])
-            ->timeout(5)
-            ->post($url, $payload);
-
-        if (! $resp->successful()) {
-            return ['success' => false, 'status' => $resp->status(), 'body' => $resp->body()];
-        }
-
-        return $resp->json();
-    }
-
-    public function listUsers(int $limit = 50): array
-    {
-        $base = $this->baseUrl();
-        $app = $this->appCode();
-        $limit = max(1, min(200, $limit));
-
-        $url = $base.'/admin/apps/'.$app.'/users';
-
-        $resp = Http::withHeaders(['Accept' => 'application/json'])
-            ->timeout(5)
-            ->get($url, ['limit' => $limit]);
-
-        if (! $resp->successful()) {
-            return ['success' => false, 'status' => $resp->status(), 'body' => $resp->body()];
-        }
-
-        return $resp->json();
-    }
-
-    public function getUser(string $externalUserId): array
-    {
-        $base = $this->baseUrl();
-        $app = $this->appCode();
-
-        $url = $base.'/admin/apps/'.$app.'/users/'.rawurlencode($externalUserId);
-
-        $resp = Http::withHeaders(['Accept' => 'application/json'])
-            ->timeout(5)
-            ->get($url);
-
-        if (! $resp->successful()) {
-            return ['success' => false, 'status' => $resp->status(), 'body' => $resp->body()];
-        }
-
-        return $resp->json();
-    }
-
-    public function updateUserStatus(string $externalUserId, string $status): array
-    {
-        $allowed = ['active', 'disabled'];
-        if (! in_array($status, $allowed, true)) {
-            return ['success' => false, 'message' => 'user status invalid'];
-        }
-
-        $base = $this->baseUrl();
-        $app = $this->appCode();
-
-        $url = $base.'/admin/apps/'.$app.'/users/'.rawurlencode($externalUserId).'/status';
-
-        $resp = Http::withHeaders(['Accept' => 'application/json'])
-            ->timeout(5)
-            ->patch($url, ['status' => $status]);
-
-        if (! $resp->successful()) {
-            return ['success' => false, 'status' => $resp->status(), 'body' => $resp->body()];
-        }
-
-        return $resp->json();
+        return match ($name) {
+            'user' => new User($this),
+            default => throw new \Exception("不支持的 API 名称：{$name}。")
+        };
     }
 }

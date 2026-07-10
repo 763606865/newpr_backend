@@ -26,11 +26,6 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(MetaService::class);
-
-        // IM manager binding
-        $this->app->singleton('im', function ($app) {
-            return new \App\Libs\IM\ImManager($app);
-        });
     }
 
     /**

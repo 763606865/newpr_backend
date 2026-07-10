@@ -2,79 +2,49 @@
 
 namespace App\Libs\IM;
 
+use App\Libs\IM\Drivers\AbstractDriver;
 use App\Libs\IM\Drivers\Custom;
 use App\Libs\IM\Drivers\Easemob;
 use App\Libs\IM\Drivers\RongCloud;
 use App\Libs\IM\Drivers\Tencent;
-use InvalidArgumentException;
+use Illuminate\Contracts\Foundation\Application;
 
 class ImManager
 {
-    protected $app;
+    protected array $drivers = [];
 
-    protected array $config;
+    public function __construct(protected Application $app) {}
 
-    protected array $connections = [];
-
-    public function __construct($app)
+    public function driver(?string $driver = null): AbstractDriver
     {
-        $this->app = $app;
-        $this->config = (array) config('im');
+        $driver = $driver ?: (string) config('im.default', 'custom');
+
+        if (! isset($this->drivers[$driver])) {
+            $this->drivers[$driver] = $this->createDriver($driver);
+        }
+
+        return $this->drivers[$driver];
     }
 
     /**
-     * Get a connection instance by name
+     * @param string $driver
+     * @return AbstractDriver
+     * @throws IMException
      */
-    public function connection(?string $name = null)
+    protected function createDriver(string $driver): AbstractDriver
     {
-        $name = $name ?? ($this->config['default'] ?? 'custom');
+        $config = config("im.{$driver}");
 
-        if (isset($this->connections[$name])) {
-            return $this->connections[$name];
+        if (! is_array($config)) {
+            throw new IMException("未找到 OCR 驱动配置：{$driver}。");
         }
 
-        $this->connections[$name] = $this->makeConnection($name);
-
-        return $this->connections[$name];
-    }
-
-    protected function makeConnection(string $name)
-    {
-        $connections = $this->config;
-        $driverConfig = $connections[$name] ?? null;
-
-        if (! is_array($driverConfig)) {
-            throw new InvalidArgumentException("IM driver [{$name}] is not configured.");
-        }
-
-        $map = [
-            'tencent' => Tencent::class,
-            'rongcloud' => RongCloud::class,
-            'easemob' => Easemob::class,
-            'custom' => Custom::class,
-        ];
-
-        $class = $map[$name] ?? null;
-        if ($class === null) {
-            throw new InvalidArgumentException("IM driver [{$name}] is not supported.");
-        }
-
-        return new $class($driverConfig);
-    }
-
-    /**
-     * Alias for connection() — convenience method used by Im::connect(...)
-     */
-    public function connect(?string $name = null)
-    {
-        return $this->connection($name);
-    }
-
-    /**
-     * Shortcut to call default connection
-     */
-    public function __call($method, $arguments)
-    {
-        return $this->connection()->{$method}(...$arguments);
+        return match ($driver) {
+            'custom' => new Custom($config),
+            'easemob' => new Easemob($config),
+            'rongcloud' => new RongCloud($config),
+            'tencent' => new Tencent($config),
+            default => throw new IMException("不支持的 IM 驱动：{$driver}。"),
+        };
     }
 }

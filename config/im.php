@@ -6,7 +6,6 @@ return [
     // 自定义
     'custom' => [
         'end_point' => env('IM_END_POINT', ''),
-        'app_id' => env('IM_APP_ID', ''),
         'app_key' => env('IM_APP_KEY', ''),
         'app_secret' => env('IM_APP_SECRET', ''),
         'app_code' => env('IM_APP_CODE', ''),

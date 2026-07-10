@@ -2,9 +2,12 @@
 
 namespace App\Libs\IM\Drivers;
 
-use App\Libs\IM\Contracts\ImClientInterface;
+use App\Libs\IM\LoggerMiddleware;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\Client\Response;
 
-abstract class AbstractDriver implements ImClientInterface
+abstract class AbstractDriver
 {
     protected array $config;
 
@@ -13,36 +16,143 @@ abstract class AbstractDriver implements ImClientInterface
         $this->config = $config;
     }
 
-    public function ping(): bool
+    /**
+     * Return raw config array
+     */
+    public function getConfig(): array
     {
-        // Default ping: assume available. Drivers may override.
-        return true;
+        return $this->config;
     }
 
-    public function sendMessage(string $from, string $to, string $message, array $options = []): array
+    public function getBaseUrl(): string
     {
-        // Default not implemented; drivers should override
-        return ['success' => false, 'message' => 'not_implemented'];
+        return rtrim($this->config['end_point'] ?? '', '/');
     }
 
-    // Default user management methods - drivers should override if supported
-    public function createOrUpdateUser(array $payload): array
+    public function httpRequest(string $method, string $path, array $options = []): Response
     {
-        return ['success' => false, 'message' => 'not_implemented'];
+        $base = $this->getBaseUrl();
+        $url = $base ? ($base.'/'.ltrim($path, '/')) : $path;
+        $protocol = isset($options['is_ssl']) && $options['is_ssl'] ? 'https://' : 'http://';
+        $url = $protocol . $url;
+
+        $headers = array_merge([
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+        ], $options['headers'] ?? []);
+
+        $loggerMiddleware = new LoggerMiddleware(app('log'));
+
+        $client = Http::withHeaders($headers)->withMiddleware($loggerMiddleware)->timeout($options['timeout'] ?? 10);
+
+        $method = strtoupper($method);
+
+        try {
+            if ($method === 'GET') {
+                $response = $client->get($url, $options['query'] ?? []);
+            } elseif (in_array($method, ['POST', 'PUT', 'PATCH', 'DELETE'], true)) {
+                if (array_key_exists('json', $options)) {
+                    $response = $client->{$method}($url, $options['json']);
+                } elseif (array_key_exists('form_params', $options)) {
+                    $response = $client->{$method}($url, $options['form_params']);
+                } else {
+                    $response = $client->{$method}($url, $options);
+                }
+            } else {
+                $response = $client->send($method, $url, $options);
+            }
+        } catch (ConnectionException $e) {
+            throw $e;
+        }
+
+        return $response;
     }
 
-    public function listUsers(int $limit = 50): array
+    /**
+     * @param string $path
+     * @param array $options
+     * @return Response
+     * @throws ConnectionException
+     */
+    public function get(string $path, array $options = []): Response
     {
-        return ['success' => false, 'message' => 'not_implemented'];
+        return $this->httpRequest('GET', $path, $options);
     }
 
-    public function getUser(string $externalUserId): array
+    /**
+     * @param string $path
+     * @param array $options
+     * @return Response
+     * @throws ConnectionException
+     */
+    public function post(string $path, array $options = []): Response
     {
-        return ['success' => false, 'message' => 'not_implemented'];
+        return $this->httpRequest('POST', $path, $options);
     }
 
-    public function updateUserStatus(string $externalUserId, string $status): array
+    /**
+     * @param string $path
+     * @param array $options
+     * @return Response
+     * @throws ConnectionException
+     */
+    public function put(string $path, array $options = []): Response
     {
-        return ['success' => false, 'message' => 'not_implemented'];
+        return $this->httpRequest('PUT', $path, $options);
+    }
+
+    /**
+     * @param string $path
+     * @param array $options
+     * @return Response
+     * @throws ConnectionException
+     */
+    public function delete(string $path, array $options = []): Response
+    {
+        return $this->httpRequest('DELETE', $path, $options);
+    }
+
+    /**
+     * @param string $path
+     * @param array $options
+     * @return Response
+     * @throws ConnectionException
+     */
+    public function patch(string $path, array $options = []): Response
+    {
+        return $this->httpRequest('PATCH', $path, $options);
+    }
+
+    /**
+     * @param string $path
+     * @param array $options
+     * @return Response
+     * @throws ConnectionException
+     */
+    public function options(string $path, array $options = []): Response
+    {
+        return $this->httpRequest('OPTIONS', $path, $options);
+    }
+
+    /**
+     * Generic API resolver.
+     * Maps a name like 'user' to a concrete method on the driver (userApi()).
+     *
+     * @param string $name
+     * @return mixed
+     */
+    public function api(string $name)
+    {
+        $method = lcfirst($name) . 'Api';
+        if (method_exists($this, $method)) {
+            return $this->{$method}();
+        }
+
+        throw new \BadMethodCallException("API '{$name}' not implemented for driver " . static::class);
+    }
+
+    public function getProvider()
+    {
+        return static::class;
     }
 }

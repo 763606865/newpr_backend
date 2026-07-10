@@ -1,19 +1,19 @@
 <?php
 
-use App\Libs\Amap\ServiceProvider;
 use App\Providers\AppServiceProvider;
 use App\Providers\DbLogServerProvider;
 use App\Providers\Filament\AdminPanelProvider;
 use App\Providers\HorizonServiceProvider;
 
 return [
-    ServiceProvider::class,
-    App\Libs\Ocr\ServiceProvider::class,
-    App\Libs\Oss\ServiceProvider::class,
-    App\Libs\ThirdParty\Jucai\ServiceProvider::class,
-    App\Libs\ThirdParty\JucaiDT\ServiceProvider::class,
     AppServiceProvider::class,
     DbLogServerProvider::class,
     AdminPanelProvider::class,
     HorizonServiceProvider::class,
+    App\Libs\Amap\ServiceProvider::class,
+    App\Libs\Ocr\ServiceProvider::class,
+    App\Libs\Oss\ServiceProvider::class,
+    App\Libs\ThirdParty\Jucai\ServiceProvider::class,
+    App\Libs\ThirdParty\JucaiDT\ServiceProvider::class,
+    App\Libs\IM\ServiceProvider::class,
 ];

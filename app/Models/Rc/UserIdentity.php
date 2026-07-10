@@ -6,6 +6,7 @@ use App\Enums\RcIdentityStatus;
 use App\Enums\RcIdentityType;
 use App\Models\Model;
 use App\Models\User;
+use App\Services\IMService;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Attributes\Table;
@@ -16,6 +17,8 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Str;
 
 /**
  * 招聘用户身份表
@@ -37,6 +40,7 @@ use Illuminate\Support\Carbon;
  * @property-read User $user 所属用户
  * @property-read \Illuminate\Database\Eloquent\Model|null $organization 所属机构（多态）
  * @property-read bool $has_basic_info 是否包含基础信息
+ * @property-read string $external_user_id 外部用户ID
  */
 #[Table('rc_user_identities')]
 #[Fillable([
@@ -70,6 +74,13 @@ class UserIdentity extends Model
             'status' => RcIdentityStatus::class,
             'extra' => 'array',
         ];
+    }
+
+    protected static function booted(): void
+    {
+        static::created(function (self $identity): void {
+            IMService::make()->createOrUpdate($identity);
+        });
     }
 
     public function user(): BelongsTo
@@ -112,6 +123,16 @@ class UserIdentity extends Model
                     RcIdentityType::GovernmentManager => filled($this->organization_id),
                     RcIdentityType::Headhunter => true,
                 };
+            },
+        );
+    }
+
+    protected function externalUserId(): Attribute
+    {
+        return Attribute::make(
+            get: function (mixed $value, array $attributes): string {
+                $seed = (string) Config::get('app.name', '') . '|' . $attributes['id'];
+                return hash('sha256', $seed);
             },
         );
     }
