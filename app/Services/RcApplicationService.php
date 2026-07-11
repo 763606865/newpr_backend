@@ -196,7 +196,7 @@ class RcApplicationService extends Service
     {
         $query = Application::query()
             ->where('company_id', $company->id)
-            ->with(['job.position', 'company']);
+            ->with(['job.position', 'resume', 'company']);
 
         if (filled($filters['job_id'] ?? null)) {
             $query->where('job_id', (int) $filters['job_id']);

@@ -17,12 +17,14 @@ class RcApplicationResumeResource extends JsonResource
             return self::normalizeStoredSnapshot((array) $this->resource);
         }
 
+        $this->resource->unsetRelation('intentions');
         $this->resource->unsetRelation('works');
         $this->resource->unsetRelation('educations');
         $this->resource->unsetRelation('languages');
         $this->resource->unsetRelation('skills');
 
         $this->resource->load([
+            'intentions' => static fn ($relation) => $relation->orderByDesc('id'),
             'works' => static fn ($relation) => $relation->orderByDesc('sort')->orderByDesc('id'),
             'educations' => static fn ($relation) => $relation->orderByDesc('sort')->orderByDesc('id'),
             'languages' => static fn ($relation) => $relation->orderByDesc('sort')->orderByDesc('id'),
@@ -32,6 +34,7 @@ class RcApplicationResumeResource extends JsonResource
         return array_merge(
             (new RcResumeResource($this->resource))->resolve($request),
             [
+                'intentions' => RcResumeIntentionResource::collection($this->resource->intentions)->resolve($request),
                 'works' => RcResumeWorkResource::collection($this->resource->works)->resolve($request),
                 'educations' => RcResumeEducationResource::collection($this->resource->educations)->resolve($request),
                 'languages' => RcResumeLanguageResource::collection($this->resource->languages)->resolve($request),
@@ -48,6 +51,7 @@ class RcApplicationResumeResource extends JsonResource
     {
         return [
             ...$snapshot,
+            'intentions' => $snapshot['intentions'] ?? [],
             'works' => $snapshot['works'] ?? [],
             'educations' => $snapshot['educations'] ?? [],
             'languages' => $snapshot['languages'] ?? [],

@@ -3,7 +3,9 @@
 namespace App\Rc\Controllers;
 
 use App\Exceptions\UnauthenticatedException;
+use App\Models\Rc\UserIdentity;
 use App\Models\User;
+use App\Services\RcIdentityOrganizationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -51,5 +53,10 @@ abstract class Controller
     public function getPerPage(Request $request): int
     {
         return max(1, min(100, (int) $request->input('per_page', 15)));
+    }
+
+    public function currentIdentity(): ?UserIdentity
+    {
+        return RcIdentityOrganizationService::make()->resolveCurrentIdentity($this->user());
     }
 }

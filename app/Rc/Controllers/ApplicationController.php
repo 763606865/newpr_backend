@@ -17,7 +17,6 @@ use App\Rc\Requests\ApplicationSendOfferRequest;
 use App\Rc\Requests\ApplicationStoreRequest;
 use App\Resources\Rc\RcApplicationResource;
 use App\Services\RcApplicationService;
-use App\Services\RcIdentityOrganizationService;
 use App\Services\RcJobDiscoveryService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -337,14 +336,14 @@ class ApplicationController extends Controller
 
     private function isCurrentJobSeeker(): bool
     {
-        $identity = RcIdentityOrganizationService::make()->resolveCurrentIdentity($this->user());
+        $identity = $this->currentIdentity();
 
         return $identity?->identity_type === RcIdentityType::JobSeeker;
     }
 
     private function resolveCurrentRecruiterCompany(): ?Company
     {
-        $identity = RcIdentityOrganizationService::make()->resolveCurrentIdentity($this->user());
+        $identity = $this->currentIdentity();
 
         if (! $identity instanceof UserIdentity || $identity->identity_type !== RcIdentityType::Recruiter) {
             return null;

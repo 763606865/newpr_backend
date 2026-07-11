@@ -109,9 +109,4 @@ class NotificationController extends Controller
             'unread_count' => 0,
         ]);
     }
-
-    private function currentIdentity(): ?UserIdentity
-    {
-        return RcIdentityOrganizationService::make()->resolveCurrentIdentity($this->user());
-    }
 }
