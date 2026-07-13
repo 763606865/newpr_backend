@@ -21,6 +21,7 @@ use Illuminate\Support\Carbon;
  * @property string|null $parent_code 父级code
  * @property AreaLevel $level 1省 2市 3区县
  * @property string|null $type 类型
+ * @property string|null $depth 深度
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read Area|null $parent
@@ -33,6 +34,7 @@ use Illuminate\Support\Carbon;
     'parent_code',
     'level',
     'type',
+    'depth',
 ])]
 #[ObservedBy(AreaMetaObserver::class)]
 class Area extends Model

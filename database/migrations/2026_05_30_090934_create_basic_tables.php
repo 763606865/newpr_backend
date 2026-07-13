@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('parent_code', 32)->nullable()->comment('父级code');
             $table->tinyInteger('level')->comment('1省 2市 3区县');
             $table->string('type', 32)->nullable()->comment('类型');
+            $table->string('depth')->nullable()->comment('深度');
             $table->timestamps();
             $table->comment('全国行政区划表');
         });
