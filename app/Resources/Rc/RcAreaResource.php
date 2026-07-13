@@ -24,6 +24,7 @@ class RcAreaResource extends JsonResource
             'parent_code' => $this->resource->parent_code,
             'level' => $this->resource->level?->value,
             'type' => $this->resource->type,
+            'depth' => $this->resource->depth,
             'created_at' => $this->resource->created_at,
             'updated_at' => $this->resource->updated_at,
         ];

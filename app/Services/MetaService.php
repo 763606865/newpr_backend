@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\AreaLevel;
 use App\Enums\CmsAnnouncementPublisherType;
 use App\Enums\CmsTagCategory;
 use App\Enums\CompanyBenefitTag;
@@ -58,6 +59,7 @@ class MetaService extends Service
     {
         return Cache::rememberForever(self::AREAS_TREE_CACHE_KEY, function (): array {
             $areas = Area::query()
+                ->whereNot('level', AreaLevel::Street)
                 ->orderBy('level')
                 ->orderBy('code')
                 ->get();
