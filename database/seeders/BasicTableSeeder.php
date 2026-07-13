@@ -17,7 +17,7 @@ class BasicTableSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->initAreas();
+//        $this->initAreas();
         $this->initSchools();
     }
 
