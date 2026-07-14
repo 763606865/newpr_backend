@@ -22,7 +22,7 @@ return new class extends Migration
             $table->tinyInteger('gender')->nullable()->default(0)->comment('性别');
             $table->string('password')->nullable()->comment('密码');
             $table->string('status')->default('active')->comment('用户状态');
-            $table->string('wechat_unionid', 64)->nullable()->unique()->comment('微信UnionID');
+            $table->string('hub_user_id', 64)->nullable()->unique()->comment('枢纽用户ID');
             $table->mediumText('extra')->nullable()->comment('扩展信息');
             $table->string('last_login_ip')->nullable()->comment('最后登录IP');
             $table->timestamp('last_login_at')->nullable()->comment('最后登录时间');

@@ -14,6 +14,7 @@ class ApiRequest extends BaseApiRequest
     use HasApiSignedHeaders, HasApiAccessTokenHeaders;
 
     private const int TOKEN_EXPIRED_ERROR_CODE = 10004;
+    private const int TOKEN_INVALID_ERROR_CODE = 10005;
 
     /**
      * @var array{method: string, endpoint: string, data: array}|null
@@ -29,6 +30,7 @@ class ApiRequest extends BaseApiRequest
     {
         $params = $this->normalizeParams($method, $data);
         $params = $this->normalizeJsonBody($params);
+        $endpoint = trim($endpoint, $this->prefix);
         $endpoint = $this->prefix . '/' . trim($endpoint, '/');
         $normalizedEndpoint = $this->normalizeEndpoint($endpoint);
 
@@ -94,7 +96,7 @@ class ApiRequest extends BaseApiRequest
 
     private function assertBusinessSuccess(array $body): void
     {
-        if (isset($body['code']) && (int)$body['code'] !== 1) {
+        if (isset($body['code'], $body['data']) && (int)$body['code'] !== 1) {
             throw new BadRequestException((string)($body['msg'] ?? 'Unknown error'));
         }
 
@@ -109,6 +111,9 @@ class ApiRequest extends BaseApiRequest
 
     private function isTokenExpiredResponse(array $body): bool
     {
-        return (int)($body['errorcode'] ?? 0) === self::TOKEN_EXPIRED_ERROR_CODE;
+        return  in_array((int)($body['errorcode'] ?? 0), [
+            self::TOKEN_EXPIRED_ERROR_CODE,
+            self::TOKEN_INVALID_ERROR_CODE,
+        ]);
     }
 }

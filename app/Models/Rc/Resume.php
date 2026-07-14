@@ -299,6 +299,8 @@ class Resume extends Model
             'avatar' => AliyunOss::class.':oss,public,3600',
             'file_url' => AliyunOss::class.':oss,public,3600',
             'gender' => UserGender::class,
+            'birth_date' => 'datetime:Y-m-d',
+            'birth_month' => 'datetime:Y-m',
             'age' => 'integer',
             'marital_status' => RcMaritalStatus::class,
             'political_status' => RcPoliticalStatus::class,
@@ -313,7 +315,7 @@ class Resume extends Model
             'is_primary' => 'integer',
             'status' => RcResumeStatus::class,
             'parsed_data' => 'array',
-            'extra' => 'array',
+            'extra' => 'json',
         ];
     }
 

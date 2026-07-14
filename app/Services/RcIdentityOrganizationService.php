@@ -34,6 +34,19 @@ class RcIdentityOrganizationService extends Service
             ->first();
     }
 
+    public function resolveRecruiterIdentity(User $user): ?UserIdentity
+    {
+        $responsible = $user->token()?->responsible;
+
+        if ($responsible instanceof UserIdentity && $responsible->identity_type === RcIdentityType::Recruiter) {
+            return $responsible;
+        }
+
+        return $user->identities()
+            ->where('identity_type', RcIdentityType::Recruiter)
+            ->first();
+    }
+
     /**
      * @return array{
      *     identity_type: int,

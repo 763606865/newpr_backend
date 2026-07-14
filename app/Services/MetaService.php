@@ -11,6 +11,11 @@ use App\Enums\CompanyNatureType;
 use App\Enums\CompanyScaleType;
 use App\Enums\MajorEducationType;
 use App\Enums\MajorLevel;
+use App\Enums\RcEducationLevel;
+use App\Enums\RcJobEmploymentType;
+use App\Enums\RcMaritalStatus;
+use App\Enums\RcPoliticalStatus;
+use App\Enums\UserGender;
 use App\Models\Area;
 use App\Models\Cms\ArticleCategory;
 use App\Models\Cms\ArticleTag;
@@ -80,6 +85,7 @@ class MetaService extends Service
     {
         return Cache::rememberForever(self::AREAS_MAP_CACHE_KEY, function (): array {
             return Area::query()
+                ->whereNot('level', AreaLevel::Street)
                 ->orderBy('level')
                 ->orderBy('code')
                 ->pluck('name', 'code')
@@ -94,6 +100,7 @@ class MetaService extends Service
     {
         return Cache::rememberForever(self::AREAS_INDEX_CACHE_KEY, function (): array {
             return Area::query()
+                ->whereNot('level', AreaLevel::Street)
                 ->orderBy('level')
                 ->orderBy('code')
                 ->get()
@@ -407,5 +414,78 @@ class MetaService extends Service
         $this->forgetArticleCategories();
         $this->forgetArticleTags();
         $this->forgetSchools();
+    }
+
+    public function JucaiDTDictReflect(string $type, int $value): mixed
+    {
+        $cacheKey = 'JucaiDT:Dict:'.$type;
+        $dict = Cache::get($cacheKey, []);
+        $map = array_column($dict, 'name', 'id');
+
+        switch ($type) {
+            case 'sex':
+                return match ($value) {
+                    1 => UserGender::Male,
+                    2 => UserGender::Female,
+                    default => UserGender::Unknown,
+                };
+            case 'education':
+                return match ($value) {
+                    3,4 => RcEducationLevel::HighSchool,
+                    5 => RcEducationLevel::Associate,
+                    6 => RcEducationLevel::Bachelor,
+                    7 => RcEducationLevel::Master,
+                    8 => RcEducationLevel::Doctor,
+                    default => RcEducationLevel::Other,
+                };
+            case 'marital_status':
+                return match ($value) {
+                    1 => RcMaritalStatus::Single,
+                    2 => RcMaritalStatus::Married,
+                    3 => RcMaritalStatus::Divorced,
+                    4 => RcMaritalStatus::Widowed,
+                    default => RcMaritalStatus::Unknown,
+                };
+            case 'politics':
+                return match ($value) {
+                    1,2 => RcPoliticalStatus::CpcMember,
+                    3 => RcPoliticalStatus::LeagueMember,
+                    4 => RcPoliticalStatus::DemocraticParty,
+                    5 => RcPoliticalStatus::Masses,
+                    default => RcPoliticalStatus::NonPartisan,
+                };
+            case 'nature':
+                return match ($value) {
+                    63 => RcJobEmploymentType::PartTime,
+                    64 => RcJobEmploymentType::Internship,
+                    default => RcJobEmploymentType::FullTime
+                };
+            case 'experience':
+                /**
+                 * [
+                 * {"id":74,"name":"一年以内"},
+                 * {"id":75,"name":"一年"},
+                 * {"id":76,"name":"两年"},
+                 * {"id":77,"name":"三至五年"},
+                 * {"id":78,"name":"五至十年"},
+                 * {"id":79,"name":"十至十五年"},
+                 * {"id":323,"name":"十五年以上"}
+                 * ]
+                 */
+                return match ($value) {
+                    75 => 1,
+                    76 => 2,
+                    77 => 3,
+                    78 => 5,
+                    79 => 10,
+                    323 => 15,
+                    default => 0,
+                };
+            case 'degree':
+            case 'nation':
+            case 'salary':
+            default:
+                return $map[$value] ?? null;
+        }
     }
 }

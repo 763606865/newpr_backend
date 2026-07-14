@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
+use Laravel\Scout\Searchable;
 
 /**
  * 常见职位表
@@ -42,7 +43,7 @@ use Illuminate\Support\Carbon;
 #[ObservedBy(PositionMetaObserver::class)]
 class Position extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, Searchable;
 
     protected function casts(): array
     {
@@ -75,5 +76,38 @@ class Position extends Model
     public function children(): HasMany
     {
         return $this->hasMany(self::class, 'parent_id');
+    }
+
+    /**
+     * Prepare the data array for Scout indexing.
+     */
+    public function toSearchableArray(): array
+    {
+        $parentName = $this->parent?->name ?? null;
+
+        $aliases = '';
+        if (is_array($this->extra) && !empty($this->extra)) {
+            // Prefer explicit aliases key if present
+            if (isset($this->extra['aliases']) && is_array($this->extra['aliases'])) {
+                $aliases = implode(' ', array_filter(array_map('strval', $this->extra['aliases'])));
+            } elseif (isset($this->extra['aliases'])) {
+                $aliases = (string) $this->extra['aliases'];
+            } else {
+                // Fallback: join all extra values
+                $aliases = implode(' ', array_filter(array_map('strval', $this->extra)));
+            }
+        }
+
+        $text = trim(sprintf('%s %s %s', $this->name ?? '', $parentName ?? '', $aliases));
+
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'code' => $this->code,
+            'parent_name' => $parentName,
+            'depth' => $this->depth,
+            'aliases' => $aliases,
+            'text' => $text,
+        ];
     }
 }

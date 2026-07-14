@@ -18,7 +18,7 @@ enum RcPoliticalStatus: int implements HasLabel
             self::CpcMember => '中共党员（含预备党员）',
             self::DemocraticParty => '民主党派',
             self::NonPartisan => '无党派人士',
-            self::LeagueMember => '团员',
+            self::LeagueMember => '共青团员',
             self::Masses => '群众',
         };
     }
