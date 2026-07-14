@@ -19,7 +19,7 @@ class CompanyBindRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'company_id' => ['required', Rule::exists('companies', 'id')->whereNull('deleted_at')],
+            'credit_code' => ['required', Rule::exists('companies', 'credit_code')->whereNull('deleted_at')],
             'job_title' => ['required', 'string', 'max:50'],
         ];
     }
@@ -30,7 +30,7 @@ class CompanyBindRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'company_id' => '企业ID',
+            'credit_code' => '统一社会信用代码',
             'job_title' => '岗位名称',
         ];
     }

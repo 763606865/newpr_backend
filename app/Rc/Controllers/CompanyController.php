@@ -2,6 +2,7 @@
 
 namespace App\Rc\Controllers;
 
+use App\Exceptions\UnauthenticatedException;
 use App\Models\Company;
 use App\Models\Rc\UserIdentity;
 use App\Models\User;
@@ -25,6 +26,10 @@ class CompanyController extends Controller
      * 按统一社会信用代码查询企业
      *
      * GET /rc/companies/lookup
+     *
+     * @param CompanyLookupRequest $request
+     * @return JsonResponse
+     * @throws \Exception
      */
     public function lookup(CompanyLookupRequest $request): JsonResponse
     {
@@ -56,6 +61,10 @@ class CompanyController extends Controller
      * 绑定已存在企业
      *
      * POST /rc/companies/bind
+     *
+     * @param CompanyBindRequest $request
+     * @return JsonResponse
+     * @throws UnauthenticatedException
      */
     public function bind(CompanyBindRequest $request): JsonResponse
     {
@@ -68,7 +77,7 @@ class CompanyController extends Controller
             return $this->error('请先切换为招聘方身份。', Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $company = $service->findById((int) $validated['company_id']);
+        $company = $service->findByCreditCode((string) $validated['credit_code']);
 
         if (! $company instanceof Company) {
             return $this->error('企业不存在。', Response::HTTP_NOT_FOUND);
@@ -99,6 +108,10 @@ class CompanyController extends Controller
      * 注册企业并绑定招聘方身份
      *
      * POST /rc/companies
+     *
+     * @param CompanyStoreRequest $request
+     * @return JsonResponse
+     * @throws UnauthenticatedException
      */
     public function store(CompanyStoreRequest $request): JsonResponse
     {
@@ -147,6 +160,10 @@ class CompanyController extends Controller
      * 当前企业招聘资料
      *
      * GET /rc/companies/profile
+     *
+     * @param Request $request
+     * @return JsonResponse
+     * @throws \Exception
      */
     public function profileShow(Request $request): JsonResponse
     {
@@ -167,6 +184,10 @@ class CompanyController extends Controller
      * 更新当前企业招聘资料
      *
      * PUT /rc/companies/profile
+     *
+     * @param CompanyProfileUpdateRequest $request
+     * @return JsonResponse
+     * @throws \Exception
      */
     public function profileUpdate(CompanyProfileUpdateRequest $request): JsonResponse
     {
