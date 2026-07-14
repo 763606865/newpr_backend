@@ -3,7 +3,9 @@
 use App\Rc\Controllers\ApplicationController;
 use App\Rc\Controllers\AuthController;
 use App\Rc\Controllers\CompanyAlbumController;
+use App\Rc\Controllers\CompanyApplicationController;
 use App\Rc\Controllers\CompanyController;
+use App\Rc\Controllers\CompanyInterviewController;
 use App\Rc\Controllers\CompanySchoolActivityController;
 use App\Rc\Controllers\Discovery\AnnouncementRecommendController;
 use App\Rc\Controllers\Discovery\AnnouncementSearchController;
@@ -208,6 +210,8 @@ Route::middleware('auth:rc')->group(function (): void {
     Route::get('/companies/school-activities/{activityId}/my-application', [CompanySchoolActivityController::class, 'myApplication'])->whereNumber('activityId');
     Route::get('/companies/school-activities/{activityId}/jobs', [CompanySchoolActivityController::class, 'myJobs'])->whereNumber('activityId');
     Route::post('/companies/school-activities/{activityId}/jobs', [CompanySchoolActivityController::class, 'storeJobs'])->whereNumber('activityId');
+    Route::get('/companies/applications', [CompanyApplicationController::class, 'index']);
+    Route::get('/companies/interviews', [CompanyInterviewController::class, 'index']);
     // ==============================================================================
 
     // 校招负责人-学校
