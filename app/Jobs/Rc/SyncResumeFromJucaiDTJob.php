@@ -45,6 +45,9 @@ class SyncResumeFromJucaiDTJob implements ShouldQueue
     {
         try {
             foreach ($this->data as $item) {
+                if (Resume::where(['ext_source' => 'JucaiDT', 'resume_id' => $item['resume_id'] ?? 0])->exists()) {
+                    continue;
+                }
                 $params = [
                     'resume_id' => $item['resume_id'] ?? 0
                 ];
@@ -152,6 +155,8 @@ class SyncResumeFromJucaiDTJob implements ShouldQueue
             /** @var Resume $resume */
             $resume = Resume::firstOrCreate([
                 'user_id' => $user->id,
+                'ext_source' => 'JucaiDT',
+                'ext_id' => $data['resume_id'] ?? '',
             ], [
                 'full_name' => $data['real_name'] ?? '',
                 'gender' => $user->gender,
@@ -171,13 +176,8 @@ class SyncResumeFromJucaiDTJob implements ShouldQueue
                 'current_residence_detail' => $data['address'] ?? '',
                 'phone' => $data['phone'] ?? '',
                 'email' => $data['email'] ?? '',
-                'source_type' => RcResumeSourceType::Parse,
+                'source_type' => RcResumeSourceType::External,
                 'parsed_data' => $data,
-                'extra' => [
-                    'jucai_dt' => [
-                        'resume_id' => $data['resume_id'] ?? ''
-                    ],
-                ],
             ]);
             return $resume;
         } catch (\Exception $exception) {

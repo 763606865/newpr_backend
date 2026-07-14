@@ -83,6 +83,8 @@ use Laravel\Scout\Searchable;
     'urgent_until',
     'published_at',
     'expired_at',
+    'ext_source',
+    'ext_id',
     'extra',
 ])]
 class Job extends Model
@@ -115,6 +117,8 @@ class Job extends Model
             'urgent_until' => 'datetime',
             'published_at' => 'datetime:Y-m-d H:i:s',
             'expired_at' => 'datetime:Y-m-d H:i:s',
+            'ext_source' => 'string',
+            'ext_id' => 'string',
             'extra' => 'array',
         ];
     }
@@ -271,6 +275,8 @@ class Job extends Model
             'is_urgent' => $this->hasActiveUrgentHighlight() ? 1 : 0,
             'published_at' => ScoutQuery::timestamp($this->published_at),
             'expired_at' => ScoutQuery::timestamp($this->expired_at),
+            'ext_source' => $this->ext_source ?? null,
+            'ext_id' => $this->ext_id ?? null,
             'updated_at' => ScoutQuery::timestamp($this->getAttributes()['updated_at'] ?? null),
         ];
     }

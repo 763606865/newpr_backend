@@ -10,6 +10,7 @@ enum RcResumeSourceType: int implements HasLabel
     case Parse = 2;
     case Manual = 3;
     case Import = 4;
+    case External = 5;
 
     public function getLabel(): ?string
     {
@@ -18,6 +19,7 @@ enum RcResumeSourceType: int implements HasLabel
             self::Parse => '解析',
             self::Manual => '手工创建',
             self::Import => '导入',
+            self::External => '外部',
         };
     }
 }

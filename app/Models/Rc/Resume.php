@@ -118,6 +118,8 @@ use Laravel\Scout\Searchable;
     'parsed_data',
     'is_primary',
     'status',
+    'ext_source',
+    'ext_id',
     'extra',
 ])]
 class Resume extends Model
@@ -316,6 +318,8 @@ class Resume extends Model
             'status' => RcResumeStatus::class,
             'parsed_data' => 'array',
             'extra' => 'json',
+            'ext_source' => 'string',
+            'ext_id' => 'string',
         ];
     }
 
@@ -505,6 +509,8 @@ class Resume extends Model
                 ->unique()
                 ->values()
                 ->all(),
+            'ext_source' => $this->ext_source ?? null,
+            'ext_id' => $this->ext_id ?? null,
             'updated_at' => ScoutQuery::timestamp($this->getAttributes()['updated_at'] ?? null),
         ];
     }
