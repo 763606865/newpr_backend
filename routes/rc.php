@@ -22,6 +22,7 @@ use App\Rc\Controllers\Discovery\ResumeFavoriteController;
 use App\Rc\Controllers\Discovery\ResumeRecommendController;
 use App\Rc\Controllers\Discovery\ResumeSearchController;
 use App\Rc\Controllers\HomeController;
+use App\Rc\Controllers\ImController;
 use App\Rc\Controllers\JobController;
 use App\Rc\Controllers\MetaController;
 use App\Rc\Controllers\NotificationController;
@@ -276,5 +277,9 @@ Route::middleware('auth:rc')->group(function (): void {
     Route::post('/tools/ocr/business-license', [ToolController::class, 'recognizeBusinessLicense']);
     Route::post('/upload', [UploadController::class, 'upload']);
     Route::delete('/files', [UploadController::class, 'destroy']);
+    // ==============================================================================
+
+    // IM相关
+    Route::get('/im/refresh-token', [ImController::class, 'refreshToken']);
     // ==============================================================================
 });

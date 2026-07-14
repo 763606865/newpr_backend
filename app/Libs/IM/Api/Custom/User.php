@@ -3,26 +3,48 @@
 namespace App\Libs\IM\Api\Custom;
 
 use App\Libs\IM\Api\AbstractApi;
+use App\Libs\IM\IMException;
+use Illuminate\Http\Client\ConnectionException;
 
 class User extends AbstractApi
 {
+    /**
+     * @throws IMException
+     * @throws ConnectionException
+     */
     public function createOrUpdateUser(array $payload): array
     {
-        return $this->driver->post('/api/users', ['json' => $payload, 'timeout' => 5])->json();
+        $json = $this->driver->post('/api/users', ['json' => $payload, 'timeout' => 5])->json();
+        return $this->handleResponse($json);
     }
 
+    /**
+     * @throws IMException
+     * @throws ConnectionException
+     */
     public function getUser(string $externalUserId): array
     {
-        return $this->driver->get('/api/users/' . rawurlencode($externalUserId), ['timeout' => 5])->json();
+        $json = $this->driver->get('/api/users/' . rawurlencode($externalUserId), ['timeout' => 5])->json();
+        return $this->handleResponse($json);
     }
 
+    /**
+     * @throws IMException
+     * @throws ConnectionException
+     */
     public function updateUser(string $externalUserId, array $payload): array
     {
-        return $this->driver->put('/api/users/' . rawurlencode($externalUserId), ['json' => $payload, 'timeout' => 5])->json();
+        $json = $this->driver->put('/api/users/' . rawurlencode($externalUserId), ['json' => $payload, 'timeout' => 5])->json();
+        return $this->handleResponse($json);
     }
 
+    /**
+     * @throws IMException
+     * @throws ConnectionException
+     */
     public function getImToken(string $externalUserId): array
     {
-        return $this->driver->post('/api/users/' . rawurlencode($externalUserId) . '/token', ['timeout' => 5])->json();
+        $json = $this->driver->post('/api/users/' . rawurlencode($externalUserId) . '/token', ['timeout' => 5])->json();
+        return $this->handleResponse($json);
     }
 }

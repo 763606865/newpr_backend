@@ -9,7 +9,7 @@ use App\Models\Rc\UserIm;
 
 class IMService extends Service
 {
-    public function createOrUpdate(UserIdentity $identity)
+    public function createOrUpdate(UserIdentity $identity): void
     {
         $user = $identity->user;
         $params = [
@@ -33,5 +33,15 @@ class IMService extends Service
             'external_user_id' => $identity->external_user_id,
             'im_user_id' => $response['data']['id'] ?? null,
         ]);
+    }
+
+    public function resolvedToken(UserIdentity $identity): array
+    {
+        $userIm = UserIm::where('user_identity_id', $identity->id)->first();
+        if (!$userIm) {
+            $this->createOrUpdate($identity);
+        }
+        $data = Im::user()->getImToken($identity->external_user_id);
+        return $data ?? [];
     }
 }
