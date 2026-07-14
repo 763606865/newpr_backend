@@ -3,8 +3,10 @@
 namespace App\Rc\Controllers;
 
 use App\Enums\RcInterviewStatus;
+use App\Enums\RcJobStatus;
 use App\Models\Rc\Application;
 use App\Models\Rc\Interview;
+use App\Models\Rc\Job;
 use App\Models\Rc\JobFavorite;
 use App\Models\Rc\Resume;
 use App\Models\Rc\UserIdentity;
@@ -154,6 +156,72 @@ class UserController extends Controller
         ]);
     }
 
+    /**
+     * 招聘方统计数据
+     *
+     * GET /rc/users/recruiter/stats
+     *
+     * 仅招聘方身份可访问；返回发布职位数、收到简历数、面试邀请数和职位查看数。
+     */
+    public function recruiterStats(): JsonResponse
+    {
+        /** @var User $user */
+        $user = $this->user();
+
+        $identity = $this->resolveRecruiterIdentity($user);
+
+        if (! $identity instanceof UserIdentity) {
+            return $this->recruiterIdentityRequiredResponse();
+        }
+
+        $company = $identity->organization;
+        if ($company === null) {
+            return $this->error('未绑定企业信息。', Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        // 包含子公司
+        $companyIds = $company->descendantAndSelfIds()->all();
+
+        // 当前在招职位（已发布且未过期）
+        $currentOpenJobs = Job::query()
+            ->whereIn('company_id', $companyIds)
+            ->where('status', RcJobStatus::Published)
+            ->where(function ($q) {
+                $q->whereNull('expired_at')
+                    ->orWhere('expired_at', '>=', now());
+            })
+            ->count();
+
+        // 已收到简历（投递数）
+        $receivedResumes = Application::query()
+            ->whereIn('company_id', $companyIds)
+            ->count();
+
+        // 未读简历：目前项目中无统一 unread 字段，先返回 0 占位
+        $unreadResumes = 0;
+
+        // 职位刷新次数：若没有记录则返回 0（留作后续实现）
+        $jobRefreshCount = 0;
+
+        // 企业会员有效期：取当前公司套餐记录的 end_time
+        $companyPlan = $company->companyPlans()->where('is_current', 1)->latest('id')->first();
+        $membershipExpiresAt = $companyPlan?->end_time?->toDateTimeString() ?? null;
+
+        // 职位发布次数（历史累计发布职位数）
+        $postedJobsCount = Job::query()
+            ->whereIn('company_id', $companyIds)
+            ->count();
+
+        return $this->success([
+            'current_open_jobs' => (int) $currentOpenJobs,
+            'received_resumes' => (int) $receivedResumes,
+            'unread_resumes' => (int) $unreadResumes,
+            'job_refresh_count' => (int) $jobRefreshCount,
+            'membership_expires_at' => $membershipExpiresAt,
+            'posted_jobs_count' => (int) $postedJobsCount,
+        ]);
+    }
+
     private function phoneBelongsToAnotherUser(string $phone, User $user): bool
     {
         return User::query()
@@ -176,5 +244,21 @@ class UserController extends Controller
     private function jobSeekerIdentityRequiredResponse(): JsonResponse
     {
         return $this->error('请先切换为求职者身份。', Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
+    /**
+     * 解析当前用户的招聘方身份。
+     */
+    private function resolveRecruiterIdentity(User $user): ?UserIdentity
+    {
+        return RcIdentityOrganizationService::make()->resolveRecruiterIdentity($user);
+    }
+
+    /**
+     * 非招聘方身份访问时的统一业务错误响应。
+     */
+    private function recruiterIdentityRequiredResponse(): JsonResponse
+    {
+        return $this->error('请先切换为招聘方身份。', Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 }

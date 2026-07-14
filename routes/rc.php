@@ -71,6 +71,7 @@ Route::middleware('auth:rc')->group(function (): void {
 
     // 用户相关
     Route::get('/users/jobseeker/stats', [UserController::class, 'jobSeekerStats']);
+    Route::get('/users/recruiter/stats', [UserController::class, 'recruiterStats']);
     Route::get('/users/phone/lookup', [UserController::class, 'lookupPhone']);
     Route::post('/users/phone/verification-code', [UserController::class, 'sendPhoneVerificationCode']);
     Route::put('/users/phone', [UserController::class, 'updatePhone']);
