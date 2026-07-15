@@ -140,7 +140,11 @@ class RcSchoolActivityService extends Service
     {
         return SchoolActivity::query()
             ->forOrganizer(RcSchoolActivityOrganizerType::School, $school->id)
-            ->withCount(['companyApplications', 'jobs', 'activityBooths'])
+            ->withCount([
+                'companyApplications as company_applications_count',
+                'jobs as jobs_count',
+                'activityBooths as activity_booths_count',
+            ])
             ->find($activityId);
     }
 
@@ -175,6 +179,11 @@ class RcSchoolActivityService extends Service
         return SchoolActivity::query()
             ->forOrganizer(RcSchoolActivityOrganizerType::Company, $company->id)
             ->with(['schools'])
+            ->withCount([
+                'companyApplications as company_applications_count',
+                'jobs as jobs_count',
+                'activityBooths as activity_booths_count',
+            ])
             ->find($activityId);
     }
 
@@ -186,6 +195,11 @@ class RcSchoolActivityService extends Service
                 'companyApplications' => fn ($query) => $query
                     ->approved()
                     ->with(['company.profile']),
+            ])
+            ->withCount([
+                'companyApplications as company_applications_count',
+                'jobs as jobs_count',
+                'activityBooths as activity_booths_count',
             ])
             ->find($activityId);
     }
