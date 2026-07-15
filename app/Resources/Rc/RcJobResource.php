@@ -101,6 +101,7 @@ class RcJobResource extends JsonResource
                 );
 
                 $data['creator']['job_title'] = $identity?->job_title;
+                $data['creator']['external_user_id'] = $identity?->external_user_id;
             }
         }
 

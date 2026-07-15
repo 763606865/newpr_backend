@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\RcIdentityStatus;
+use App\Enums\RcIdentityType;
 use App\Enums\UserGender;
 use App\Enums\UserStatus;
 use App\Models\Cast\AliyunOss;
@@ -180,7 +181,17 @@ class User extends Authenticatable implements FilamentUser
     public function recruiterCompanyIdentities(): HasMany
     {
         return $this->hasMany(UserIdentity::class, 'user_id')
-            ->where('organization_type', 'company')
+            ->where('identity_type', RcIdentityType::Recruiter->value)
+            ->where('status', RcIdentityStatus::Enabled->value);
+    }
+
+    /**
+     * 求职者身份
+     */
+    public function jobseekerIdentity(): HasOne
+    {
+        return $this->hasOne(UserIdentity::class, 'user_id')
+            ->where('identity_type', RcIdentityType::JobSeeker->value)
             ->where('status', RcIdentityStatus::Enabled->value);
     }
 

@@ -21,12 +21,8 @@ class RcResumeSearchService extends Service
      * @param  array<string, mixed>  $filters
      * @return LengthAwarePaginator<int, Resume>
      */
-    public function search(
-        int $perPage,
-        array $filters = [],
-        string $sortColumn = 'updated_at',
-        string $sortDirection = 'desc',
-    ): LengthAwarePaginator {
+    public function search(int $perPage, array $filters = [], string $sortColumn = 'updated_at', string $sortDirection = 'desc'): LengthAwarePaginator
+    {
         $keyword = filled($filters['keyword'] ?? null)
             ? ScoutQuery::escape((string) $filters['keyword'])
             : '';
@@ -39,6 +35,7 @@ class RcResumeSearchService extends Service
 
                 // eager-load relevant resume relations so resources can access them without N+1
                 $query->with([
+                    'user.jobseekerIdentity',
                     'works' => static fn ($rel) => $rel->orderByDesc('sort')->orderByDesc('id'),
                     'educations' => static fn ($rel) => $rel->orderByDesc('sort')->orderByDesc('id'),
                     'intentions' => static fn ($rel) => $rel->orderByDesc('updated_at')->orderByDesc('id'),
@@ -59,6 +56,7 @@ class RcResumeSearchService extends Service
 
                 // ensure relations are eager-loaded when using the collection driver
                 $query->with([
+                    'user.jobseekerIdentity',
                     'works' => static fn ($rel) => $rel->orderByDesc('sort')->orderByDesc('id'),
                     'educations' => static fn ($rel) => $rel->orderByDesc('sort')->orderByDesc('id'),
                     'intentions' => static fn ($rel) => $rel->orderByDesc('updated_at')->orderByDesc('id'),

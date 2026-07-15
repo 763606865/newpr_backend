@@ -22,6 +22,13 @@ class RcResumePreviewResource extends JsonResource
 
         $avatar = $this->ossAttributePair('avatar');
 
+        if ($this->resource->relationLoaded('user')) {
+            if ($this->resource->user->relationLoaded('jobseekerIdentity')) {
+                $identity = $this->resource->user->jobseekerIdentity;
+                $external_user_id = $identity?->external_user_id;
+            }
+        }
+
         return [
             'id' => $this->resource->id,
             'resume_no' => $this->resource->resume_no,
@@ -53,6 +60,7 @@ class RcResumePreviewResource extends JsonResource
             'source_type' => $this->resource->source_type?->value ?? $this->resource->source_type,
             'is_primary' => $this->resource->is_primary,
             'updated_at' => $this->resource->updated_at,
+            'external_user_id' => $external_user_id ?? null,
             'works' => RcResumeWorkResource::collection($this->whenLoaded('works')),
             'educations' => RcResumeEducationResource::collection($this->whenLoaded('educations')),
             'intentions' => RcResumeIntentionResource::collection($this->whenLoaded('intentions')),

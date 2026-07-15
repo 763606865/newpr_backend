@@ -22,11 +22,8 @@ class RcJobSearchService extends Service
      * @param  array<string, mixed>  $filters
      * @return LengthAwarePaginator<int, Job>
      */
-    public function search(
-        int $perPage,
-        array $filters = [],
-        ?JobSearchSortCriteria $sortCriteria = null,
-    ): LengthAwarePaginator {
+    public function search(int $perPage, array $filters = [], ?JobSearchSortCriteria $sortCriteria = null): LengthAwarePaginator
+    {
         $sortCriteria ??= JobSearchSortCriteria::default();
 
         if ($this->shouldSearchViaDatabase($filters)) {
@@ -52,11 +49,8 @@ class RcJobSearchService extends Service
      * @param  array<string, mixed>  $filters
      * @return LengthAwarePaginator<int, Job>
      */
-    private function searchViaDatabase(
-        int $perPage,
-        array $filters,
-        JobSearchSortCriteria $sortCriteria,
-    ): LengthAwarePaginator {
+    private function searchViaDatabase(int $perPage, array $filters, JobSearchSortCriteria $sortCriteria): LengthAwarePaginator
+    {
         $query = Job::query();
         $this->filterApplier->applyDatabaseConstraints($query, $filters);
         $sortCriteria->applyToQuery($query);
@@ -70,11 +64,8 @@ class RcJobSearchService extends Service
      * @param  array<string, mixed>  $filters
      * @return LengthAwarePaginator<int, Job>
      */
-    private function searchViaElasticsearch(
-        int $perPage,
-        array $filters,
-        JobSearchSortCriteria $sortCriteria,
-    ): LengthAwarePaginator {
+    private function searchViaElasticsearch(int $perPage, array $filters, JobSearchSortCriteria $sortCriteria): LengthAwarePaginator
+    {
         $keyword = ScoutQuery::escape((string) ($filters['keyword'] ?? ''));
 
         $builder = $this->makeSearchBuilder($keyword, $filters);
