@@ -117,14 +117,20 @@ class RcSchoolActivityService extends Service
     /**
      * @return LengthAwarePaginator<int, SchoolActivity>
      */
-    public function paginateAvailableForRecruiter(int $perPage, array $filters = []): LengthAwarePaginator
+    public function paginateAvailableForRecruiter(Company $company, int $perPage, array $filters = []): LengthAwarePaginator
     {
+        $filters['exclude_company_id'] = $company->id;
+
         if (filled($filters['keyword'] ?? null)) {
             return RcSchoolActivitySearchService::make()->searchAvailable($perPage, $filters);
         }
 
         $query = SchoolActivity::query()
             ->availableForRecruiter()
+            ->whereDoesntHave(
+                'companyApplications',
+                fn ($applicationQuery) => $applicationQuery->where('company_id', $company->id),
+            )
             ->orderByDesc('sort')
             ->orderByDesc('start_time')
             ->orderByDesc('id');

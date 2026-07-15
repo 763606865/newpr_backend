@@ -137,6 +137,13 @@ class SchoolActivitySearchFilterApplier
         if (filled($filters['is_hot'] ?? null)) {
             $query->where('is_hot', (bool) $filters['is_hot']);
         }
+
+        if (filled($filters['exclude_company_id'] ?? null)) {
+            $query->whereDoesntHave(
+                'companyApplications',
+                fn (Builder $applicationQuery) => $applicationQuery->where('company_id', (int) $filters['exclude_company_id']),
+            );
+        }
     }
 
     /**

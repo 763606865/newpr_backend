@@ -94,11 +94,14 @@ class CompanySchoolActivityController extends Controller
      */
     public function available(Request $request): JsonResponse
     {
-        if ($this->resolveRecruiterCompany() === null) {
+        $company = $this->resolveRecruiterCompany();
+
+        if (! $company instanceof Company) {
             return $this->error('请先切换为招聘方身份并绑定企业。', Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $paginator = RcSchoolActivityService::make()->paginateAvailableForRecruiter(
+            $company,
             $this->getPerPage($request),
             [
                 'type' => $request->input('type'),
