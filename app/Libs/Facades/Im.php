@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Facade;
 
 /**
  * @method static \App\Libs\IM\Api\AbstractApi user()
+ * @method static \App\Libs\IM\Api\AbstractApi conversation()
  */
 class Im extends Facade
 {

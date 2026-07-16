@@ -3,7 +3,9 @@
 namespace App\Libs\IM\Drivers;
 
 use App\Libs\IM\Api\AbstractApi;
+use App\Libs\IM\Api\Custom\Conversation;
 use App\Libs\IM\Api\Custom\User;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\Response;
 
 class Custom extends AbstractDriver
@@ -14,16 +16,13 @@ class Custom extends AbstractDriver
     }
 
     /**
-     * @param string $method
-     * @param string $path
-     * @param array $options
-     * @return Response
-     * @throws \Illuminate\Http\Client\ConnectionException
+     * @throws ConnectionException
      */
     public function httpRequest(string $method, string $path, array $options = []): Response
     {
         $options['headers']['X-App-Code'] = $this->getAppCode();
         $options['headers']['X-App-Key'] = $this->config['app_key'];
+
         return parent::httpRequest($method, $path, $options);
     }
 
@@ -31,6 +30,7 @@ class Custom extends AbstractDriver
     {
         return match ($name) {
             'user' => new User($this),
+            'conversation' => new Conversation($this),
             default => throw new \Exception("不支持的 API 名称：{$name}。")
         };
     }

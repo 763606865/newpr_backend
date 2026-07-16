@@ -7,10 +7,7 @@ use App\Libs\IM\IMException;
 
 abstract class AbstractApi
 {
-    public function __construct(protected AbstractDriver $driver)
-    {
-
-    }
+    public function __construct(protected AbstractDriver $driver) {}
 
     public function getDriver(): AbstractDriver
     {
@@ -19,9 +16,10 @@ abstract class AbstractApi
 
     protected function handleResponse(array $response): array
     {
-        if (!isset($response['code'], $response['data']) || $response['code'] !== 200) {
-            throw new IMException("IM API Error: " . ($response['message'] ?? 'Unknown error'));
+        if (! isset($response['code'], $response['data']) || ! str_starts_with((string) $response['code'], '2')) {
+            throw new IMException('IM API Error: '.($response['message'] ?? 'Unknown error'));
         }
+
         return $response['data'];
     }
 }

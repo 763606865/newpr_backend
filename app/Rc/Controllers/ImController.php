@@ -13,8 +13,6 @@ class ImController extends Controller
      *
      * GET /rc/im/refresh-token
      *
-     * @param Request $request
-     * @return JsonResponse
      * @throws \Exception
      */
     public function refreshToken(Request $request): JsonResponse

@@ -23,6 +23,7 @@ use App\Rc\Controllers\Discovery\ResumeRecommendController;
 use App\Rc\Controllers\Discovery\ResumeSearchController;
 use App\Rc\Controllers\HomeController;
 use App\Rc\Controllers\ImController;
+use App\Rc\Controllers\ImConversationController;
 use App\Rc\Controllers\JobController;
 use App\Rc\Controllers\MetaController;
 use App\Rc\Controllers\NotificationController;
@@ -281,5 +282,9 @@ Route::middleware('auth:rc')->group(function (): void {
 
     // IM相关
     Route::get('/im/refresh-token', [ImController::class, 'refreshToken']);
+    // IM相关-会话
+    Route::get('/im/conversations', [ImConversationController::class, 'index']);
+    Route::post('/im/conversations', [ImConversationController::class, 'store']);
+    Route::get('/im/conversations/{id}/messages', [ImConversationController::class, 'getMessages'])->whereNumber('id');
     // ==============================================================================
 });

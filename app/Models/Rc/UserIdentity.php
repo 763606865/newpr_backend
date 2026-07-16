@@ -17,8 +17,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Str;
+use Sqids\Sqids;
 
 /**
  * 招聘用户身份表
@@ -130,10 +129,7 @@ class UserIdentity extends Model
     protected function externalUserId(): Attribute
     {
         return Attribute::make(
-            get: function (mixed $value, array $attributes): string {
-                $seed = (string) Config::get('app.name', '') . '|' . $attributes['id'];
-                return hash('sha256', $seed);
-            },
+            get: fn (mixed $value, array $attributes): string => (new Sqids(minLength: 32))->encode([(int) $attributes['id']]),
         );
     }
 

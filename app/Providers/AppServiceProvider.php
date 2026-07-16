@@ -8,6 +8,7 @@ use App\Models\BUser;
 use App\Models\Company;
 use App\Models\Employee;
 use App\Models\Rc\Job;
+use App\Models\Rc\UserIm;
 use App\Models\School;
 use App\Models\Token;
 use App\Observers\EmployeeObserver;
@@ -40,6 +41,7 @@ class AppServiceProvider extends ServiceProvider
             'area' => Area::class,
             'admin_user' => AdminUser::class,
             'b_user' => BUser::class,
+            'rc_user_im' => UserIm::class,
         ]);
 
         Select::configureUsing(static function (Select $component): void {

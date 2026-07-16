@@ -3,31 +3,39 @@
 namespace App\Models\Rc;
 
 use App\Enums\RcIdentityType;
+use App\Models\ImConversation;
+use App\Models\ImConversationMember;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Support\Carbon;
 
 /**
  * Class UserIm
  *
  * Represents an IM account bound to a user and optionally a user identity.
  *
- * @package App\Models\Rc
  *
  * @property int $id
  * @property int $user_id
  * @property int|null $user_identity_id
  * @property string $provider
  * @property string|null $app_code
- * @property string|null $external_user_id  Deterministic external id derived from user_identity_id
- * @property string|null $im_user_id        Provider returned IM user id
+ * @property string|null $external_user_id Deterministic external id derived from user_identity_id
+ * @property string|null $im_user_id Provider returned IM user id
  * @property array|null $extra
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\User $user
- * @property-read \App\Models\Rc\UserIdentity|null $userIdentity
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read User $user
+ * @property-read UserIdentity|null $userIdentity
+ * @property-read Collection<int, ImConversation> $conversations
+ * @property-read Collection<int, ImConversationMember> $conversationMembers
+ * @property-read Collection<int, ImConversation> $memberConversations
  */
 #[Table('rc_user_ims')]
 #[Fillable([
@@ -42,10 +50,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 ])]
 class UserIm extends Model
 {
-    protected $casts = [
-        'extra' => 'array',
-    ];
-
     protected function casts(): array
     {
         return [
@@ -64,5 +68,22 @@ class UserIm extends Model
     public function userIdentity(): BelongsTo
     {
         return $this->belongsTo(UserIdentity::class, 'user_identity_id');
+    }
+
+    public function conversations(): MorphMany
+    {
+        return $this->morphMany(ImConversation::class, 'owner');
+    }
+
+    public function conversationMembers(): MorphMany
+    {
+        return $this->morphMany(ImConversationMember::class, 'member');
+    }
+
+    public function memberConversations(): MorphToMany
+    {
+        return $this->morphToMany(ImConversation::class, 'member', 'im_conversation_members', 'member_id', 'conversation_id')
+            ->withPivot(['role', 'joined_at', 'last_read_at', 'settings'])
+            ->withTimestamps();
     }
 }
