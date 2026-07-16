@@ -24,6 +24,7 @@ use App\Rc\Controllers\Discovery\ResumeSearchController;
 use App\Rc\Controllers\HomeController;
 use App\Rc\Controllers\ImController;
 use App\Rc\Controllers\ImConversationController;
+use App\Rc\Controllers\ImQuickPhraseController;
 use App\Rc\Controllers\JobController;
 use App\Rc\Controllers\MetaController;
 use App\Rc\Controllers\NotificationController;
@@ -287,5 +288,12 @@ Route::middleware('auth:rc')->group(function (): void {
     Route::get('/im/conversations', [ImConversationController::class, 'index']);
     Route::post('/im/conversations', [ImConversationController::class, 'store']);
     Route::get('/im/conversations/{id}/messages', [ImConversationController::class, 'getMessages'])->whereNumber('id');
+    // IM相关-快捷短语
+    Route::get('/im/quick-phrases', [ImQuickPhraseController::class, 'index']);
+    Route::post('/im/quick-phrases', [ImQuickPhraseController::class, 'store']);
+    Route::get('/im/quick-phrases/{id}', [ImQuickPhraseController::class, 'show'])->whereNumber('id');
+    Route::put('/im/quick-phrases/{id}', [ImQuickPhraseController::class, 'update'])->whereNumber('id');
+    Route::patch('/im/quick-phrases/{id}', [ImQuickPhraseController::class, 'update'])->whereNumber('id');
+    Route::delete('/im/quick-phrases/{id}', [ImQuickPhraseController::class, 'destroy'])->whereNumber('id');
     // ==============================================================================
 });

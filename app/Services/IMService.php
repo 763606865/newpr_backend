@@ -59,7 +59,9 @@ class IMService extends Service
      * @param array{
      *     type: string|ImConversationType,
      *     subject?: string|null,
-     *     members?: list<array{external_user_id: string}> } $payload
+     *     members?: list<array{external_user_id: string}>,
+     *     metadata?: array<string, mixed>
+     * } $payload
      *
      * @throws \Throwable
      */
@@ -89,6 +91,7 @@ class IMService extends Service
         }
 
         $conversationKey = $this->conversationKey($conversationType, $userIms->all());
+        $conversationMetadata = $this->conversationMetadata($payload);
 
         $existingConversation = ImConversation::query()
             ->where('conversation_key', $conversationKey)
@@ -104,6 +107,12 @@ class IMService extends Service
                 );
             }
 
+            if ($conversationMetadata !== []) {
+                $existingConversation->forceFill([
+                    'metadata' => array_merge($existingConversation->metadata ?? [], $conversationMetadata),
+                ])->save();
+            }
+
             return $existingConversation->load(['members.member']);
         }
 
@@ -117,10 +126,10 @@ class IMService extends Service
             'type' => $conversationType->value,
             'subject' => $payload['subject'] ?? null,
             'owner_user_id' => $this->externalUserId($ownerUserIm),
-            'metadata' => [
+            'metadata' => array_merge($conversationMetadata, [
                 'conversation_key' => $conversationKey,
                 'identity_ids' => array_keys($memberIdentities),
-            ],
+            ]),
         ];
 
         if ($this->supportsInitialMembers($conversationType)) {
@@ -131,7 +140,7 @@ class IMService extends Service
 
         $conversationNo = $this->resolveConversationNo($response);
 
-        return DB::transaction(function () use ($conversationKey, $conversationNo, $conversationType, $ownerUserIm, $payload, $response, $userIms): ImConversation {
+        return DB::transaction(function () use ($conversationKey, $conversationMetadata, $conversationNo, $conversationType, $ownerUserIm, $payload, $response, $userIms): ImConversation {
             $conversation = ImConversation::query()->firstOrCreate([
                 'conversation_key' => $conversationKey,
             ], [
@@ -142,10 +151,10 @@ class IMService extends Service
                 'owner_type' => 'rc_user_im',
                 'owner_id' => $ownerUserIm->id,
                 'scene' => 'manual',
-                'metadata' => [
+                'metadata' => array_merge($conversationMetadata, [
                     'subject' => $payload['subject'] ?? null,
                     'provider_response' => $response,
-                ],
+                ]),
             ]);
 
             foreach ($userIms as $userIm) {
@@ -221,6 +230,26 @@ class IMService extends Service
             ImConversationType::Single,
             ImConversationType::Group,
         ], true);
+    }
+
+    /**
+     * @param  array<string, mixed>  $payload
+     * @return array<string, mixed>
+     */
+    private function conversationMetadata(array $payload): array
+    {
+        $metadata = $payload['metadata'] ?? [];
+
+        if (! is_array($metadata)) {
+            return [];
+        }
+
+        return array_diff_key($metadata, array_flip([
+            'conversation_key',
+            'identity_ids',
+            'provider_response',
+            'subject',
+        ]));
     }
 
     private function resolveIdentityFromExternalUserId(string $externalUserId): UserIdentity

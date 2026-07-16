@@ -29,6 +29,7 @@ class ImConversationStoreRequest extends FormRequest
             'subject' => ['nullable', 'string', 'max:255'],
             'members' => ['sometimes', 'array'],
             'members.*.external_user_id' => ['required', 'string', 'max:64'],
+            'metadata' => ['sometimes', 'array'],
         ];
     }
 }

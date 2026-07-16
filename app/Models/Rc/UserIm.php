@@ -5,12 +5,14 @@ namespace App\Models\Rc;
 use App\Enums\RcIdentityType;
 use App\Models\ImConversation;
 use App\Models\ImConversationMember;
+use App\Models\ImQuickPhrase;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Carbon;
@@ -36,6 +38,7 @@ use Illuminate\Support\Carbon;
  * @property-read Collection<int, ImConversation> $conversations
  * @property-read Collection<int, ImConversationMember> $conversationMembers
  * @property-read Collection<int, ImConversation> $memberConversations
+ * @property-read Collection<int, ImQuickPhrase> $quickPhrases
  */
 #[Table('rc_user_ims')]
 #[Fillable([
@@ -85,5 +88,10 @@ class UserIm extends Model
         return $this->morphToMany(ImConversation::class, 'member', 'im_conversation_members', 'member_id', 'conversation_id')
             ->withPivot(['role', 'joined_at', 'last_read_at', 'settings'])
             ->withTimestamps();
+    }
+
+    public function quickPhrases(): HasMany
+    {
+        return $this->hasMany(ImQuickPhrase::class, 'user_im_id');
     }
 }
