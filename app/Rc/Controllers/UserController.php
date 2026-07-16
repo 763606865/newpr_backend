@@ -2,13 +2,20 @@
 
 namespace App\Rc\Controllers;
 
+use App\Enums\RcIdentityType;
 use App\Enums\RcInterviewStatus;
 use App\Enums\RcJobStatus;
+use App\Enums\RcSchoolActivityApplyStatus;
+use App\Enums\RcSchoolActivityOrganizerType;
+use App\Enums\RcSchoolActivityStatus;
 use App\Models\Rc\Application;
 use App\Models\Rc\Interview;
 use App\Models\Rc\Job;
 use App\Models\Rc\JobFavorite;
 use App\Models\Rc\Resume;
+use App\Models\Rc\SchoolActivity;
+use App\Models\Rc\SchoolActivityCompany;
+use App\Models\Rc\SchoolActivityJob;
 use App\Models\Rc\UserIdentity;
 use App\Models\User;
 use App\Rc\Requests\UserPhoneLookupRequest;
@@ -17,6 +24,7 @@ use App\Rc\Requests\UserPhoneVerificationCodeRequest;
 use App\Services\RcIdentityOrganizationService;
 use App\Services\RcViewStatsService;
 use App\Services\VerificationCodeService;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 
@@ -222,6 +230,73 @@ class UserController extends Controller
         ]);
     }
 
+    /**
+     * 校招负责人统计数据
+     *
+     * GET /rc/users/campus/stats
+     *
+     * 仅校招负责人身份可访问；进行中的招聘活动、对接企业数、活动职位数、待处理申请数。
+     */
+    public function campusStats(): JsonResponse
+    {
+        /** @var User $user */
+        $user = $this->user();
+
+        $identity = $this->resolveCampusManagerIdentity($user);
+
+        if (! $identity instanceof UserIdentity || $identity->organization_type !== 'school' || ! $identity->organization_id) {
+            return $this->campusManagerIdentityRequiredResponse();
+        }
+
+        $schoolId = (int) $identity->organization_id;
+        $activityIds = $this->schoolActivityQuery($schoolId)
+            ->pluck('id')
+            ->map(fn (mixed $activityId): int => (int) $activityId)
+            ->all();
+
+        return $this->success([
+            'active_activities' => (int) $this->schoolActivityQuery($schoolId)
+                ->where('status', RcSchoolActivityStatus::Published)
+                ->where(function ($query): void {
+                    $query->whereNull('start_time')
+                        ->orWhere('start_time', '<=', now());
+                })
+                ->where(function ($query): void {
+                    $query->whereNull('end_time')
+                        ->orWhere('end_time', '>=', now());
+                })
+                ->count(),
+            'connected_companies' => (int) SchoolActivityCompany::query()
+                ->whereIn('activity_id', $activityIds)
+                ->where('apply_status', RcSchoolActivityApplyStatus::Approved)
+                ->distinct('company_id')
+                ->count('company_id'),
+            'activity_jobs' => (int) SchoolActivityJob::query()
+                ->whereIn('activity_id', $activityIds)
+                ->count(),
+            'pending_applications' => (int) SchoolActivityCompany::query()
+                ->whereIn('activity_id', $activityIds)
+                ->where('apply_status', RcSchoolActivityApplyStatus::Pending)
+                ->count(),
+        ]);
+    }
+
+    private function schoolActivityQuery(int $schoolId): Builder
+    {
+        return SchoolActivity::query()
+            ->where(function ($query) use ($schoolId): void {
+                $query
+                    ->where(function ($organizerQuery) use ($schoolId): void {
+                        $organizerQuery
+                            ->where('organizer_type', RcSchoolActivityOrganizerType::School)
+                            ->where('organizer_id', $schoolId);
+                    })
+                    ->orWhereHas('schoolLinks', function ($schoolQuery) use ($schoolId): void {
+                        $schoolQuery->where('school_id', $schoolId);
+                    });
+            });
+    }
+
     private function phoneBelongsToAnotherUser(string $phone, User $user): bool
     {
         return User::query()
@@ -260,5 +335,29 @@ class UserController extends Controller
     private function recruiterIdentityRequiredResponse(): JsonResponse
     {
         return $this->error('请先切换为招聘方身份。', Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
+    /**
+     * 解析当前用户的校招负责人身份。
+     */
+    private function resolveCampusManagerIdentity(User $user): ?UserIdentity
+    {
+        $responsible = $user->token()?->responsible;
+
+        if ($responsible instanceof UserIdentity && $responsible->identity_type === RcIdentityType::CampusManager) {
+            return $responsible;
+        }
+
+        return $user->identities()
+            ->where('identity_type', RcIdentityType::CampusManager)
+            ->first();
+    }
+
+    /**
+     * 非校招负责人身份访问时的统一业务错误响应。
+     */
+    private function campusManagerIdentityRequiredResponse(): JsonResponse
+    {
+        return $this->error('请先切换为校招负责人身份并绑定学校。', Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 }
