@@ -33,8 +33,6 @@ abstract class AbstractDriver
     {
         $base = $this->getBaseUrl();
         $url = $base ? ($base.'/'.ltrim($path, '/')) : $path;
-        $protocol = isset($options['is_ssl']) && $options['is_ssl'] ? 'https://' : 'http://';
-        $url = $protocol . $url;
 
         $headers = array_merge([
             'Accept' => 'application/json',
