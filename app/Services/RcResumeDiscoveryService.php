@@ -13,6 +13,7 @@ class RcResumeDiscoveryService extends Service
 
         if ($withDetails) {
             $query->with([
+                'user.jobseekerIdentity',
                 'works' => static fn ($relation) => $relation->orderByDesc('sort')->orderByDesc('id'),
                 'educations' => static fn ($relation) => $relation->orderByDesc('sort')->orderByDesc('id'),
                 'intentions' => static fn ($relation) => $relation->orderByDesc('updated_at')->orderByDesc('id'),
