@@ -49,10 +49,10 @@ class SyncResumeFromJucaiDTJob implements ShouldQueue
                     continue;
                 }
                 $params = [
-                    'resume_id' => $item['resume_id'] ?? 0
+                    'resume_id' => $item['resume_id'] ?? 0,
                 ];
                 $response = JucaiDT::resume()->detail($params);
-                if (isset($response['code'], $response['data']) && (int)$response['code'] === 1 && $response['data']) {
+                if (isset($response['code'], $response['data']) && (int) $response['code'] === 1 && $response['data']) {
                     $data = $response['data'];
                     // 注册用户-绑定求职者身份-创建简历
                     $user = $this->resolvedUser($data['base']);
@@ -70,14 +70,14 @@ class SyncResumeFromJucaiDTJob implements ShouldQueue
                 usleep(100000); // Sleep for 100ms between requests
             }
         } catch (\Exception $e) {
-            Log::error('Error occurred while syncing resume from JucaiDT: ' . $e->getMessage());
+            Log::error('Error occurred while syncing resume from JucaiDT: '.$e->getMessage());
         }
     }
 
     public function resolvedUser(array $data): User
     {
         try {
-            $gender = match ((int)$data['gender']) {
+            $gender = match ((int) $data['gender']) {
                 1 => UserGender::Male,
                 2 => UserGender::Female,
                 default => UserGender::Unknown
@@ -85,7 +85,7 @@ class SyncResumeFromJucaiDTJob implements ShouldQueue
             $phone = $data['phone'] ?? '';
             $phone = empty($phone) ? ($data['mobile'] ?? '') : $phone;
             if (blank($phone)) {
-                throw new BadRequestException("Failed to resolve user: phone is required.");
+                throw new BadRequestException('Failed to resolve user: phone is required.');
             }
             /** @var User $user */
             $user = User::firstOrCreate([
@@ -97,13 +97,14 @@ class SyncResumeFromJucaiDTJob implements ShouldQueue
                 'gender' => $gender,
                 'extra' => [
                     'jucai_dt' => [
-                        'resume_id' => $data['resume_id'] ?? ''
+                        'resume_id' => $data['resume_id'] ?? '',
                     ],
-                ]
+                ],
             ]);
+
             return $user;
         } catch (\Exception $exception) {
-            throw new BadRequestException(sprintf("Failed to resolve user resume id: %s, Message: %s", $data['resume_id'] ?? '', $exception->getMessage()));
+            throw new BadRequestException(sprintf('Failed to resolve user resume id: %s, Message: %s', $data['resume_id'] ?? '', $exception->getMessage()));
         }
     }
 
@@ -117,11 +118,12 @@ class SyncResumeFromJucaiDTJob implements ShouldQueue
             ], [
                 'identity_name' => RcIdentityType::JobSeeker->getLabel(),
                 'identity_status' => RcIdentityStatus::Enabled,
-                'is_default' => $isDefault
+                'is_default' => $isDefault,
             ]);
+
             return $userIdentity;
         } catch (\Exception $exception) {
-            throw new BadRequestException(sprintf("Failed to resolve jobseeker identity for user id: %s, Message: %s", $user->id, $exception->getMessage()));
+            throw new BadRequestException(sprintf('Failed to resolve jobseeker identity for user id: %s, Message: %s', $user->id, $exception->getMessage()));
         }
     }
 
@@ -129,14 +131,14 @@ class SyncResumeFromJucaiDTJob implements ShouldQueue
     {
         try {
             $service = MetaService::make();
-            $nation = $service->JucaiDTDictReflect('nation', (int)($data['nationality'] ?? 0));
+            $nation = $service->JucaiDTDictReflect('nation', (int) ($data['nationality'] ?? 0));
 
             // 解析出生日期，优先使用完整日期，其次使用出生年份（若仅有年份，则取当年开始日）
             $birth_date = null;
-            if (!empty($data['birthday'])) {
+            if (! empty($data['birthday'])) {
                 $birth_date = Carbon::parse($data['birthday']);
-            } elseif (!empty($data['birthdayyear'])) {
-                $year = (string)$data['birthdayyear'];
+            } elseif (! empty($data['birthdayyear'])) {
+                $year = (string) $data['birthdayyear'];
                 if (preg_match('/^\d{4}$/', $year)) {
                     // 只有年份，设为该年年初（可根据需求调整为年中或年末）
                     $birth_date = Carbon::createFromFormat('Y', $year)->startOfYear();
@@ -146,12 +148,12 @@ class SyncResumeFromJucaiDTJob implements ShouldQueue
                 }
             }
 
-            $marital_status = $service->JucaiDTDictReflect('marital_status', (int)($data['marital_status'] ?? 0));
-            $political_status = $service->JucaiDTDictReflect('politics', (int)($data['political_status'] ?? 0));
+            $marital_status = $service->JucaiDTDictReflect('marital_status', (int) ($data['marital_status'] ?? 0));
+            $political_status = $service->JucaiDTDictReflect('politics', (int) ($data['political_status'] ?? 0));
             $work_start_date = $data['startworktime'] ? Carbon::parse($data['startworktime']) : null;
-            $work_years = $service->JucaiDTDictReflect('experience', (int)($data['work_years'] ?? 0));
-            $highest_education_level = $service->JucaiDTDictReflect('education', (int)($data['highest_education'] ?? 0));
-            [$expected_salary_min, $expected_salary_max] = $this->normalizeDesiredSalary((int)($data['desired_salary'] ?? 0));
+            $work_years = $service->JucaiDTDictReflect('experience', (int) ($data['work_years'] ?? 0));
+            $highest_education_level = $service->JucaiDTDictReflect('education', (int) ($data['highest_education'] ?? 0));
+            [$expected_salary_min, $expected_salary_max] = $this->normalizeDesiredSalary((int) ($data['desired_salary'] ?? 0));
             /** @var Resume $resume */
             $resume = Resume::firstOrCreate([
                 'user_id' => $user->id,
@@ -179,9 +181,10 @@ class SyncResumeFromJucaiDTJob implements ShouldQueue
                 'source_type' => RcResumeSourceType::External,
                 'parsed_data' => $data,
             ]);
+
             return $resume;
         } catch (\Exception $exception) {
-            throw new BadRequestException(sprintf("Failed to resolve resume for user id: %s, Message: %s", $user->id, $exception->getMessage()));
+            throw new BadRequestException(sprintf('Failed to resolve resume for user id: %s, Message: %s', $user->id, $exception->getMessage()));
         }
     }
 
@@ -192,9 +195,9 @@ class SyncResumeFromJucaiDTJob implements ShouldQueue
             foreach ($data as $edu) {
                 $is_current = false;
                 if (isset($edu['timestart'], $edu['timeend'])) {
-                    $is_current = !empty($edu['timestart']) && empty($edu['timeend']);
+                    $is_current = ! empty($edu['timestart']) && empty($edu['timeend']);
                 }
-                $degree = $service->JucaiDTDictReflect('education', (int)($edu['education'] ?? 0));
+                $degree = $service->JucaiDTDictReflect('education', (int) ($edu['education'] ?? 0));
                 $resume->educations()->firstOrCreate([
                     'resume_id' => $resume->id,
                     'user_id' => $resume->user_id,
@@ -208,7 +211,7 @@ class SyncResumeFromJucaiDTJob implements ShouldQueue
                 ]);
             }
         } catch (\Exception $exception) {
-            throw new BadRequestException(sprintf("Failed to sync educations for resume id: %s, Message: %s", $resume->id, $exception->getMessage()));
+            throw new BadRequestException(sprintf('Failed to sync educations for resume id: %s, Message: %s', $resume->id, $exception->getMessage()));
         }
     }
 
@@ -218,7 +221,7 @@ class SyncResumeFromJucaiDTJob implements ShouldQueue
             foreach ($data as $work) {
                 $is_current = false;
                 if (isset($work['timestart'], $work['timeend'])) {
-                    $is_current = !empty($work['timestart']) && empty($work['timeend']);
+                    $is_current = ! empty($work['timestart']) && empty($work['timeend']);
                 }
                 $resume->works()->firstOrCreate([
                     'resume_id' => $resume->id,
@@ -226,6 +229,7 @@ class SyncResumeFromJucaiDTJob implements ShouldQueue
                     'company_name' => $work['company_name'] ?? '',
                 ], [
                     'position' => $work['position'] ?? '',
+                    'position_code' => $this->matchPositionCode($work['position'] ?? ''),
                     'start_date' => Carbon::parse($work['timestart'] ?? null),
                     'end_date' => Carbon::parse($work['timeend'] ?? null),
                     'is_current' => $is_current,
@@ -233,7 +237,7 @@ class SyncResumeFromJucaiDTJob implements ShouldQueue
                 ]);
             }
         } catch (\Exception $exception) {
-            throw new BadRequestException(sprintf("Failed to sync works for resume id: %s, Message: %s", $resume->id, $exception->getMessage()));
+            throw new BadRequestException(sprintf('Failed to sync works for resume id: %s, Message: %s', $resume->id, $exception->getMessage()));
         }
     }
 
@@ -252,7 +256,7 @@ class SyncResumeFromJucaiDTJob implements ShouldQueue
                 ]);
             }
         } catch (\Exception $exception) {
-            throw new BadRequestException(sprintf("Failed to sync certificates for resume id: %s, Message: %s", $resume->id, $exception->getMessage()));
+            throw new BadRequestException(sprintf('Failed to sync certificates for resume id: %s, Message: %s', $resume->id, $exception->getMessage()));
         }
     }
 
@@ -269,7 +273,7 @@ class SyncResumeFromJucaiDTJob implements ShouldQueue
                 ]);
             }
         } catch (\Exception $exception) {
-            throw new BadRequestException(sprintf("Failed to sync languages for resume id: %s, Message: %s", $resume->id, $exception->getMessage()));
+            throw new BadRequestException(sprintf('Failed to sync languages for resume id: %s, Message: %s', $resume->id, $exception->getMessage()));
         }
 
     }
@@ -280,7 +284,7 @@ class SyncResumeFromJucaiDTJob implements ShouldQueue
             foreach ($data as $project) {
                 $is_current = false;
                 if (isset($project['timestart'], $project['timeend'])) {
-                    $is_current = !empty($project['timestart']) && empty($project['timeend']);
+                    $is_current = ! empty($project['timestart']) && empty($project['timeend']);
                 }
                 $resume->projects()->firstOrCreate([
                     'resume_id' => $resume->id,
@@ -295,7 +299,7 @@ class SyncResumeFromJucaiDTJob implements ShouldQueue
                 ]);
             }
         } catch (\Exception $exception) {
-            throw new BadRequestException(sprintf("Failed to sync projects for resume id: %s, Message: %s", $resume->id, $exception->getMessage()));
+            throw new BadRequestException(sprintf('Failed to sync projects for resume id: %s, Message: %s', $resume->id, $exception->getMessage()));
         }
     }
 
@@ -315,7 +319,7 @@ class SyncResumeFromJucaiDTJob implements ShouldQueue
                 ]);
             }
         } catch (\Exception $exception) {
-            throw new BadRequestException(sprintf("Failed to sync trainings for resume id: %s, Message: %s", $resume->id, $exception->getMessage()));
+            throw new BadRequestException(sprintf('Failed to sync trainings for resume id: %s, Message: %s', $resume->id, $exception->getMessage()));
         }
     }
 
@@ -324,8 +328,8 @@ class SyncResumeFromJucaiDTJob implements ShouldQueue
         try {
             $service = MetaService::make();
             $base = $data['base'];
-            $job_status = $service->JucaiDTDictReflect('current_status', (int)($base['current_status'] ?? 0));
-            $nature = $service->JucaiDTDictReflect('nature', (int)($base['nature'] ?? 0));
+            $job_status = $service->JucaiDTDictReflect('current_status', (int) ($base['current_status'] ?? 0));
+            $nature = $service->JucaiDTDictReflect('nature', (int) ($base['nature'] ?? 0));
             $employment_type = match ($nature) {
                 RcJobEmploymentType::PartTime => RcEmploymentType::PartTime,
                 RcJobEmploymentType::Internship => RcEmploymentType::Internship,
@@ -335,7 +339,7 @@ class SyncResumeFromJucaiDTJob implements ShouldQueue
             $expected_position_ids = $this->matchExpectedPositionId($data['position_list']);
             $expected_position_id = count($expected_position_ids) ? $expected_position_ids[0] : null;
             $expected_industry_codes = $this->matchExpectedIndustryCodes($data['industry_list']);
-            [$expected_salary_min, $expected_salary_max] = $this->normalizeDesiredSalary((int)($base['desired_salary'] ?? 0));
+            [$expected_salary_min, $expected_salary_max] = $this->normalizeDesiredSalary((int) ($base['desired_salary'] ?? 0));
             $resume->intentions()->updateOrCreate([
                 'resume_id' => $resume->id,
                 'user_id' => $resume->user_id,
@@ -347,10 +351,10 @@ class SyncResumeFromJucaiDTJob implements ShouldQueue
                 'expected_position_id' => $expected_position_id,
                 'salary_min' => $expected_salary_min,
                 'salary_max' => $expected_salary_max,
-                'available_date' => !empty($base['join_time']) ? Carbon::parse($base['join_time']) : null,
+                'available_date' => ! empty($base['join_time']) ? Carbon::parse($base['join_time']) : null,
             ]);
         } catch (\Exception $exception) {
-            throw new BadRequestException(sprintf("Failed to sync intentions for resume id: %s, Message: %s", $resume->id, $exception->getMessage()));
+            throw new BadRequestException(sprintf('Failed to sync intentions for resume id: %s, Message: %s', $resume->id, $exception->getMessage()));
         }
     }
 
@@ -380,6 +384,7 @@ class SyncResumeFromJucaiDTJob implements ShouldQueue
                 $positionIds[] = $hit->id;
             }
         }
+
         return $positionIds;
     }
 
@@ -394,6 +399,7 @@ class SyncResumeFromJucaiDTJob implements ShouldQueue
                 $industryCodes[] = $hit->code;
             }
         }
+
         return $industryCodes;
     }
 
@@ -403,6 +409,7 @@ class SyncResumeFromJucaiDTJob implements ShouldQueue
         if (empty($areaName)) {
             return '';
         }
+
         return $this->areaMaps[$areaName] ?? '';
     }
 
@@ -411,9 +418,16 @@ class SyncResumeFromJucaiDTJob implements ShouldQueue
         if (empty($id)) {
             return '';
         }
-        if(Schema::hasTable('ext_jucai_dt_ksdistrict')) {
+        if (Schema::hasTable('ext_jucai_dt_ksdistrict')) {
             return DB::table('ext_jucai_dt_ksdistrict')->where('id', $id)->value('name') ?? '';
         }
+
         return '';
+    }
+
+    private function matchPositionCode(string $positionName): string
+    {
+        $hit = Position::search($positionName)->first();
+        return $hit->code ?? '';
     }
 }

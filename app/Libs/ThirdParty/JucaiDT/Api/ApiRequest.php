@@ -4,16 +4,17 @@ namespace App\Libs\ThirdParty\JucaiDT\Api;
 
 use App\Libs\Exceptions\BadRequestException;
 use App\Libs\ThirdParty\ApiRequest as BaseApiRequest;
+use App\Libs\ThirdParty\Concern\HasApiAccessTokenHeaders;
+use App\Libs\ThirdParty\Concern\HasApiSignedHeaders;
 use GuzzleHttp\Promise\PromiseInterface;
 use Illuminate\Contracts\Container\BindingResolutionException;
-use App\Libs\ThirdParty\Concern\HasApiSignedHeaders;
-use App\Libs\ThirdParty\Concern\HasApiAccessTokenHeaders;
 
 class ApiRequest extends BaseApiRequest
 {
-    use HasApiSignedHeaders, HasApiAccessTokenHeaders;
+    use HasApiAccessTokenHeaders, HasApiSignedHeaders;
 
     private const int TOKEN_EXPIRED_ERROR_CODE = 10004;
+
     private const int TOKEN_INVALID_ERROR_CODE = 10005;
 
     /**
@@ -30,11 +31,11 @@ class ApiRequest extends BaseApiRequest
     {
         $params = $this->normalizeParams($method, $data);
         $params = $this->normalizeJsonBody($params);
-        $endpoint = trim($endpoint, $this->prefix);
-        $endpoint = $this->prefix . '/' . trim($endpoint, '/');
+        $endpoint = $this->prefix.'/'.trim($this->removeApiPrefix($endpoint), '/');
+
         $normalizedEndpoint = $this->normalizeEndpoint($endpoint);
 
-        if (!$this->isLoginEndpoint($normalizedEndpoint)) {
+        if (! $this->isLoginEndpoint($normalizedEndpoint)) {
             $this->lastRequestContext = [
                 'method' => $method,
                 'endpoint' => $endpoint,
@@ -69,7 +70,7 @@ class ApiRequest extends BaseApiRequest
 
         if ($this->isTokenExpiredResponse($body)) {
             if (method_exists(self::class, 'retryRequestWithFreshToken')) {
-                $this->retryRequestWithFreshToken();
+                $body = $this->retryRequestWithFreshToken();
             } else {
                 throw new BadRequestException('Token Expired!');
             }
@@ -94,24 +95,41 @@ class ApiRequest extends BaseApiRequest
         return trim($path, '/');
     }
 
-    private function assertBusinessSuccess(array $body): void
+    private function removeApiPrefix(string $endpoint): string
     {
-        if (isset($body['code'], $body['data']) && (int)$body['code'] !== 1) {
-            throw new BadRequestException((string)($body['msg'] ?? 'Unknown error'));
+        $path = parse_url($endpoint, PHP_URL_PATH) ?? $endpoint;
+        $normalizedPrefix = trim($this->prefix, '/');
+        $normalizedPath = trim($path, '/');
+
+        if ($normalizedPath === $normalizedPrefix) {
+            return '';
         }
 
-        if (isset($body['errorcode']) && (int)$body['errorcode'] !== 0) {
-            if ((int)$body['errorcode'] === self::TOKEN_EXPIRED_ERROR_CODE) {
+        if (str_starts_with($normalizedPath, $normalizedPrefix.'/')) {
+            return substr($normalizedPath, strlen($normalizedPrefix) + 1);
+        }
+
+        return $endpoint;
+    }
+
+    private function assertBusinessSuccess(array $body): void
+    {
+        if (isset($body['code']) && (int) $body['code'] !== 1) {
+            throw new BadRequestException((string) ($body['msg'] ?? 'Unknown error'));
+        }
+
+        if (isset($body['errorcode']) && (int) $body['errorcode'] !== 0) {
+            if ((int) $body['errorcode'] === self::TOKEN_EXPIRED_ERROR_CODE) {
                 return;
             }
 
-            throw new BadRequestException((string)($body['errormsg'] ?? $body['msg'] ?? 'Unknown error'));
+            throw new BadRequestException((string) ($body['errormsg'] ?? $body['msg'] ?? 'Unknown error'));
         }
     }
 
     private function isTokenExpiredResponse(array $body): bool
     {
-        return  in_array((int)($body['errorcode'] ?? 0), [
+        return in_array((int) ($body['errorcode'] ?? 0), [
             self::TOKEN_EXPIRED_ERROR_CODE,
             self::TOKEN_INVALID_ERROR_CODE,
         ]);

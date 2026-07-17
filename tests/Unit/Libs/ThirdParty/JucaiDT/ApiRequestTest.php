@@ -27,9 +27,9 @@ class ApiRequestTest extends TestCase
 
         $calls = [];
         $responses = [
-            ['access_token' => 'stale-token', 'expires_in' => 3600],
+            ['code' => 1, 'data' => ['access_token' => 'stale-token', 'expires_in' => 3600]],
             ['errorcode' => 10004, 'errormsg' => 'token expired'],
-            ['access_token' => 'fresh-token', 'expires_in' => 3600],
+            ['code' => 1, 'data' => ['access_token' => 'fresh-token', 'expires_in' => 3600]],
             ['code' => 1, 'data' => ['items' => [1, 2, 3]]],
         ];
 
@@ -54,8 +54,8 @@ class ApiRequestTest extends TestCase
         $this->assertSame('/api/resume/list', $calls[1]['endpoint']);
         $this->assertSame('/api/auth/login', $calls[2]['endpoint']);
         $this->assertSame('/api/resume/list', $calls[3]['endpoint']);
-        $cacheKey = 'jucai.dt.access_token.'.md5('https://example.com|test-app-key');
-        $this->assertSame('fresh-token', Cache::get($cacheKey));
+        $cacheKey = 'thirdparty:'.ApiRequest::class.':token:'.md5('https://example.com|test-app-key');
+        $this->assertSame('fresh-token', Cache::get($cacheKey)['access_token']);
     }
 
     public function test_it_throws_after_three_failed_token_refresh_attempts(): void
@@ -63,7 +63,7 @@ class ApiRequestTest extends TestCase
         Cache::flush();
 
         $responses = [
-            ['access_token' => 'stale-token', 'expires_in' => 3600],
+            ['code' => 1, 'data' => ['access_token' => 'stale-token', 'expires_in' => 3600]],
             ['errorcode' => 10004, 'errormsg' => 'token expired'],
             ['code' => 0, 'msg' => 'login failed'],
             ['code' => 0, 'msg' => 'login failed'],
@@ -83,8 +83,36 @@ class ApiRequestTest extends TestCase
         $promise = $apiRequest->request('POST', '/resume/list', ['page' => 1]);
 
         $this->expectException(BadRequestException::class);
-        $this->expectExceptionMessage('数据中台服务异常');
+        $this->expectExceptionMessage('login failed');
         $apiRequest->response($promise);
+    }
+
+    public function test_it_removes_existing_api_prefix_before_reappending_it(): void
+    {
+        Cache::flush();
+
+        $calls = [];
+        $responses = [
+            ['code' => 1, 'data' => ['access_token' => 'token', 'expires_in' => 3600]],
+            ['code' => 1, 'data' => []],
+        ];
+
+        $client = Mockery::mock(ClientInterface::class);
+        $client->shouldReceive('requestAsync')
+            ->twice()
+            ->andReturnUsing(function (string $method, string $endpoint, array $params) use (&$calls, &$responses) {
+                $calls[] = compact('method', 'endpoint', 'params');
+                $payload = array_shift($responses);
+
+                return Create::promiseFor(new Response(200, [], json_encode($payload, JSON_THROW_ON_ERROR)));
+            });
+
+        $apiRequest = $this->makeApiRequest($client);
+        $promise = $apiRequest->request('POST', '/api/resume/list', ['page' => 1]);
+        $apiRequest->response($promise);
+
+        $this->assertSame('/api/auth/login', $calls[0]['endpoint']);
+        $this->assertSame('/api/resume/list', $calls[1]['endpoint']);
     }
 
     private function makeApiRequest(ClientInterface $client): ApiRequest

@@ -3,24 +3,24 @@
 namespace App\Libs\ThirdParty\Concern;
 
 use App\Libs\Exceptions\BadRequestException;
+use Exception;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use JsonException;
-use Exception;
 
 trait HasApiAccessTokenHeaders
 {
-
     private const int TOKEN_REFRESH_MAX_RETRIES = 3;
 
     /**
      * Return Authorization header when available.
+     *
      * @throws Exception
      */
     protected function getAccessTokenHeaders(): array
     {
         return [
-            'Authorization' => 'Bearer ' . $this->getAccessToken(),
+            'Authorization' => 'Bearer '.$this->getAccessToken(),
         ];
     }
 
@@ -34,10 +34,10 @@ trait HasApiAccessTokenHeaders
         $cacheDriver = $this->getTokenCacheDriver();
         $key = $this->accessTokenCacheKey();
 
-        if (!$forceRefresh) {
+        if (! $forceRefresh) {
             try {
                 $cached = $cacheDriver->get($key);
-                if (!empty($cached) && is_array($cached) && isset($cached['access_token'])) {
+                if (! empty($cached) && is_array($cached) && isset($cached['access_token'])) {
                     return $cached['access_token'];
                 }
             } catch (\Throwable $e) {
@@ -53,7 +53,6 @@ trait HasApiAccessTokenHeaders
     /**
      * Refresh token and store in cache. Returns array payload from login response.
      *
-     * @return array
      * @throws BadRequestException
      * @throws BindingResolutionException
      * @throws JsonException
@@ -83,7 +82,6 @@ trait HasApiAccessTokenHeaders
     /**
      * Calls the login endpoint to obtain token payload. Should return parsed response array.
      *
-     * @return array
      * @throws BadRequestException
      * @throws JsonException
      * @throws BindingResolutionException
@@ -91,7 +89,7 @@ trait HasApiAccessTokenHeaders
     protected function requestLoginToken(): array
     {
         // login uses signature but NO Authorization header
-        $params = ['json' => new \stdClass()];
+        $params = ['json' => new \stdClass];
 
         $promise = $this->request('POST', '/auth/login', $params + ['_no_auth' => true]);
         $resp = $this->response($promise);
@@ -104,7 +102,7 @@ trait HasApiAccessTokenHeaders
         $host = $this->configValue(['host'], 'host');
         $appKey = $this->configValue(['app_key'], 'app_key');
 
-        return 'thirdparty:' . self::class . ':token:' . md5($host . '|' . $appKey);
+        return 'thirdparty:'.self::class.':token:'.md5($host.'|'.$appKey);
     }
 
     protected function getTokenCacheDriver(): CacheRepository
@@ -112,7 +110,7 @@ trait HasApiAccessTokenHeaders
         try {
             $store = $this->configValue(['cache_store'], 'cache_store');
         } catch (\InvalidArgumentException $exception) {
-            return cache();
+            return cache()->store();
         }
 
         return cache()->store($store);
@@ -125,7 +123,7 @@ trait HasApiAccessTokenHeaders
 
     protected function extractExpiresIn(array $data): int
     {
-        return isset($data['expires_in']) ? (int)$data['expires_in'] : 0;
+        return isset($data['expires_in']) ? (int) $data['expires_in'] : 0;
     }
 
     private function retryRequestWithFreshToken(): array
