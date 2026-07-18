@@ -1,5 +1,6 @@
 <?php
 
+use App\Libs\AI\ServiceProvider;
 use App\Providers\AppServiceProvider;
 use App\Providers\DbLogServerProvider;
 use App\Providers\Filament\AdminPanelProvider;
@@ -10,6 +11,7 @@ return [
     DbLogServerProvider::class,
     AdminPanelProvider::class,
     HorizonServiceProvider::class,
+    ServiceProvider::class,
     App\Libs\Amap\ServiceProvider::class,
     App\Libs\Ocr\ServiceProvider::class,
     App\Libs\Oss\ServiceProvider::class,

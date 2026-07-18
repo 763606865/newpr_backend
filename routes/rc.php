@@ -1,5 +1,6 @@
 <?php
 
+use App\Rc\Controllers\AiResumeController;
 use App\Rc\Controllers\ApplicationController;
 use App\Rc\Controllers\AuthController;
 use App\Rc\Controllers\CompanyAlbumController;
@@ -280,6 +281,11 @@ Route::middleware('auth:rc')->group(function (): void {
     Route::post('/tools/ocr/business-license', [ToolController::class, 'recognizeBusinessLicense']);
     Route::post('/upload', [UploadController::class, 'upload']);
     Route::delete('/files', [UploadController::class, 'destroy']);
+    // ==============================================================================
+
+    // AI-工具
+    Route::post('/ai/resume-parses', [AiResumeController::class, 'store']);
+    Route::get('/ai/resume-parses/{id}', [AiResumeController::class, 'show'])->whereNumber('id');
     // ==============================================================================
 
     // IM相关
