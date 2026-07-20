@@ -5,6 +5,7 @@ namespace App\Models\Rc;
 use App\Enums\CompanyFundingStage;
 use App\Enums\CompanyNatureType;
 use App\Enums\CompanyProfileStatus;
+use App\Enums\CompanyRestType;
 use App\Enums\CompanyScaleType;
 use App\Models\Company;
 use App\Models\Model;
@@ -27,6 +28,10 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $founded_at
  * @property string|null $website
  * @property string|null $introduction
+ * @property string|null $work_time 工作作息时间
+ * @property CompanyRestType|null $rest_type 休息制度
+ * @property int|null $salary_pay_day 每月发薪日
+ * @property bool $has_overtime_subsidy 是否有加班补助
  * @property array<int, string>|null $benefit_tags
  * @property CompanyFundingStage|null $funding_stage
  * @property CompanyProfileStatus $profile_status
@@ -49,6 +54,10 @@ use Illuminate\Support\Carbon;
     'founded_at',
     'website',
     'introduction',
+    'work_time',
+    'rest_type',
+    'salary_pay_day',
+    'has_overtime_subsidy',
     'benefit_tags',
     'funding_stage',
     'profile_status',
@@ -62,6 +71,7 @@ class CompanyProfile extends Model
         'profile_status' => CompanyProfileStatus::Draft,
         'is_brand' => false,
         'brand_sort' => 0,
+        'has_overtime_subsidy' => false,
     ];
 
     protected function casts(): array
@@ -72,6 +82,9 @@ class CompanyProfile extends Model
             'nature_type' => CompanyNatureType::class,
             'industry_codes' => 'array',
             'founded_at' => 'date',
+            'rest_type' => CompanyRestType::class,
+            'salary_pay_day' => 'integer',
+            'has_overtime_subsidy' => 'boolean',
             'benefit_tags' => 'array',
             'funding_stage' => CompanyFundingStage::class,
             'profile_status' => CompanyProfileStatus::class,

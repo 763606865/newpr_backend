@@ -6,6 +6,7 @@ use App\Enums\CompanyContactType;
 use App\Enums\CompanyLicenseType;
 use App\Enums\CompanyNatureType;
 use App\Enums\CompanyProfileStatus;
+use App\Enums\CompanyRestType;
 use App\Enums\CompanyScaleType;
 use App\Enums\CompanyStatus;
 use App\Enums\RcIdentityStatus;
@@ -434,6 +435,10 @@ class CompanyControllerTest extends TestCase
                 'scale_type' => CompanyScaleType::From100To499->value,
                 'nature_type' => CompanyNatureType::Private->value,
                 'introduction' => '专注招聘数字化。',
+                'work_time' => '09:00-18:00',
+                'rest_type' => CompanyRestType::AlternatingWeekend->value,
+                'salary_pay_day' => 5,
+                'has_overtime_subsidy' => true,
                 'logo' => 'uploads/rc/logo.png',
                 'benefit_tags' => ['social_insurance', 'weekend_off'],
             ]);
@@ -444,11 +449,20 @@ class CompanyControllerTest extends TestCase
             ->assertJsonPath('data.profile.short_name', '示例科技')
             ->assertJsonPath('data.profile.scale_type', CompanyScaleType::From100To499->value)
             ->assertJsonPath('data.profile.profile_status', CompanyProfileStatus::Complete->value)
+            ->assertJsonPath('data.profile.work_time', '09:00-18:00')
+            ->assertJsonPath('data.profile.rest_type', CompanyRestType::AlternatingWeekend->value)
+            ->assertJsonPath('data.profile.rest_type_label', '大小周')
+            ->assertJsonPath('data.profile.salary_pay_day', 5)
+            ->assertJsonPath('data.profile.has_overtime_subsidy', true)
             ->assertJsonPath('data.profile.benefit_tags.0', 'social_insurance');
 
         $this->assertDatabaseHas('rc_company_profiles', [
             'company_id' => $company->id,
             'short_name' => '示例科技',
+            'work_time' => '09:00-18:00',
+            'rest_type' => CompanyRestType::AlternatingWeekend->value,
+            'salary_pay_day' => 5,
+            'has_overtime_subsidy' => true,
             'profile_status' => CompanyProfileStatus::Complete->value,
         ]);
     }

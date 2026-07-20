@@ -32,6 +32,10 @@ class CompanyProfileService extends Service
             'founded_at',
             'website',
             'introduction',
+            'work_time',
+            'rest_type',
+            'salary_pay_day',
+            'has_overtime_subsidy',
             'benefit_tags',
             'funding_stage',
         ]));

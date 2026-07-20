@@ -6,6 +6,7 @@ use App\Enums\CompanyBenefitTag;
 use App\Enums\CompanyFundingStage;
 use App\Enums\CompanyNatureType;
 use App\Enums\CompanyScaleType;
+use App\Enums\CompanyRestType;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -33,6 +34,10 @@ class CompanyProfileUpdateRequest extends FormRequest
             'founded_at' => ['nullable', 'date'],
             'website' => ['nullable', 'string', 'max:255', 'url'],
             'introduction' => ['nullable', 'string', 'max:5000'],
+            'work_time' => ['nullable', 'string', 'max:100'],
+            'rest_type' => ['nullable', 'integer', Rule::enum(CompanyRestType::class)],
+            'salary_pay_day' => ['nullable', 'integer', 'min:1', 'max:31'],
+            'has_overtime_subsidy' => ['nullable', 'boolean'],
             'benefit_tags' => ['nullable', 'array', 'max:20'],
             'benefit_tags.*' => ['string', Rule::enum(CompanyBenefitTag::class)],
             'funding_stage' => ['nullable', 'integer', Rule::enum(CompanyFundingStage::class)],
@@ -54,6 +59,10 @@ class CompanyProfileUpdateRequest extends FormRequest
             'founded_at' => '成立日期',
             'website' => '官网',
             'introduction' => '企业简介',
+            'work_time' => '工作作息时间',
+            'rest_type' => '休息制度',
+            'salary_pay_day' => '每月发薪日',
+            'has_overtime_subsidy' => '是否有加班补助',
             'benefit_tags' => '福利标签',
             'funding_stage' => '融资阶段',
         ];
