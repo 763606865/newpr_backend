@@ -75,6 +75,7 @@ class SchoolController extends Controller
         }
 
         $profile = SchoolProfileService::make()->ensureForSchool($school);
+        $profile->load('school');
 
         return $this->success([
             'profile' => (new RcSchoolProfileResource($profile))->resolve($request),

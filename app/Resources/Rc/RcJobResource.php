@@ -37,6 +37,7 @@ class RcJobResource extends JsonResource
             'salary_max' => $this->resource->salary_max,
             'salary_unit' => $this->resource->salary_unit?->value,
             'salary_unit_label' => $this->resource->salary_unit?->getLabel(),
+            'annual_salary_months' => $this->resource->annual_salary_months,
             'experience_min' => $this->resource->experience_min,
             'experience_max' => $this->resource->experience_max,
             'education_level' => $this->resource->education_level,

@@ -300,6 +300,29 @@ class ResumeControllerTest extends TestCase
         );
     }
 
+    public function test_store_accepts_personal_advantage(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this
+            ->actingAs($user, 'rc')
+            ->postJson('/rc/resumes', array_merge($this->baseStorePayload(), [
+                'full_name' => 'Advantage User',
+                'phone' => '13800000006',
+                'email' => 'advantage-store@example.com',
+                'personal_advantage' => '具备复杂业务建模和跨团队协作经验。',
+            ]));
+
+        $response
+            ->assertOk()
+            ->assertJsonPath('data.personal_advantage', '具备复杂业务建模和跨团队协作经验。');
+
+        $this->assertDatabaseHas('rc_resumes', [
+            'user_id' => $user->id,
+            'personal_advantage' => '具备复杂业务建模和跨团队协作经验。',
+        ]);
+    }
+
     public function test_store_can_create_resume_with_attachment_fields(): void
     {
         $user = User::factory()->create();
@@ -396,6 +419,27 @@ class ResumeControllerTest extends TestCase
         $this->assertDatabaseHas('rc_resumes', [
             'id' => $resume->id,
             'avatar' => 'uploads/rc/avatar/2026/06/03/new.jpg',
+        ]);
+    }
+
+    public function test_update_can_update_personal_advantage(): void
+    {
+        $user = User::factory()->create();
+        $resume = $this->createResume($user, [
+            'personal_advantage' => '旧个人优势',
+        ]);
+
+        $this
+            ->actingAs($user, 'rc')
+            ->putJson('/rc/resumes/'.$resume->id, [
+                'personal_advantage' => '擅长数据分析、业务抽象和项目推进。',
+            ])
+            ->assertOk()
+            ->assertJsonPath('data.personal_advantage', '擅长数据分析、业务抽象和项目推进。');
+
+        $this->assertDatabaseHas('rc_resumes', [
+            'id' => $resume->id,
+            'personal_advantage' => '擅长数据分析、业务抽象和项目推进。',
         ]);
     }
 

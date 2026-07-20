@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Cast\AliyunOss;
 use App\Models\Rc\SchoolActivity;
 use App\Models\Rc\SchoolActivityBooth;
 use App\Models\Rc\SchoolActivitySchool;
@@ -20,6 +21,7 @@ use Illuminate\Support\Carbon;
  * @property int $id 主键ID
  * @property string|null $school_code 学校代码
  * @property string $name 学校名称
+ * @property string|null $official_logo 学校官方 Logo
  * @property string|null $province 省
  * @property string|null $city 市
  * @property string|null $area 区/县
@@ -37,6 +39,7 @@ use Illuminate\Support\Carbon;
 #[Fillable([
     'school_code',
     'name',
+    'official_logo',
     'province',
     'city',
     'area',
@@ -47,6 +50,13 @@ use Illuminate\Support\Carbon;
 ])]
 class School extends Model
 {
+    protected function casts(): array
+    {
+        return [
+            'official_logo' => AliyunOss::class.':oss,public,3600',
+        ];
+    }
+
     public function profile(): HasOne
     {
         return $this->hasOne(SchoolProfile::class, 'school_code', 'school_code');

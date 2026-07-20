@@ -84,6 +84,25 @@ class JobControllerTest extends TestCase
         ]);
     }
 
+    public function test_store_accepts_annual_salary_months(): void
+    {
+        [$user] = $this->createRecruiterContext();
+
+        $response = $this
+            ->actingAs($user, 'rc')
+            ->postJson('/rc/jobs', $this->validJobPayload([
+                'annual_salary_months' => 14.5,
+            ]));
+
+        $response
+            ->assertOk()
+            ->assertJsonPath('data.annual_salary_months', '14.5');
+
+        $this->assertDatabaseHas('rc_jobs', [
+            'annual_salary_months' => 14.5,
+        ]);
+    }
+
     public function test_store_publishes_job_when_status_is_published(): void
     {
         [$user] = $this->createRecruiterContext();
@@ -330,6 +349,31 @@ class JobControllerTest extends TestCase
             ->assertJsonPath('code', 200);
 
         $this->assertSoftDeleted('rc_jobs', ['id' => $job->id]);
+    }
+
+    public function test_update_accepts_annual_salary_months(): void
+    {
+        [$user, $company] = $this->createRecruiterContext();
+
+        $job = Job::query()->create(array_merge($this->validJobAttributes(), [
+            'company_id' => $company->id,
+            'code' => 'JOB-SALARY-MONTHS-001',
+            'annual_salary_months' => 13,
+            'status' => RcJobStatus::Draft,
+        ]));
+
+        $this
+            ->actingAs($user, 'rc')
+            ->putJson('/rc/jobs/'.$job->id, [
+                'annual_salary_months' => 14.5,
+            ])
+            ->assertOk()
+            ->assertJsonPath('data.annual_salary_months', '14.5');
+
+        $this->assertDatabaseHas('rc_jobs', [
+            'id' => $job->id,
+            'annual_salary_months' => 14.5,
+        ]);
     }
 
     public function test_pause_and_close_job(): void

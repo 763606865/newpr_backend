@@ -276,6 +276,7 @@ class SchoolControllerTest extends TestCase
                 'contact_name' => '张老师',
                 'contact_phone' => '13800000000',
                 'intro' => '国内顶尖高校。',
+                'official_logo' => 'uploads/rc/school-official-logo.png',
                 'logo' => 'uploads/rc/school-logo.png',
                 'education_levels' => [RcEducationLevel::Bachelor->value],
                 'main_education_level' => RcEducationLevel::Bachelor->value,
@@ -287,10 +288,15 @@ class SchoolControllerTest extends TestCase
             ->assertJsonPath('code', 200)
             ->assertJsonPath('data.profile.short_name', '北大')
             ->assertJsonPath('data.profile.contact_name', '张老师')
+            ->assertJsonPath('data.profile.official_logo', 'uploads/rc/school-official-logo.png')
             ->assertJsonPath('data.profile.status', SchoolProfileStatus::Normal->value)
             ->assertJsonPath('data.profile.education_levels.0', RcEducationLevel::Bachelor->value)
             ->assertJsonPath('data.profile.allow_company_apply_activity', false);
 
+        $this->assertDatabaseHas('schools', [
+            'id' => $school->id,
+            'official_logo' => 'uploads/rc/school-official-logo.png',
+        ]);
         $this->assertDatabaseHas('rc_school_profiles', [
             'school_code' => $school->school_code,
             'short_name' => '北大',

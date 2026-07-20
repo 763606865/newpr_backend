@@ -26,6 +26,12 @@ class SchoolProfileService extends Service
      */
     public function update(SchoolProfile $profile, array $data): SchoolProfile
     {
+        if (array_key_exists('official_logo', $data)) {
+            $profile->school?->update([
+                'official_logo' => $data['official_logo'],
+            ]);
+        }
+
         $profile->fill(Arr::only($data, [
             'short_name',
             'province_code',
@@ -53,7 +59,7 @@ class SchoolProfileService extends Service
 
         $profile->save();
 
-        return $profile->refresh();
+        return $profile->refresh()->load('school');
     }
 
     public function isComplete(SchoolProfile $profile): bool

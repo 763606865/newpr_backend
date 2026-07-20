@@ -38,6 +38,7 @@ use Laravel\Scout\Searchable;
  * @property int $source_type 来源类型
  * @property string|null $full_name 姓名
  * @property string|null $avatar 头像
+ * @property string|null $personal_advantage 个人优势
  * @property int $gender 性别
  * @property string|null $id_card 身份证号
  * @property string $nation 民族
@@ -83,6 +84,7 @@ use Laravel\Scout\Searchable;
     'title',
     'full_name',
     'avatar',
+    'personal_advantage',
     'gender',
     'id_card',
     'nation',
@@ -480,6 +482,7 @@ class Resume extends Model
             'resume_no' => $this->resume_no,
             'title' => $this->title,
             'full_name' => $this->full_name,
+            'personal_advantage' => $this->personal_advantage,
             'text_content' => $this->text_content,
             'gender' => $this->gender instanceof UserGender
                 ? $this->gender->value

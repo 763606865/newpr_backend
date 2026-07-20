@@ -3,6 +3,7 @@
 namespace App\Resources\Rc;
 
 use App\Enums\RcEducationLevel;
+use App\Models\Cast\AliyunOss;
 use App\Models\SchoolProfile;
 use App\Resources\Concerns\SerializesOssAttributes;
 use Illuminate\Http\Request;
@@ -23,9 +24,12 @@ class RcSchoolProfileResource extends JsonResource
 
         $logo = $this->ossAttributePair('logo');
         $banner = $this->ossAttributePair('banner');
+        $officialLogo = $this->schoolOfficialLogoPair();
 
         return [
             'school_code' => $this->resource->school_code,
+            'official_logo' => $officialLogo['path'],
+            'display_official_logo' => $officialLogo['display'],
             'short_name' => $this->resource->short_name,
             'province_code' => $this->resource->province_code,
             'city_code' => $this->resource->city_code,
@@ -56,6 +60,29 @@ class RcSchoolProfileResource extends JsonResource
             'remark' => $this->resource->remark,
             'created_at' => $this->resource->created_at,
             'updated_at' => $this->resource->updated_at,
+        ];
+    }
+
+    /**
+     * @return array{path: ?string, display: ?string}
+     */
+    private function schoolOfficialLogoPair(): array
+    {
+        if (! $this->resource->relationLoaded('school') || ! $this->resource->school) {
+            return ['path' => null, 'display' => null];
+        }
+
+        $raw = $this->resource->school->getAttributes()['official_logo'] ?? null;
+
+        if (! is_string($raw) || $raw === '') {
+            return ['path' => null, 'display' => null];
+        }
+
+        $path = ltrim($raw, '/');
+
+        return [
+            'path' => $path,
+            'display' => AliyunOss::fromModel($this->resource->school, 'official_logo')->toDisplayUrl($path),
         ];
     }
 

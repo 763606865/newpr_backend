@@ -36,6 +36,7 @@ trait JobRequestRules
             'salary_min' => ['nullable', 'numeric', 'min:0'],
             'salary_max' => ['nullable', 'numeric', 'min:0', 'gte:salary_min'],
             'salary_unit' => ['nullable', Rule::enum(RcSalaryUnit::class)],
+            'annual_salary_months' => ['nullable', 'numeric', 'min:0', 'max:99.9'],
             'city_code' => [
                 'nullable',
                 'string',
@@ -71,6 +72,7 @@ trait JobRequestRules
             'salary_min' => '最低薪资',
             'salary_max' => '最高薪资',
             'salary_unit' => '薪资单位',
+            'annual_salary_months' => '年薪月数',
             'city_code' => '工作城市编码',
             'workplace' => '工作地址',
             'headcount' => '招聘人数',

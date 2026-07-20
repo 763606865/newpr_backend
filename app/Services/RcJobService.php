@@ -223,6 +223,7 @@ class RcJobService extends Service
             'salary_min' => $payload['salary_min'] ?? $existing?->salary_min,
             'salary_max' => $payload['salary_max'] ?? $existing?->salary_max,
             'salary_unit' => (int) ($payload['salary_unit'] ?? $existing?->salary_unit?->value ?? 1),
+            'annual_salary_months' => $payload['annual_salary_months'] ?? $existing?->annual_salary_months,
             'experience_min' => $payload['experience_min'] ?? $existing?->experience_min,
             'experience_max' => $payload['experience_max'] ?? $existing?->experience_max,
             'education_level' => isset($payload['education_level'])

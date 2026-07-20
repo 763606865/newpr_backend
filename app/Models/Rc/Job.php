@@ -35,6 +35,7 @@ use Laravel\Scout\Searchable;
  * @property string|null $salary_min 最低薪资
  * @property string|null $salary_max 最高薪资
  * @property int $salary_unit 薪资单位
+ * @property string|null $annual_salary_months 年薪月数
  * @property int|null $experience_min 最低经验年限
  * @property int|null $experience_max 最高经验年限
  * @property int|null $education_level 最低学历要求
@@ -71,6 +72,7 @@ use Laravel\Scout\Searchable;
     'salary_min',
     'salary_max',
     'salary_unit',
+    'annual_salary_months',
     'experience_min',
     'experience_max',
     'education_level',
@@ -108,6 +110,7 @@ class Job extends Model
             'salary_min' => 'decimal:2',
             'salary_max' => 'decimal:2',
             'salary_unit' => RcSalaryUnit::class,
+            'annual_salary_months' => 'decimal:1',
             'experience_min' => 'integer',
             'experience_max' => 'integer',
             'education_level' => 'integer',
@@ -260,6 +263,7 @@ class Job extends Model
             'salary_unit' => $this->salary_unit instanceof RcSalaryUnit
                 ? $this->salary_unit->value
                 : (int) $this->salary_unit,
+            'annual_salary_months' => $this->annual_salary_months !== null ? (float) $this->annual_salary_months : null,
             'experience_min' => $this->experience_min,
             'experience_max' => $this->experience_max,
             'education_level' => $this->education_level,

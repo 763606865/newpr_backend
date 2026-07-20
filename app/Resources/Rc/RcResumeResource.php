@@ -33,6 +33,7 @@ class RcResumeResource extends JsonResource
             'full_name' => $this->resource->full_name,
             'avatar' => $avatar['path'],
             'display_avatar' => $avatar['display'],
+            'personal_advantage' => $this->resource->personal_advantage,
             'gender' => $this->resource->gender,
             'id_card' => $this->resource->id_card,
             'nation' => $this->resource->nation,
