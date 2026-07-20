@@ -36,7 +36,7 @@ trait JobRequestRules
             'salary_min' => ['nullable', 'numeric', 'min:0'],
             'salary_max' => ['nullable', 'numeric', 'min:0', 'gte:salary_min'],
             'salary_unit' => ['nullable', Rule::enum(RcSalaryUnit::class)],
-            'annual_salary_months' => ['nullable', 'numeric', 'min:0', 'max:99.9'],
+            'annual_salary_months' => ['nullable', 'numeric', 'min:12', 'max:99.9'],
             'city_code' => [
                 'nullable',
                 'string',
