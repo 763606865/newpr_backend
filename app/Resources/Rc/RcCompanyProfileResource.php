@@ -3,7 +3,7 @@
 namespace App\Resources\Rc;
 
 use App\Enums\CompanyBenefitTag;
-use App\Models\CompanyProfile;
+use App\Models\Rc\CompanyProfile;
 use App\Resources\Concerns\SerializesOssAttributes;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;

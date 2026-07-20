@@ -3,8 +3,8 @@
 namespace App\Services;
 
 use App\Enums\SchoolProfileStatus;
+use App\Models\Rc\SchoolProfile;
 use App\Models\School;
-use App\Models\SchoolProfile;
 use Illuminate\Support\Arr;
 
 class SchoolProfileService extends Service

@@ -7,6 +7,7 @@ use App\Models\Rc\SchoolActivity;
 use App\Models\Rc\SchoolActivityBooth;
 use App\Models\Rc\SchoolActivitySchool;
 use App\Models\Rc\SchoolBooth;
+use App\Models\Rc\SchoolProfile;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Collection;

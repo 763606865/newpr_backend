@@ -3,8 +3,8 @@
 namespace Tests\Unit\Models;
 
 use App\Enums\SchoolProfileStatus;
+use App\Models\Rc\SchoolProfile;
 use App\Models\School;
-use App\Models\SchoolProfile;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 

@@ -11,6 +11,7 @@ use App\Models\Oa\LeaveBalance;
 use App\Models\Oa\LeaveType;
 use App\Models\Pivot\CompanyBUsers;
 use App\Models\Rc\CompanyAlbum;
+use App\Models\Rc\CompanyProfile;
 use App\Models\Rc\Job;
 use App\Models\Rc\SchoolActivityBooth;
 use App\Models\Rc\SchoolActivityCompany;

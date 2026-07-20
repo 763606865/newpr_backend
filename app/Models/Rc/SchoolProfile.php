@@ -1,9 +1,11 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Rc;
 
 use App\Enums\SchoolProfileStatus;
 use App\Models\Cast\AliyunOss;
+use App\Models\Model;
+use App\Models\School;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

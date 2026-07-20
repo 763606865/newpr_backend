@@ -10,7 +10,7 @@ use App\Enums\RcJobStatus;
 use App\Filament\Resources\Cms\HomeRecommendations\Pages\CreateHomeRecommendation;
 use App\Models\Cms\HomeRecommendation;
 use App\Models\Company;
-use App\Models\CompanyProfile;
+use App\Models\Rc\CompanyProfile;
 use App\Models\Rc\Job;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;

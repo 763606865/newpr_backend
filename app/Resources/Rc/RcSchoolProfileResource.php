@@ -4,7 +4,7 @@ namespace App\Resources\Rc;
 
 use App\Enums\RcEducationLevel;
 use App\Models\Cast\AliyunOss;
-use App\Models\SchoolProfile;
+use App\Models\Rc\SchoolProfile;
 use App\Resources\Concerns\SerializesOssAttributes;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;

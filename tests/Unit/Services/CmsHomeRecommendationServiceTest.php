@@ -9,7 +9,7 @@ use App\Enums\RcJobEmploymentType;
 use App\Enums\RcJobStatus;
 use App\Models\Cms\HomeRecommendation;
 use App\Models\Company;
-use App\Models\CompanyProfile;
+use App\Models\Rc\CompanyProfile;
 use App\Models\Rc\Job;
 use App\Services\CmsHomeRecommendationService;
 use Illuminate\Foundation\Testing\RefreshDatabase;

@@ -9,7 +9,7 @@ use App\Enums\RcIdentityType;
 use App\Enums\RcJobEmploymentType;
 use App\Enums\RcJobStatus;
 use App\Models\Company;
-use App\Models\CompanyProfile;
+use App\Models\Rc\CompanyProfile;
 use App\Models\Rc\Job;
 use App\Models\Rc\UserCompanyBlacklist;
 use App\Models\Rc\UserIdentity;

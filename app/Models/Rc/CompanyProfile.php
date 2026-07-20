@@ -1,11 +1,13 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Rc;
 
 use App\Enums\CompanyFundingStage;
 use App\Enums\CompanyNatureType;
 use App\Enums\CompanyProfileStatus;
 use App\Enums\CompanyScaleType;
+use App\Models\Company;
+use App\Models\Model;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

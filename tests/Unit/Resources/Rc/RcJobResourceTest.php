@@ -4,7 +4,7 @@ namespace Tests\Unit\Resources\Rc;
 
 use App\Enums\UserGender;
 use App\Models\Company;
-use App\Models\CompanyProfile;
+use App\Models\Rc\CompanyProfile;
 use App\Models\Rc\Job;
 use App\Models\Rc\UserIdentity;
 use App\Models\User;

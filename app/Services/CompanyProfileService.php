@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Enums\CompanyProfileStatus;
 use App\Models\Company;
-use App\Models\CompanyProfile;
+use App\Models\Rc\CompanyProfile;
 use Illuminate\Support\Arr;
 
 class CompanyProfileService extends Service

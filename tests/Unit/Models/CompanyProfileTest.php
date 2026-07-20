@@ -7,7 +7,7 @@ use App\Enums\CompanyProfileStatus;
 use App\Enums\CompanyScaleType;
 use App\Enums\CompanyStatus;
 use App\Models\Company;
-use App\Models\CompanyProfile;
+use App\Models\Rc\CompanyProfile;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
