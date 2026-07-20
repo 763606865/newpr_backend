@@ -300,6 +300,38 @@ class ResumeControllerTest extends TestCase
         );
     }
 
+    public function test_store_can_create_resume_with_attachment_fields(): void
+    {
+        $user = User::factory()->create();
+
+        config(['filesystems.disks.oss.url' => 'https://cdn.example.com']);
+
+        $response = $this
+            ->actingAs($user, 'rc')
+            ->postJson('/rc/resumes', array_merge($this->baseStorePayload(), [
+                'full_name' => 'Attachment User',
+                'phone' => '13800000005',
+                'email' => 'attachment-store@example.com',
+                'file_url' => 'uploads/rc/resume/2026/07/20/resume.pdf',
+                'file_name' => 'resume.pdf',
+                'file_ext' => 'pdf',
+            ]));
+
+        $response
+            ->assertOk()
+            ->assertJsonPath('data.file_url', 'uploads/rc/resume/2026/07/20/resume.pdf')
+            ->assertJsonPath('data.display_file_url', 'https://cdn.example.com/uploads/rc/resume/2026/07/20/resume.pdf')
+            ->assertJsonPath('data.file_name', 'resume.pdf')
+            ->assertJsonPath('data.file_ext', 'pdf');
+
+        $this->assertDatabaseHas('rc_resumes', [
+            'user_id' => $user->id,
+            'file_url' => 'uploads/rc/resume/2026/07/20/resume.pdf',
+            'file_name' => 'resume.pdf',
+            'file_ext' => 'pdf',
+        ]);
+    }
+
     public function test_store_accepts_political_status_enum_value(): void
     {
         $user = User::factory()->create();
@@ -364,6 +396,40 @@ class ResumeControllerTest extends TestCase
         $this->assertDatabaseHas('rc_resumes', [
             'id' => $resume->id,
             'avatar' => 'uploads/rc/avatar/2026/06/03/new.jpg',
+        ]);
+    }
+
+    public function test_update_can_update_resume_attachment_fields(): void
+    {
+        $user = User::factory()->create();
+        $resume = $this->createResume($user, [
+            'file_url' => 'uploads/rc/resume/2026/07/20/old.pdf',
+            'file_name' => 'old.pdf',
+            'file_ext' => 'pdf',
+        ]);
+
+        config(['filesystems.disks.oss.url' => 'https://cdn.example.com']);
+
+        $response = $this
+            ->actingAs($user, 'rc')
+            ->putJson('/rc/resumes/'.$resume->id, [
+                'file_url' => 'https://cdn.example.com/uploads/rc/resume/2026/07/20/new.docx',
+                'file_name' => 'new.docx',
+                'file_ext' => 'docx',
+            ]);
+
+        $response
+            ->assertOk()
+            ->assertJsonPath('data.file_url', 'uploads/rc/resume/2026/07/20/new.docx')
+            ->assertJsonPath('data.display_file_url', 'https://cdn.example.com/uploads/rc/resume/2026/07/20/new.docx')
+            ->assertJsonPath('data.file_name', 'new.docx')
+            ->assertJsonPath('data.file_ext', 'docx');
+
+        $this->assertDatabaseHas('rc_resumes', [
+            'id' => $resume->id,
+            'file_url' => 'uploads/rc/resume/2026/07/20/new.docx',
+            'file_name' => 'new.docx',
+            'file_ext' => 'docx',
         ]);
     }
 

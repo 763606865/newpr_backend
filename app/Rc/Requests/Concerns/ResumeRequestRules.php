@@ -47,6 +47,9 @@ trait ResumeRequestRules
             'residence_country' => $rule(['nullable', 'string', 'max:50']),
             'phone' => $rule(['required', 'string', 'max:20']),
             'email' => $rule(['required', 'email:rfc', 'max:100']),
+            'file_url' => $rule(['nullable', 'string', 'max:255']),
+            'file_name' => $rule(['nullable', 'string', 'max:255']),
+            'file_ext' => $rule(['nullable', 'string', 'max:16']),
             'is_primary' => $rule(['nullable', 'boolean']),
         ], $this->cityAreaCodeFieldRules($sometimes));
     }
@@ -85,6 +88,9 @@ trait ResumeRequestRules
             'residence_country' => '现居住国家/地区',
             'phone' => '联系电话',
             'email' => '电子邮箱',
+            'file_url' => '简历附件地址',
+            'file_name' => '简历附件名称',
+            'file_ext' => '简历附件后缀',
             'is_primary' => '是否主简历',
         ];
     }
