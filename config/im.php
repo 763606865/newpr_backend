@@ -3,6 +3,13 @@
 return [
     'default' => env('IM_DRIVER', 'custom'),
 
+    'conversation' => [
+        'initial_messages' => [
+            'job_seeker' => '希望和你聊聊这个职位，是否有时间呢？',
+            'recruiter' => 'Hi，看了您的过往经历感觉您比较符合我们的职位要求，方便聊一聊吗?',
+        ],
+    ],
+
     // 自定义
     'custom' => [
         'end_point' => env('IM_END_POINT', ''),

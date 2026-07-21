@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enums\ImConversationType;
+use App\Enums\RcIdentityType;
 use App\Exceptions\BadRequestException;
 use App\Libs\Facades\Im;
 use App\Models\ImConversation;
@@ -146,7 +147,7 @@ class IMService extends Service
 
         $conversationNo = $this->resolveConversationNo($response);
 
-        return DB::transaction(function () use ($context, $conversationKey, $conversationMetadata, $conversationNo, $conversationType, $ownerUserIm, $payload, $response, $userIms): ImConversation {
+        $conversation = DB::transaction(function () use ($context, $conversationKey, $conversationMetadata, $conversationNo, $conversationType, $ownerUserIm, $payload, $response, $userIms): ImConversation {
             $conversation = ImConversation::query()->firstOrCreate([
                 'conversation_key' => $conversationKey,
             ], [
@@ -175,6 +176,10 @@ class IMService extends Service
 
             return $conversation->load(['context', 'members.member']);
         });
+
+        $this->sendInitialConversationMessage($identity, $ownerUserIm, $conversation);
+
+        return $conversation;
     }
 
     public function resolveUserIm(UserIdentity $identity): UserIm
@@ -238,6 +243,42 @@ class IMService extends Service
             ImConversationType::Single,
             ImConversationType::Group,
         ], true);
+    }
+
+    private function sendInitialConversationMessage(UserIdentity $identity, UserIm $ownerUserIm, ImConversation $conversation): void
+    {
+        $content = $this->initialConversationMessage($identity);
+
+        if (blank($content)) {
+            return;
+        }
+
+        Im::conversation()->postMessage($conversation->conversation_no, [
+            'sender_user_id' => $this->externalUserId($ownerUserIm),
+            'message_type' => 'text',
+            'content' => [
+                'card_type' => 'text',
+                'text' => $content,
+            ],
+            'metadata' => [
+                'source' => 'conversation_initial_message',
+                'sender_user_im_id' => $ownerUserIm->id,
+                'sender_user_identity_id' => $identity->id,
+            ],
+        ]);
+
+        $conversation->forceFill([
+            'last_message_at' => now(),
+        ])->save();
+    }
+
+    private function initialConversationMessage(UserIdentity $identity): ?string
+    {
+        return match ($identity->identity_type) {
+            RcIdentityType::JobSeeker => config('im.conversation.initial_messages.job_seeker'),
+            RcIdentityType::Recruiter => config('im.conversation.initial_messages.recruiter'),
+            default => null,
+        };
     }
 
     /**

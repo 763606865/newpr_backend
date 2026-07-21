@@ -42,19 +42,39 @@ class ImControllerTest extends TestCase
     public function test_user_can_create_single_conversation_with_member(): void
     {
         [$user, $identity, $ownerUserIm, $memberIdentity, $memberUserIm] = $this->createConversationContext();
+        $imConversationApi = new class
+        {
+            /**
+             * @var list<array<string, mixed>>
+             */
+            public array $messages = [];
+
+            public function store(array $payload): array
+            {
+                return [
+                    'id' => 'provider-conversation-1',
+                    'payload' => $payload,
+                ];
+            }
+
+            public function postMessage(int|string $conversationId, array $params): array
+            {
+                $this->messages[] = [
+                    'conversation_id' => $conversationId,
+                    'payload' => $params,
+                ];
+
+                return [
+                    'id' => 'initial-message-1',
+                    'conversation_id' => $conversationId,
+                    'payload' => $params,
+                ];
+            }
+        };
 
         Im::shouldReceive('conversation')
-            ->once()
-            ->andReturn(new class
-            {
-                public function store(array $payload): array
-                {
-                    return [
-                        'id' => 'provider-conversation-1',
-                        'payload' => $payload,
-                    ];
-                }
-            });
+            ->twice()
+            ->andReturn($imConversationApi);
 
         $response = $this->rcPostJson($user, $identity, '/rc/im/conversations', [
             'type' => ImConversationType::Single->value,
@@ -80,6 +100,23 @@ class ImControllerTest extends TestCase
             'scene' => 'manual',
         ]);
 
+        $this->assertNotNull(ImConversation::query()->firstOrFail()->last_message_at);
+        $this->assertSame([
+            [
+                'conversation_id' => 'provider-conversation-1',
+                'payload' => [
+                    'user_id' => $ownerUserIm->external_user_id,
+                    'message_type' => 'text',
+                    'content' => 'Hi，看了您的过往经历感觉您比较符合我们的职位要求，方便聊一聊吗?',
+                    'metadata' => [
+                        'source' => 'conversation_initial_message',
+                        'sender_user_im_id' => $ownerUserIm->id,
+                        'sender_user_identity_id' => $identity->id,
+                    ],
+                ],
+            ],
+        ], $imConversationApi->messages);
+
         $this->assertDatabaseHas('im_conversation_members', [
             'member_type' => 'rc_user_im',
             'member_id' => $ownerUserIm->id,
@@ -98,12 +135,21 @@ class ImControllerTest extends TestCase
         [$user, $identity, , $memberIdentity] = $this->createConversationContext();
 
         Im::shouldReceive('conversation')
-            ->once()
+            ->twice()
             ->andReturn(new class
             {
                 public function store(array $payload): array
                 {
                     return ['id' => 'provider-conversation-1'];
+                }
+
+                public function postMessage(int|string $conversationId, array $params): array
+                {
+                    return [
+                        'id' => 'initial-message-1',
+                        'conversation_id' => $conversationId,
+                        'payload' => $params,
+                    ];
                 }
             });
 
@@ -125,6 +171,55 @@ class ImControllerTest extends TestCase
         $this->assertSame(1, ImConversation::query()->count());
     }
 
+    public function test_job_seeker_initial_message_is_sent_after_creating_conversation(): void
+    {
+        [, , $recruiterUserIm, $jobSeekerIdentity, $jobSeekerUserIm] = $this->createConversationContext();
+        $imConversationApi = new class
+        {
+            /**
+             * @var list<array<string, mixed>>
+             */
+            public array $messages = [];
+
+            public function store(array $payload): array
+            {
+                return [
+                    'id' => 'provider-conversation-job-seeker',
+                    'payload' => $payload,
+                ];
+            }
+
+            public function postMessage(int|string $conversationId, array $params): array
+            {
+                $this->messages[] = [
+                    'conversation_id' => $conversationId,
+                    'payload' => $params,
+                ];
+
+                return [
+                    'id' => 'initial-message-job-seeker',
+                    'conversation_id' => $conversationId,
+                    'payload' => $params,
+                ];
+            }
+        };
+
+        Im::shouldReceive('conversation')
+            ->twice()
+            ->andReturn($imConversationApi);
+
+        $this->rcPostJson($jobSeekerIdentity->user, $jobSeekerIdentity, '/rc/im/conversations', [
+            'type' => ImConversationType::Single->value,
+            'members' => [
+                ['external_user_id' => $recruiterUserIm->external_user_id],
+            ],
+        ])->assertOk()->assertJsonPath('code', 200);
+
+        $this->assertSame('provider-conversation-job-seeker', $imConversationApi->messages[0]['conversation_id']);
+        $this->assertSame($jobSeekerUserIm->external_user_id, $imConversationApi->messages[0]['payload']['user_id']);
+        $this->assertSame('希望和你聊聊这个职位，是否有时间呢？', $imConversationApi->messages[0]['payload']['content']);
+    }
+
     public function test_job_id_is_saved_as_conversation_context(): void
     {
         [$user, $identity, , $memberIdentity] = $this->createConversationContext();
@@ -135,12 +230,21 @@ class ImControllerTest extends TestCase
         ]);
 
         Im::shouldReceive('conversation')
-            ->once()
+            ->twice()
             ->andReturn(new class
             {
                 public function store(array $payload): array
                 {
                     return ['id' => 'provider-conversation-with-job'];
+                }
+
+                public function postMessage(int|string $conversationId, array $params): array
+                {
+                    return [
+                        'id' => 'initial-message-1',
+                        'conversation_id' => $conversationId,
+                        'payload' => $params,
+                    ];
                 }
             });
 
@@ -187,7 +291,7 @@ class ImControllerTest extends TestCase
         $secondJob = $this->createJob('JOB-IM-CONTEXT-003');
 
         Im::shouldReceive('conversation')
-            ->twice()
+            ->times(4)
             ->andReturn(new class
             {
                 private int $times = 0;
@@ -197,6 +301,15 @@ class ImControllerTest extends TestCase
                     $this->times++;
 
                     return ['id' => 'provider-conversation-job-'.$this->times];
+                }
+
+                public function postMessage(int|string $conversationId, array $params): array
+                {
+                    return [
+                        'id' => 'initial-message-'.$this->times,
+                        'conversation_id' => $conversationId,
+                        'payload' => $params,
+                    ];
                 }
             });
 
