@@ -27,6 +27,7 @@ class ImConversationStoreRequest extends FormRequest
         return [
             'type' => ['required', Rule::enum(ImConversationType::class)],
             'subject' => ['nullable', 'string', 'max:255'],
+            'job_id' => ['required', 'integer', Rule::exists('rc_jobs', 'id')->whereNull('deleted_at')],
             'members' => ['sometimes', 'array'],
             'members.*.external_user_id' => ['required', 'string', 'max:64'],
             'metadata' => ['sometimes', 'array'],

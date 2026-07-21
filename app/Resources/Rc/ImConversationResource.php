@@ -4,6 +4,7 @@ namespace App\Resources\Rc;
 
 use App\Models\ImConversation;
 use App\Models\ImConversationMember;
+use App\Models\Rc\Job;
 use App\Models\Rc\UserIm;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -35,6 +36,9 @@ class ImConversationResource extends JsonResource
             'conversation_key' => $this->resource->conversation_key,
             'owner_type' => $this->resource->owner_type,
             'owner_id' => $this->resource->owner_id,
+            'context_type' => $this->resource->context_type,
+            'context_id' => $this->resource->context_id,
+            'context' => $this->contextPayload(),
             'scene' => $this->resource->scene,
             'metadata' => $this->resource->metadata,
             'last_message_at' => $this->resource->last_message_at,
@@ -95,5 +99,37 @@ class ImConversationResource extends JsonResource
                 ] : null,
             ] : null,
         ];
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    private function contextPayload(): ?array
+    {
+        $context = $this->resource->relationLoaded('context') ? $this->resource->context : null;
+
+        if ($context instanceof Job) {
+            return [
+                'type' => 'job',
+                'id' => $context->id,
+                'company_id' => $context->company_id,
+                'title' => $context->title,
+                'employment_type' => $context->employment_type?->value,
+                'employment_type_label' => $context->employment_type?->getLabel(),
+                'city_code' => $context->city_code,
+                'workplace' => $context->workplace,
+                'salary_min' => $context->salary_min,
+                'salary_max' => $context->salary_max,
+                'salary_unit' => $context->salary_unit?->value,
+                'salary_unit_label' => $context->salary_unit?->getLabel(),
+                'annual_salary_months' => $context->annual_salary_months,
+                'benefit' => $context->benefit,
+                'status' => $context->status?->value,
+                'status_label' => $context->status?->getLabel(),
+                'published_at' => $context->published_at,
+            ];
+        }
+
+        return null;
     }
 }

@@ -24,6 +24,8 @@ use Illuminate\Support\Carbon;
  * @property string|null $conversation_key
  * @property string $owner_type
  * @property int $owner_id
+ * @property string|null $context_type
+ * @property int|null $context_id
  * @property string|null $scene
  * @property array<string, mixed>|null $metadata
  * @property Carbon|null $last_message_at
@@ -31,6 +33,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read Model|null $owner
+ * @property-read Model|null $context
  * @property-read Collection<int, ImConversationMember> $members
  * @property-read Collection<int, UserIm> $userImMembers
  */
@@ -43,6 +46,8 @@ use Illuminate\Support\Carbon;
     'conversation_key',
     'owner_type',
     'owner_id',
+    'context_type',
+    'context_id',
     'scene',
     'metadata',
     'last_message_at',
@@ -55,6 +60,7 @@ class ImConversation extends Model
         return [
             'conversation_type' => ImConversationType::class,
             'owner_id' => 'integer',
+            'context_id' => 'integer',
             'metadata' => 'array',
             'last_message_at' => 'datetime',
             'expires_at' => 'datetime',
@@ -62,6 +68,11 @@ class ImConversation extends Model
     }
 
     public function owner(): MorphTo
+    {
+        return $this->morphTo();
+    }
+
+    public function context(): MorphTo
     {
         return $this->morphTo();
     }

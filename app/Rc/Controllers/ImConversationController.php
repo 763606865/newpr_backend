@@ -32,6 +32,7 @@ class ImConversationController extends Controller
 
         $paginator = $userIm->memberConversations()
             ->with([
+                'context',
                 'members.member.user',
                 'members.member.userIdentity',
             ])

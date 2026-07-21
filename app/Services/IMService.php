@@ -7,8 +7,10 @@ use App\Exceptions\BadRequestException;
 use App\Libs\Facades\Im;
 use App\Models\ImConversation;
 use App\Models\ImConversationMember;
+use App\Models\Rc\Job;
 use App\Models\Rc\UserIdentity;
 use App\Models\Rc\UserIm;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 use Sqids\Sqids;
@@ -59,6 +61,7 @@ class IMService extends Service
      * @param array{
      *     type: string|ImConversationType,
      *     subject?: string|null,
+     *     job_id?: int|null,
      *     members?: list<array{external_user_id: string}>,
      *     metadata?: array<string, mixed>
      * } $payload
@@ -90,7 +93,8 @@ class IMService extends Service
             throw new InvalidArgumentException('当前用户 IM 账号不存在。');
         }
 
-        $conversationKey = $this->conversationKey($conversationType, $userIms->all());
+        $context = $this->resolveConversationContext($payload);
+        $conversationKey = $this->conversationKey($conversationType, $userIms->all(), $context);
         $conversationMetadata = $this->conversationMetadata($payload);
 
         $existingConversation = ImConversation::query()
@@ -113,7 +117,7 @@ class IMService extends Service
                 ])->save();
             }
 
-            return $existingConversation->load(['members.member']);
+            return $existingConversation->load(['context', 'members.member']);
         }
 
         $memberUserIds = $userIms
@@ -129,6 +133,8 @@ class IMService extends Service
             'metadata' => array_merge($conversationMetadata, [
                 'conversation_key' => $conversationKey,
                 'identity_ids' => array_keys($memberIdentities),
+                'context_type' => $context?->getMorphClass(),
+                'context_id' => $context?->getKey(),
             ]),
         ];
 
@@ -140,7 +146,7 @@ class IMService extends Service
 
         $conversationNo = $this->resolveConversationNo($response);
 
-        return DB::transaction(function () use ($conversationKey, $conversationMetadata, $conversationNo, $conversationType, $ownerUserIm, $payload, $response, $userIms): ImConversation {
+        return DB::transaction(function () use ($context, $conversationKey, $conversationMetadata, $conversationNo, $conversationType, $ownerUserIm, $payload, $response, $userIms): ImConversation {
             $conversation = ImConversation::query()->firstOrCreate([
                 'conversation_key' => $conversationKey,
             ], [
@@ -150,6 +156,8 @@ class IMService extends Service
                 'conversation_type' => $conversationType,
                 'owner_type' => 'rc_user_im',
                 'owner_id' => $ownerUserIm->id,
+                'context_type' => $context?->getMorphClass(),
+                'context_id' => $context?->getKey(),
                 'scene' => 'manual',
                 'metadata' => array_merge($conversationMetadata, [
                     'subject' => $payload['subject'] ?? null,
@@ -165,7 +173,7 @@ class IMService extends Service
                 );
             }
 
-            return $conversation->load(['members.member']);
+            return $conversation->load(['context', 'members.member']);
         });
     }
 
@@ -272,7 +280,7 @@ class IMService extends Service
     /**
      * @param  list<UserIm>  $userIms
      */
-    private function conversationKey(ImConversationType $conversationType, array $userIms): string
+    private function conversationKey(ImConversationType $conversationType, array $userIms, ?Model $context = null): string
     {
         $memberKeys = array_map(
             static fn (UserIm $userIm): string => 'rc_user_im:'.$userIm->id,
@@ -281,7 +289,33 @@ class IMService extends Service
 
         sort($memberKeys);
 
-        return $conversationType->value.':'.implode('|', $memberKeys);
+        $key = $conversationType->value.':'.implode('|', $memberKeys);
+
+        if ($context instanceof Model) {
+            $key .= ':context:'.$context->getMorphClass().':'.$context->getKey();
+        }
+
+        return $key;
+    }
+
+    /**
+     * @param  array<string, mixed>  $payload
+     */
+    private function resolveConversationContext(array $payload): ?Model
+    {
+        $jobId = (int) ($payload['job_id'] ?? 0);
+
+        if ($jobId < 1) {
+            return null;
+        }
+
+        $job = Job::query()->find($jobId);
+
+        if (! $job instanceof Job) {
+            throw new InvalidArgumentException('职位不存在。');
+        }
+
+        return $job;
     }
 
     /**

@@ -2,11 +2,16 @@
 
 namespace Tests\Feature\Rc;
 
+use App\Enums\CompanyStatus;
 use App\Enums\ImConversationType;
 use App\Enums\RcIdentityStatus;
 use App\Enums\RcIdentityType;
+use App\Enums\RcJobEmploymentType;
+use App\Enums\RcJobStatus;
 use App\Libs\Facades\Im;
+use App\Models\Company;
 use App\Models\ImConversation;
+use App\Models\Rc\Job;
 use App\Models\Rc\UserIdentity;
 use App\Models\Rc\UserIm;
 use App\Models\Token;
@@ -118,6 +123,104 @@ class ImControllerTest extends TestCase
         $this->assertSame(1, ImConversation::query()->count());
     }
 
+    public function test_job_id_is_saved_as_conversation_context(): void
+    {
+        [$user, $identity, , $memberIdentity] = $this->createConversationContext();
+        $job = $this->createJob('JOB-IM-CONTEXT-001');
+
+        Im::shouldReceive('conversation')
+            ->once()
+            ->andReturn(new class
+            {
+                public function store(array $payload): array
+                {
+                    return ['id' => 'provider-conversation-with-job'];
+                }
+            });
+
+        $response = $this->rcPostJson($user, $identity, '/rc/im/conversations', [
+            'type' => ImConversationType::Single->value,
+            'job_id' => $job->id,
+            'members' => [
+                ['external_user_id' => $memberIdentity->external_user_id],
+            ],
+        ]);
+
+        $response
+            ->assertOk()
+            ->assertJsonPath('code', 200)
+            ->assertJsonPath('data.context_type', 'job')
+            ->assertJsonPath('data.context_id', $job->id)
+            ->assertJsonPath('data.context.type', 'job')
+            ->assertJsonPath('data.context.id', $job->id)
+            ->assertJsonPath('data.context.title', 'IM 沟通职位')
+            ->assertJsonPath('data.context.salary_min', '8000.00')
+            ->assertJsonPath('data.context.salary_max', '15000.00')
+            ->assertJsonPath('data.context.salary_unit', 1)
+            ->assertJsonPath('data.context.salary_unit_label', '月')
+            ->assertJsonPath('data.context.annual_salary_months', '13.0')
+            ->assertJsonPath('data.context.benefit', '五险一金');
+
+        $this->assertDatabaseHas('im_conversations', [
+            'conversation_no' => 'provider-conversation-with-job',
+            'context_type' => 'job',
+            'context_id' => $job->id,
+        ]);
+
+        $conversation = ImConversation::query()->firstOrFail();
+
+        $this->assertStringContainsString(':context:job:'.$job->id, (string) $conversation->conversation_key);
+        $this->assertTrue($conversation->context?->is($job));
+    }
+
+    public function test_same_members_can_create_different_conversations_for_different_jobs(): void
+    {
+        [$user, $identity, , $memberIdentity] = $this->createConversationContext();
+        $firstJob = $this->createJob('JOB-IM-CONTEXT-002');
+        $secondJob = $this->createJob('JOB-IM-CONTEXT-003');
+
+        Im::shouldReceive('conversation')
+            ->twice()
+            ->andReturn(new class
+            {
+                private int $times = 0;
+
+                public function store(array $payload): array
+                {
+                    $this->times++;
+
+                    return ['id' => 'provider-conversation-job-'.$this->times];
+                }
+            });
+
+        $basePayload = [
+            'type' => ImConversationType::Single->value,
+            'members' => [
+                ['external_user_id' => $memberIdentity->external_user_id],
+            ],
+        ];
+
+        $this->rcPostJson($user, $identity, '/rc/im/conversations', [
+            ...$basePayload,
+            'job_id' => $firstJob->id,
+        ])->assertOk()->assertJsonPath('code', 200);
+
+        $this->rcPostJson($user, $identity, '/rc/im/conversations', [
+            ...$basePayload,
+            'job_id' => $secondJob->id,
+        ])->assertOk()->assertJsonPath('code', 200);
+
+        $this->assertSame(2, ImConversation::query()->count());
+        $this->assertDatabaseHas('im_conversations', [
+            'context_type' => 'job',
+            'context_id' => $firstJob->id,
+        ]);
+        $this->assertDatabaseHas('im_conversations', [
+            'context_type' => 'job',
+            'context_id' => $secondJob->id,
+        ]);
+    }
+
     public function test_single_conversation_requires_one_initialized_member(): void
     {
         [$user, $identity] = $this->createConversationContext();
@@ -171,6 +274,29 @@ class ImControllerTest extends TestCase
             'app_code' => 'rc',
             'external_user_id' => $prefix.'-external-'.$identity->id,
             'im_user_id' => $prefix.'-im-'.$identity->id,
+        ]);
+    }
+
+    private function createJob(string $code): Job
+    {
+        $company = Company::query()->create([
+            'name' => 'IM 会话测试企业',
+            'credit_code' => '91360100'.substr(md5($code), 0, 10),
+            'status' => CompanyStatus::Enabled,
+        ]);
+
+        return Job::query()->create([
+            'company_id' => $company->id,
+            'code' => $code,
+            'title' => 'IM 沟通职位',
+            'employment_type' => RcJobEmploymentType::FullTime,
+            'salary_min' => 8000,
+            'salary_max' => 15000,
+            'annual_salary_months' => 13,
+            'description' => '用于会话上下文测试',
+            'benefit' => '五险一金',
+            'status' => RcJobStatus::Published,
+            'published_at' => now(),
         ]);
     }
 
