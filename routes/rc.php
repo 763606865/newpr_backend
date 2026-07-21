@@ -299,6 +299,7 @@ Route::middleware('auth:rc')->group(function (): void {
     Route::get('/im/conversations', [ImConversationController::class, 'index']);
     Route::post('/im/conversations', [ImConversationController::class, 'store']);
     Route::get('/im/conversations/{id}/messages', [ImConversationController::class, 'getMessages'])->whereNumber('id');
+    Route::post('/im/conversations/{id}/card-messages', [ImConversationController::class, 'sendCardMessage'])->whereNumber('id');
     // IM相关-快捷短语
     Route::get('/im/quick-phrases', [ImQuickPhraseController::class, 'index']);
     Route::post('/im/quick-phrases', [ImQuickPhraseController::class, 'store']);

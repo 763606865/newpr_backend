@@ -744,3 +744,222 @@ Authorization: Bearer {token}
   }
 }
 ```
+
+---
+
+## 4) 发送业务卡片消息
+
+- 接口：`POST /rc/im/conversations/{id}/card-messages`
+- 描述：向指定会话发送业务卡片消息，例如换电话、投递简历、邀请面试、发 Offer、拒绝、举报、不感兴趣等
+- 权限：当前身份必须是该会话成员，否则返回会话不存在
+- 数据来源：服务端会使用本地会话的 `conversation_no` 调用 IM 后台 `Im::conversation()->postMessage()`
+
+> 该接口只负责把已完成或待展示的业务动作发送为 IM 卡片消息。投递、邀请面试、发 Offer、举报等业务状态变更，应优先调用对应业务接口完成，再调用本接口发送卡片，避免前端伪造业务状态。
+
+### Path 参数
+
+| 字段 | 是否必填 | 类型/规则 | 说明 |
+|------|----------|-----------|------|
+| `id` | 是 | int | 本地会话 ID，来自会话列表接口返回的 `data.data[*].id` |
+
+### 请求参数
+
+| 字段 | 类型 | 是否必填 | 说明 |
+|------|------|----------|------|
+| `card_type` | string | 是 | 卡片类型，见 [ImBusinessCardType](#imbusinesscardtype) |
+| `title` | string\|null | 否 | 卡片标题；为空时使用卡片类型默认标题 |
+| `summary` | string\|null | 否 | 卡片摘要，最大 500 字符 |
+| `biz` | object\|null | 否 | 业务引用 ID，用于跳转和刷新详情 |
+| `biz.application_id` | int\|null | 否 | 投递记录 ID |
+| `biz.job_id` | int\|null | 否 | 职位 ID |
+| `biz.resume_id` | int\|null | 否 | 简历 ID |
+| `biz.interview_id` | int\|null | 否 | 面试记录 ID |
+| `biz.offer_id` | int\|null | 否 | Offer ID |
+| `biz.report_id` | int\|null | 否 | 举报记录 ID |
+| `snapshot` | object\|null | 否 | 发送时的展示快照，例如职位名称、公司名称、面试时间 |
+| `metadata` | object\|null | 否 | 扩展数据，会透传给 IM 后台并追加发送者身份信息 |
+
+### 身份和卡片类型
+
+| 发送方 | `card_type` | 默认标题 |
+|--------|-------------|----------|
+| 招聘方 | `recruiter_exchange_phone` | 换电话 |
+| 招聘方 | `recruiter_invite_interview` | 邀请面试 |
+| 招聘方 | `recruiter_send_offer` | 发Offer |
+| 招聘方 | `recruiter_reject` | 拒绝 |
+| 求职者 | `jobseeker_exchange_phone` | 换电话 |
+| 求职者 | `jobseeker_apply_resume` | 投递简历 |
+| 求职者 | `jobseeker_report` | 举报 |
+| 求职者 | `jobseeker_not_interested` | 不感兴趣 |
+
+### 请求示例：招聘方邀请面试卡片
+
+```http
+POST /rc/im/conversations/12/card-messages
+Authorization: Bearer {token}
+Content-Type: application/json
+```
+
+```json
+{
+  "card_type": "recruiter_invite_interview",
+  "summary": "南昌示例科技有限公司邀请你参加后端工程师面试",
+  "biz": {
+    "application_id": 88,
+    "job_id": 12,
+    "resume_id": 45,
+    "interview_id": 1001
+  },
+  "snapshot": {
+    "company_name": "南昌示例科技有限公司",
+    "job_title": "后端工程师",
+    "interview_at": "2026-07-22 10:00:00",
+    "interview_mode": "视频面试"
+  }
+}
+```
+
+### 请求示例：求职者投递简历卡片
+
+```json
+{
+  "card_type": "jobseeker_apply_resume",
+  "summary": "张同学投递了「后端工程师」职位",
+  "biz": {
+    "application_id": 88,
+    "job_id": 12,
+    "resume_id": 45
+  },
+  "snapshot": {
+    "job_title": "后端工程师",
+    "resume_title": "张同学的简历",
+    "education_level_label": "本科",
+    "work_years": 2
+  }
+}
+```
+
+### 后端推送给 IM 的消息结构
+
+业务后端会组装以下 payload 调用 IM 后台：
+
+```json
+{
+  "user_id": "8K3mQxYp9aV2nL0sR7tBcD4eFgHiJkLm",
+  "message_type": "business_card",
+  "content": {
+    "card_type": "jobseeker_apply_resume",
+    "card_type_label": "投递简历",
+    "title": "投递简历",
+    "summary": "张同学投递了「后端工程师」职位",
+    "biz": {
+      "application_id": 88,
+      "job_id": 12,
+      "resume_id": 45
+    },
+    "snapshot": {
+      "job_title": "后端工程师",
+      "resume_title": "张同学的简历"
+    }
+  },
+  "metadata": {
+    "sender_user_im_id": 28,
+    "sender_user_identity_id": 30
+  }
+}
+```
+
+### 成功响应示例
+
+```json
+{
+  "code": 200,
+  "data": {
+    "message": {
+      "id": "m_10010",
+      "conversation_id": "c_10001",
+      "message_type": "business_card",
+      "created_at": "2026-07-21T12:00:00.000000Z"
+    },
+    "card": {
+      "card_type": "recruiter_invite_interview",
+      "card_type_label": "邀请面试",
+      "title": "邀请面试",
+      "summary": "南昌示例科技有限公司邀请你参加后端工程师面试",
+      "biz": {
+        "application_id": 88,
+        "job_id": 12,
+        "resume_id": 45,
+        "interview_id": 1001
+      },
+      "snapshot": {
+        "company_name": "南昌示例科技有限公司",
+        "job_title": "后端工程师",
+        "interview_at": "2026-07-22 10:00:00"
+      }
+    }
+  },
+  "meta": {
+    "timestamp": 1784616000.1234,
+    "response_time": 0.0123
+  }
+}
+```
+
+### 业务错误示例
+
+**会话不存在或当前身份不是该会话成员**
+
+```json
+{
+  "code": 404,
+  "message": "会话不存在。",
+  "meta": {
+    "timestamp": 1784616000.1234,
+    "response_time": 0.0123
+  }
+}
+```
+
+**当前身份不能发送该卡片**
+
+```json
+{
+  "code": 422,
+  "message": "当前身份不可发送该卡片。",
+  "meta": {
+    "timestamp": 1784616000.1234,
+    "response_time": 0.0123
+  }
+}
+```
+
+**IM 后台异常或连接失败**
+
+```json
+{
+  "code": 502,
+  "message": "IM API Error: Unknown error",
+  "meta": {
+    "timestamp": 1784616000.1234,
+    "response_time": 0.0123
+  }
+}
+```
+
+---
+
+## 枚举
+
+### `ImBusinessCardType`
+
+| 值 | 发送方 | 说明 |
+|----|--------|------|
+| `recruiter_exchange_phone` | 招聘方 | 换电话 |
+| `recruiter_invite_interview` | 招聘方 | 邀请面试 |
+| `recruiter_send_offer` | 招聘方 | 发Offer |
+| `recruiter_reject` | 招聘方 | 拒绝 |
+| `jobseeker_exchange_phone` | 求职者 | 换电话 |
+| `jobseeker_apply_resume` | 求职者 | 投递简历 |
+| `jobseeker_report` | 求职者 | 举报 |
+| `jobseeker_not_interested` | 求职者 | 不感兴趣 |

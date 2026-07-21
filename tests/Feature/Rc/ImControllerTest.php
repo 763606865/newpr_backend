@@ -3,6 +3,7 @@
 namespace Tests\Feature\Rc;
 
 use App\Enums\CompanyStatus;
+use App\Enums\ImBusinessCardType;
 use App\Enums\ImConversationType;
 use App\Enums\RcIdentityStatus;
 use App\Enums\RcIdentityType;
@@ -236,6 +237,68 @@ class ImControllerTest extends TestCase
             ->assertJsonPath('message', '单聊会话只能初始化一名成员。');
     }
 
+    public function test_recruiter_can_send_business_card_message(): void
+    {
+        [$user, $identity, $ownerUserIm, , $memberUserIm] = $this->createConversationContext();
+        $conversation = $this->createConversation($ownerUserIm, $memberUserIm);
+
+        Im::shouldReceive('conversation')
+            ->once()
+            ->andReturn(new class
+            {
+                public function postMessage(int|string $conversationId, array $params): array
+                {
+                    return [
+                        'id' => 'message-1',
+                        'conversation_id' => $conversationId,
+                        'payload' => $params,
+                    ];
+                }
+            });
+
+        $response = $this->rcPostJson($user, $identity, '/rc/im/conversations/'.$conversation->id.'/card-messages', [
+            'card_type' => ImBusinessCardType::RecruiterInviteInterview->value,
+            'summary' => '邀请你参加面试',
+            'biz' => [
+                'application_id' => 10,
+                'interview_id' => 20,
+            ],
+            'snapshot' => [
+                'job_title' => '后端工程师',
+                'interview_at' => '2026-07-22 10:00:00',
+            ],
+        ]);
+
+        $response
+            ->assertOk()
+            ->assertJsonPath('code', 200)
+            ->assertJsonPath('data.message.id', 'message-1')
+            ->assertJsonPath('data.card.card_type', ImBusinessCardType::RecruiterInviteInterview->value)
+            ->assertJsonPath('data.card.title', '邀请面试')
+            ->assertJsonPath('data.card.biz.application_id', 10)
+            ->assertJsonPath('data.card.snapshot.job_title', '后端工程师');
+
+        $this->assertNotNull($conversation->refresh()->last_message_at);
+    }
+
+    public function test_job_seeker_cannot_send_recruiter_card_message(): void
+    {
+        [$recruiter, $recruiterIdentity, $ownerUserIm, $jobSeekerIdentity, $memberUserIm] = $this->createConversationContext();
+        $conversation = $this->createConversation($ownerUserIm, $memberUserIm);
+        $jobSeeker = $jobSeekerIdentity->user;
+
+        Im::shouldReceive('conversation')->never();
+
+        $this->rcPostJson($jobSeeker, $jobSeekerIdentity, '/rc/im/conversations/'.$conversation->id.'/card-messages', [
+            'card_type' => ImBusinessCardType::RecruiterInviteInterview->value,
+        ])
+            ->assertOk()
+            ->assertJsonPath('code', 422)
+            ->assertJsonPath('message', '当前身份不可发送该卡片。');
+
+        $this->assertTrue($recruiter->is($recruiterIdentity->user));
+    }
+
     /**
      * @return array{0: User, 1: UserIdentity, 2: UserIm, 3: UserIdentity, 4: UserIm}
      */
@@ -275,6 +338,36 @@ class ImControllerTest extends TestCase
             'external_user_id' => $prefix.'-external-'.$identity->id,
             'im_user_id' => $prefix.'-im-'.$identity->id,
         ]);
+    }
+
+    private function createConversation(UserIm $ownerUserIm, UserIm $memberUserIm): ImConversation
+    {
+        $conversation = ImConversation::query()->create([
+            'provider' => 'custom',
+            'app_code' => 'rc',
+            'conversation_no' => 'provider-conversation-card',
+            'conversation_type' => ImConversationType::Single,
+            'conversation_key' => 'single:rc_user_im:'.$ownerUserIm->id.'|rc_user_im:'.$memberUserIm->id,
+            'owner_type' => 'rc_user_im',
+            'owner_id' => $ownerUserIm->id,
+            'scene' => 'manual',
+        ]);
+
+        $conversation->members()->create([
+            'member_type' => 'rc_user_im',
+            'member_id' => $ownerUserIm->id,
+            'role' => 'owner',
+            'joined_at' => now(),
+        ]);
+
+        $conversation->members()->create([
+            'member_type' => 'rc_user_im',
+            'member_id' => $memberUserIm->id,
+            'role' => 'member',
+            'joined_at' => now(),
+        ]);
+
+        return $conversation;
     }
 
     private function createJob(string $code): Job

@@ -68,7 +68,7 @@ class Conversation extends AbstractApi
      * @throws ConnectionException
      * @throws IMException
      */
-    public function postMessage(int $conversationId, array $params = []): array
+    public function postMessage(int|string $conversationId, array $params = []): array
     {
         $payload = $params;
         $json = $this->driver->post("/api/conversations/{$conversationId}/messages", ['json' => $payload, 'timeout' => 5])->json();
