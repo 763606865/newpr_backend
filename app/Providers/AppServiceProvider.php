@@ -8,6 +8,7 @@ use App\Models\BUser;
 use App\Models\Company;
 use App\Models\Employee;
 use App\Models\Rc\Job;
+use App\Models\Rc\Resume;
 use App\Models\Rc\UserIm;
 use App\Models\School;
 use App\Models\Token;
@@ -36,6 +37,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Relation::morphMap([
             'job' => Job::class,
+            'resume' => Resume::class,
             'company' => Company::class,
             'school' => School::class,
             'area' => Area::class,

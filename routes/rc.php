@@ -29,6 +29,7 @@ use App\Rc\Controllers\ImQuickPhraseController;
 use App\Rc\Controllers\JobController;
 use App\Rc\Controllers\MetaController;
 use App\Rc\Controllers\NotificationController;
+use App\Rc\Controllers\ReportController;
 use App\Rc\Controllers\ResumeCertificateController;
 use App\Rc\Controllers\ResumeController;
 use App\Rc\Controllers\ResumeEducationController;
@@ -88,6 +89,10 @@ Route::middleware('auth:rc')->group(function (): void {
     Route::put('/users/company-blacklists/{id}', [UserCompanyBlacklistController::class, 'update'])->whereNumber('id');
     Route::patch('/users/company-blacklists/{id}', [UserCompanyBlacklistController::class, 'update'])->whereNumber('id');
     Route::delete('/users/company-blacklists/{id}', [UserCompanyBlacklistController::class, 'destroy'])->whereNumber('id');
+    // ==============================================================================
+
+    // 举报
+    Route::post('/reports', [ReportController::class, 'store']);
     // ==============================================================================
 
     // 元数据

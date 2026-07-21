@@ -6,6 +6,13 @@
         "/Users/liujunlin/workspace/code/niupr/artisan",
         "boost:mcp"
       ]
+    },
+    "showdoc": {
+      "type": "streamable-http",
+      "url": "https://www.showdoc.cc/mcp.php",
+      "headers": {
+          "Authorization": "Bearer ${SHOWDOC_MCP_TOKEN}"
+      }
     }
   }
 }
