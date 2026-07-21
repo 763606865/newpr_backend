@@ -7,6 +7,7 @@ use App\Models\ImConversationMember;
 use App\Models\Rc\Job;
 use App\Models\Rc\UserIm;
 use App\Models\User;
+use App\Services\RcJobFavoriteService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -38,7 +39,7 @@ class ImConversationResource extends JsonResource
             'owner_id' => $this->resource->owner_id,
             'context_type' => $this->resource->context_type,
             'context_id' => $this->resource->context_id,
-            'context' => $this->contextPayload(),
+            'context' => $this->contextPayload($request),
             'scene' => $this->resource->scene,
             'metadata' => $this->resource->metadata,
             'last_message_at' => $this->resource->last_message_at,
@@ -104,9 +105,10 @@ class ImConversationResource extends JsonResource
     /**
      * @return array<string, mixed>|null
      */
-    private function contextPayload(): ?array
+    private function contextPayload(Request $request): ?array
     {
         $context = $this->resource->relationLoaded('context') ? $this->resource->context : null;
+        $viewer = $request->user('rc');
 
         if ($context instanceof Job) {
             return [
@@ -126,6 +128,8 @@ class ImConversationResource extends JsonResource
                 'benefit' => $context->benefit,
                 'status' => $context->status?->value,
                 'status_label' => $context->status?->getLabel(),
+                'is_favorited' => $viewer instanceof User
+                    && RcJobFavoriteService::make()->isFavorited($viewer, $context->id),
                 'published_at' => $context->published_at,
             ];
         }

@@ -13,6 +13,7 @@ use App\Libs\Facades\Im;
 use App\Models\Company;
 use App\Models\ImConversation;
 use App\Models\Rc\Job;
+use App\Models\Rc\JobFavorite;
 use App\Models\Rc\UserIdentity;
 use App\Models\Rc\UserIm;
 use App\Models\Token;
@@ -128,6 +129,10 @@ class ImControllerTest extends TestCase
     {
         [$user, $identity, , $memberIdentity] = $this->createConversationContext();
         $job = $this->createJob('JOB-IM-CONTEXT-001');
+        JobFavorite::query()->create([
+            'user_id' => $user->id,
+            'job_id' => $job->id,
+        ]);
 
         Im::shouldReceive('conversation')
             ->once()
@@ -160,6 +165,7 @@ class ImControllerTest extends TestCase
             ->assertJsonPath('data.context.salary_unit', 1)
             ->assertJsonPath('data.context.salary_unit_label', '月')
             ->assertJsonPath('data.context.annual_salary_months', '13.0')
+            ->assertJsonPath('data.context.is_favorited', true)
             ->assertJsonPath('data.context.benefit', '五险一金');
 
         $this->assertDatabaseHas('im_conversations', [

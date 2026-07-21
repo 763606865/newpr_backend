@@ -179,7 +179,7 @@ class ImConversationController extends Controller
     private function businessCardMessagePayload(ImConversationCardMessageRequest $request, ImBusinessCardType $cardType, UserIm $userIm): array
     {
         return [
-            'user_id' => $userIm->external_user_id,
+            'sender_user_id' => $userIm->external_user_id,
             'message_type' => 'business_card',
             'content' => [
                 'card_type' => $cardType->value,

@@ -64,7 +64,6 @@ class Conversation extends AbstractApi
     /**
      * 发送消息
      *
-     *
      * @throws ConnectionException
      * @throws IMException
      */
