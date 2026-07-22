@@ -8,6 +8,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
+use RuntimeException;
 
 #[Signature('data:migration:areas')]
 #[Description('Command description')]
@@ -23,49 +24,44 @@ class Areas extends Command
         if (file_exists($jsonPath)) {
             $this->info("Found JSON: $jsonPath, reinitializing areas from JSON (backup recommended)...");
 
-            $json = file_get_contents($jsonPath);
-            $data = json_decode($json, true);
-            if (!is_array($data)) {
-                $this->error('Invalid JSON structure in areas.json');
-                return 1;
-            }
-
             // 备份提示已在外部执行，这里直接清空并导入
             DB::table('areas')->truncate();
 
             $columns = Schema::getColumnListing('areas');
             $hasCreatedAt = in_array('created_at', $columns, true);
             $hasUpdatedAt = in_array('updated_at', $columns, true);
+            $allowedColumns = array_flip($columns);
+            $now = now();
 
             $chunkSize = 500;
-            $total = count($data);
+            $total = 0;
             $inserted = 0;
+            $batch = [];
 
-            foreach (array_chunk($data, $chunkSize) as $chunk) {
-                $batch = [];
-                foreach ($chunk as $row) {
-                    if (!is_array($row)) {
-                        continue;
-                    }
-                    // 只保留 areas 表存在的列
-                    $filtered = array_intersect_key($row, array_flip($columns));
+            foreach ($this->readJsonArrayObjects($jsonPath) as $row) {
+                $total++;
 
-                    // 如果没有 created_at/updated_at，填充当前时间
-                    $now = now();
-                    if ($hasCreatedAt && empty($filtered['created_at'])) {
-                        $filtered['created_at'] = $now;
-                    }
-                    if ($hasUpdatedAt && empty($filtered['updated_at'])) {
-                        $filtered['updated_at'] = $now;
-                    }
+                $filtered = array_intersect_key($row, $allowedColumns);
 
-                    $batch[] = $filtered;
+                if ($hasCreatedAt && empty($filtered['created_at'])) {
+                    $filtered['created_at'] = $now;
+                }
+                if ($hasUpdatedAt && empty($filtered['updated_at'])) {
+                    $filtered['updated_at'] = $now;
                 }
 
-                if (!empty($batch)) {
+                $batch[] = $filtered;
+
+                if (count($batch) >= $chunkSize) {
                     DB::table('areas')->insert($batch);
                     $inserted += count($batch);
+                    $batch = [];
                 }
+            }
+
+            if ($batch !== []) {
+                DB::table('areas')->insert($batch);
+                $inserted += count($batch);
             }
 
             $this->info("Imported {$inserted}/{$total} rows into areas from JSON");
@@ -93,7 +89,9 @@ class Areas extends Command
             $columns[] = 'updated_at';
         }
 
-        $columnsList = implode(', ', array_map(function ($c) { return "`$c`"; }, $columns));
+        $columnsList = implode(', ', array_map(function ($c) {
+            return "`$c`";
+        }, $columns));
 
         $select = 'SELECT r.name, r.zip, r.level, r.type, p.zip AS parent_code';
         if ($hasDepth) {
@@ -111,5 +109,73 @@ class Areas extends Command
         $this->info('Imported ex_region into areas');
 
         return 0;
+    }
+
+    /**
+     * @return \Generator<int, array<string, mixed>>
+     */
+    private function readJsonArrayObjects(string $path): \Generator
+    {
+        $handle = fopen($path, 'rb');
+
+        if ($handle === false) {
+            throw new RuntimeException("Unable to open JSON file: {$path}");
+        }
+
+        try {
+            $buffer = '';
+            $depth = 0;
+            $inString = false;
+            $escaped = false;
+
+            while (($char = fgetc($handle)) !== false) {
+                if ($depth === 0) {
+                    if ($char !== '{') {
+                        continue;
+                    }
+
+                    $buffer = '{';
+                    $depth = 1;
+                    $inString = false;
+                    $escaped = false;
+
+                    continue;
+                }
+
+                $buffer .= $char;
+
+                if ($inString) {
+                    if ($escaped) {
+                        $escaped = false;
+                    } elseif ($char === '\\') {
+                        $escaped = true;
+                    } elseif ($char === '"') {
+                        $inString = false;
+                    }
+
+                    continue;
+                }
+
+                if ($char === '"') {
+                    $inString = true;
+                } elseif ($char === '{') {
+                    $depth++;
+                } elseif ($char === '}') {
+                    $depth--;
+
+                    if ($depth === 0) {
+                        $row = json_decode($buffer, true);
+
+                        if (is_array($row)) {
+                            yield $row;
+                        }
+
+                        $buffer = '';
+                    }
+                }
+            }
+        } finally {
+            fclose($handle);
+        }
     }
 }
