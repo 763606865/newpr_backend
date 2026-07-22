@@ -4,6 +4,7 @@ namespace App\Resources\Rc;
 
 use App\Models\ImConversation;
 use App\Models\ImConversationMember;
+use App\Models\ImSystemUser;
 use App\Models\Rc\Job;
 use App\Models\Rc\UserIm;
 use App\Models\User;
@@ -49,7 +50,7 @@ class ImConversationResource extends JsonResource
             'members' => $members->all(),
             'participants' => $members->pluck('member')->filter()->values()->all(),
             'other_participants' => $members
-                ->reject(fn (array $member): bool => (int) $member['member_id'] === $currentUserImId)
+                ->reject(fn (array $member): bool => $member['member_type'] === 'rc_user_im' && (int) $member['member_id'] === $currentUserImId)
                 ->pluck('member')
                 ->filter()
                 ->values()
@@ -72,8 +73,19 @@ class ImConversationResource extends JsonResource
             'joined_at' => $member->joined_at,
             'last_read_at' => $member->last_read_at,
             'settings' => $member->settings,
-            'member' => $memberModel instanceof UserIm ? [
+            'member' => $this->memberModelPayload($memberModel),
+        ];
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    private function memberModelPayload(mixed $memberModel): ?array
+    {
+        if ($memberModel instanceof UserIm) {
+            return [
                 'id' => $memberModel->id,
+                'type' => 'user',
                 'user_id' => $memberModel->user_id,
                 'user_identity_id' => $memberModel->user_identity_id,
                 'identity_type' => $memberModel->identity_type?->value,
@@ -98,8 +110,24 @@ class ImConversationResource extends JsonResource
                     'organization_name' => $memberModel->userIdentity->organization_name,
                     'job_title' => $memberModel->userIdentity->job_title,
                 ] : null,
-            ] : null,
-        ];
+            ];
+        }
+
+        if ($memberModel instanceof ImSystemUser) {
+            return [
+                'id' => $memberModel->id,
+                'type' => 'system',
+                'code' => $memberModel->code,
+                'name' => $memberModel->name,
+                'provider' => $memberModel->provider,
+                'app_code' => $memberModel->app_code,
+                'external_user_id' => $memberModel->external_user_id,
+                'im_user_id' => $memberModel->im_user_id,
+                'avatar' => $memberModel->avatar,
+            ];
+        }
+
+        return null;
     }
 
     /**

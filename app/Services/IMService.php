@@ -8,6 +8,7 @@ use App\Exceptions\BadRequestException;
 use App\Libs\Facades\Im;
 use App\Models\ImConversation;
 use App\Models\ImConversationMember;
+use App\Models\ImSystemUser;
 use App\Models\Rc\Job;
 use App\Models\Rc\UserIdentity;
 use App\Models\Rc\UserIm;
@@ -25,6 +26,7 @@ class IMService extends Service
             'external_user_id' => $identity->external_user_id,
             'nickname' => $user->nickname,
             'avatar_url' => $user->display_avatar,
+            'user_type' => 'normal',
         ];
         $im = Im::user();
         $imDriver = $im->getDriver();
@@ -131,6 +133,7 @@ class IMService extends Service
             'type' => $conversationType->value,
             'subject' => $payload['subject'] ?? null,
             'owner_user_id' => $this->externalUserId($ownerUserIm),
+            'scene' => 'rc_message',
             'metadata' => array_merge($conversationMetadata, [
                 'conversation_key' => $conversationKey,
                 'identity_ids' => array_keys($memberIdentities),
@@ -193,6 +196,56 @@ class IMService extends Service
         }
 
         return $this->createOrUpdate($identity);
+    }
+
+    /**
+     * 给特定 IM 用户发送系统通知。
+     *
+     * @param  array{
+     *     notice_type?: string|null,
+     *     title?: string|null,
+     *     summary?: string|null,
+     *     biz_id?: string|int|null,
+     *     action_url?: string|null,
+     *     client_msg_id?: string|null,
+     *     metadata?: array<string, mixed>
+     * }  $payload
+     *
+     * @throws \Throwable
+     */
+    public function sendSystemNotice(string $externalUserId, array $payload, ?ImSystemUser $systemUser = null): array
+    {
+        $receiver = UserIm::query()
+            ->where('external_user_id', $externalUserId)
+            ->first();
+
+        if (! $receiver instanceof UserIm) {
+            throw new InvalidArgumentException('接收人 IM 用户不存在。');
+        }
+
+        $systemUser ??= ImSystemUser::query()->active()->first();
+
+        if (! $systemUser instanceof ImSystemUser) {
+            throw new InvalidArgumentException('IM 系统用户不存在。');
+        }
+
+        if (blank($systemUser->external_user_id)) {
+            throw new InvalidArgumentException('IM 系统用户外部标识不存在。');
+        }
+
+        $conversation = $this->resolveSystemConversation($receiver, $systemUser);
+        $messagePayload = $this->systemNoticeMessagePayload($payload, $receiver, $systemUser);
+        $message = Im::conversation()->postMessage($conversation->conversation_no, $messagePayload);
+
+        $conversation->forceFill([
+            'last_message_at' => now(),
+        ])->save();
+
+        return [
+            'conversation' => $conversation->refresh(),
+            'message' => $message,
+            'payload' => $messagePayload,
+        ];
     }
 
     private function externalUserId(UserIm $userIm): string
@@ -279,6 +332,103 @@ class IMService extends Service
             RcIdentityType::Recruiter => config('im.conversation.initial_messages.recruiter'),
             default => null,
         };
+    }
+
+    /**
+     * @throws \Throwable
+     */
+    private function resolveSystemConversation(UserIm $receiver, ImSystemUser $systemUser): ImConversation
+    {
+        $conversationKey = 'system:rc_user_im:'.$receiver->id;
+
+        $conversation = ImConversation::query()
+            ->where('conversation_key', $conversationKey)
+            ->first();
+
+        if ($conversation instanceof ImConversation) {
+            $this->syncSystemConversationMembers($conversation, $receiver, $systemUser);
+
+            return $conversation;
+        }
+
+        $response = Im::conversation()->store([
+            'conversation_key' => $conversationKey,
+            'type' => ImConversationType::Single->value,
+            'scene' => 'system',
+            'subject' => $systemUser->name,
+            'owner_user_id' => $systemUser->external_user_id,
+            'member_user_ids' => [
+                $this->systemReceiverUserId($receiver),
+            ],
+            'metadata' => [
+                'channel' => 'system_notice',
+                'system' => true,
+                'system_user_id' => $systemUser->id,
+                'receiver_user_im_id' => $receiver->id,
+            ],
+        ]);
+        $conversationNo = $this->resolveConversationNo($response);
+
+        return DB::transaction(function () use ($conversationKey, $conversationNo, $receiver, $response, $systemUser): ImConversation {
+            $conversation = ImConversation::query()->firstOrCreate([
+                'conversation_key' => $conversationKey,
+            ], [
+                'provider' => $systemUser->provider,
+                'app_code' => $systemUser->app_code,
+                'conversation_no' => $conversationNo,
+                'conversation_type' => ImConversationType::Single,
+                'owner_type' => 'im_system_user',
+                'owner_id' => $systemUser->id,
+                'scene' => 'system',
+                'metadata' => [
+                    'channel' => 'system_notice',
+                    'system' => true,
+                    'system_user_id' => $systemUser->id,
+                    'receiver_user_im_id' => $receiver->id,
+                    'provider_response' => $response,
+                ],
+            ]);
+
+            $this->syncSystemConversationMembers($conversation, $receiver, $systemUser);
+
+            return $conversation;
+        });
+    }
+
+    /**
+     * @param  array<string, mixed>  $payload
+     * @return array<string, mixed>
+     */
+    private function systemNoticeMessagePayload(array $payload, UserIm $receiver, ImSystemUser $systemUser): array
+    {
+        $metadata = $payload['metadata'] ?? [];
+
+        if (! is_array($metadata)) {
+            $metadata = [];
+        }
+
+        $messagePayload = [
+            'sender_user_id' => $systemUser->external_user_id,
+            'message_type' => 'system_notice',
+            'content' => [
+                'notice_type' => $payload['notice_type'] ?? null,
+                'title' => $payload['title'] ?? null,
+                'summary' => $payload['summary'] ?? null,
+                'biz_id' => isset($payload['biz_id']) ? (string) $payload['biz_id'] : null,
+                'action_url' => $payload['action_url'] ?? null,
+            ],
+            'metadata' => array_merge($metadata, [
+                'source' => 'system_notice',
+                'system_user_id' => $systemUser->id,
+                'receiver_user_im_id' => $receiver->id,
+            ]),
+        ];
+
+        if (filled($payload['client_msg_id'] ?? null)) {
+            $messagePayload['client_msg_id'] = (string) $payload['client_msg_id'];
+        }
+
+        return $messagePayload;
     }
 
     /**
@@ -384,6 +534,32 @@ class IMService extends Service
             'member_id' => $userIm->id,
         ], [
             'role' => $role,
+            'joined_at' => now(),
+        ]);
+    }
+
+    private function systemReceiverUserId(UserIm $receiver): string
+    {
+        return $receiver->external_user_id;
+    }
+
+    private function syncSystemConversationMembers(ImConversation $conversation, UserIm $receiver, ImSystemUser $systemUser): void
+    {
+        ImConversationMember::query()->updateOrCreate([
+            'conversation_id' => $conversation->id,
+            'member_type' => 'im_system_user',
+            'member_id' => $systemUser->id,
+        ], [
+            'role' => 'owner',
+            'joined_at' => now(),
+        ]);
+
+        ImConversationMember::query()->updateOrCreate([
+            'conversation_id' => $conversation->id,
+            'member_type' => 'rc_user_im',
+            'member_id' => $receiver->id,
+        ], [
+            'role' => 'member',
             'joined_at' => now(),
         ]);
     }

@@ -12,13 +12,14 @@ use App\Enums\RcJobStatus;
 use App\Libs\Facades\Im;
 use App\Models\Company;
 use App\Models\ImConversation;
+use App\Models\ImSystemUser;
 use App\Models\Rc\Job;
 use App\Models\Rc\JobFavorite;
 use App\Models\Rc\UserIdentity;
 use App\Models\Rc\UserIm;
 use App\Models\Token;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Services\IMService;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Passport\ClientRepository;
 use Laravel\Passport\PersonalAccessTokenFactory;
@@ -26,8 +27,6 @@ use Tests\TestCase;
 
 class ImControllerTest extends TestCase
 {
-    use RefreshDatabase;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -105,9 +104,12 @@ class ImControllerTest extends TestCase
             [
                 'conversation_id' => 'provider-conversation-1',
                 'payload' => [
-                    'user_id' => $ownerUserIm->external_user_id,
+                    'sender_user_id' => $ownerUserIm->external_user_id,
                     'message_type' => 'text',
-                    'content' => 'Hi，看了您的过往经历感觉您比较符合我们的职位要求，方便聊一聊吗?',
+                    'content' => [
+                        'card_type' => 'text',
+                        'text' => 'Hi，看了您的过往经历感觉您比较符合我们的职位要求，方便聊一聊吗?',
+                    ],
                     'metadata' => [
                         'source' => 'conversation_initial_message',
                         'sender_user_im_id' => $ownerUserIm->id,
@@ -216,8 +218,114 @@ class ImControllerTest extends TestCase
         ])->assertOk()->assertJsonPath('code', 200);
 
         $this->assertSame('provider-conversation-job-seeker', $imConversationApi->messages[0]['conversation_id']);
-        $this->assertSame($jobSeekerUserIm->external_user_id, $imConversationApi->messages[0]['payload']['user_id']);
-        $this->assertSame('希望和你聊聊这个职位，是否有时间呢？', $imConversationApi->messages[0]['payload']['content']);
+        $this->assertSame($jobSeekerUserIm->external_user_id, $imConversationApi->messages[0]['payload']['sender_user_id']);
+        $this->assertSame('希望和你聊聊这个职位，是否有时间呢？', $imConversationApi->messages[0]['payload']['content']['text']);
+    }
+
+    public function test_system_notice_can_be_sent_to_specific_user_im(): void
+    {
+        [, , $receiver] = $this->createConversationContext();
+        $systemUser = ImSystemUser::query()->create([
+            'code' => 'rc_notice',
+            'name' => '系统通知',
+            'provider' => 'custom',
+            'app_code' => 'rc',
+            'external_user_id' => 'system',
+            'is_active' => true,
+        ]);
+        $imConversationApi = new class
+        {
+            /**
+             * @var list<array<string, mixed>>
+             */
+            public array $conversations = [];
+
+            /**
+             * @var list<array<string, mixed>>
+             */
+            public array $messages = [];
+
+            public function store(array $payload): array
+            {
+                $this->conversations[] = $payload;
+
+                return [
+                    'id' => 'provider-system-conversation-1',
+                    'payload' => $payload,
+                ];
+            }
+
+            public function postMessage(int|string $conversationId, array $params): array
+            {
+                $this->messages[] = [
+                    'conversation_id' => $conversationId,
+                    'payload' => $params,
+                ];
+
+                return [
+                    'id' => 'system-message-1',
+                    'conversation_id' => $conversationId,
+                    'payload' => $params,
+                ];
+            }
+        };
+
+        Im::shouldReceive('conversation')
+            ->twice()
+            ->andReturn($imConversationApi);
+
+        $result = IMService::make()->sendSystemNotice($receiver->external_user_id, [
+            'notice_type' => 'interview_invited',
+            'title' => '面试提醒',
+            'summary' => '您有一场新的面试邀请。',
+            'biz_id' => 'interview_10',
+            'action_url' => '/rc/interviews/10',
+            'client_msg_id' => 'interview_invited_10',
+        ], $systemUser);
+
+        $this->assertSame('system-message-1', $result['message']['id']);
+        $this->assertSame([
+            'conversation_key' => 'system:rc_user_im:'.$receiver->id,
+            'type' => 'single',
+            'scene' => 'system',
+            'subject' => '系统通知',
+            'owner_user_id' => 'system',
+            'member_user_ids' => ['rc_user_im:'.$receiver->id],
+            'metadata' => [
+                'channel' => 'system_notice',
+                'system' => true,
+                'system_user_id' => $systemUser->id,
+                'receiver_user_im_id' => $receiver->id,
+            ],
+        ], $imConversationApi->conversations[0]);
+        $this->assertSame('provider-system-conversation-1', $imConversationApi->messages[0]['conversation_id']);
+        $this->assertSame('system', $imConversationApi->messages[0]['payload']['sender_user_id']);
+        $this->assertSame('system_notice', $imConversationApi->messages[0]['payload']['message_type']);
+        $this->assertSame('interview_invited_10', $imConversationApi->messages[0]['payload']['client_msg_id']);
+        $this->assertSame('interview_invited', $imConversationApi->messages[0]['payload']['content']['notice_type']);
+        $this->assertSame('面试提醒', $imConversationApi->messages[0]['payload']['content']['title']);
+        $this->assertSame('您有一场新的面试邀请。', $imConversationApi->messages[0]['payload']['content']['summary']);
+        $this->assertSame('interview_10', $imConversationApi->messages[0]['payload']['content']['biz_id']);
+        $this->assertSame('/rc/interviews/10', $imConversationApi->messages[0]['payload']['content']['action_url']);
+
+        $this->assertDatabaseHas('im_conversations', [
+            'conversation_no' => 'provider-system-conversation-1',
+            'conversation_type' => ImConversationType::Single->value,
+            'conversation_key' => 'system:rc_user_im:'.$receiver->id,
+            'owner_type' => 'im_system_user',
+            'owner_id' => $systemUser->id,
+            'scene' => 'system',
+        ]);
+        $this->assertDatabaseHas('im_conversation_members', [
+            'member_type' => 'im_system_user',
+            'member_id' => $systemUser->id,
+            'role' => 'owner',
+        ]);
+        $this->assertDatabaseHas('im_conversation_members', [
+            'member_type' => 'rc_user_im',
+            'member_id' => $receiver->id,
+            'role' => 'member',
+        ]);
     }
 
     public function test_job_id_is_saved_as_conversation_context(): void
@@ -416,6 +524,22 @@ class ImControllerTest extends TestCase
             ->assertJsonPath('message', '当前身份不可发送该卡片。');
 
         $this->assertTrue($recruiter->is($recruiterIdentity->user));
+    }
+
+    public function test_send_system_notice()
+    {
+        $identity = UserIdentity::first();
+        $payload = [
+            'notice_type' => 'coupon',
+            'title' => '您有一条新消息',
+            'summary' => '恭喜您活动一张优惠券!🎉🎉🎉',
+            'biz_id' => '',
+            'action_url' => '',
+        ];
+        $systemUser = ImSystemUser::first();
+
+        IMService::make()->sendSystemNotice($identity->external_user_id, $payload, $systemUser);
+        $this->assertEquals(200, 200);
     }
 
     /**

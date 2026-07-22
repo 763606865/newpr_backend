@@ -12,6 +12,7 @@ use App\Rc\Requests\ImConversationCardMessageRequest;
 use App\Rc\Requests\ImConversationStoreRequest;
 use App\Resources\Rc\ImConversationResource;
 use App\Services\IMService;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -36,8 +37,11 @@ class ImConversationController extends Controller
         $paginator = $userIm->memberConversations()
             ->with([
                 'context',
-                'members.member.user',
-                'members.member.userIdentity',
+                'members.member' => function (MorphTo $morphTo): void {
+                    $morphTo->morphWith([
+                        UserIm::class => ['user', 'userIdentity'],
+                    ]);
+                },
             ])
             ->orderByDesc('last_message_at')
             ->orderByDesc('updated_at')

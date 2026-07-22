@@ -7,6 +7,7 @@ use App\Models\Area;
 use App\Models\BUser;
 use App\Models\Company;
 use App\Models\Employee;
+use App\Models\ImSystemUser;
 use App\Models\Rc\Job;
 use App\Models\Rc\Resume;
 use App\Models\Rc\UserIm;
@@ -44,6 +45,7 @@ class AppServiceProvider extends ServiceProvider
             'admin_user' => AdminUser::class,
             'b_user' => BUser::class,
             'rc_user_im' => UserIm::class,
+            'im_system_user' => ImSystemUser::class,
         ]);
 
         Select::configureUsing(static function (Select $component): void {

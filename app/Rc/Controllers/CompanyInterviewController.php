@@ -2,15 +2,24 @@
 
 namespace App\Rc\Controllers;
 
+use App\Enums\RcIdentityType;
 use App\Models\Company;
 use App\Models\Rc\Interview;
 use App\Resources\Rc\RcApplicationResource;
 use App\Resources\Rc\RcInterviewInvitationResource;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class CompanyInterviewController extends Controller
 {
-    public function index(Request $request)
+    /**
+     * 面试邀请
+     *
+     * GET /rc/companies/interviews
+     *
+     * @throws \Exception
+     */
+    public function index(Request $request): JsonResponse
     {
         $company = $this->resolveCurrentRecruiterCompany();
 
@@ -56,7 +65,7 @@ class CompanyInterviewController extends Controller
     {
         $identity = $this->currentIdentity();
 
-        if (! $identity || $identity->identity_type->value !== \App\Enums\RcIdentityType::Recruiter->value) {
+        if (! $identity || $identity->identity_type->value !== RcIdentityType::Recruiter->value) {
             return null;
         }
 
