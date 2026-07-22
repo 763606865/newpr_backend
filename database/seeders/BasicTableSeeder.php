@@ -17,7 +17,7 @@ class BasicTableSeeder extends Seeder
      */
     public function run(): void
     {
-//        $this->initAreas();
+        $this->initAreas();
         $this->initSchools();
     }
 
@@ -28,41 +28,104 @@ class BasicTableSeeder extends Seeder
         // 首先尝试从 JSON 文件重新初始化
         $jsonPath = base_path('database/seeders/data/areas.json');
         if (file_exists($jsonPath)) {
-
-            $json = file_get_contents($jsonPath);
-            $data = json_decode($json, true);
-
             $columns = Schema::getColumnListing('areas');
             $hasCreatedAt = in_array('created_at', $columns, true);
             $hasUpdatedAt = in_array('updated_at', $columns, true);
+            $allowedColumns = array_flip($columns);
+            $now = now();
 
             $chunkSize = 500;
+            $batch = [];
 
-            foreach (array_chunk($data, $chunkSize) as $chunk) {
-                $batch = [];
-                foreach ($chunk as $row) {
-                    if (!is_array($row)) {
-                        continue;
-                    }
-                    // 只保留 areas 表存在的列
-                    $filtered = array_intersect_key($row, array_flip($columns));
+            foreach ($this->readJsonArrayObjects($jsonPath) as $row) {
+                $filtered = array_intersect_key($row, $allowedColumns);
 
-                    // 如果没有 created_at/updated_at，填充当前时间
-                    $now = now();
-                    if ($hasCreatedAt && empty($filtered['created_at'])) {
-                        $filtered['created_at'] = $now;
-                    }
-                    if ($hasUpdatedAt && empty($filtered['updated_at'])) {
-                        $filtered['updated_at'] = $now;
-                    }
-
-                    $batch[] = $filtered;
+                if ($hasCreatedAt && empty($filtered['created_at'])) {
+                    $filtered['created_at'] = $now;
+                }
+                if ($hasUpdatedAt && empty($filtered['updated_at'])) {
+                    $filtered['updated_at'] = $now;
                 }
 
-                if (!empty($batch)) {
+                $batch[] = $filtered;
+
+                if (count($batch) >= $chunkSize) {
                     DB::table('areas')->insert($batch);
+                    $batch = [];
                 }
             }
+
+            if ($batch !== []) {
+                DB::table('areas')->insert($batch);
+            }
+        }
+    }
+
+    /**
+     * @return \Generator<int, array<string, mixed>>
+     */
+    private function readJsonArrayObjects(string $path): \Generator
+    {
+        $handle = fopen($path, 'rb');
+
+        if ($handle === false) {
+            throw new Exception("Unable to open JSON file: {$path}");
+        }
+
+        try {
+            $buffer = '';
+            $depth = 0;
+            $inString = false;
+            $escaped = false;
+
+            while (($char = fgetc($handle)) !== false) {
+                if ($depth === 0) {
+                    if ($char !== '{') {
+                        continue;
+                    }
+
+                    $buffer = '{';
+                    $depth = 1;
+                    $inString = false;
+                    $escaped = false;
+
+                    continue;
+                }
+
+                $buffer .= $char;
+
+                if ($inString) {
+                    if ($escaped) {
+                        $escaped = false;
+                    } elseif ($char === '\\') {
+                        $escaped = true;
+                    } elseif ($char === '"') {
+                        $inString = false;
+                    }
+
+                    continue;
+                }
+
+                if ($char === '"') {
+                    $inString = true;
+                } elseif ($char === '{') {
+                    $depth++;
+                } elseif ($char === '}') {
+                    $depth--;
+
+                    if ($depth === 0) {
+                        $row = json_decode($buffer, true);
+
+                        if (is_array($row)) {
+                            yield $row;
+                        }
+
+                        $buffer = '';
+                    }
+                }
+            }
+        } finally {
+            fclose($handle);
         }
     }
 
