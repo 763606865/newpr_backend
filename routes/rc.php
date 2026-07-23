@@ -25,6 +25,7 @@ use App\Rc\Controllers\Discovery\ResumeSearchController;
 use App\Rc\Controllers\HomeController;
 use App\Rc\Controllers\ImController;
 use App\Rc\Controllers\ImConversationController;
+use App\Rc\Controllers\ImInteractionRequestController;
 use App\Rc\Controllers\ImQuickPhraseController;
 use App\Rc\Controllers\JobController;
 use App\Rc\Controllers\MetaController;
@@ -301,6 +302,8 @@ Route::middleware('auth:rc')->group(function (): void {
     Route::post('/im/conversations', [ImConversationController::class, 'store']);
     Route::get('/im/conversations/{id}/messages', [ImConversationController::class, 'getMessages'])->whereNumber('id');
     Route::post('/im/conversations/{id}/card-messages', [ImConversationController::class, 'sendCardMessage'])->whereNumber('id');
+    Route::post('/im/interaction-requests', [ImInteractionRequestController::class, 'store']);
+    Route::post('/im/interaction-requests/{id}/respond', [ImInteractionRequestController::class, 'respond'])->whereNumber('id');
     // IM相关-快捷短语
     Route::get('/im/quick-phrases', [ImQuickPhraseController::class, 'index']);
     Route::post('/im/quick-phrases', [ImQuickPhraseController::class, 'store']);

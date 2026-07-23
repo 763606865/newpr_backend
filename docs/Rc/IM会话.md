@@ -83,7 +83,7 @@
 | `id` | int | `rc_user_ims.id` |
 | `user_id` | int | 用户 ID |
 | `user_identity_id` | int | 身份 ID |
-| `identity_type` | int\|null | 身份类型 |
+| `identity_type` | int/null | 身份类型 |
 | `provider` | string | IM 服务提供商 |
 | `app_code` | string\|null | IM 应用编码 |
 | `external_user_id` | string\|null | 业务侧 IM 用户 ID |
@@ -107,10 +107,10 @@
 | 字段 | 类型 | 说明 |
 |------|------|------|
 | `id` | int | `rc_user_identities.id` |
-| `identity_type` | int\|null | 身份类型 |
+| `identity_type` | int/null | 身份类型 |
 | `identity_name` | string\|null | 身份名称 |
 | `organization_type` | string\|null | 组织类型 |
-| `organization_id` | int\|null | 组织 ID |
+| `organization_id` | int/null | 组织 ID |
 | `organization_name` | string\|null | 组织名称 |
 | `job_title` | string\|null | 职位名称 |
 
@@ -770,12 +770,12 @@ Authorization: Bearer {token}
 | `title` | string\|null | 否 | 卡片标题；为空时使用卡片类型默认标题 |
 | `summary` | string\|null | 否 | 卡片摘要，最大 500 字符 |
 | `biz` | object\|null | 否 | 业务引用 ID，用于跳转和刷新详情 |
-| `biz.application_id` | int\|null | 否 | 投递记录 ID |
-| `biz.job_id` | int\|null | 否 | 职位 ID |
-| `biz.resume_id` | int\|null | 否 | 简历 ID |
-| `biz.interview_id` | int\|null | 否 | 面试记录 ID |
-| `biz.offer_id` | int\|null | 否 | Offer ID |
-| `biz.report_id` | int\|null | 否 | 举报记录 ID |
+| `biz.application_id` | int/null | 否 | 投递记录 ID |
+| `biz.job_id` | int/null | 否 | 职位 ID |
+| `biz.resume_id` | int/null | 否 | 简历 ID |
+| `biz.interview_id` | int/null | 否 | 面试记录 ID |
+| `biz.offer_id` | int/null | 否 | Offer ID |
+| `biz.report_id` | int/null | 否 | 举报记录 ID |
 | `snapshot` | object\|null | 否 | 发送时的展示快照，例如职位名称、公司名称、面试时间 |
 | `metadata` | object\|null | 否 | 扩展数据，会透传给 IM 后台并追加发送者身份信息 |
 
@@ -949,6 +949,446 @@ Content-Type: application/json
 
 ---
 
+## 5) IM 交互请求
+
+- 创建接口：`POST /rc/im/interaction-requests`
+- 处理接口：`POST /rc/im/interaction-requests/{id}/respond`
+- 描述：用于需要接收方确认的 IM 交互场景，例如交换联系方式。发起后 IM 会发送一条可操作卡片；接收方同意或拒绝后，后端执行业务动作并发送处理结果消息。
+- 权限：发起方和接收方都必须是同一个会话成员；只有接收方可以处理请求
+- 数据来源：服务端会使用本地会话的 `conversation_no` 调用 IM 后台 `Im::conversation()->postMessage()`
+
+> 交互请求用于“需要对方点击同意 / 拒绝”的场景；普通业务展示仍使用 [发送业务卡片消息](#4-发送业务卡片消息)。交换联系方式时，手机号由服务端从双方用户资料读取并写入结果快照，前端不应自行拼接手机号。
+
+### 交互请求对象
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| `id` | int | 交互请求 ID |
+| `conversation_id` | int | 本地会话 ID |
+| `sender_user_im_id` | int | 发起方 IM 用户 ID |
+| `receiver_user_im_id` | int | 接收方 IM 用户 ID |
+| `type` | string | 请求类型，见 [ImInteractionRequestType](#iminteractionrequesttype) |
+| `type_label` | string\|null | 请求类型中文 |
+| `status` | string | 请求状态，见 [ImInteractionRequestStatus](#iminteractionrequeststatus) |
+| `status_label` | string\|null | 请求状态中文 |
+| `payload` | object\|null | 发起时的业务参数快照 |
+| `result_payload` | object\|null | 同意 / 拒绝后的结果快照 |
+| `responded_at` | string\|null | 处理时间 |
+| `expires_at` | string\|null | 过期时间 |
+| `created_at` | string\|null | 创建时间 |
+| `updated_at` | string\|null | 更新时间 |
+
+### 5.1 创建交互请求
+
+#### 请求参数
+
+| 字段 | 类型/规则 | 是否必填 | 说明 |
+|------|-----------|----------|------|
+| `conversation_id` | int, exists:`im_conversations.id` | 是 | 本地会话 ID |
+| `receiver_user_im_id` | int, exists:`rc_user_ims.id` | 是 | 接收方 IM 用户 ID，必须是该会话成员 |
+| `type` | string | 是 | 请求类型，当前支持 `exchange_contact`、`respond_interview_invitation`、`respond_offer` |
+| `payload` | object\|null | 否 | 业务扩展参数 |
+| `payload.application_id` | int | 条件必填 | `respond_interview_invitation`、`respond_offer` 必填，表示投递记录 ID |
+| `expires_at` | datetime, after now | 否 | 过期时间 |
+
+#### 请求示例：交换联系方式
+
+```http
+POST /rc/im/interaction-requests
+Authorization: Bearer {token}
+Content-Type: application/json
+```
+
+```json
+{
+  "conversation_id": 12,
+  "receiver_user_im_id": 28,
+  "type": "exchange_contact"
+}
+```
+
+#### 请求示例：处理面试邀请
+
+```json
+{
+  "conversation_id": 12,
+  "receiver_user_im_id": 28,
+  "type": "respond_interview_invitation",
+  "payload": {
+    "application_id": 88,
+    "interview_id": 1001
+  }
+}
+```
+
+#### 请求示例：处理 Offer
+
+```json
+{
+  "conversation_id": 12,
+  "receiver_user_im_id": 28,
+  "type": "respond_offer",
+  "payload": {
+    "application_id": 88,
+    "offer_id": 2001
+  }
+}
+```
+
+#### 后端推送给 IM 的请求卡片消息结构
+
+```json
+{
+  "sender_user_id": "8K3mQxYp9aV2nL0sR7tBcD4eFgHiJkLm",
+  "message_type": "interaction_request",
+  "content": {
+    "interaction_request_id": 1001,
+    "type": "exchange_contact",
+    "type_label": "交换联系方式",
+    "title": "交换联系方式",
+    "summary": "对方希望与你交换手机号。",
+    "status": "pending",
+    "actions": ["accept", "reject"],
+    "payload": {}
+  },
+  "metadata": {
+    "source": "im_interaction_request",
+    "interaction_request_id": 1001,
+    "sender_user_im_id": 10,
+    "receiver_user_im_id": 28
+  }
+}
+```
+
+#### 成功响应示例
+
+```json
+{
+  "code": 200,
+  "data": {
+    "interaction_request": {
+      "id": 1001,
+      "conversation_id": 12,
+      "sender_user_im_id": 10,
+      "receiver_user_im_id": 28,
+      "type": "exchange_contact",
+      "type_label": "交换联系方式",
+      "status": "pending",
+      "status_label": "待处理",
+      "payload": [],
+      "result_payload": null,
+      "responded_at": null,
+      "expires_at": null,
+      "created_at": "2026-07-23T11:00:00.000000Z",
+      "updated_at": "2026-07-23T11:00:00.000000Z"
+    },
+    "message": {
+      "id": "m_10020",
+      "conversation_id": "c_10001",
+      "message_type": "interaction_request",
+      "created_at": "2026-07-23T11:00:00.000000Z"
+    },
+    "card": {
+      "interaction_request_id": 1001,
+      "type": "exchange_contact",
+      "type_label": "交换联系方式",
+      "title": "交换联系方式",
+      "summary": "对方希望与你交换手机号。",
+      "status": "pending",
+      "actions": ["accept", "reject"],
+      "payload": []
+    }
+  },
+  "meta": {
+    "timestamp": 1784785200.1234,
+    "response_time": 0.0123
+  }
+}
+```
+
+### 5.2 处理交互请求
+
+#### Path 参数
+
+| 字段 | 是否必填 | 类型/规则 | 说明 |
+|------|----------|-----------|------|
+| `id` | 是 | int | 交互请求 ID |
+
+#### 请求参数
+
+| 字段 | 类型/规则 | 是否必填 | 说明 |
+|------|-----------|----------|------|
+| `action` | string, `accept` / `reject` | 是 | 处理动作 |
+| `reason` | string\|null, max:500 | 否 | 拒绝原因；仅拒绝时使用 |
+
+#### 请求示例：同意
+
+```http
+POST /rc/im/interaction-requests/1001/respond
+Authorization: Bearer {token}
+Content-Type: application/json
+```
+
+```json
+{
+  "action": "accept"
+}
+```
+
+#### 请求示例：拒绝
+
+```json
+{
+  "action": "reject",
+  "reason": "暂不方便"
+}
+```
+
+#### 返回规则
+
+- 只有 `receiver_user_im_id` 对应的当前身份可以处理请求
+- `pending` 状态下点击同意：状态变为 `accepted`，执行对应业务动作；面试邀请会调用接受面试逻辑，Offer 会调用接受 Offer 逻辑
+- `pending` 状态下点击拒绝：状态变为 `rejected`，写入拒绝原因；面试邀请会调用拒绝面试逻辑，Offer 会调用拒绝 Offer 逻辑
+- 非 `pending` 状态重复点击：接口幂等返回当前请求，不重复发送结果消息
+- 已过期请求：状态变为 `expired`，返回业务错误 `422`
+
+#### 交换联系方式同意后的结果快照
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| `contacts` | array | 双方联系方式 |
+| `contacts.*.user_im_id` | int | IM 用户 ID |
+| `contacts.*.user_identity_id` | int\null | 身份 ID |
+| `contacts.*.phone` | string | 手机号 |
+
+#### 面试邀请 / Offer 处理后的结果快照
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| `application` | object | 处理后的投递摘要 |
+| `application.id` | int | 投递记录 ID |
+| `application.company_id` | int | 企业 ID |
+| `application.job_id` | int | 职位 ID |
+| `application.resume_id` | int | 简历 ID |
+| `application.candidate_user_id` | int | 候选人用户 ID |
+| `application.status` | int | 投递状态 |
+| `application.status_label` | string\|null | 投递状态中文 |
+| `reason` | string\|null | 拒绝原因或备注 |
+
+#### 后端推送给 IM 的结果消息结构
+
+```json
+{
+  "sender_user_id": "receiver-external-user-id",
+  "message_type": "interaction_result",
+  "client_msg_id": "im_interaction_request_1001_accepted",
+  "content": {
+    "interaction_request_id": 1001,
+    "type": "exchange_contact",
+    "type_label": "交换联系方式",
+    "title": "交换联系方式",
+    "status": "accepted",
+    "status_label": "已同意",
+    "result": {
+      "contacts": [
+        {
+          "user_im_id": 10,
+          "user_identity_id": 30,
+          "phone": "13800000001"
+        },
+        {
+          "user_im_id": 28,
+          "user_identity_id": 45,
+          "phone": "13900000002"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "source": "im_interaction_result",
+    "interaction_request_id": 1001,
+    "sender_user_im_id": 10,
+    "receiver_user_im_id": 28,
+    "actor_user_im_id": 28
+  }
+}
+```
+
+#### 成功响应示例：同意交换联系方式
+
+```json
+{
+  "code": 200,
+  "data": {
+    "interaction_request": {
+      "id": 1001,
+      "conversation_id": 12,
+      "sender_user_im_id": 10,
+      "receiver_user_im_id": 28,
+      "type": "exchange_contact",
+      "type_label": "交换联系方式",
+      "status": "accepted",
+      "status_label": "已同意",
+      "payload": [],
+      "result_payload": {
+        "contacts": [
+          {
+            "user_im_id": 10,
+            "user_identity_id": 30,
+            "phone": "13800000001"
+          },
+          {
+            "user_im_id": 28,
+            "user_identity_id": 45,
+            "phone": "13900000002"
+          }
+        ]
+      },
+      "responded_at": "2026-07-23T11:05:00.000000Z",
+      "expires_at": null,
+      "created_at": "2026-07-23T11:00:00.000000Z",
+      "updated_at": "2026-07-23T11:05:00.000000Z"
+    },
+    "message": {
+      "id": "m_10021",
+      "conversation_id": "c_10001",
+      "message_type": "interaction_result",
+      "created_at": "2026-07-23T11:05:00.000000Z"
+    },
+    "card": {
+      "interaction_request_id": 1001,
+      "type": "exchange_contact",
+      "type_label": "交换联系方式",
+      "title": "交换联系方式",
+      "status": "accepted",
+      "status_label": "已同意",
+      "result": {
+        "contacts": [
+          {
+            "user_im_id": 10,
+            "user_identity_id": 30,
+            "phone": "13800000001"
+          },
+          {
+            "user_im_id": 28,
+            "user_identity_id": 45,
+            "phone": "13900000002"
+          }
+        ]
+      }
+    }
+  },
+  "meta": {
+    "timestamp": 1784785500.1234,
+    "response_time": 0.0123
+  }
+}
+```
+
+#### 成功响应示例：拒绝
+
+```json
+{
+  "code": 200,
+  "data": {
+    "interaction_request": {
+      "id": 1001,
+      "conversation_id": 12,
+      "sender_user_im_id": 10,
+      "receiver_user_im_id": 28,
+      "type": "exchange_contact",
+      "type_label": "交换联系方式",
+      "status": "rejected",
+      "status_label": "已拒绝",
+      "payload": [],
+      "result_payload": {
+        "reason": "暂不方便"
+      },
+      "responded_at": "2026-07-23T11:05:00.000000Z",
+      "expires_at": null,
+      "created_at": "2026-07-23T11:00:00.000000Z",
+      "updated_at": "2026-07-23T11:05:00.000000Z"
+    },
+    "message": {
+      "id": "m_10022",
+      "conversation_id": "c_10001",
+      "message_type": "interaction_result"
+    },
+    "card": {
+      "interaction_request_id": 1001,
+      "type": "exchange_contact",
+      "type_label": "交换联系方式",
+      "title": "交换联系方式",
+      "status": "rejected",
+      "status_label": "已拒绝",
+      "result": {
+        "reason": "暂不方便"
+      }
+    }
+  },
+  "meta": {
+    "timestamp": 1784785500.1234,
+    "response_time": 0.0123
+  }
+}
+```
+
+### 业务错误示例
+
+**会话不存在或当前身份不是该会话成员**
+
+```json
+{
+  "code": 422,
+  "message": "会话不存在。",
+  "meta": {
+    "timestamp": 1784785200.1234,
+    "response_time": 0.0123
+  }
+}
+```
+
+**接收方不在当前会话中**
+
+```json
+{
+  "code": 422,
+  "message": "接收方不在当前会话中。",
+  "meta": {
+    "timestamp": 1784785200.1234,
+    "response_time": 0.0123
+  }
+}
+```
+
+**只有接收方可以处理请求**
+
+```json
+{
+  "code": 422,
+  "message": "只有接收方可以处理该请求。",
+  "meta": {
+    "timestamp": 1784785500.1234,
+    "response_time": 0.0123
+  }
+}
+```
+
+**双方手机号不完整**
+
+```json
+{
+  "code": 422,
+  "message": "双方手机号不完整，无法交换联系方式。",
+  "meta": {
+    "timestamp": 1784785500.1234,
+    "response_time": 0.0123
+  }
+}
+```
+
+---
+
 ## 枚举
 
 ### `ImBusinessCardType`
@@ -963,3 +1403,21 @@ Content-Type: application/json
 | `jobseeker_apply_resume` | 求职者 | 投递简历 |
 | `jobseeker_report` | 求职者 | 举报 |
 | `jobseeker_not_interested` | 求职者 | 不感兴趣 |
+
+### `ImInteractionRequestType`
+
+| 值 | 说明 |
+|----|------|
+| `exchange_contact` | 交换联系方式 |
+| `respond_interview_invitation` | 处理面试邀请，同意时复用 `POST /rc/applications/{id}/accept-interview` 业务逻辑，拒绝时复用 `POST /rc/applications/{id}/reject-interview` 业务逻辑 |
+| `respond_offer` | 处理 Offer，同意时复用 `POST /rc/applications/{id}/accept-offer` 业务逻辑，拒绝时复用 `POST /rc/applications/{id}/reject-offer` 业务逻辑 |
+
+### `ImInteractionRequestStatus`
+
+| 值 | 说明 |
+|----|------|
+| `pending` | 待处理 |
+| `accepted` | 已同意 |
+| `rejected` | 已拒绝 |
+| `expired` | 已过期 |
+| `cancelled` | 已取消 |
