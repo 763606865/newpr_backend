@@ -255,7 +255,7 @@ class NotificationControllerTest extends TestCase
 
         $this->rcGetJson($recruiter, $recruiterIdentity, '/rc/applications/'.$applicationId);
 
-        $this->rcPostJson($recruiter, $recruiterIdentity, '/rc/applications/'.$applicationId.'/invite-interview', [
+        $this->rcPostJson($recruiter, $recruiterIdentity, '/rc/companies/applications/'.$applicationId.'/invite-interview', [
             'interview_at' => now()->addDay()->toDateTimeString(),
             'mode' => RcInterviewMode::Offline->value,
             'location' => '南昌高新区',
@@ -316,7 +316,7 @@ class NotificationControllerTest extends TestCase
 
         $this->rcGetJson($recruiter, $recruiterIdentity, '/rc/applications/'.$applicationId);
 
-        $this->rcPostJson($recruiter, $recruiterIdentity, '/rc/applications/'.$applicationId.'/invite-interview', [
+        $this->rcPostJson($recruiter, $recruiterIdentity, '/rc/companies/applications/'.$applicationId.'/invite-interview', [
             'interview_at' => now()->addDay()->toDateTimeString(),
             'mode' => RcInterviewMode::Offline->value,
             'location' => '南昌高新区',
@@ -334,7 +334,7 @@ class NotificationControllerTest extends TestCase
         $this->assertInstanceOf(Notification::class, $rejectInterviewNotification);
         $this->assertSame('求职者甲已拒绝「Laravel 工程师」的面试邀请', $rejectInterviewNotification->body);
 
-        $this->rcPostJson($recruiter, $recruiterIdentity, '/rc/applications/'.$applicationId.'/invite-interview', [
+        $this->rcPostJson($recruiter, $recruiterIdentity, '/rc/companies/applications/'.$applicationId.'/invite-interview', [
             'interview_at' => now()->addDays(2)->toDateTimeString(),
             'mode' => RcInterviewMode::Offline->value,
             'location' => '南昌高新区',
@@ -352,7 +352,7 @@ class NotificationControllerTest extends TestCase
         $this->assertSame($applicationId, $notification->payload['application_id']);
         $this->assertSame('求职者甲已接受「Laravel 工程师」的面试邀请', $notification->body);
 
-        $this->rcPostJson($recruiter, $recruiterIdentity, '/rc/applications/'.$applicationId.'/send-offer', [
+        $this->rcPostJson($recruiter, $recruiterIdentity, '/rc/companies/applications/'.$applicationId.'/send-offer', [
             'salary' => 18000,
         ]);
 
@@ -368,7 +368,7 @@ class NotificationControllerTest extends TestCase
         $this->assertInstanceOf(Notification::class, $rejectOfferNotification);
         $this->assertSame('求职者甲已拒绝「Laravel 工程师」的 Offer', $rejectOfferNotification->body);
 
-        $this->rcPostJson($recruiter, $recruiterIdentity, '/rc/applications/'.$applicationId.'/send-offer', [
+        $this->rcPostJson($recruiter, $recruiterIdentity, '/rc/companies/applications/'.$applicationId.'/send-offer', [
             'salary' => 20000,
         ]);
 

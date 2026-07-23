@@ -7,6 +7,7 @@ use App\Enums\RcOfferStatus;
 use App\Models\Rc\Application;
 use App\Models\Rc\Interview;
 use App\Models\Rc\Offer;
+use App\Models\Rc\UserIdentity;
 use App\Services\RcApplicationService;
 use App\Support\ContactMasker;
 use Illuminate\Http\Request;
@@ -29,6 +30,7 @@ class RcApplicationResource extends JsonResource
             'job_id' => $this->resource->job_id,
             'resume_id' => $this->resource->resume_id,
             'candidate_user_id' => $this->resource->candidate_user_id,
+            'candidate_external_user_id' => $this->candidateExternalUserId(),
             'current_stage_id' => $this->resource->current_stage_id,
             'source_type' => $this->resource->source_type?->value,
             'source_type_label' => $this->resource->source_type?->getLabel(),
@@ -126,6 +128,23 @@ class RcApplicationResource extends JsonResource
             'educations' => $snapshot['educations'] ?? [],
             'intentions' => $snapshot['intentions'] ?? [],
         ];
+    }
+
+    private function candidateExternalUserId(): ?string
+    {
+        if (! $this->resource->relationLoaded('candidateUser')) {
+            return null;
+        }
+
+        $candidateUser = $this->resource->candidateUser;
+
+        if (! $candidateUser?->relationLoaded('jobseekerIdentity')) {
+            return null;
+        }
+
+        $identity = $candidateUser->jobseekerIdentity;
+
+        return $identity instanceof UserIdentity ? $identity->external_user_id : null;
     }
 
     private function shouldIncludeResumeSnapshot(Request $request): bool

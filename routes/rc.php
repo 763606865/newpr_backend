@@ -173,7 +173,7 @@ Route::middleware('auth:rc')->group(function (): void {
     Route::delete('/talent/jobs/{id}/favorite', [JobFavoriteController::class, 'destroy'])->whereNumber('id');
     // ==============================================================================
 
-    // 投递（求职者 / 招聘方）
+    // 投递（求职者）
     Route::get('/applications', [ApplicationController::class, 'index']);
     Route::post('/applications', [ApplicationController::class, 'store']);
     Route::get('/applications/check', [ApplicationController::class, 'checkByJobAndUser']);
@@ -181,12 +181,8 @@ Route::middleware('auth:rc')->group(function (): void {
     Route::post('/applications/{id}/withdraw', [ApplicationController::class, 'withdraw'])->whereNumber('id');
     Route::post('/applications/{id}/accept-interview', [ApplicationController::class, 'acceptInterview'])->whereNumber('id');
     Route::post('/applications/{id}/reject-interview', [ApplicationController::class, 'rejectInterview'])->whereNumber('id');
-    Route::post('/applications/{id}/invite-interview', [ApplicationController::class, 'inviteInterview'])->whereNumber('id');
-    Route::post('/applications/{id}/send-offer', [ApplicationController::class, 'sendOffer'])->whereNumber('id');
     Route::post('/applications/{id}/accept-offer', [ApplicationController::class, 'acceptOffer'])->whereNumber('id');
     Route::post('/applications/{id}/reject-offer', [ApplicationController::class, 'rejectOffer'])->whereNumber('id');
-    Route::post('/applications/{id}/hire', [ApplicationController::class, 'hire'])->whereNumber('id');
-    Route::post('/applications/{id}/reject', [ApplicationController::class, 'reject'])->whereNumber('id');
     // ==============================================================================
 
     // 站内通知
@@ -223,6 +219,12 @@ Route::middleware('auth:rc')->group(function (): void {
     Route::get('/companies/school-activities/{activityId}/jobs', [CompanySchoolActivityController::class, 'myJobs'])->whereNumber('activityId');
     Route::post('/companies/school-activities/{activityId}/jobs', [CompanySchoolActivityController::class, 'storeJobs'])->whereNumber('activityId');
     Route::get('/companies/applications', [CompanyApplicationController::class, 'index']);
+    Route::get('/companies/applications/check', [CompanyApplicationController::class, 'checkByJobAndUser']);
+    Route::get('/companies/applications/{id}', [CompanyApplicationController::class, 'show'])->whereNumber('id');
+    Route::post('/companies/applications/{id}/invite-interview', [CompanyApplicationController::class, 'inviteInterview'])->whereNumber('id');
+    Route::post('/companies/applications/{id}/send-offer', [CompanyApplicationController::class, 'sendOffer'])->whereNumber('id');
+    Route::post('/companies/applications/{id}/hire', [CompanyApplicationController::class, 'hire'])->whereNumber('id');
+    Route::post('/companies/applications/{id}/reject', [CompanyApplicationController::class, 'reject'])->whereNumber('id');
     Route::get('/companies/interviews', [CompanyInterviewController::class, 'index']);
     // ==============================================================================
 

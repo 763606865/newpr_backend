@@ -196,7 +196,7 @@ class RcApplicationService extends Service
     {
         $query = Application::query()
             ->where('company_id', $company->id)
-            ->with(['job.position', 'resume', 'company']);
+            ->with(['job.position', 'resume', 'company', 'candidateUser.jobseekerIdentity']);
 
         if (filled($filters['job_id'] ?? null)) {
             $query->where('job_id', (int) $filters['job_id']);
@@ -216,7 +216,7 @@ class RcApplicationService extends Service
     {
         return Application::query()
             ->where('company_id', $company->id)
-            ->with([...Job::discoveryRelationsWithPrefix('job'), 'company'])
+            ->with([...Job::discoveryRelationsWithPrefix('job'), 'company', 'candidateUser.jobseekerIdentity'])
             ->whereKey($applicationId)
             ->first();
     }
@@ -730,7 +730,7 @@ class RcApplicationService extends Service
 
     private function refreshForRecruiter(Application $application): Application
     {
-        return $application->refresh()->load([...Job::discoveryRelationsWithPrefix('job'), 'company']);
+        return $application->refresh()->load([...Job::discoveryRelationsWithPrefix('job'), 'company', 'candidateUser.jobseekerIdentity']);
     }
 
     private function generateOfferNo(Application $application): string

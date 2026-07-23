@@ -307,9 +307,10 @@ class ApplicationControllerTest extends TestCase
         $applicationId = $applyResponse->json('data.id');
 
         $this
-            ->rcGetJson($recruiter, $recruiterIdentity, '/rc/applications?job_id='.$job->id)
+            ->rcGetJson($recruiter, $recruiterIdentity, '/rc/companies/applications?job_id='.$job->id)
             ->assertOk()
             ->assertJsonPath('data.total', 1)
+            ->assertJsonPath('data.data.0.candidate_external_user_id', $jobSeekerIdentity->external_user_id)
             ->assertJsonPath('data.data.0.candidate.full_name', '候选人甲')
             ->assertJsonMissingPath('data.data.0.resume')
             ->assertJsonMissingPath('data.data.0.resume_snapshot')
@@ -320,6 +321,7 @@ class ApplicationControllerTest extends TestCase
             ->assertOk()
             ->assertJsonPath('data.status', RcApplicationStatus::Screening->value)
             ->assertJsonPath('data.status_label', '筛选中')
+            ->assertJsonPath('data.candidate_external_user_id', $jobSeekerIdentity->external_user_id)
             ->assertJsonPath('data.resume_snapshot.full_name', '候选人甲')
             ->assertJsonPath('data.resume_snapshot.phone', '138****8000')
             ->assertJsonPath('data.resume_snapshot.email', 'can******@example.com')
@@ -327,6 +329,14 @@ class ApplicationControllerTest extends TestCase
             ->assertJsonPath('data.resume_snapshot.educations.0.school_name', '浙江大学')
             ->assertJsonPath('data.resume_snapshot.languages.0.language', '英语')
             ->assertJsonPath('data.resume_snapshot.skills.0.skill_name', 'Laravel');
+
+        $this
+            ->rcGetJson($recruiter, $recruiterIdentity, '/rc/companies/applications/'.$applicationId)
+            ->assertOk()
+            ->assertJsonPath('data.status', RcApplicationStatus::Screening->value)
+            ->assertJsonPath('data.candidate_external_user_id', $jobSeekerIdentity->external_user_id)
+            ->assertJsonPath('data.resume_snapshot.full_name', '候选人甲')
+            ->assertJsonPath('data.resume_snapshot.phone', '138****8000');
     }
 
     public function test_recruiter_show_falls_back_to_resume_relations_when_snapshot_sections_empty(): void
@@ -449,12 +459,12 @@ class ApplicationControllerTest extends TestCase
             ->json('data.id');
 
         $this
-            ->rcGetJson($recruiter, $recruiterIdentity, '/rc/applications/'.$applicationId)
+            ->rcGetJson($recruiter, $recruiterIdentity, '/rc/companies/applications/'.$applicationId)
             ->assertOk()
             ->assertJsonPath('data.status', RcApplicationStatus::Screening->value);
 
         $this
-            ->rcPostJson($recruiter, $recruiterIdentity, '/rc/applications/'.$applicationId.'/invite-interview', [
+            ->rcPostJson($recruiter, $recruiterIdentity, '/rc/companies/applications/'.$applicationId.'/invite-interview', [
                 'interview_at' => now()->addDay()->toDateTimeString(),
                 'mode' => RcInterviewMode::Online->value,
                 'meeting_url' => 'https://meet.example.com/room-1',
@@ -482,7 +492,7 @@ class ApplicationControllerTest extends TestCase
         ]);
 
         $this
-            ->rcPostJson($recruiter, $recruiterIdentity, '/rc/applications/'.$applicationId.'/send-offer', [
+            ->rcPostJson($recruiter, $recruiterIdentity, '/rc/companies/applications/'.$applicationId.'/send-offer', [
                 'salary' => 18000,
                 'salary_unit' => RcSalaryUnit::Month->value,
                 'has_probation' => true,
@@ -507,7 +517,7 @@ class ApplicationControllerTest extends TestCase
         $this->assertSame(3, $offer->extra['probation_months']);
 
         $this
-            ->rcGetJson($recruiter, $recruiterIdentity, '/rc/applications/'.$applicationId)
+            ->rcGetJson($recruiter, $recruiterIdentity, '/rc/companies/applications/'.$applicationId)
             ->assertOk()
             ->assertJsonPath('data.offer.salary', '18000.00')
             ->assertJsonPath('data.offer.status', RcOfferStatus::Sent->value)
@@ -526,7 +536,7 @@ class ApplicationControllerTest extends TestCase
         $this->assertNotNull($offer->replied_at);
 
         $this
-            ->rcPostJson($recruiter, $recruiterIdentity, '/rc/applications/'.$applicationId.'/hire')
+            ->rcPostJson($recruiter, $recruiterIdentity, '/rc/companies/applications/'.$applicationId.'/hire')
             ->assertOk()
             ->assertJsonPath('data.status', RcApplicationStatus::Hired->value);
 
@@ -554,7 +564,7 @@ class ApplicationControllerTest extends TestCase
             ->rcPostJson($jobSeeker, $jobSeekerIdentity, '/rc/applications', ['job_id' => $job->id])
             ->json('data.id');
 
-        $this->rcPostJson($recruiter, $recruiterIdentity, '/rc/applications/'.$applicationId.'/invite-interview', [
+        $this->rcPostJson($recruiter, $recruiterIdentity, '/rc/companies/applications/'.$applicationId.'/invite-interview', [
             'interview_at' => now()->addDay()->toDateTimeString(),
             'mode' => RcInterviewMode::Online->value,
             'meeting_url' => 'https://meet.example.com/room-1',
@@ -562,12 +572,12 @@ class ApplicationControllerTest extends TestCase
 
         $this->rcPostJson($jobSeeker, $jobSeekerIdentity, '/rc/applications/'.$applicationId.'/accept-interview');
 
-        $this->rcPostJson($recruiter, $recruiterIdentity, '/rc/applications/'.$applicationId.'/send-offer', [
+        $this->rcPostJson($recruiter, $recruiterIdentity, '/rc/companies/applications/'.$applicationId.'/send-offer', [
             'salary' => 18000,
         ]);
 
         $this
-            ->rcPostJson($recruiter, $recruiterIdentity, '/rc/applications/'.$applicationId.'/hire')
+            ->rcPostJson($recruiter, $recruiterIdentity, '/rc/companies/applications/'.$applicationId.'/hire')
             ->assertOk()
             ->assertJsonPath('code', 422)
             ->assertJsonPath('message', '候选人尚未接受 Offer。');
@@ -593,7 +603,7 @@ class ApplicationControllerTest extends TestCase
             ->rcPostJson($jobSeeker, $jobSeekerIdentity, '/rc/applications', ['job_id' => $job->id])
             ->json('data.id');
 
-        $this->rcPostJson($recruiter, $recruiterIdentity, '/rc/applications/'.$applicationId.'/invite-interview', [
+        $this->rcPostJson($recruiter, $recruiterIdentity, '/rc/companies/applications/'.$applicationId.'/invite-interview', [
             'interview_at' => now()->addDay()->toDateTimeString(),
             'mode' => RcInterviewMode::Online->value,
             'meeting_url' => 'https://meet.example.com/room-1',
@@ -628,7 +638,7 @@ class ApplicationControllerTest extends TestCase
             ->rcPostJson($jobSeeker, $jobSeekerIdentity, '/rc/applications', ['job_id' => $job->id])
             ->json('data.id');
 
-        $this->rcPostJson($recruiter, $recruiterIdentity, '/rc/applications/'.$applicationId.'/invite-interview', [
+        $this->rcPostJson($recruiter, $recruiterIdentity, '/rc/companies/applications/'.$applicationId.'/invite-interview', [
             'interview_at' => now()->addDay()->toDateTimeString(),
             'mode' => RcInterviewMode::Online->value,
             'meeting_url' => 'https://meet.example.com/room-1',
@@ -636,7 +646,7 @@ class ApplicationControllerTest extends TestCase
 
         $this->rcPostJson($jobSeeker, $jobSeekerIdentity, '/rc/applications/'.$applicationId.'/accept-interview');
 
-        $this->rcPostJson($recruiter, $recruiterIdentity, '/rc/applications/'.$applicationId.'/send-offer', [
+        $this->rcPostJson($recruiter, $recruiterIdentity, '/rc/companies/applications/'.$applicationId.'/send-offer', [
             'salary' => 18000,
         ]);
 
@@ -653,7 +663,7 @@ class ApplicationControllerTest extends TestCase
         $this->assertNotNull($offer->replied_at);
 
         $this
-            ->rcPostJson($recruiter, $recruiterIdentity, '/rc/applications/'.$applicationId.'/send-offer', [
+            ->rcPostJson($recruiter, $recruiterIdentity, '/rc/companies/applications/'.$applicationId.'/send-offer', [
                 'salary' => 20000,
             ])
             ->assertOk()
@@ -686,7 +696,7 @@ class ApplicationControllerTest extends TestCase
 
         $this->rcGetJson($recruiter, $recruiterIdentity, '/rc/applications/'.$applicationId);
 
-        $this->rcPostJson($recruiter, $recruiterIdentity, '/rc/applications/'.$applicationId.'/invite-interview', [
+        $this->rcPostJson($recruiter, $recruiterIdentity, '/rc/companies/applications/'.$applicationId.'/invite-interview', [
             'interview_at' => now()->addDay()->toDateTimeString(),
             'mode' => RcInterviewMode::Online->value,
             'meeting_url' => 'https://meet.example.com/room-1',
@@ -727,11 +737,11 @@ class ApplicationControllerTest extends TestCase
             ->json('data.id');
 
         $this
-            ->rcGetJson($recruiter, $recruiterIdentity, '/rc/applications/'.$applicationId)
+            ->rcGetJson($recruiter, $recruiterIdentity, '/rc/companies/applications/'.$applicationId)
             ->assertOk();
 
         $this
-            ->rcPostJson($recruiter, $recruiterIdentity, '/rc/applications/'.$applicationId.'/reject', [
+            ->rcPostJson($recruiter, $recruiterIdentity, '/rc/companies/applications/'.$applicationId.'/reject', [
                 'note' => '与岗位不匹配',
             ])
             ->assertOk()
@@ -764,7 +774,7 @@ class ApplicationControllerTest extends TestCase
             ->json('data.id');
 
         $this
-            ->rcPostJson($user, $identity, '/rc/applications/'.$applicationId.'/reject')
+            ->rcPostJson($user, $identity, '/rc/companies/applications/'.$applicationId.'/reject')
             ->assertOk()
             ->assertJsonPath('code', 422)
             ->assertJsonPath('message', '请先切换为招聘方身份并绑定企业。');
@@ -854,6 +864,66 @@ class ApplicationControllerTest extends TestCase
             ->assertJsonPath('data', null);
     }
 
+    public function test_recruiter_can_check_company_application_by_job_and_resume(): void
+    {
+        [$jobSeeker, $jobSeekerIdentity] = $this->createJobSeekerContext();
+        $job = $this->createPublishedJob();
+        [$recruiter, $recruiterIdentity] = $this->createRecruiterContext($job->company_id);
+        $resume = Resume::query()->create([
+            'user_id' => $jobSeeker->id,
+            'title' => '求职简历',
+            'full_name' => '求职者甲',
+            'phone' => '13800138000',
+            'email' => 'seeker@example.com',
+            'status' => RcResumeStatus::Normal,
+            'is_primary' => 1,
+        ]);
+        $application = Application::query()->create([
+            'company_id' => $job->company_id,
+            'job_id' => $job->id,
+            'candidate_user_id' => $jobSeeker->id,
+            'resume_id' => $resume->id,
+            'status' => RcApplicationStatus::Pending,
+            'applied_at' => now(),
+            'resume_snapshot' => [
+                'full_name' => '求职者甲',
+            ],
+        ]);
+
+        $this
+            ->rcGetJson($recruiter, $recruiterIdentity, '/rc/companies/applications/check?job_id='.$job->id.'&resume_id='.$resume->id)
+            ->assertOk()
+            ->assertJsonPath('code', 200)
+            ->assertJsonPath('data.id', $application->id)
+            ->assertJsonPath('data.job_id', $job->id)
+            ->assertJsonPath('data.resume_id', $resume->id)
+            ->assertJsonPath('data.candidate_user_id', $jobSeeker->id)
+            ->assertJsonPath('data.candidate_external_user_id', $jobSeekerIdentity->external_user_id);
+    }
+
+    public function test_recruiter_check_company_application_returns_null_for_other_company_job(): void
+    {
+        [$jobSeeker] = $this->createJobSeekerContext();
+        $ownJob = $this->createPublishedJob('JOB-CHECK-OWN');
+        $otherJob = $this->createPublishedJob('JOB-CHECK-OTHER');
+        [$recruiter, $recruiterIdentity] = $this->createRecruiterContext($ownJob->company_id);
+        $resume = Resume::query()->create([
+            'user_id' => $jobSeeker->id,
+            'title' => '求职简历',
+            'full_name' => '求职者甲',
+            'phone' => '13800138000',
+            'email' => 'seeker@example.com',
+            'status' => RcResumeStatus::Normal,
+            'is_primary' => 1,
+        ]);
+
+        $this
+            ->rcGetJson($recruiter, $recruiterIdentity, '/rc/companies/applications/check?job_id='.$otherJob->id.'&resume_id='.$resume->id)
+            ->assertOk()
+            ->assertJsonPath('code', 200)
+            ->assertJsonPath('data', null);
+    }
+
     private function seedResumeSections(Resume $resume, int $userId): void
     {
         ResumeWork::query()->create([
@@ -886,18 +956,18 @@ class ApplicationControllerTest extends TestCase
         ]);
     }
 
-    private function createPublishedJob(): Job
+    private function createPublishedJob(string $code = 'JOB-APPLY-001'): Job
     {
         $company = Company::query()->create([
             'name' => '南昌示例科技有限公司',
-            'credit_code' => '91360100MA0000000X',
+            'credit_code' => '91360100'.strtoupper(substr(md5($code), 0, 10)),
             'status' => CompanyStatus::Enabled,
         ]);
 
         return Job::query()->create([
             'company_id' => $company->id,
             'position_code' => 'backend-developer',
-            'code' => 'JOB-APPLY-001',
+            'code' => $code,
             'title' => 'Laravel 工程师',
             'employment_type' => RcJobEmploymentType::FullTime,
             'city_code' => '360100',
