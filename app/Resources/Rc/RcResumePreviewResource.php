@@ -64,6 +64,12 @@ class RcResumePreviewResource extends JsonResource
             'works' => RcResumeWorkResource::collection($this->whenLoaded('works')),
             'educations' => RcResumeEducationResource::collection($this->whenLoaded('educations')),
             'intentions' => RcResumeIntentionResource::collection($this->whenLoaded('intentions')),
+            'projects' => RcResumeProjectResource::collection($this->whenLoaded('projects')),
+            'trainings' => RcResumeTrainingResource::collection($this->whenLoaded('trainings')),
+            'languages' => RcResumeLanguageResource::collection($this->whenLoaded('languages')),
+            'skills' => RcResumeSkillResource::collection($this->whenLoaded('skills')),
+            'certificates' => RcResumeCertificateResource::collection($this->whenLoaded('certificates')),
+            'portfolios' => RcResumePortfolioResource::collection($this->whenLoaded('portfolios')),
         ];
     }
 }

@@ -6,17 +6,12 @@ use App\Discovery\Recommendation\SchoolActivityRecommendationContext;
 use App\Models\Cms\AdSlot;
 use App\Models\Cms\Announcement;
 use App\Models\Cms\BannerPosition;
-use App\Models\Cms\FriendLink;
-use App\Models\Cms\Menu;
-use App\Models\Cms\SiteConfig;
 use App\Models\Rc\Industry;
 use App\Models\Rc\Position;
-use App\Resources\Cms\CmsMenuCollection;
 use App\Resources\Rc\RcIndustryResource;
 use App\Resources\Rc\RcPositionResource;
 use App\Resources\Rc\RcSchoolActivityResource;
 use App\Services\CmsHomeRecommendationService;
-use App\Services\CmsMenuAudienceService;
 use App\Services\RcSchoolActivityRecommendationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -34,15 +29,6 @@ class HomeController extends Controller
     {
         $cityCode = $this->resolveCityCode($request);
 
-        $audienceService = CmsMenuAudienceService::make();
-
-        $menus = Menu::query()
-            ->enabled()
-            ->shown()
-            ->forIdentity($audienceService->resolveRcIdentityType($request))
-            ->with('menuIdentities')
-            ->orderBy('sort')
-            ->get();
         $bannerPosition = BannerPosition::query()
             ->enabled()
             ->with([
@@ -60,32 +46,11 @@ class HomeController extends Controller
             ->orderBy('sort')
             ->get();
 
-        $siteConfig = SiteConfig::query()
-            ->forCity($cityCode)
-            ->enabled()
-            ->first();
-
-        $friendLinks = FriendLink::query()
-            ->forCity($cityCode)
-            ->enabled()
-            ->orderBy('sort')
-            ->get()
-            ->setVisible([
-                'id',
-                'name',
-                'url',
-                'logo',
-                'target',
-            ]);
-
         $homeRecommendations = CmsHomeRecommendationService::make()->groupedForHome($cityCode, $request);
 
         return api_response([
-            'menus' => new CmsMenuCollection($menus),
             'banner_position' => $bannerPosition?->makeVisible(['banners']),
             'ad_slot' => $adSlot->makeVisible(['ads']),
-            'site_config' => $siteConfig,
-            'friend_links' => $friendLinks,
             'urgent_jobs' => $homeRecommendations['urgent_jobs'],
             'hot_jobs' => $homeRecommendations['hot_jobs'],
             'famous_companies' => $homeRecommendations['famous_companies'],

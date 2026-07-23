@@ -9,7 +9,13 @@ use App\Enums\RcIdentityType;
 use App\Enums\RcResumeStatus;
 use App\Models\Company;
 use App\Models\Rc\Resume;
+use App\Models\Rc\ResumeCertificate;
 use App\Models\Rc\ResumeEducation;
+use App\Models\Rc\ResumeLanguage;
+use App\Models\Rc\ResumePortfolio;
+use App\Models\Rc\ResumeProject;
+use App\Models\Rc\ResumeSkill;
+use App\Models\Rc\ResumeTraining;
 use App\Models\Rc\ResumeWork;
 use App\Models\Rc\UserIdentity;
 use App\Models\User;
@@ -79,6 +85,54 @@ class ResumeDetailControllerTest extends TestCase
             'start_date' => '2018-09-01',
         ]);
 
+        ResumeProject::query()->create([
+            'resume_id' => $resume->id,
+            'user_id' => $candidate->id,
+            'project_name' => '招聘系统',
+            'role' => '后端负责人',
+            'sort' => 1,
+        ]);
+
+        ResumeTraining::query()->create([
+            'resume_id' => $resume->id,
+            'user_id' => $candidate->id,
+            'institution_name' => '示例培训机构',
+            'course_name' => 'Laravel 进阶',
+            'sort' => 1,
+        ]);
+
+        ResumeLanguage::query()->create([
+            'resume_id' => $resume->id,
+            'user_id' => $candidate->id,
+            'language' => '英语',
+            'certificate' => 'CET-6',
+            'sort' => 1,
+        ]);
+
+        ResumeSkill::query()->create([
+            'resume_id' => $resume->id,
+            'user_id' => $candidate->id,
+            'skill_name' => 'Laravel',
+            'description' => '熟悉 Laravel 生态',
+            'sort' => 1,
+        ]);
+
+        ResumeCertificate::query()->create([
+            'resume_id' => $resume->id,
+            'user_id' => $candidate->id,
+            'name' => '高级软件工程师',
+            'issuer' => '示例机构',
+            'sort' => 1,
+        ]);
+
+        ResumePortfolio::query()->create([
+            'resume_id' => $resume->id,
+            'user_id' => $candidate->id,
+            'title' => '个人作品集',
+            'url' => 'https://example.com/portfolio',
+            'sort' => 1,
+        ]);
+
         $connection = \Mockery::mock(Connection::class);
         $connection->shouldReceive('pipeline')
             ->once()
@@ -106,6 +160,12 @@ class ResumeDetailControllerTest extends TestCase
             ->assertJsonPath('data.full_name', '候选人甲')
             ->assertJsonPath('data.works.0.position', 'Laravel 工程师')
             ->assertJsonPath('data.educations.0.school_name', '浙江大学')
+            ->assertJsonPath('data.projects.0.project_name', '招聘系统')
+            ->assertJsonPath('data.trainings.0.course_name', 'Laravel 进阶')
+            ->assertJsonPath('data.languages.0.language', '英语')
+            ->assertJsonPath('data.skills.0.skill_name', 'Laravel')
+            ->assertJsonPath('data.certificates.0.name', '高级软件工程师')
+            ->assertJsonPath('data.portfolios.0.title', '个人作品集')
             ->assertJsonMissingPath('data.phone')
             ->assertJsonMissingPath('data.email')
             ->assertJsonMissingPath('data.file_url')

@@ -17,6 +17,12 @@ class RcResumeDiscoveryService extends Service
                 'works' => static fn ($relation) => $relation->orderByDesc('sort')->orderByDesc('id'),
                 'educations' => static fn ($relation) => $relation->orderByDesc('sort')->orderByDesc('id'),
                 'intentions' => static fn ($relation) => $relation->orderByDesc('updated_at')->orderByDesc('id'),
+                'projects' => static fn ($relation) => $relation->orderByDesc('sort')->orderByDesc('id'),
+                'trainings' => static fn ($relation) => $relation->orderByDesc('sort')->orderByDesc('id'),
+                'languages' => static fn ($relation) => $relation->orderByDesc('sort')->orderByDesc('id'),
+                'skills' => static fn ($relation) => $relation->orderByDesc('sort')->orderByDesc('id'),
+                'certificates' => static fn ($relation) => $relation->orderByDesc('sort')->orderByDesc('id'),
+                'portfolios' => static fn ($relation) => $relation->orderByDesc('sort')->orderByDesc('id'),
             ]);
         }
 
