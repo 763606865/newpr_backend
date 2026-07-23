@@ -161,7 +161,6 @@ class Resume extends Model
         $this->syncAgeFromBirthDate();
         $this->syncBirthMonthFromBirthDate();
         $this->syncWorkStartDateFromWorkYear();
-        $this->syncWorkYearsFromWorkStartDate();
         $this->syncCurrentResidenceCityFromCode();
         $this->syncIsFreshGraduateFromWorkYearAndIdentity();
     }
@@ -275,25 +274,6 @@ class Resume extends Model
         $reference = ($now ?? Carbon::now())->copy()->startOfYear();
 
         return $reference->subYears($years)->format('Y-m-d');
-    }
-
-    protected function syncWorkYearsFromWorkStartDate(): void
-    {
-        if (blank($this->work_start_date)) {
-            return;
-        }
-
-        if ($this->isDirty('work_years') && $this->work_years !== null) {
-            return;
-        }
-
-        if ($this->work_years !== null && ! $this->isDirty('work_start_date')) {
-            return;
-        }
-
-        $years = (int) Carbon::parse($this->work_start_date)->diffInYears(Carbon::now());
-
-        $this->work_years = min(max($years, 0), 80);
     }
 
     protected function casts(): array
