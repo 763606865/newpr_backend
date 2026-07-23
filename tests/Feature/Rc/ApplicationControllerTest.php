@@ -802,6 +802,58 @@ class ApplicationControllerTest extends TestCase
             ->assertJsonPath('data.current_stage_id', $stage->id);
     }
 
+    public function test_job_seeker_can_check_application_by_job_and_resume(): void
+    {
+        [$user, $identity] = $this->createJobSeekerContext();
+        $job = $this->createPublishedJob();
+        $resume = Resume::query()->create([
+            'user_id' => $user->id,
+            'title' => '求职简历',
+            'full_name' => '求职者甲',
+            'phone' => '13800138000',
+            'email' => 'seeker@example.com',
+            'status' => RcResumeStatus::Normal,
+            'is_primary' => 1,
+        ]);
+        $application = Application::query()->create([
+            'company_id' => $job->company_id,
+            'job_id' => $job->id,
+            'candidate_user_id' => $user->id,
+            'resume_id' => $resume->id,
+            'status' => RcApplicationStatus::Pending,
+            'applied_at' => now(),
+        ]);
+
+        $this
+            ->rcGetJson($user, $identity, '/rc/applications/check?job_id='.$job->id.'&resume_id='.$resume->id)
+            ->assertOk()
+            ->assertJsonPath('code', 200)
+            ->assertJsonPath('data.id', $application->id)
+            ->assertJsonPath('data.job_id', $job->id)
+            ->assertJsonPath('data.resume_id', $resume->id);
+    }
+
+    public function test_check_application_returns_null_when_not_found(): void
+    {
+        [$user, $identity] = $this->createJobSeekerContext();
+        $job = $this->createPublishedJob();
+        $resume = Resume::query()->create([
+            'user_id' => $user->id,
+            'title' => '求职简历',
+            'full_name' => '求职者甲',
+            'phone' => '13800138000',
+            'email' => 'seeker@example.com',
+            'status' => RcResumeStatus::Normal,
+            'is_primary' => 1,
+        ]);
+
+        $this
+            ->rcGetJson($user, $identity, '/rc/applications/check?job_id='.$job->id.'&resume_id='.$resume->id)
+            ->assertOk()
+            ->assertJsonPath('code', 200)
+            ->assertJsonPath('data', null);
+    }
+
     private function seedResumeSections(Resume $resume, int $userId): void
     {
         ResumeWork::query()->create([

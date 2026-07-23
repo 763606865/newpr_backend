@@ -8,6 +8,7 @@ use App\Models\Rc\Application;
 use App\Models\Rc\Job;
 use App\Models\Rc\UserIdentity;
 use App\Models\User;
+use App\Rc\Requests\ApplicationCheckRequest;
 use App\Rc\Requests\ApplicationHireRequest;
 use App\Rc\Requests\ApplicationInviteInterviewRequest;
 use App\Rc\Requests\ApplicationRejectRequest;
@@ -280,6 +281,68 @@ class ApplicationController extends Controller
                 $request->validated('note'),
             ),
         );
+    }
+
+    /**
+     * 根据职位和求职者/简历查询投递记录
+     *
+     * GET /rc/applications/check
+     */
+    public function checkByJobAndUser(ApplicationCheckRequest $request): JsonResponse
+    {
+        $validated = $request->validated();
+        $job = Job::query()->find((int) $validated['job_id']);
+
+        if (! $job instanceof Job) {
+            return $this->success(null);
+        }
+
+        $query = Application::query()
+            ->where('job_id', $job->id)
+            ->with(['job', 'resume', 'company']);
+
+        if (filled($validated['candidate_user_id'] ?? null)) {
+            $query->where('candidate_user_id', (int) $validated['candidate_user_id']);
+        }
+
+        if (filled($validated['resume_id'] ?? null)) {
+            $query->where('resume_id', (int) $validated['resume_id']);
+        }
+
+        if (($company = $this->resolveCurrentRecruiterCompany()) instanceof Company) {
+            if ((int) $job->company_id !== (int) $company->id) {
+                return $this->success(null);
+            }
+
+            $application = $query
+                ->where('company_id', $company->id)
+                ->latest('id')
+                ->first();
+
+            return $this->success($application instanceof Application
+                ? (new RcApplicationResource($application))->resolve($request)
+                : null);
+        }
+
+        if ($this->isCurrentJobSeeker()) {
+            if (
+                filled($validated['candidate_user_id'] ?? null)
+                && (int) $validated['candidate_user_id'] !== (int) $this->user()->id
+            ) {
+                return $this->success(null);
+            }
+
+            $application = $query
+                ->where('candidate_user_id', $this->user()->id)
+                ->latest('id')
+                ->first();
+
+            return $this->success($application instanceof Application
+                ? (new RcApplicationResource($application))->resolve($request)
+                : null);
+        }
+
+        return $this->error('请先切换为求职者或招聘方身份。', Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     /**

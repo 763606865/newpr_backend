@@ -175,6 +175,7 @@ Route::middleware('auth:rc')->group(function (): void {
     // 投递（求职者 / 招聘方）
     Route::get('/applications', [ApplicationController::class, 'index']);
     Route::post('/applications', [ApplicationController::class, 'store']);
+    Route::get('/applications/check', [ApplicationController::class, 'checkByJobAndUser']);
     Route::get('/applications/{id}', [ApplicationController::class, 'show'])->whereNumber('id');
     Route::post('/applications/{id}/withdraw', [ApplicationController::class, 'withdraw'])->whereNumber('id');
     Route::post('/applications/{id}/accept-interview', [ApplicationController::class, 'acceptInterview'])->whereNumber('id');
