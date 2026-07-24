@@ -10,6 +10,8 @@ use App\Filament\Resources\Companies\Schemas\CompanyOperationLogsSchema;
 use App\Models\Company;
 use App\Models\Oa\Biz\Plan;
 use App\Services\CompanyOperationLogService;
+use App\Services\RcNotificationService;
+use App\Services\SmsService;
 use App\Services\SysPlanService;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
@@ -19,6 +21,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
+use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -28,6 +31,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Log;
 
 class CompaniesTable
 {
@@ -148,13 +152,19 @@ class CompaniesTable
                         TextEntry::make('address')->label('企业地址'),
                     ])
                     ->columns(2),
+                Section::make('通知设置')
+                    ->schema([
+                        Checkbox::make('send_sms_notification')
+                            ->label('发送短信通知')
+                            ->default(true),
+                    ]),
             ])
             ->extraModalFooterActions([
                 Action::make('approve')
                     ->label('通过')
                     ->color('success')
                     ->authorize(fn (Company $record): bool => CompanyResource::canEdit($record))
-                    ->action(function (Company $record): void {
+                    ->action(function (Company $record, array $data): void {
                         $beforeStatus = self::resolveCompanyStatus($record->status) ?? CompanyStatus::Auditing;
                         $adminId = auth('admin')->id();
 
@@ -163,7 +173,14 @@ class CompaniesTable
                             'auditor_id' => $adminId,
                         ]);
 
-                        CompanyOperationLogService::make()->recordAuditApproved($record->fresh(), $beforeStatus);
+                        $record = $record->fresh();
+
+                        CompanyOperationLogService::make()->recordAuditApproved($record, $beforeStatus);
+                        RcNotificationService::make()->notifyCompanyAuditResult($record, true);
+
+                        if ((bool) ($data['send_sms_notification'] ?? true)) {
+                            self::sendAuditSmsNotification($record, true);
+                        }
                     })
                     ->successNotificationTitle('已通过该企业入驻申请')
                     ->cancelParentActions(),
@@ -171,7 +188,7 @@ class CompaniesTable
                     ->label('拒绝')
                     ->color('danger')
                     ->authorize(fn (Company $record): bool => CompanyResource::canEdit($record))
-                    ->action(function (Company $record): void {
+                    ->action(function (Company $record, array $data): void {
                         $beforeStatus = self::resolveCompanyStatus($record->status) ?? CompanyStatus::Auditing;
                         $adminId = auth('admin')->id();
 
@@ -180,11 +197,41 @@ class CompaniesTable
                             'auditor_id' => $adminId,
                         ]);
 
-                        CompanyOperationLogService::make()->recordAuditRejected($record->fresh(), $beforeStatus);
+                        $record = $record->fresh();
+
+                        CompanyOperationLogService::make()->recordAuditRejected($record, $beforeStatus);
+                        RcNotificationService::make()->notifyCompanyAuditResult($record, false);
+
+                        if ((bool) ($data['send_sms_notification'] ?? true)) {
+                            self::sendAuditSmsNotification($record, false);
+                        }
                     })
                     ->successNotificationTitle('已拒绝该企业入驻申请')
                     ->cancelParentActions(),
             ]);
+    }
+
+    private static function sendAuditSmsNotification(Company $company, bool $approved): void
+    {
+        $mobile = trim((string) $company->contact_phone);
+
+        if ($mobile === '') {
+            Log::warning('company_audit_sms_skipped', [
+                'company_id' => $company->id,
+                'reason' => 'missing_contact_phone',
+            ]);
+
+            return;
+        }
+
+        SmsService::make()->send(
+            mobile: $mobile,
+            templateId: $approved ? '810334' : '810335',
+            templateContent: [
+                'company_name' => $company->name,
+            ],
+            signature: '【中测高科人才测评】',
+        );
     }
 
     private static function actionBindPlan(): Action

@@ -15,6 +15,7 @@ enum RcNotificationType: int implements HasLabel
     case OfferRejectedByCandidate = 7;
     case SchoolActivityCompanyInvited = 8;
     case SchoolActivityCompanyApproved = 9;
+    case CompanyAuditResult = 10;
 
     public function getLabel(): ?string
     {
@@ -28,6 +29,7 @@ enum RcNotificationType: int implements HasLabel
             self::OfferRejectedByCandidate => 'Offer已拒绝',
             self::SchoolActivityCompanyInvited => '校招活动邀约',
             self::SchoolActivityCompanyApproved => '校招活动审批通过',
+            self::CompanyAuditResult => '企业审核通知',
         };
     }
 }

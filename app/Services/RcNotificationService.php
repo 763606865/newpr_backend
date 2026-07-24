@@ -6,6 +6,7 @@ use App\Enums\RcIdentityStatus;
 use App\Enums\RcIdentityType;
 use App\Enums\RcNotificationType;
 use App\Enums\RcSchoolActivityOrganizerType;
+use App\Models\Company;
 use App\Models\Rc\Application;
 use App\Models\Rc\Interview;
 use App\Models\Rc\Notification;
@@ -280,6 +281,40 @@ class RcNotificationService extends Service
                 $context['activity_title'],
             ),
         );
+    }
+
+    public function notifyCompanyAuditResult(Company $company, bool $approved): void
+    {
+        $company->refresh();
+
+        $status = $company->status;
+        $statusValue = $status?->value;
+        $statusLabel = $status?->getLabel();
+
+        $title = '企业审核通知';
+        $body = $approved
+            ? sprintf('您的企业「%s」入驻审核已通过', $company->name)
+            : sprintf('您的企业「%s」入驻审核未通过', $company->name);
+        $payload = [
+            'company_id' => $company->id,
+            'company_name' => $company->name,
+            'approved' => $approved,
+            'status' => $statusValue,
+            'status_label' => $statusLabel,
+        ];
+
+        $identities = $this->resolveRecruiterIdentitiesForCompany($company->id);
+
+        foreach ($identities as $identity) {
+            $this->create(
+                userId: $identity->user_id,
+                type: RcNotificationType::CompanyAuditResult,
+                title: $title,
+                body: $body,
+                payload: $payload,
+                recipientIdentity: $identity,
+            );
+        }
     }
 
     /**

@@ -18,6 +18,7 @@ use App\Models\Rc\Resume;
 use App\Models\Rc\UserIdentity;
 use App\Models\Token;
 use App\Models\User;
+use App\Services\RcNotificationService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Passport\ClientRepository;
@@ -64,6 +65,64 @@ class NotificationControllerTest extends TestCase
             ->assertJsonPath('data.data.0.user_identity_type', RcIdentityType::JobSeeker->value)
             ->assertJsonPath('data.data.0.type', RcNotificationType::InterviewInvitation->value)
             ->assertJsonPath('data.data.0.is_read', false);
+    }
+
+    public function test_company_audit_result_notifies_enabled_recruiters_bound_to_company(): void
+    {
+        $company = Company::query()->create([
+            'name' => '南昌示例科技有限公司',
+            'credit_code' => '91360100MAAUDIT001',
+            'status' => CompanyStatus::Enabled,
+        ]);
+        $otherCompany = Company::query()->create([
+            'name' => '其他企业',
+            'credit_code' => '91360100MAAUDIT002',
+            'status' => CompanyStatus::Enabled,
+        ]);
+
+        [$recruiterA, $identityA] = $this->createRecruiterContext($company->id);
+        [$recruiterB, $identityB] = $this->createRecruiterContext($company->id);
+        [$otherRecruiter] = $this->createRecruiterContext($otherCompany->id);
+        $disabledRecruiter = User::factory()->create();
+        UserIdentity::query()->create([
+            'user_id' => $disabledRecruiter->id,
+            'organization_type' => 'company',
+            'organization_id' => $company->id,
+            'organization_name' => $company->name,
+            'identity_type' => RcIdentityType::Recruiter,
+            'identity_name' => RcIdentityType::Recruiter->getLabel(),
+            'is_default' => 1,
+            'status' => RcIdentityStatus::Disabled,
+        ]);
+
+        RcNotificationService::make()->notifyCompanyAuditResult($company, true);
+
+        $this->assertSame(2, Notification::query()
+            ->where('type', RcNotificationType::CompanyAuditResult)
+            ->count());
+
+        $this->assertDatabaseHas('rc_notifications', [
+            'user_id' => $recruiterA->id,
+            'user_identity_id' => $identityA->id,
+            'type' => RcNotificationType::CompanyAuditResult->value,
+            'title' => '企业审核通知',
+            'body' => '您的企业「南昌示例科技有限公司」入驻审核已通过',
+        ]);
+
+        $this->assertDatabaseHas('rc_notifications', [
+            'user_id' => $recruiterB->id,
+            'user_identity_id' => $identityB->id,
+            'type' => RcNotificationType::CompanyAuditResult->value,
+        ]);
+
+        $this->assertDatabaseMissing('rc_notifications', [
+            'user_id' => $otherRecruiter->id,
+            'type' => RcNotificationType::CompanyAuditResult->value,
+        ]);
+        $this->assertDatabaseMissing('rc_notifications', [
+            'user_id' => $disabledRecruiter->id,
+            'type' => RcNotificationType::CompanyAuditResult->value,
+        ]);
     }
 
     public function test_recruiter_identity_does_not_see_job_seeker_notifications(): void

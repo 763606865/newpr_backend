@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Libs\Facades\Jucai;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
@@ -92,20 +91,15 @@ class VerificationCodeService extends Service
         }
 
         if ($type === 'phone') {
-            $driver = config('sms.driver');
-            if ($driver === 'jucai') {
-                $config = config('sms.jucai');
-                Jucai::sms()->send($config, [
-                    'mobile' => $account,
-                    'signature' => '【中测高科人才测评】',
-                    'tpId' => config('sms.jucai.template_id'),
-                    'tpContent' => [
-                        'app_name' => '中测易聘',
-                        'others' => '300',
-                        'valid_code' => $code,
-                    ],
-                ]);
-            }
+            SmsService::make()->send(
+                mobile: $account,
+                templateId: (string) config('sms.jucai.template_id'),
+                templateContent: [
+                    'app_name' => '中测易聘',
+                    'others' => '300',
+                    'valid_code' => $code,
+                ],
+            );
         }
 
         Log::info('auth_verification_code_sent', [
