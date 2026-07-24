@@ -17,6 +17,7 @@ use App\Enums\RcResumeStatus;
 use App\Enums\RcSalaryUnit;
 use App\Models\Company;
 use App\Models\Rc\Application;
+use App\Models\Rc\ApplicationFlow;
 use App\Models\Rc\Job;
 use App\Models\Rc\JobStage;
 use App\Models\Rc\Offer;
@@ -123,7 +124,10 @@ class ApplicationControllerTest extends TestCase
             ->assertJsonPath('code', 200)
             ->assertJsonPath('data.status', RcApplicationStatus::Pending->value)
             ->assertJsonPath('data.resume_id', $resume->id)
-            ->assertJsonPath('data.job.title', 'Laravel 工程师');
+            ->assertJsonPath('data.job.title', 'Laravel 工程师')
+            ->assertJsonPath('data.latest_flow.action_type', RcApplicationFlowActionType::Transfer->value)
+            ->assertJsonPath('data.latest_flow.action_type_label', '流转')
+            ->assertJsonPath('data.latest_flow.note', '求职者主动投递');
 
         $this->assertDatabaseHas('rc_applications', [
             'job_id' => $job->id,
@@ -273,12 +277,14 @@ class ApplicationControllerTest extends TestCase
             ->rcGetJson($user, $identity, '/rc/applications')
             ->assertOk()
             ->assertJsonPath('data.total', 1)
-            ->assertJsonPath('data.data.0.job.title', 'Laravel 工程师');
+            ->assertJsonPath('data.data.0.job.title', 'Laravel 工程师')
+            ->assertJsonPath('data.data.0.latest_flow.action_type', RcApplicationFlowActionType::Transfer->value);
 
         $this
             ->rcGetJson($user, $identity, '/rc/applications/'.$applicationId)
             ->assertOk()
             ->assertJsonPath('data.resume.full_name', '求职者甲')
+            ->assertJsonPath('data.latest_flow.note', '求职者主动投递')
             ->assertJsonMissingPath('data.resume_snapshot');
     }
 
@@ -311,17 +317,19 @@ class ApplicationControllerTest extends TestCase
             ->assertOk()
             ->assertJsonPath('data.total', 1)
             ->assertJsonPath('data.data.0.candidate_external_user_id', $jobSeekerIdentity->external_user_id)
+            ->assertJsonPath('data.data.0.latest_flow.note', '求职者主动投递')
             ->assertJsonPath('data.data.0.candidate.full_name', '候选人甲')
             ->assertJsonMissingPath('data.data.0.resume')
             ->assertJsonMissingPath('data.data.0.resume_snapshot')
             ->assertJsonMissingPath('data.data.0.candidate.phone');
 
         $this
-            ->rcGetJson($recruiter, $recruiterIdentity, '/rc/applications/'.$applicationId)
+            ->rcGetJson($recruiter, $recruiterIdentity, '/rc/companies/applications/'.$applicationId)
             ->assertOk()
             ->assertJsonPath('data.status', RcApplicationStatus::Screening->value)
             ->assertJsonPath('data.status_label', '筛选中')
             ->assertJsonPath('data.candidate_external_user_id', $jobSeekerIdentity->external_user_id)
+            ->assertJsonPath('data.latest_flow.note', '招聘方查看投递详情')
             ->assertJsonPath('data.resume_snapshot.full_name', '候选人甲')
             ->assertJsonPath('data.resume_snapshot.phone', '138****8000')
             ->assertJsonPath('data.resume_snapshot.email', 'can******@example.com')
@@ -335,6 +343,7 @@ class ApplicationControllerTest extends TestCase
             ->assertOk()
             ->assertJsonPath('data.status', RcApplicationStatus::Screening->value)
             ->assertJsonPath('data.candidate_external_user_id', $jobSeekerIdentity->external_user_id)
+            ->assertJsonPath('data.latest_flow.note', '招聘方查看投递详情')
             ->assertJsonPath('data.resume_snapshot.full_name', '候选人甲')
             ->assertJsonPath('data.resume_snapshot.phone', '138****8000');
     }
@@ -374,7 +383,7 @@ class ApplicationControllerTest extends TestCase
         ]);
 
         $this
-            ->rcGetJson($recruiter, $recruiterIdentity, '/rc/applications/'.$applicationId)
+            ->rcGetJson($recruiter, $recruiterIdentity, '/rc/companies/applications/'.$applicationId)
             ->assertOk()
             ->assertJsonPath('data.resume_snapshot.phone', '138****8000')
             ->assertJsonPath('data.resume_snapshot.email', 'can******@example.com')
@@ -694,7 +703,7 @@ class ApplicationControllerTest extends TestCase
             ->rcPostJson($jobSeeker, $jobSeekerIdentity, '/rc/applications', ['job_id' => $job->id])
             ->json('data.id');
 
-        $this->rcGetJson($recruiter, $recruiterIdentity, '/rc/applications/'.$applicationId);
+        $this->rcGetJson($recruiter, $recruiterIdentity, '/rc/companies/applications/'.$applicationId);
 
         $this->rcPostJson($recruiter, $recruiterIdentity, '/rc/companies/applications/'.$applicationId.'/invite-interview', [
             'interview_at' => now()->addDay()->toDateTimeString(),
@@ -889,6 +898,15 @@ class ApplicationControllerTest extends TestCase
                 'full_name' => '求职者甲',
             ],
         ]);
+        ApplicationFlow::query()->create([
+            'company_id' => $job->company_id,
+            'application_id' => $application->id,
+            'to_stage_id' => null,
+            'action_type' => RcApplicationFlowActionType::Transfer,
+            'operator_user_id' => $jobSeeker->id,
+            'note' => '求职者主动投递',
+            'happened_at' => now(),
+        ]);
 
         $this
             ->rcGetJson($recruiter, $recruiterIdentity, '/rc/companies/applications/check?job_id='.$job->id.'&resume_id='.$resume->id)
@@ -898,7 +916,8 @@ class ApplicationControllerTest extends TestCase
             ->assertJsonPath('data.job_id', $job->id)
             ->assertJsonPath('data.resume_id', $resume->id)
             ->assertJsonPath('data.candidate_user_id', $jobSeeker->id)
-            ->assertJsonPath('data.candidate_external_user_id', $jobSeekerIdentity->external_user_id);
+            ->assertJsonPath('data.candidate_external_user_id', $jobSeekerIdentity->external_user_id)
+            ->assertJsonPath('data.latest_flow.action_type', RcApplicationFlowActionType::Transfer->value);
     }
 
     public function test_recruiter_check_company_application_returns_null_for_other_company_job(): void

@@ -101,7 +101,12 @@ class CompanyApplicationController extends Controller
         $query = Application::query()
             ->where('company_id', $company->id)
             ->where('job_id', $job->id)
-            ->with(['job', 'company', 'candidateUser.jobseekerIdentity']);
+            ->with([
+                'job',
+                'company',
+                'candidateUser.jobseekerIdentity',
+                'latestFlow',
+            ]);
 
         if (filled($validated['candidate_user_id'] ?? null)) {
             $query->where('candidate_user_id', (int) $validated['candidate_user_id']);

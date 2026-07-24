@@ -208,7 +208,12 @@ class ApplicationController extends Controller
 
         $query = Application::query()
             ->where('job_id', $job->id)
-            ->with(['job', 'resume', 'company']);
+            ->with([
+                'job',
+                'resume',
+                'company',
+                'latestFlow',
+            ]);
 
         if (filled($validated['candidate_user_id'] ?? null)) {
             $query->where('candidate_user_id', (int) $validated['candidate_user_id']);

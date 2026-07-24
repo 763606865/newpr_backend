@@ -102,7 +102,7 @@ class RcApplicationService extends Service
                     note: '求职者重新投递',
                 );
 
-                return $existing->refresh()->load([...Job::discoveryRelationsWithPrefix('job'), 'resume', 'company']);
+                return $this->refreshWithRelations($existing);
             }
 
             $application = Application::query()->create([
@@ -125,7 +125,7 @@ class RcApplicationService extends Service
                 note: '求职者主动投递',
             );
 
-            return $application->load([...Job::discoveryRelationsWithPrefix('job'), 'resume', 'company']);
+            return $application->load($this->candidateApplicationRelations());
         });
     }
 
@@ -155,7 +155,7 @@ class RcApplicationService extends Service
                 note: '求职者撤回投递',
             );
 
-            return $application->refresh()->load([...Job::discoveryRelationsWithPrefix('job'), 'resume', 'company']);
+            return $this->refreshWithRelations($application);
         });
     }
 
@@ -166,7 +166,7 @@ class RcApplicationService extends Service
     {
         return Application::query()
             ->where('candidate_user_id', $user->id)
-            ->with([...Job::discoveryRelationsWithPrefix('job'), 'resume', 'company'])
+            ->with($this->candidateApplicationRelations())
             ->orderByDesc('applied_at')
             ->orderByDesc('id')
             ->paginate($perPage);
@@ -183,6 +183,7 @@ class RcApplicationService extends Service
                 'resume.languages' => static fn ($relation) => $relation->orderByDesc('sort')->orderByDesc('id'),
                 'resume.skills' => static fn ($relation) => $relation->orderByDesc('sort')->orderByDesc('id'),
                 'company',
+                'latestFlow',
             ])
             ->whereKey($applicationId)
             ->first();
@@ -196,7 +197,13 @@ class RcApplicationService extends Service
     {
         $query = Application::query()
             ->where('company_id', $company->id)
-            ->with(['job.position', 'resume', 'company', 'candidateUser.jobseekerIdentity']);
+            ->with([
+                'job.position',
+                'resume',
+                'company',
+                'candidateUser.jobseekerIdentity',
+                'latestFlow',
+            ]);
 
         if (filled($filters['job_id'] ?? null)) {
             $query->where('job_id', (int) $filters['job_id']);
@@ -216,7 +223,12 @@ class RcApplicationService extends Service
     {
         return Application::query()
             ->where('company_id', $company->id)
-            ->with([...Job::discoveryRelationsWithPrefix('job'), 'company', 'candidateUser.jobseekerIdentity'])
+            ->with([
+                ...Job::discoveryRelationsWithPrefix('job'),
+                'company',
+                'candidateUser.jobseekerIdentity',
+                'latestFlow',
+            ])
             ->whereKey($applicationId)
             ->first();
     }
@@ -725,12 +737,30 @@ class RcApplicationService extends Service
 
     private function refreshWithRelations(Application $application): Application
     {
-        return $application->refresh()->load([...Job::discoveryRelationsWithPrefix('job'), 'resume', 'company']);
+        return $application->refresh()->load($this->candidateApplicationRelations());
     }
 
     private function refreshForRecruiter(Application $application): Application
     {
-        return $application->refresh()->load([...Job::discoveryRelationsWithPrefix('job'), 'company', 'candidateUser.jobseekerIdentity']);
+        return $application->refresh()->load([
+            ...Job::discoveryRelationsWithPrefix('job'),
+            'company',
+            'candidateUser.jobseekerIdentity',
+            'latestFlow',
+        ]);
+    }
+
+    /**
+     * @return array<int|string, mixed>
+     */
+    private function candidateApplicationRelations(): array
+    {
+        return [
+            ...Job::discoveryRelationsWithPrefix('job'),
+            'resume',
+            'company',
+            'latestFlow',
+        ];
     }
 
     private function generateOfferNo(Application $application): string

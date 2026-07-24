@@ -109,6 +109,11 @@ class Application extends Model
         return $this->hasMany(ApplicationFlow::class, 'application_id');
     }
 
+    public function latestFlow(): HasOne
+    {
+        return $this->hasOne(ApplicationFlow::class, 'application_id')->latestOfMany();
+    }
+
     public function interviews(): HasMany
     {
         return $this->hasMany(Interview::class, 'application_id');

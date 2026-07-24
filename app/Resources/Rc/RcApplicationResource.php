@@ -5,6 +5,7 @@ namespace App\Resources\Rc;
 use App\Enums\RcInterviewStatus;
 use App\Enums\RcOfferStatus;
 use App\Models\Rc\Application;
+use App\Models\Rc\ApplicationFlow;
 use App\Models\Rc\Interview;
 use App\Models\Rc\Offer;
 use App\Models\Rc\UserIdentity;
@@ -63,6 +64,13 @@ class RcApplicationResource extends JsonResource
                 'id' => $this->resource->company->id,
                 'name' => $this->resource->company->name,
             ];
+        }
+
+        if ($this->resource->relationLoaded('latestFlow')) {
+            $latestFlow = $this->resource->latestFlow;
+            $data['latest_flow'] = $latestFlow instanceof ApplicationFlow
+                ? (new RcApplicationFlowResource($latestFlow))->resolve($request)
+                : null;
         }
 
         $pendingInterview = Interview::query()
