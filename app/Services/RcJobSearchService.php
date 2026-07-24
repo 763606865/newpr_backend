@@ -74,7 +74,7 @@ class RcJobSearchService extends Service
         $paginator = $builder
             ->query(function (Builder $query) use ($filters): void {
                 $query->with(Job::discoveryRelations());
-                $this->filterApplier->applyExclusionFilters($query, $filters);
+                $this->filterApplier->applyDatabaseFilters($query, $filters);
             })
             ->paginate($perPage);
 

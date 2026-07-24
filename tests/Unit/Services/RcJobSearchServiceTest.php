@@ -112,12 +112,24 @@ class RcJobSearchServiceTest extends TestCase
             'published_at' => now(),
         ]);
 
-        $paginator = RcJobSearchService::make()->search(15, [
-            'city_code' => '440300',
+        Job::query()->create([
+            'company_id' => $company->id,
+            'position_code' => 'backend-developer',
+            'code' => 'JOB-CITY-003',
+            'title' => '南昌东湖后端工程师',
+            'employment_type' => RcJobEmploymentType::FullTime,
+            'city_code' => '360102',
+            'description' => '南昌东湖办公',
+            'status' => RcJobStatus::Published,
+            'published_at' => now(),
         ]);
 
-        $this->assertSame(1, $paginator->total());
-        $this->assertSame('440300', $paginator->items()[0]->city_code);
+        $paginator = RcJobSearchService::make()->search(15, [
+            'city_code' => '360100',
+        ]);
+
+        $this->assertSame(2, $paginator->total());
+        $this->assertEqualsCanonicalizing(['360100', '360102'], collect($paginator->items())->pluck('city_code')->all());
     }
 
     public function test_search_sorts_urgent_jobs_before_newer_non_urgent_jobs(): void

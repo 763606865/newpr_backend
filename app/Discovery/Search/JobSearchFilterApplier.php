@@ -38,8 +38,6 @@ class JobSearchFilterApplier
 
         if (filled($filters['city_codes'] ?? null)) {
             $builder->whereIn('city_code', array_values((array) $filters['city_codes']));
-        } elseif (filled($filters['city_code'] ?? null)) {
-            $builder->where('city_code', (string) $filters['city_code']);
         }
 
         if (filled($filters['employment_type'] ?? null)) {
@@ -47,7 +45,7 @@ class JobSearchFilterApplier
         }
 
         if (filled($filters['education_level'] ?? null)) {
-            $builder->where('education_level', (int) $filters['education_level']);
+            $builder->where('education_level', '<=', (int) $filters['education_level']);
         }
 
         if (filled($filters['position_code'] ?? null)) {
@@ -84,7 +82,7 @@ class JobSearchFilterApplier
         if (filled($filters['city_codes'] ?? null)) {
             $query->whereIn('city_code', array_values((array) $filters['city_codes']));
         } elseif (filled($filters['city_code'] ?? null)) {
-            $query->where('city_code', (string) $filters['city_code']);
+            $query->where('city_code', 'like', $this->cityCodePrefix((string) $filters['city_code']).'%');
         }
 
         if (filled($filters['employment_type'] ?? null)) {
@@ -92,7 +90,7 @@ class JobSearchFilterApplier
         }
 
         if (filled($filters['education_level'] ?? null)) {
-            $query->where('education_level', (int) $filters['education_level']);
+            $query->where('education_level', '<=', (int) $filters['education_level']);
         }
 
         if (filled($filters['position_code'] ?? null)) {
@@ -144,5 +142,16 @@ class JobSearchFilterApplier
                 ->select('company_id')
                 ->where('user_id', $userId));
         }
+    }
+
+    private function cityCodePrefix(string $cityCode): string
+    {
+        $cityCode = trim($cityCode);
+
+        if (strlen($cityCode) >= 4) {
+            return substr($cityCode, 0, 4);
+        }
+
+        return $cityCode;
     }
 }
