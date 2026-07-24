@@ -2,13 +2,16 @@
 
 namespace App\Resources\Rc;
 
+use App\Enums\RcIdentityType;
 use App\Models\ImConversation;
 use App\Models\ImConversationMember;
 use App\Models\ImSystemUser;
 use App\Models\Rc\Job;
+use App\Models\Rc\UserIdentity;
 use App\Models\Rc\UserIm;
 use App\Models\User;
 use App\Services\RcJobFavoriteService;
+use App\Services\RcResumeFavoriteService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -41,6 +44,7 @@ class ImConversationResource extends JsonResource
             'context_type' => $this->resource->context_type,
             'context_id' => $this->resource->context_id,
             'context' => $this->contextPayload($request),
+            'viewer_context' => $this->viewerContextPayload($request),
             'scene' => $this->resource->scene,
             'metadata' => $this->resource->metadata,
             'last_message_at' => $this->resource->last_message_at,
@@ -136,7 +140,6 @@ class ImConversationResource extends JsonResource
     private function contextPayload(Request $request): ?array
     {
         $context = $this->resource->relationLoaded('context') ? $this->resource->context : null;
-        $viewer = $request->user('rc');
 
         if ($context instanceof Job) {
             return [
@@ -156,12 +159,61 @@ class ImConversationResource extends JsonResource
                 'benefit' => $context->benefit,
                 'status' => $context->status?->value,
                 'status_label' => $context->status?->getLabel(),
-                'is_favorited' => $viewer instanceof User
-                    && RcJobFavoriteService::make()->isFavorited($viewer, $context->id),
                 'published_at' => $context->published_at,
             ];
         }
 
         return null;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function viewerContextPayload(Request $request): array
+    {
+        $identity = $request->attributes->get('current_identity');
+        $viewer = $request->user('rc');
+        $context = $this->resource->relationLoaded('context') ? $this->resource->context : null;
+
+        $payload = [
+            'viewer_identity_type' => $identity instanceof UserIdentity ? $identity->identity_type?->value : null,
+            'is_job_favorited' => null,
+            'is_resume_favorited' => null,
+        ];
+
+        if (! $identity instanceof UserIdentity || ! $viewer instanceof User) {
+            return $payload;
+        }
+
+        if ($identity->identity_type === RcIdentityType::JobSeeker && $context instanceof Job) {
+            $payload['is_job_favorited'] = RcJobFavoriteService::make()->isFavorited($viewer, $context->id);
+
+            return $payload;
+        }
+
+        if ($identity->identity_type === RcIdentityType::Recruiter) {
+            $resumeId = $this->resolveResumeIdFromMetadata();
+
+            if ($resumeId !== null && $identity->organization_type === 'company' && filled($identity->organization_id)) {
+                $payload['is_resume_favorited'] = RcResumeFavoriteService::make()->isFavorited(
+                    $viewer,
+                    (int) $identity->organization_id,
+                    $resumeId,
+                );
+            }
+        }
+
+        return $payload;
+    }
+
+    private function resolveResumeIdFromMetadata(): ?int
+    {
+        $metadata = $this->resource->metadata ?? [];
+
+        if (! is_array($metadata) || blank($metadata['resume_id'] ?? null)) {
+            return null;
+        }
+
+        return (int) $metadata['resume_id'];
     }
 }

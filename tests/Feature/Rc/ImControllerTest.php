@@ -15,6 +15,8 @@ use App\Models\ImConversation;
 use App\Models\ImSystemUser;
 use App\Models\Rc\Job;
 use App\Models\Rc\JobFavorite;
+use App\Models\Rc\Resume;
+use App\Models\Rc\ResumeFavorite;
 use App\Models\Rc\UserIdentity;
 use App\Models\Rc\UserIm;
 use App\Models\Token;
@@ -332,9 +334,25 @@ class ImControllerTest extends TestCase
     {
         [$user, $identity, , $memberIdentity] = $this->createConversationContext();
         $job = $this->createJob('JOB-IM-CONTEXT-001');
+        $identity->update([
+            'organization_type' => 'company',
+            'organization_id' => $job->company_id,
+            'organization_name' => 'IM 会话测试企业',
+        ]);
         JobFavorite::query()->create([
             'user_id' => $user->id,
             'job_id' => $job->id,
+        ]);
+        $resume = Resume::query()->create([
+            'user_id' => $memberIdentity->user_id,
+            'title' => '沟通简历',
+            'full_name' => '求职者甲',
+            'phone' => '13800138000',
+        ]);
+        ResumeFavorite::query()->create([
+            'user_id' => $user->id,
+            'company_id' => $job->company_id,
+            'resume_id' => $resume->id,
         ]);
 
         Im::shouldReceive('conversation')
@@ -362,6 +380,9 @@ class ImControllerTest extends TestCase
             'members' => [
                 ['external_user_id' => $memberIdentity->external_user_id],
             ],
+            'metadata' => [
+                'resume_id' => $resume->id,
+            ],
         ]);
 
         $response
@@ -377,7 +398,10 @@ class ImControllerTest extends TestCase
             ->assertJsonPath('data.context.salary_unit', 1)
             ->assertJsonPath('data.context.salary_unit_label', '月')
             ->assertJsonPath('data.context.annual_salary_months', '13.0')
-            ->assertJsonPath('data.context.is_favorited', true)
+            ->assertJsonMissingPath('data.context.is_favorited')
+            ->assertJsonPath('data.viewer_context.viewer_identity_type', RcIdentityType::Recruiter->value)
+            ->assertJsonPath('data.viewer_context.is_job_favorited', null)
+            ->assertJsonPath('data.viewer_context.is_resume_favorited', true)
             ->assertJsonPath('data.context.benefit', '五险一金');
 
         $this->assertDatabaseHas('im_conversations', [

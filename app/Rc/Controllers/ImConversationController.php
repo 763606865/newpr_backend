@@ -33,6 +33,7 @@ class ImConversationController extends Controller
         /** @var UserIm $userIm */
         $userIm = IMService::make()->resolveUserIm($this->currentIdentity());
         $request->attributes->set('current_user_im_id', $userIm->id);
+        $request->attributes->set('current_identity', $this->currentIdentity());
 
         $paginator = $userIm->memberConversations()
             ->with([
@@ -70,6 +71,7 @@ class ImConversationController extends Controller
         /** @var UserIm $userIm */
         $userIm = $imService->resolveUserIm($identity);
         $request->attributes->set('current_user_im_id', $userIm->id);
+        $request->attributes->set('current_identity', $identity);
 
         try {
             $conversation = $imService->resolvedConversation($identity, $request->validated());
