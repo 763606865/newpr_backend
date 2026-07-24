@@ -17,7 +17,9 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
+use Throwable;
 
 class RcNotificationService extends Service
 {
@@ -314,6 +316,39 @@ class RcNotificationService extends Service
                 payload: $payload,
                 recipientIdentity: $identity,
             );
+
+            $this->sendCompanyAuditImSystemNotice($identity, $company, $title, $body, $approved, $payload);
+        }
+    }
+
+    /**
+     * @param  array<string, mixed>  $payload
+     */
+    private function sendCompanyAuditImSystemNotice(
+        UserIdentity $identity,
+        Company $company,
+        string $title,
+        string $body,
+        bool $approved,
+        array $payload,
+    ): void {
+        try {
+            $userIm = IMService::make()->resolveUserIm($identity);
+            IMService::make()->sendSystemNotice($userIm->external_user_id, [
+                'notice_type' => 'company_audit_result',
+                'title' => $title,
+                'summary' => $body,
+                'biz_id' => $company->id,
+                'action_url' => '/rc/companies/profile',
+                'client_msg_id' => sprintf('company_audit_result_%d_%d_%s', $company->id, $identity->id, $approved ? 'approved' : 'rejected'),
+                'metadata' => $payload,
+            ]);
+        } catch (Throwable $exception) {
+            Log::warning('company_audit_im_system_notice_failed', [
+                'company_id' => $company->id,
+                'user_identity_id' => $identity->id,
+                'message' => $exception->getMessage(),
+            ]);
         }
     }
 
