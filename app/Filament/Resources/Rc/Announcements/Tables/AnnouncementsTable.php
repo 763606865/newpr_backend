@@ -10,6 +10,7 @@ use App\Filament\Resources\Cms\CmsTable;
 use App\Filament\Resources\Rc\RcTable;
 use App\Models\Area;
 use App\Models\Rc\Announcement;
+use App\Services\RcAnnouncementImportService;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -17,10 +18,14 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
+use Filament\Forms\Components\FileUpload;
+use Filament\Notifications\Notification;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class AnnouncementsTable
 {
@@ -111,6 +116,55 @@ class AnnouncementsTable
                     RestoreBulkAction::make(),
                 ]),
             ])
+            ->headerActions([
+                self::downloadImportTemplateAction(),
+                self::importAction(),
+            ])
             ->defaultSort('published_at', 'desc');
+    }
+
+    private static function downloadImportTemplateAction(): Action
+    {
+        return Action::make('downloadImportTemplate')
+            ->label('下载导入模板')
+            ->icon('heroicon-o-arrow-down-tray')
+            ->action(function (): BinaryFileResponse {
+                $service = RcAnnouncementImportService::make();
+                $path = tempnam(sys_get_temp_dir(), 'rc-announcement-template-');
+                $service->writeTemplate($path);
+
+                return response()
+                    ->download($path, '招聘公告批量导入模板.xlsx')
+                    ->deleteFileAfterSend();
+            });
+    }
+
+    private static function importAction(): Action
+    {
+        return Action::make('import')
+            ->label('批量导入')
+            ->icon('heroicon-o-arrow-up-tray')
+            ->schema([
+                FileUpload::make('file')
+                    ->label('导入文件')
+                    ->disk('local')
+                    ->directory('filament-imports/rc-announcements')
+                    ->acceptedFileTypes([
+                        'text/csv',
+                        'application/vnd.ms-excel',
+                        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                    ])
+                    ->required(),
+            ])
+            ->action(function (array $data): void {
+                $path = Storage::disk('local')->path((string) $data['file']);
+                $result = RcAnnouncementImportService::make()->import($path);
+
+                Notification::make()
+                    ->title('招聘公告导入完成')
+                    ->body('成功导入 '.$result['created'].' 条招聘公告。')
+                    ->success()
+                    ->send();
+            });
     }
 }

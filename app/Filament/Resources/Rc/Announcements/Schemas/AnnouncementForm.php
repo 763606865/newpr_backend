@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\Rc\Announcements\Schemas;
 
-use App\Enums\AreaLevel;
 use App\Enums\CmsAnnouncementPublisherType;
 use App\Enums\CmsPublishStatus;
 use App\Enums\CmsTagCategory;
@@ -21,6 +20,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 
 class AnnouncementForm
@@ -96,16 +96,26 @@ class AnnouncementForm
                     ->label('全国招聘')
                     ->default(false)
                     ->live(),
+                Select::make('work_province_code')
+                    ->label('工作省份')
+                    ->options(fn (): array => Area::provinceOptions())
+                    ->searchable()
+                    ->preload()
+                    ->placeholder('请选择省份')
+                    ->dehydrated(false)
+                    ->live()
+                    ->afterStateUpdated(function (Set $set): void {
+                        $set('city_codes', []);
+                    })
+                    ->hidden(fn (Get $get): bool => (bool) $get('is_nationwide')),
                 Select::make('city_codes')
                     ->label('工作城市')
-                    ->options(fn (): array => Area::query()
-                        ->where('level', AreaLevel::City)
-                        ->orderBy('code')
-                        ->pluck('name', 'code')
-                        ->all())
+                    ->options(fn (Get $get): array => Area::cityOptions($get('work_province_code')))
                     ->multiple()
                     ->searchable()
                     ->preload()
+                    ->placeholder('请先选择省份')
+                    ->disabled(fn (Get $get): bool => blank($get('work_province_code')))
                     ->hidden(fn (Get $get): bool => (bool) $get('is_nationwide'))
                     ->columnSpanFull(),
                 DateTimePicker::make('apply_start_at')

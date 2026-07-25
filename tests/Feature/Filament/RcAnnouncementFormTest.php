@@ -53,6 +53,7 @@ class RcAnnouncementFormTest extends TestCase
             ->assertSuccessful()
             ->assertSee('官网外链')
             ->assertSee('面向届别')
+            ->assertSee('工作省份')
             ->fillForm([
                 'title' => '中粮集团2026届校园招聘',
                 'publisher_name' => '中粮集团有限公司',
@@ -66,6 +67,7 @@ class RcAnnouncementFormTest extends TestCase
                 'education_level' => RcEducationLevel::Bachelor,
                 'major_requirement' => '计算机、财务等相关专业',
                 'is_nationwide' => false,
+                'work_province_code' => '360000',
                 'city_codes' => ['360100'],
                 'major_codes' => ['080901'],
                 'apply_start_at' => now()->subDay()->format('Y-m-d H:i:s'),
@@ -117,6 +119,23 @@ class RcAnnouncementFormTest extends TestCase
         $this->assertNull($announcement->apply_end_at);
     }
 
+    public function test_changing_work_province_clears_selected_cities(): void
+    {
+        $this->actingAsFilamentAdmin($this->announcementPermissions());
+        $this->seedAreas();
+
+        Livewire::test(CreateAnnouncement::class)
+            ->fillForm([
+                'work_province_code' => '360000',
+                'city_codes' => ['360100'],
+            ])
+            ->set('data.work_province_code', '320000')
+            ->assertFormSet([
+                'work_province_code' => '320000',
+                'city_codes' => [],
+            ]);
+    }
+
     public function test_edit_rc_announcement_form_loads_city_and_major_codes(): void
     {
         $this->actingAsFilamentAdmin($this->announcementPermissions());
@@ -144,6 +163,7 @@ class RcAnnouncementFormTest extends TestCase
             ->assertFormSet([
                 'title' => '苏州地铁2026届招聘',
                 'publisher_name' => '苏州轨道交通集团',
+                'work_province_code' => '320000',
                 'city_codes' => ['320500'],
                 'major_codes' => ['080901'],
             ]);
@@ -164,6 +184,14 @@ class RcAnnouncementFormTest extends TestCase
             'code' => '360100',
             'parent_code' => '360000',
             'level' => 2,
+            'type' => null,
+        ]);
+
+        Area::query()->create([
+            'name' => '江苏省',
+            'code' => '320000',
+            'parent_code' => '000000',
+            'level' => 1,
             'type' => null,
         ]);
 

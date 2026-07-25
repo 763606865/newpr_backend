@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Rc\Announcements\Concerns;
 
 use App\Enums\RcAnnouncementApplyDeadlineType;
+use App\Models\Area;
 use App\Models\Rc\Announcement;
 
 trait InteractsWithAnnouncementRelationsForm
@@ -59,7 +60,7 @@ trait InteractsWithAnnouncementRelationsForm
      */
     protected function removeRelationFieldsFromFormData(array $data): array
     {
-        unset($data['city_codes'], $data['major_codes']);
+        unset($data['work_province_code'], $data['city_codes'], $data['major_codes']);
 
         return $data;
     }
@@ -74,6 +75,7 @@ trait InteractsWithAnnouncementRelationsForm
             ->pluck('city_code')
             ->values()
             ->all();
+        $data['work_province_code'] = Area::resolveAreaHierarchy($data['city_codes'][0] ?? null)['province_code'];
 
         $data['major_codes'] = $announcement->majors()
             ->pluck('major_code')
