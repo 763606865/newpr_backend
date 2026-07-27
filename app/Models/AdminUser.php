@@ -30,15 +30,12 @@ class AdminUser extends Authenticatable implements FilamentUser
     {
         return [
             'email_verified_at' => 'datetime',
+            'password' => 'hashed',
         ];
     }
 
     public function canAccessPanel(Panel $panel): bool
     {
-        // 简单示例：所有已验证用户可访问
-        //        return $this->hasVerifiedEmail();
-
-        // 或结合权限：仅拥有角色的用户可访问
-        return $this->hasAnyRole(['super_admin', 'super-admin', 'editor']);
+        return $panel->getId() === 'admin' && $this->roles()->exists();
     }
 }
