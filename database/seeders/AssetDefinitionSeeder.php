@@ -1,0 +1,220 @@
+<?php
+
+namespace Database\Seeders;
+
+use App\Enums\RcAssetDefinitionStatus;
+use App\Enums\RcAssetOwnerType;
+use App\Enums\RcAssetType;
+use App\Models\Rc\AssetDefinition;
+use Illuminate\Database\Seeder;
+
+class AssetDefinitionSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        $definitions = [
+            [
+                'asset_code' => 'job_posting',
+                'asset_name' => '职位发布',
+                'owner_type' => RcAssetOwnerType::Company,
+                'asset_type' => RcAssetType::Count,
+                'consume_scene' => 'job_posting',
+                'unit' => '次',
+                'default_duration' => 90,
+                'description' => '消耗一次权益，可发布一个招聘职位。',
+                'status' => RcAssetDefinitionStatus::Enabled,
+                'sort' => 10,
+                'extra' => null,
+            ],
+            [
+                'asset_code' => 'job_urgent',
+                'asset_name' => '职位紧急招聘',
+                'owner_type' => RcAssetOwnerType::Company,
+                'asset_type' => RcAssetType::Count,
+                'consume_scene' => 'job_urgent',
+                'unit' => '次',
+                'default_duration' => 90,
+                'description' => '消耗一次权益，可为企业名下职位开启紧急招聘展示。',
+                'status' => RcAssetDefinitionStatus::Enabled,
+                'sort' => 20,
+                'extra' => [
+                    'effect_duration_days' => 7,
+                ],
+            ],
+            [
+                'asset_code' => 'job_refresh',
+                'asset_name' => '职位刷新',
+                'owner_type' => RcAssetOwnerType::Company,
+                'asset_type' => RcAssetType::Count,
+                'consume_scene' => 'job_refresh',
+                'unit' => '次',
+                'default_duration' => 90,
+                'description' => '消耗一次权益，可刷新一个职位的发布时间或排序时间。',
+                'status' => RcAssetDefinitionStatus::Enabled,
+                'sort' => 30,
+                'extra' => null,
+            ],
+            [
+                'asset_code' => 'job_top',
+                'asset_name' => '职位置顶',
+                'owner_type' => RcAssetOwnerType::Company,
+                'asset_type' => RcAssetType::Count,
+                'consume_scene' => 'job_top',
+                'unit' => '次',
+                'default_duration' => 90,
+                'description' => '消耗一次权益，可为企业名下职位开启置顶展示。',
+                'status' => RcAssetDefinitionStatus::Enabled,
+                'sort' => 40,
+                'extra' => [
+                    'effect_duration_days' => 7,
+                ],
+            ],
+            [
+                'asset_code' => 'candidate_contact',
+                'asset_name' => '候选人沟通',
+                'owner_type' => RcAssetOwnerType::Company,
+                'asset_type' => RcAssetType::Count,
+                'consume_scene' => 'candidate_contact',
+                'unit' => '次',
+                'default_duration' => 90,
+                'description' => '消耗一次权益，可向一名候选人发起招聘沟通。',
+                'status' => RcAssetDefinitionStatus::Enabled,
+                'sort' => 50,
+                'extra' => null,
+            ],
+            [
+                'asset_code' => 'resume_download',
+                'asset_name' => '简历下载',
+                'owner_type' => RcAssetOwnerType::Company,
+                'asset_type' => RcAssetType::Count,
+                'consume_scene' => 'resume_download',
+                'unit' => '份',
+                'default_duration' => 90,
+                'description' => '消耗一次权益，可下载一份候选人简历。',
+                'status' => RcAssetDefinitionStatus::Enabled,
+                'sort' => 60,
+                'extra' => null,
+            ],
+            [
+                'asset_code' => 'ai_job_description',
+                'asset_name' => 'AI职位描述',
+                'owner_type' => RcAssetOwnerType::Company,
+                'asset_type' => RcAssetType::Count,
+                'consume_scene' => 'ai_job_description',
+                'unit' => '次',
+                'default_duration' => 90,
+                'description' => '消耗一次权益，可使用一次 AI 职位描述生成或优化服务。',
+                'status' => RcAssetDefinitionStatus::Enabled,
+                'sort' => 70,
+                'extra' => null,
+            ],
+            [
+                'asset_code' => 'candidate_vip_basic',
+                'asset_name' => '求职基础会员',
+                'owner_type' => RcAssetOwnerType::User,
+                'asset_type' => RcAssetType::Membership,
+                'consume_scene' => 'candidate_vip',
+                'unit' => '月',
+                'default_duration' => 30,
+                'description' => '求职者基础会员权益，具体功能由商品和会员等级配置决定。',
+                'status' => RcAssetDefinitionStatus::Enabled,
+                'sort' => 110,
+                'extra' => [
+                    'vip_level' => 1,
+                ],
+            ],
+            [
+                'asset_code' => 'candidate_vip_premium',
+                'asset_name' => '求职高级会员',
+                'owner_type' => RcAssetOwnerType::User,
+                'asset_type' => RcAssetType::Membership,
+                'consume_scene' => 'candidate_vip',
+                'unit' => '月',
+                'default_duration' => 30,
+                'description' => '求职者高级会员权益，具体功能由商品和会员等级配置决定。',
+                'status' => RcAssetDefinitionStatus::Enabled,
+                'sort' => 120,
+                'extra' => [
+                    'vip_level' => 2,
+                ],
+            ],
+            [
+                'asset_code' => 'resume_refresh',
+                'asset_name' => '简历刷新',
+                'owner_type' => RcAssetOwnerType::User,
+                'asset_type' => RcAssetType::Count,
+                'consume_scene' => 'resume_refresh',
+                'unit' => '次',
+                'default_duration' => 90,
+                'description' => '消耗一次权益，可刷新一次个人简历，提高简历活跃度。',
+                'status' => RcAssetDefinitionStatus::Enabled,
+                'sort' => 130,
+                'extra' => null,
+            ],
+            [
+                'asset_code' => 'resume_exposure',
+                'asset_name' => '简历曝光',
+                'owner_type' => RcAssetOwnerType::User,
+                'asset_type' => RcAssetType::Count,
+                'consume_scene' => 'resume_exposure',
+                'unit' => '次',
+                'default_duration' => 90,
+                'description' => '消耗一次权益，可提升个人简历的招聘方曝光。',
+                'status' => RcAssetDefinitionStatus::Enabled,
+                'sort' => 140,
+                'extra' => [
+                    'effect_duration_days' => 7,
+                ],
+            ],
+            [
+                'asset_code' => 'resume_optimization',
+                'asset_name' => '简历人工优化',
+                'owner_type' => RcAssetOwnerType::User,
+                'asset_type' => RcAssetType::Count,
+                'consume_scene' => 'resume_optimization',
+                'unit' => '次',
+                'default_duration' => 90,
+                'description' => '消耗一次权益，可提交一次简历人工优化服务。',
+                'status' => RcAssetDefinitionStatus::Enabled,
+                'sort' => 150,
+                'extra' => null,
+            ],
+            [
+                'asset_code' => 'ai_resume_optimization',
+                'asset_name' => 'AI简历优化',
+                'owner_type' => RcAssetOwnerType::User,
+                'asset_type' => RcAssetType::Count,
+                'consume_scene' => 'ai_resume_optimization',
+                'unit' => '次',
+                'default_duration' => 90,
+                'description' => '消耗一次权益，可使用一次 AI 简历诊断与优化服务。',
+                'status' => RcAssetDefinitionStatus::Enabled,
+                'sort' => 160,
+                'extra' => null,
+            ],
+            [
+                'asset_code' => 'career_coaching',
+                'asset_name' => '求职辅导',
+                'owner_type' => RcAssetOwnerType::User,
+                'asset_type' => RcAssetType::Count,
+                'consume_scene' => 'career_coaching',
+                'unit' => '次',
+                'default_duration' => 90,
+                'description' => '消耗一次权益，可预约一次职业规划、面试或求职辅导服务。',
+                'status' => RcAssetDefinitionStatus::Enabled,
+                'sort' => 170,
+                'extra' => null,
+            ],
+        ];
+
+        foreach ($definitions as $definition) {
+            AssetDefinition::query()->updateOrCreate(
+                ['asset_code' => $definition['asset_code']],
+                $definition,
+            );
+        }
+    }
+}

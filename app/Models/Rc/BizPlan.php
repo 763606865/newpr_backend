@@ -2,6 +2,10 @@
 
 namespace App\Models\Rc;
 
+use App\Enums\RcBizPlanBillingCycle;
+use App\Enums\RcBizPlanProductType;
+use App\Enums\RcBizPlanStatus;
+use App\Enums\RcBizPlanTargetSide;
 use App\Models\Model;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
@@ -14,11 +18,12 @@ use Illuminate\Database\Eloquent\Attributes\Table;
  * @property string $plan_code
  * @property float $price
  * @property int $duration
- * @property int $target_side
- * @property int $product_type
- * @property int $billing_cycle
+ * @property RcBizPlanTargetSide $target_side
+ * @property RcBizPlanProductType $product_type
+ * @property RcBizPlanBillingCycle $billing_cycle
  * @property array|null $quota_rules
  * @property array|null $extra
+ * @property RcBizPlanStatus $status
  */
 #[Table('rc_biz_plans')]
 #[Fillable([
@@ -37,17 +42,27 @@ use Illuminate\Database\Eloquent\Attributes\Table;
 ])]
 class BizPlan extends Model
 {
+    protected $attributes = [
+        'price' => 0,
+        'duration' => 0,
+        'target_side' => RcBizPlanTargetSide::Recruiter,
+        'product_type' => RcBizPlanProductType::JobPosting,
+        'billing_cycle' => RcBizPlanBillingCycle::OneTime,
+        'sort' => 0,
+        'status' => RcBizPlanStatus::Enabled,
+    ];
+
     protected function casts(): array
     {
         return [
             'price' => 'decimal:2',
             'duration' => 'integer',
-            'target_side' => 'integer',
-            'product_type' => 'integer',
-            'billing_cycle' => 'integer',
+            'target_side' => RcBizPlanTargetSide::class,
+            'product_type' => RcBizPlanProductType::class,
+            'billing_cycle' => RcBizPlanBillingCycle::class,
             'sort' => 'integer',
             'quota_rules' => 'array',
-            'status' => 'integer',
+            'status' => RcBizPlanStatus::class,
             'extra' => 'array',
         ];
     }
