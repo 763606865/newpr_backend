@@ -60,6 +60,58 @@ php artisan migrate
 php artisan db:seed
 ```
 
+## Docker Compose 部署
+
+### 1) 准备环境变量
+```bash
+cp .env.docker.example .env.docker
+```
+
+编辑 `.env.docker`，至少补齐：
+- `APP_KEY`：可先用 `docker compose --env-file .env.docker run --rm app php artisan key:generate --show` 生成后写入
+- `APP_URL`：服务器对外访问地址
+- `DB_PASSWORD`：MySQL root 密码
+- `ELASTIC_PASSWORD`：ElasticSearch `elastic` 用户密码
+- OSS、短信、IM、AI 等第三方服务配置
+
+### 2) 构建并启动服务
+```bash
+docker compose --env-file .env.docker up -d --build
+```
+
+服务包含：
+- `nginx`：Web 入口，默认映射 `${APP_PORT:-80}`
+- `app`：Laravel PHP-FPM
+- `horizon`：队列消费
+- `scheduler`：Laravel 定时任务
+- `mysql`：业务数据库
+- `redis`：缓存、Session、队列
+- `elasticsearch`：Scout 搜索服务
+
+### 3) 初始化应用
+```bash
+docker compose --env-file .env.docker exec app php artisan migrate --force
+docker compose --env-file .env.docker exec app php artisan passport:keys --force
+docker compose --env-file .env.docker exec app php artisan storage:link
+docker compose --env-file .env.docker exec app php artisan optimize
+```
+
+如需初始化搜索索引：
+```bash
+docker compose --env-file .env.docker exec app php artisan scout:index "App\Models\Rc\Resume"
+docker compose --env-file .env.docker exec app php artisan scout:index "App\Models\Rc\Job"
+docker compose --env-file .env.docker exec app php artisan scout:import "App\Models\Rc\Resume"
+docker compose --env-file .env.docker exec app php artisan scout:import "App\Models\Rc\Job"
+```
+
+### 4) 常用运维命令
+```bash
+docker compose --env-file .env.docker ps
+docker compose --env-file .env.docker logs -f app
+docker compose --env-file .env.docker logs -f horizon
+docker compose --env-file .env.docker restart app horizon scheduler
+```
+
 ## 管理员账号说明
 > `php artisan make:filament-user` 已弃用（本项目不建议使用）。
 
