@@ -119,10 +119,15 @@ class CompanyOperationLogTest extends TestCase
     public function test_audit_approve_records_audit_approved_log_and_auditor_id(): void
     {
         $admin = $this->actingAsFilamentAdmin();
-        $company = $this->createCompany(['status' => CompanyStatus::Auditing]);
+        $company = $this->createCompany([
+            'status' => CompanyStatus::Auditing,
+            'contact_phone' => '',
+        ]);
 
         Livewire::test(ListCompanies::class)
-            ->callTableAction(['audit', 'approve'], $company)
+            ->callTableAction(['audit', 'approve'], $company, data: [
+                'send_sms_notification' => false,
+            ])
             ->assertNotified();
 
         $company->refresh();
@@ -139,10 +144,15 @@ class CompanyOperationLogTest extends TestCase
     public function test_audit_reject_records_audit_rejected_log_and_auditor_id(): void
     {
         $admin = $this->actingAsFilamentAdmin();
-        $company = $this->createCompany(['status' => CompanyStatus::Auditing]);
+        $company = $this->createCompany([
+            'status' => CompanyStatus::Auditing,
+            'contact_phone' => '',
+        ]);
 
         Livewire::test(ListCompanies::class)
-            ->callTableAction(['audit', 'reject'], $company)
+            ->callTableAction(['audit', 'reject'], $company, data: [
+                'send_sms_notification' => false,
+            ])
             ->assertNotified();
 
         $company->refresh();

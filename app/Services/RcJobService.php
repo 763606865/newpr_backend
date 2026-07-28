@@ -103,6 +103,10 @@ class RcJobService extends Service
 
             $job->save();
 
+            if ($status === RcJobStatus::Published) {
+                RcJobPublishingEntitlementService::make()->consumeFor($job);
+            }
+
             return $job->refresh()->load(['position', 'department', 'creator']);
         });
     }
@@ -110,20 +114,27 @@ class RcJobService extends Service
     public function update(Job $job, array $payload): Job
     {
         return DB::transaction(function () use ($job, $payload): Job {
+            $job = Job::query()->lockForUpdate()->findOrFail($job->id);
+            $originalStatus = $job->status;
             $status = array_key_exists('status', $payload)
                 ? $this->resolveStatus($payload)
                 : $job->status;
+            $shouldConsumePublishingBenefit = $this->shouldConsumePublishingBenefit($originalStatus, $status);
 
             $attributes = $this->mapAttributes($payload, $job->company, $job->creator, $status, $job);
             $job->fill(Arr::except($attributes, ['code', 'company_id', 'creator_user_id']));
 
-            if ($status === RcJobStatus::Published && $job->published_at === null) {
-                $this->applyPublish($job);
+            if ($status === RcJobStatus::Published) {
+                $this->applyPublish($job, $originalStatus === RcJobStatus::Closed || $originalStatus === RcJobStatus::Expired);
             } elseif ($status !== RcJobStatus::Published) {
                 $job->status = $status;
             }
 
             $job->save();
+
+            if ($shouldConsumePublishingBenefit) {
+                RcJobPublishingEntitlementService::make()->consumeFor($job);
+            }
 
             return $job->refresh()->load(['position', 'department', 'creator']);
         });
@@ -138,8 +149,19 @@ class RcJobService extends Service
         }
 
         return DB::transaction(function () use ($job): Job {
-            $this->applyPublish($job);
+            $job = Job::query()->lockForUpdate()->findOrFail($job->id);
+            $originalStatus = $job->status;
+            $shouldConsumePublishingBenefit = $this->shouldConsumePublishingBenefit(
+                $originalStatus,
+                RcJobStatus::Published,
+            );
+
+            $this->applyPublish($job, $originalStatus === RcJobStatus::Closed || $originalStatus === RcJobStatus::Expired);
             $job->save();
+
+            if ($shouldConsumePublishingBenefit) {
+                RcJobPublishingEntitlementService::make()->consumeFor($job);
+            }
 
             return $job->refresh()->load(['position', 'department', 'creator']);
         });
@@ -286,7 +308,19 @@ class RcJobService extends Service
         return $extra;
     }
 
-    private function applyPublish(Job $job): void
+    private function shouldConsumePublishingBenefit(
+        RcJobStatus $originalStatus,
+        RcJobStatus $targetStatus,
+    ): bool {
+        return $targetStatus === RcJobStatus::Published
+            && in_array($originalStatus, [
+                RcJobStatus::Draft,
+                RcJobStatus::Closed,
+                RcJobStatus::Expired,
+            ], true);
+    }
+
+    private function applyPublish(Job $job, bool $refreshPublishedAt = false): void
     {
         $message = $this->publishableMessage($job);
 
@@ -295,6 +329,8 @@ class RcJobService extends Service
         }
 
         $job->status = RcJobStatus::Published;
-        $job->published_at ??= now();
+        if ($refreshPublishedAt || $job->published_at === null) {
+            $job->published_at = now();
+        }
     }
 }

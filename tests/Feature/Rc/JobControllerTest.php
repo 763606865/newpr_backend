@@ -3,6 +3,9 @@
 namespace Tests\Feature\Rc;
 
 use App\Enums\CompanyStatus;
+use App\Enums\RcAssetChangeType;
+use App\Enums\RcAssetCode;
+use App\Enums\RcAssetOwnerType;
 use App\Enums\RcEducationLevel;
 use App\Enums\RcIdentityStatus;
 use App\Enums\RcIdentityType;
@@ -10,6 +13,7 @@ use App\Enums\RcJobEmploymentType;
 use App\Enums\RcJobStatus;
 use App\Models\Company;
 use App\Models\Rc\Application;
+use App\Models\Rc\AssetAccount;
 use App\Models\Rc\Job;
 use App\Models\Rc\JobStatsDaily;
 use App\Models\Rc\Position;
@@ -105,7 +109,8 @@ class JobControllerTest extends TestCase
 
     public function test_store_publishes_job_when_status_is_published(): void
     {
-        [$user] = $this->createRecruiterContext();
+        [$user, $company] = $this->createRecruiterContext();
+        $this->grantPublishingBenefit($company, RcAssetCode::FullTimeJobPosting);
 
         $response = $this
             ->actingAs($user, 'rc')
@@ -119,6 +124,7 @@ class JobControllerTest extends TestCase
             ->assertJsonPath('data.workplace', '南昌市高新区示例路 88 号');
 
         $this->assertNotNull($response->json('data.published_at'));
+        $this->assertPublishingBenefitConsumed($company, RcAssetCode::FullTimeJobPosting, 0);
     }
 
     public function test_publish_rejects_incomplete_job(): void
@@ -183,6 +189,7 @@ class JobControllerTest extends TestCase
     public function test_publish_publishes_draft_job(): void
     {
         [$user, $company] = $this->createRecruiterContext();
+        $this->grantPublishingBenefit($company, RcAssetCode::FullTimeJobPosting);
 
         $job = Job::query()->create(array_merge($this->validJobAttributes(), [
             'company_id' => $company->id,
@@ -201,6 +208,109 @@ class JobControllerTest extends TestCase
         $this->assertDatabaseHas('rc_jobs', [
             'id' => $job->id,
             'status' => RcJobStatus::Published->value,
+        ]);
+        $this->assertPublishingBenefitConsumed($company, RcAssetCode::FullTimeJobPosting, 0);
+    }
+
+    public function test_update_to_published_consumes_campus_job_benefit(): void
+    {
+        [$user, $company] = $this->createRecruiterContext();
+        $this->grantPublishingBenefit($company, RcAssetCode::CampusJobPosting, 10);
+
+        $job = Job::query()->create(array_merge($this->validJobAttributes(), [
+            'company_id' => $company->id,
+            'code' => 'JOB-CAMPUS-001',
+            'employment_type' => RcJobEmploymentType::Campus,
+            'status' => RcJobStatus::Draft,
+        ]));
+
+        $this
+            ->actingAs($user, 'rc')
+            ->putJson('/rc/jobs/'.$job->id, [
+                'status' => RcJobStatus::Published->value,
+            ])
+            ->assertOk()
+            ->assertJsonPath('data.status', RcJobStatus::Published->value);
+
+        $this->assertPublishingBenefitConsumed($company, RcAssetCode::CampusJobPosting, 9);
+    }
+
+    public function test_publish_rejects_job_when_benefit_is_insufficient(): void
+    {
+        [$user, $company] = $this->createRecruiterContext();
+
+        $job = Job::query()->create(array_merge($this->validJobAttributes(), [
+            'company_id' => $company->id,
+            'code' => 'JOB-NO-BENEFIT-001',
+            'status' => RcJobStatus::Draft,
+        ]));
+
+        $this
+            ->actingAs($user, 'rc')
+            ->postJson('/rc/jobs/'.$job->id.'/publish')
+            ->assertOk()
+            ->assertJsonPath('code', 422)
+            ->assertJsonPath('message', '社招全职职位发布权益不足。');
+
+        $this->assertDatabaseHas('rc_jobs', [
+            'id' => $job->id,
+            'status' => RcJobStatus::Draft->value,
+            'published_at' => null,
+        ]);
+        $this->assertDatabaseCount('rc_asset_ledgers', 0);
+    }
+
+    public function test_republishing_a_paused_job_does_not_consume_again(): void
+    {
+        [$user, $company] = $this->createRecruiterContext();
+        $this->grantPublishingBenefit($company, RcAssetCode::FullTimeJobPosting, 2);
+
+        $job = Job::query()->create(array_merge($this->validJobAttributes(), [
+            'company_id' => $company->id,
+            'code' => 'JOB-REPUBLISH-001',
+            'status' => RcJobStatus::Draft,
+        ]));
+
+        $this->actingAs($user, 'rc')->postJson('/rc/jobs/'.$job->id.'/publish')->assertOk();
+        $this->actingAs($user, 'rc')->postJson('/rc/jobs/'.$job->id.'/pause')->assertOk();
+        $this->actingAs($user, 'rc')->postJson('/rc/jobs/'.$job->id.'/publish')->assertOk();
+
+        $this->assertPublishingBenefitConsumed($company, RcAssetCode::FullTimeJobPosting, 1);
+        $this->assertDatabaseCount('rc_asset_ledgers', 1);
+    }
+
+    public function test_update_republishes_closed_job_and_consumes_again(): void
+    {
+        [$user, $company] = $this->createRecruiterContext();
+        $this->grantPublishingBenefit($company, RcAssetCode::FullTimeJobPosting, 2);
+
+        $job = Job::query()->create(array_merge($this->validJobAttributes(), [
+            'company_id' => $company->id,
+            'code' => 'JOB-CLOSED-REPUBLISH-001',
+            'status' => RcJobStatus::Draft,
+        ]));
+
+        $this->actingAs($user, 'rc')->postJson('/rc/jobs/'.$job->id.'/publish')->assertOk();
+        $previousPublishedAt = $job->refresh()->published_at;
+        $this->actingAs($user, 'rc')->postJson('/rc/jobs/'.$job->id.'/close')->assertOk();
+
+        $this->travel(1)->second();
+
+        $this
+            ->actingAs($user, 'rc')
+            ->putJson('/rc/jobs/'.$job->id, [
+                'status' => RcJobStatus::Published->value,
+            ])
+            ->assertOk()
+            ->assertJsonPath('data.status', RcJobStatus::Published->value);
+
+        $job->refresh();
+
+        $this->assertTrue($job->published_at->isAfter($previousPublishedAt));
+        $this->assertPublishingBenefitConsumed($company, RcAssetCode::FullTimeJobPosting, 0);
+        $this->assertDatabaseCount('rc_asset_ledgers', 2);
+        $this->assertDatabaseHas('rc_asset_ledgers', [
+            'biz_no' => 'job_publish:'.$job->id.':2',
         ]);
     }
 
@@ -471,5 +581,41 @@ class JobControllerTest extends TestCase
                 'show_headcount' => true,
             ],
         ];
+    }
+
+    private function grantPublishingBenefit(
+        Company $company,
+        RcAssetCode $assetCode,
+        int $balance = 1,
+    ): AssetAccount {
+        return AssetAccount::query()->create([
+            'owner_type' => RcAssetOwnerType::Company,
+            'owner_id' => $company->id,
+            'asset_code' => $assetCode->value,
+            'asset_name' => $assetCode->getLabel(),
+            'balance' => $balance,
+            'frozen_balance' => 0,
+        ]);
+    }
+
+    private function assertPublishingBenefitConsumed(
+        Company $company,
+        RcAssetCode $assetCode,
+        int $balanceAfter,
+    ): void {
+        $this->assertDatabaseHas('rc_asset_accounts', [
+            'owner_type' => RcAssetOwnerType::Company->value,
+            'owner_id' => $company->id,
+            'asset_code' => $assetCode->value,
+            'balance' => $balanceAfter,
+        ]);
+        $this->assertDatabaseHas('rc_asset_ledgers', [
+            'owner_type' => RcAssetOwnerType::Company->value,
+            'owner_id' => $company->id,
+            'asset_code' => $assetCode->value,
+            'change_type' => RcAssetChangeType::Consume->value,
+            'delta' => -1,
+            'balance_after' => $balanceAfter,
+        ]);
     }
 }

@@ -3,8 +3,11 @@
 namespace Tests\Feature\Filament;
 
 use App\Enums\CompanyStatus;
+use App\Enums\RcAssetCode;
 use App\Filament\Resources\Companies\Pages\ListCompanies;
 use App\Models\Company;
+use App\Models\Rc\AssetAccount;
+use App\Models\Rc\AssetLedger;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use Tests\Support\InteractsWithFilamentAdmin;
@@ -19,7 +22,10 @@ class CompaniesTableAuditActionTest extends TestCase
     {
         $this->actingAsFilamentAdmin();
 
-        $company = $this->createCompany(['status' => CompanyStatus::Auditing]);
+        $company = $this->createCompany([
+            'status' => CompanyStatus::Auditing,
+            'contact_phone' => '',
+        ]);
 
         Livewire::test(ListCompanies::class)
             ->assertTableActionVisible('audit', $company);
@@ -39,26 +45,52 @@ class CompaniesTableAuditActionTest extends TestCase
     {
         $this->actingAsFilamentAdmin();
 
-        $company = $this->createCompany(['status' => CompanyStatus::Auditing]);
+        $company = $this->createCompany([
+            'status' => CompanyStatus::Auditing,
+            'contact_phone' => '',
+        ]);
 
         Livewire::test(ListCompanies::class)
-            ->callTableAction(['audit', 'approve'], $company)
+            ->callTableAction(['audit', 'approve'], $company, data: [
+                'send_sms_notification' => false,
+            ])
             ->assertNotified();
 
         $this->assertSame(CompanyStatus::Enabled, $company->fresh()->status);
+        $this->assertSame(
+            1,
+            AssetAccount::query()
+                ->where('owner_id', $company->id)
+                ->where('asset_code', RcAssetCode::FullTimeJobPosting)
+                ->value('balance'),
+        );
+        $this->assertSame(
+            10,
+            AssetAccount::query()
+                ->where('owner_id', $company->id)
+                ->where('asset_code', RcAssetCode::CampusJobPosting)
+                ->value('balance'),
+        );
+        $this->assertSame(2, AssetLedger::query()->where('owner_id', $company->id)->count());
     }
 
     public function test_reject_action_disables_company(): void
     {
         $this->actingAsFilamentAdmin();
 
-        $company = $this->createCompany(['status' => CompanyStatus::Auditing]);
+        $company = $this->createCompany([
+            'status' => CompanyStatus::Auditing,
+            'contact_phone' => '',
+        ]);
 
         Livewire::test(ListCompanies::class)
-            ->callTableAction(['audit', 'reject'], $company)
+            ->callTableAction(['audit', 'reject'], $company, data: [
+                'send_sms_notification' => false,
+            ])
             ->assertNotified();
 
         $this->assertSame(CompanyStatus::Disabled, $company->fresh()->status);
+        $this->assertSame(0, AssetAccount::query()->where('owner_id', $company->id)->count());
     }
 
     /**

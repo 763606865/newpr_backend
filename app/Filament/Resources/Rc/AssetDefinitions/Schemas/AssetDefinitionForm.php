@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Rc\AssetDefinitions\Schemas;
 use App\Enums\RcAssetDefinitionStatus;
 use App\Enums\RcAssetOwnerType;
 use App\Enums\RcAssetType;
+use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -75,6 +76,9 @@ class AssetDefinitionForm
                     ->integer()
                     ->default(0)
                     ->required(),
+                KeyValue::make('extra')
+                    ->label('扩展配置')
+                    ->columnSpanFull(),
             ]);
     }
 }

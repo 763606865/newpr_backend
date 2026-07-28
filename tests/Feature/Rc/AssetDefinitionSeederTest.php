@@ -18,7 +18,7 @@ class AssetDefinitionSeederTest extends TestCase
     {
         $this->seed(AssetDefinitionSeeder::class);
 
-        $this->assertSame(14, AssetDefinition::query()->count());
+        $this->assertSame(16, AssetDefinition::query()->count());
         $this->assertEqualsCanonicalizing([
             'ai_job_description',
             'ai_resume_optimization',
@@ -27,6 +27,8 @@ class AssetDefinitionSeederTest extends TestCase
             'candidate_vip_premium',
             'career_coaching',
             'job_posting',
+            'job_posting_campus',
+            'job_posting_full_time',
             'job_refresh',
             'job_top',
             'job_urgent',
@@ -59,7 +61,7 @@ class AssetDefinitionSeederTest extends TestCase
 
         $definition->refresh();
 
-        $this->assertSame(14, AssetDefinition::query()->count());
+        $this->assertSame(16, AssetDefinition::query()->count());
         $this->assertSame($originalId, $definition->id);
         $this->assertSame('简历刷新', $definition->asset_name);
     }

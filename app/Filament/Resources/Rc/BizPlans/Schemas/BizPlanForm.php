@@ -8,6 +8,7 @@ use App\Enums\RcBizPlanProductType;
 use App\Enums\RcBizPlanStatus;
 use App\Enums\RcBizPlanTargetSide;
 use App\Models\Rc\AssetDefinition;
+use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -156,6 +157,9 @@ class BizPlanForm
                     ->integer()
                     ->default(0)
                     ->required(),
+                KeyValue::make('extra')
+                    ->label('扩展配置')
+                    ->columnSpanFull(),
             ]);
     }
 }

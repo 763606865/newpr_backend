@@ -9,6 +9,7 @@ use App\Filament\Resources\Companies\CompanyResource;
 use App\Filament\Resources\Companies\Schemas\CompanyOperationLogsSchema;
 use App\Models\Company;
 use App\Models\Oa\Biz\Plan;
+use App\Services\CompanyApprovalBenefitService;
 use App\Services\CompanyOperationLogService;
 use App\Services\RcNotificationService;
 use App\Services\SmsService;
@@ -31,6 +32,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class CompaniesTable
@@ -168,13 +170,16 @@ class CompaniesTable
                         $beforeStatus = self::resolveCompanyStatus($record->status) ?? CompanyStatus::Auditing;
                         $adminId = auth('admin')->id();
 
-                        $record->update([
-                            'status' => CompanyStatus::Enabled,
-                            'auditor_id' => $adminId,
-                        ]);
+                        DB::transaction(function () use ($record, $adminId): void {
+                            $record->update([
+                                'status' => CompanyStatus::Enabled,
+                                'auditor_id' => $adminId,
+                            ]);
+
+                            CompanyApprovalBenefitService::make()->grant($record);
+                        });
 
                         $record = $record->fresh();
-
                         CompanyOperationLogService::make()->recordAuditApproved($record, $beforeStatus);
                         RcNotificationService::make()->notifyCompanyAuditResult($record, true);
 

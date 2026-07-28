@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\RcAssetCode;
 use App\Enums\RcAssetDefinitionStatus;
 use App\Enums\RcAssetOwnerType;
 use App\Enums\RcAssetType;
@@ -27,6 +28,32 @@ class AssetDefinitionSeeder extends Seeder
                 'description' => '消耗一次权益，可发布一个招聘职位。',
                 'status' => RcAssetDefinitionStatus::Enabled,
                 'sort' => 10,
+                'extra' => null,
+            ],
+            [
+                'asset_code' => RcAssetCode::FullTimeJobPosting->value,
+                'asset_name' => RcAssetCode::FullTimeJobPosting->getLabel(),
+                'owner_type' => RcAssetOwnerType::Company,
+                'asset_type' => RcAssetType::Count,
+                'consume_scene' => RcAssetCode::FullTimeJobPosting->value,
+                'unit' => '个',
+                'default_duration' => 0,
+                'description' => '消耗一个权益，可发布一个社招全职职位。',
+                'status' => RcAssetDefinitionStatus::Enabled,
+                'sort' => 11,
+                'extra' => null,
+            ],
+            [
+                'asset_code' => RcAssetCode::CampusJobPosting->value,
+                'asset_name' => RcAssetCode::CampusJobPosting->getLabel(),
+                'owner_type' => RcAssetOwnerType::Company,
+                'asset_type' => RcAssetType::Count,
+                'consume_scene' => RcAssetCode::CampusJobPosting->value,
+                'unit' => '个',
+                'default_duration' => 0,
+                'description' => '消耗一个权益，可发布一个校招职位。',
+                'status' => RcAssetDefinitionStatus::Enabled,
+                'sort' => 12,
                 'extra' => null,
             ],
             [

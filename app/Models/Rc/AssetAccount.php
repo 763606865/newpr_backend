@@ -2,16 +2,18 @@
 
 namespace App\Models\Rc;
 
+use App\Enums\RcAssetOwnerType;
 use App\Models\Model;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
 /**
  * RC 资产账户
  *
  * @property int $id
- * @property int $owner_type
+ * @property RcAssetOwnerType $owner_type
  * @property int $owner_id
  * @property string $asset_code
  * @property string $asset_name
@@ -36,12 +38,17 @@ class AssetAccount extends Model
     protected function casts(): array
     {
         return [
-            'owner_type' => 'integer',
+            'owner_type' => RcAssetOwnerType::class,
             'owner_id' => 'integer',
             'balance' => 'integer',
             'frozen_balance' => 'integer',
             'expired_at' => 'datetime',
             'extra' => 'array',
         ];
+    }
+
+    public function ledgers(): HasMany
+    {
+        return $this->hasMany(AssetLedger::class, 'account_id');
     }
 }

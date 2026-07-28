@@ -6,12 +6,13 @@ use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\BannerController;
 use App\Http\Controllers\FriendLinkController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\MenuController;
 use App\Http\Controllers\MetaController;
+use App\Http\Controllers\RcBizPlanController;
 use App\Http\Controllers\RecommendationController;
 use App\Http\Controllers\SchoolActivityController;
 use App\Http\Controllers\SiteConfigController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\MenuController;
 
 Route::middleware(['optional-rc-auth', 'cms-home-menu'])->group(function (): void {
     // 首页-展示页
@@ -39,6 +40,10 @@ Route::middleware(['optional-rc-auth', 'cms-home-menu'])->group(function (): voi
     Route::post('/school-activities/invite/{inviteCode}/schools', [SchoolActivityController::class, 'registerSchoolByInviteCode'])->name('school-activity.invite.register-school');
     Route::get('/school-activities/{id}', [SchoolActivityController::class, 'show'])->whereNumber('id')->name('school-activity.show');
     Route::get('/school-activities/{id}/companies', [SchoolActivityController::class, 'getCompanies'])->whereNumber('id')->name('school-activity.list-companies');
+    // ===============================================================================
+
+    // 商品套餐
+    Route::get('/rc/biz-plans', [RcBizPlanController::class, 'index'])->name('rc.biz-plan.index');
     // ===============================================================================
 });
 

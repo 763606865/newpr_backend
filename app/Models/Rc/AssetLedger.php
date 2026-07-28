@@ -2,9 +2,13 @@
 
 namespace App\Models\Rc;
 
+use App\Enums\RcAssetChangeType;
+use App\Enums\RcAssetOwnerType;
+use App\Enums\RcAssetSourceType;
 use App\Models\Model;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 
 /**
@@ -12,13 +16,13 @@ use Illuminate\Support\Carbon;
  *
  * @property int $id
  * @property int $account_id
- * @property int $owner_type
+ * @property RcAssetOwnerType $owner_type
  * @property int $owner_id
  * @property string $asset_code
- * @property int $change_type
+ * @property RcAssetChangeType $change_type
  * @property int $delta
  * @property int $balance_after
- * @property int $source_type
+ * @property RcAssetSourceType $source_type
  * @property int|null $source_id
  * @property string|null $biz_no
  * @property Carbon|null $happened_at
@@ -46,15 +50,20 @@ class AssetLedger extends Model
     {
         return [
             'account_id' => 'integer',
-            'owner_type' => 'integer',
+            'owner_type' => RcAssetOwnerType::class,
             'owner_id' => 'integer',
-            'change_type' => 'integer',
+            'change_type' => RcAssetChangeType::class,
             'delta' => 'integer',
             'balance_after' => 'integer',
-            'source_type' => 'integer',
+            'source_type' => RcAssetSourceType::class,
             'source_id' => 'integer',
             'happened_at' => 'datetime',
             'extra' => 'array',
         ];
+    }
+
+    public function account(): BelongsTo
+    {
+        return $this->belongsTo(AssetAccount::class, 'account_id');
     }
 }
