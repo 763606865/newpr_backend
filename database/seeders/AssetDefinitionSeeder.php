@@ -18,11 +18,11 @@ class AssetDefinitionSeeder extends Seeder
     {
         $definitions = [
             [
-                'asset_code' => 'job_posting',
-                'asset_name' => '职位发布',
+                'asset_code' => RcAssetCode::JobPosting->value,
+                'asset_name' => RcAssetCode::JobPosting->getLabel(),
                 'owner_type' => RcAssetOwnerType::Company,
                 'asset_type' => RcAssetType::Count,
-                'consume_scene' => 'job_posting',
+                'consume_scene' => RcAssetCode::JobPosting->value,
                 'unit' => '次',
                 'default_duration' => 90,
                 'description' => '消耗一次权益，可发布一个招聘职位。',

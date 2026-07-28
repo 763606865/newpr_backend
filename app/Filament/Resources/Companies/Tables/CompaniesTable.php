@@ -91,6 +91,12 @@ class CompaniesTable
             ])
             ->recordActions([
                 static::actionAudit(),
+                Action::make('commerce')
+                    ->label('权益与订单')
+                    ->icon('heroicon-o-banknotes')
+                    ->color('success')
+                    ->authorize(fn (Company $record): bool => CompanyResource::canView($record))
+                    ->url(fn (Company $record): string => CompanyResource::getUrl('commerce', ['record' => $record])),
                 static::actionBindPlan(),
                 static::actionOperationLogs(),
                 ActionGroup::make([

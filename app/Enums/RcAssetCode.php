@@ -6,6 +6,7 @@ use Filament\Support\Contracts\HasLabel;
 
 enum RcAssetCode: string implements HasLabel
 {
+    case JobPosting = 'job_posting';
     case FullTimeJobPosting = 'job_posting_full_time';
     case CampusJobPosting = 'job_posting_campus';
     case ResumeRefresh = 'resume_refresh';
@@ -13,6 +14,7 @@ enum RcAssetCode: string implements HasLabel
     public function getLabel(): ?string
     {
         return match ($this) {
+            self::JobPosting => '职位发布',
             self::FullTimeJobPosting => '社招全职职位发布',
             self::CampusJobPosting => '校招职位发布',
             self::ResumeRefresh => '简历刷新',

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Companies;
 
+use App\Filament\Resources\Companies\Pages\CompanyCommerce;
 use App\Filament\Resources\Companies\Pages\CreateCompany;
 use App\Filament\Resources\Companies\Pages\EditCompany;
 use App\Filament\Resources\Companies\Pages\ListCompanies;
@@ -51,6 +52,7 @@ class CompanyResource extends Resource
         return [
             'index' => ListCompanies::route('/'),
             'create' => CreateCompany::route('/create'),
+            'commerce' => CompanyCommerce::route('/{record}/commerce'),
             'edit' => EditCompany::route('/{record}/edit'),
         ];
     }
