@@ -2,6 +2,7 @@
 
 namespace App\Rc\Controllers;
 
+use App\Enums\RcResumeRefreshTrigger;
 use App\Models\Rc\Resume;
 use App\Models\User;
 use App\Rc\Requests\ResumeAttachmentStoreRequest;
@@ -9,12 +10,14 @@ use App\Rc\Requests\ResumeAvatarUploadRequest;
 use App\Rc\Requests\ResumeStoreRequest;
 use App\Rc\Requests\ResumeUpdateRequest;
 use App\Resources\Rc\RcResumeResource;
+use App\Services\RcResumeRefreshService;
 use App\Services\RcViewStatsService;
 use App\Services\ResumeService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use InvalidArgumentException;
 
 class ResumeController extends Controller
 {
@@ -119,6 +122,37 @@ class ResumeController extends Controller
     }
 
     /**
+     * 主动刷新简历
+     *
+     * POST /rc/resumes/{id}/refresh
+     */
+    public function refresh(Request $request, int $id): JsonResponse
+    {
+        /** @var User $user */
+        $user = $this->user();
+        $resume = Resume::query()
+            ->where('user_id', $user->id)
+            ->find($id);
+
+        if (! $resume instanceof Resume) {
+            return $this->error('简历不存在。', Response::HTTP_NOT_FOUND);
+        }
+
+        try {
+            RcResumeRefreshService::make()->refresh(
+                $resume,
+                $user,
+                RcResumeRefreshTrigger::Explicit,
+                true,
+            );
+        } catch (InvalidArgumentException $exception) {
+            return $this->error($exception->getMessage(), Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        return $this->success((new RcResumeResource($resume->fresh()))->resolve($request));
+    }
+
+    /**
      * 编辑简历
      *
      * PUT /rc/resumes/{id}
@@ -155,6 +189,14 @@ class ResumeController extends Controller
             }
 
             $resume->save();
+
+            if ($resume->wasChanged()) {
+                RcResumeRefreshService::make()->refresh(
+                    $resume,
+                    $user,
+                    RcResumeRefreshTrigger::ResumeUpdated,
+                );
+            }
 
             if ($resume->is_primary === 1) {
                 ResumeService::make()->promote($user, $resume);

@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasEvents;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -64,11 +65,13 @@ use Laravel\Scout\Searchable;
  * @property array<string, mixed>|null $parsed_data 解析后的结构化数据
  * @property int $is_primary 是否主简历
  * @property int $status 状态
+ * @property Carbon|null $refreshed_at 最近一次权益刷新时间
  * @property array<string, mixed>|null $extra 扩展字段
  * @property Carbon|null $created_at 创建时间
  * @property Carbon|null $updated_at 更新时间
  * @property Carbon|null $deleted_at 删除时间
  * @property-read User $user 所属用户
+ * @property-read Collection<int, ResumeExposure> $exposures
  *
  * @method static Builder atHighestEducationLevel(int $level)
  * @method static Builder freshGraduates()
@@ -120,6 +123,7 @@ use Laravel\Scout\Searchable;
     'parsed_data',
     'is_primary',
     'status',
+    'refreshed_at',
     'ext_source',
     'ext_id',
     'extra',
@@ -298,6 +302,7 @@ class Resume extends Model
             'source_type' => RcResumeSourceType::class,
             'is_primary' => 'integer',
             'status' => RcResumeStatus::class,
+            'refreshed_at' => 'datetime',
             'parsed_data' => 'array',
             'extra' => 'json',
             'ext_source' => 'string',
@@ -384,6 +389,16 @@ class Resume extends Model
     public function statsDaily(): HasMany
     {
         return $this->hasMany(ResumeStatsDaily::class, 'resume_id');
+    }
+
+    public function exposures(): HasMany
+    {
+        return $this->hasMany(ResumeExposure::class, 'resume_id');
+    }
+
+    public function refreshLogs(): HasMany
+    {
+        return $this->hasMany(ResumeRefreshLog::class, 'resume_id');
     }
 
     #[Scope]
@@ -476,6 +491,9 @@ class Resume extends Model
             'expected_salary_min' => $this->expected_salary_min !== null ? (float) $this->expected_salary_min : null,
             'expected_salary_max' => $this->expected_salary_max !== null ? (float) $this->expected_salary_max : null,
             'current_city_code' => $this->current_city_code,
+            'current_city_code_prefix' => filled($this->current_city_code)
+                ? substr(trim((string) $this->current_city_code), 0, 4)
+                : null,
             'current_residence_city' => $this->current_residence_city,
             'status' => $this->status instanceof RcResumeStatus
                 ? $this->status->value
@@ -494,6 +512,7 @@ class Resume extends Model
                 ->all(),
             'ext_source' => $this->ext_source ?? null,
             'ext_id' => $this->ext_id ?? null,
+            'refreshed_at' => ScoutQuery::timestamp($this->getAttributes()['refreshed_at'] ?? null),
             'updated_at' => ScoutQuery::timestamp($this->getAttributes()['updated_at'] ?? null),
         ];
     }

@@ -8,11 +8,13 @@ use App\Enums\RcIdentityStatus;
 use App\Enums\RcIdentityType;
 use App\Enums\RcJobEmploymentType;
 use App\Enums\RcJobStatus;
+use App\Enums\RcResumeExposureStatus;
 use App\Enums\RcResumeStatus;
 use App\Models\Company;
 use App\Models\Rc\Job;
 use App\Models\Rc\Resume;
 use App\Models\Rc\ResumeEducation;
+use App\Models\Rc\ResumeExposure;
 use App\Models\Rc\ResumeWork;
 use App\Models\Rc\UserCompanyBlacklist;
 use App\Models\Rc\UserIdentity;
@@ -72,7 +74,7 @@ class ResumeRecommendControllerTest extends TestCase
             'phone' => '13800138000',
             'email' => 'matched@example.com',
             'highest_education_level' => RcEducationLevel::Bachelor,
-            'current_city_code' => '360100',
+            'current_city_code' => '360102',
             'work_years' => 5,
             'status' => RcResumeStatus::Normal,
         ]);
@@ -120,7 +122,8 @@ class ResumeRecommendControllerTest extends TestCase
             ->assertJsonPath('data.recommendation.strategy', 'job')
             ->assertJsonPath('data.recommendation.job_id', $job->id)
             ->assertJsonPath('data.total', 1)
-            ->assertJsonPath('data.data.0.full_name', '匹配候选人');
+            ->assertJsonPath('data.data.0.full_name', '匹配候选人')
+            ->assertJsonPath('data.data.0.current_city_code', '360102');
     }
 
     public function test_recruiter_without_publishable_job_gets_default_recommendations(): void
@@ -183,6 +186,40 @@ class ResumeRecommendControllerTest extends TestCase
             ->assertOk()
             ->assertJsonPath('data.total', 1)
             ->assertJsonPath('data.data.0.full_name', '候选人乙');
+    }
+
+    public function test_recommendations_mark_active_exposure_and_record_impression(): void
+    {
+        [$recruiter, $company] = $this->createRecruiterContext();
+        $candidate = User::factory()->create();
+        $resume = Resume::query()->create([
+            'user_id' => $candidate->id,
+            'title' => '曝光推荐简历',
+            'full_name' => '曝光推荐候选人',
+            'phone' => '13800138030',
+            'email' => 'recommend-promoted@example.com',
+            'status' => RcResumeStatus::Normal,
+        ]);
+        $exposure = ResumeExposure::query()->create([
+            'resume_id' => $resume->id,
+            'user_id' => $candidate->id,
+            'started_at' => now()->subHour(),
+            'expired_at' => now()->addWeek(),
+            'status' => RcResumeExposureStatus::Active,
+        ]);
+
+        $this->actingAs($recruiter, 'rc')
+            ->getJson('/rc/talent/resumes/recommend')
+            ->assertOk()
+            ->assertJsonPath('data.data.0.id', $resume->id)
+            ->assertJsonPath('data.data.0.is_promoted', true)
+            ->assertJsonPath('data.data.0.promotion_id', $exposure->id);
+
+        $this->assertDatabaseHas('rc_resume_exposure_stats_daily', [
+            'exposure_id' => $exposure->id,
+            'company_id' => $company->id,
+            'impressions' => 1,
+        ]);
     }
 
     /**

@@ -26,6 +26,7 @@ class ResumeSearchableTest extends TestCase
             'phone' => '13800138000',
             'email' => 'zhangsan@example.com',
             'highest_education_level' => RcEducationLevel::Bachelor,
+            'current_city_code' => '360102',
             'status' => RcResumeStatus::Normal,
         ]);
 
@@ -54,6 +55,7 @@ class ResumeSearchableTest extends TestCase
         $this->assertStringContainsString('高级后端工程师', $searchable['positions']);
         $this->assertStringContainsString('浙江大学', $searchable['school_names']);
         $this->assertStringContainsString('计算机科学与技术', $searchable['majors']);
+        $this->assertSame('3601', $searchable['current_city_code_prefix']);
     }
 
     public function test_disabled_resume_should_not_be_searchable(): void

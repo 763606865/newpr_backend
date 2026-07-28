@@ -28,12 +28,19 @@ class ResumeSearchFilterApplier
     {
         $builder->where('status', RcResumeStatus::Normal->value);
 
+        if (! empty($filters['resume_ids'])) {
+            $builder->whereIn('id', array_map('intval', $filters['resume_ids']));
+        }
+
         if (filled($filters['highest_education_level'] ?? null)) {
             $builder->where('highest_education_level', (int) $filters['highest_education_level']);
         }
 
         if (filled($filters['current_city_code'] ?? null)) {
-            $builder->where('current_city_code', (string) $filters['current_city_code']);
+            $builder->where(
+                'current_city_code_prefix',
+                $this->cityCodePrefix((string) $filters['current_city_code']),
+            );
         }
 
         if (filled($filters['is_fresh_graduate'] ?? null)) {
@@ -55,12 +62,20 @@ class ResumeSearchFilterApplier
      */
     public function applyDatabaseFilters(Builder $query, array $filters): void
     {
+        if (! empty($filters['resume_ids'])) {
+            $query->whereIn('id', array_map('intval', $filters['resume_ids']));
+        }
+
         if (filled($filters['highest_education_level'] ?? null)) {
             $query->where('highest_education_level', (int) $filters['highest_education_level']);
         }
 
         if (filled($filters['current_city_code'] ?? null)) {
-            $query->where('current_city_code', (string) $filters['current_city_code']);
+            $query->where(
+                'current_city_code',
+                'like',
+                $this->cityCodePrefix((string) $filters['current_city_code']).'%',
+            );
         }
 
         if (filled($filters['is_fresh_graduate'] ?? null)) {
@@ -91,5 +106,16 @@ class ResumeSearchFilterApplier
                 ->select('user_id')
                 ->where('company_id', $companyId));
         }
+    }
+
+    private function cityCodePrefix(string $cityCode): string
+    {
+        $cityCode = trim($cityCode);
+
+        if (strlen($cityCode) >= 4) {
+            return substr($cityCode, 0, 4);
+        }
+
+        return $cityCode;
     }
 }

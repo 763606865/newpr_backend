@@ -28,6 +28,11 @@ class RcResumeRecommendationService extends Service
             $criteria->sortColumn,
             $criteria->sortDirection,
         );
+        $paginator = RcResumePromotionService::make()->promote(
+            $paginator,
+            $filters,
+            $context->company,
+        );
 
         return [
             'criteria' => $criteria,

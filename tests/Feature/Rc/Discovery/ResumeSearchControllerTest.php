@@ -6,9 +6,11 @@ use App\Enums\CompanyStatus;
 use App\Enums\RcEducationLevel;
 use App\Enums\RcIdentityStatus;
 use App\Enums\RcIdentityType;
+use App\Enums\RcResumeExposureStatus;
 use App\Enums\RcResumeStatus;
 use App\Models\Company;
 use App\Models\Rc\Resume;
+use App\Models\Rc\ResumeExposure;
 use App\Models\Rc\ResumeWork;
 use App\Models\Rc\UserCompanyBlacklist;
 use App\Models\Rc\UserIdentity;
@@ -118,6 +120,89 @@ class ResumeSearchControllerTest extends TestCase
             ->assertJsonPath('code', 200)
             ->assertJsonPath('data.total', 1)
             ->assertJsonPath('data.data.0.full_name', '候选人乙');
+    }
+
+    public function test_index_prioritizes_refreshed_resumes(): void
+    {
+        [$recruiter] = $this->createRecruiterContext();
+
+        $olderCandidate = User::factory()->create();
+        Resume::query()->create([
+            'user_id' => $olderCandidate->id,
+            'title' => '已刷新简历',
+            'full_name' => '已刷新候选人',
+            'phone' => '13800138020',
+            'email' => 'refreshed@example.com',
+            'refreshed_at' => now(),
+            'status' => RcResumeStatus::Normal,
+        ]);
+
+        $newerCandidate = User::factory()->create();
+        Resume::query()->create([
+            'user_id' => $newerCandidate->id,
+            'title' => '普通简历',
+            'full_name' => '普通候选人',
+            'phone' => '13800138021',
+            'email' => 'normal@example.com',
+            'status' => RcResumeStatus::Normal,
+        ]);
+
+        $this->actingAs($recruiter, 'rc')
+            ->getJson('/rc/talent/resumes')
+            ->assertOk()
+            ->assertJsonPath('data.data.0.full_name', '已刷新候选人')
+            ->assertJsonPath('data.data.0.refreshed_at', fn (mixed $value): bool => filled($value));
+    }
+
+    public function test_index_mixes_active_exposure_and_records_impression_stats(): void
+    {
+        [$recruiter, $company] = $this->createRecruiterContext();
+
+        foreach (range(1, 2) as $index) {
+            $candidate = User::factory()->create();
+            Resume::query()->create([
+                'user_id' => $candidate->id,
+                'title' => '普通简历'.$index,
+                'full_name' => '普通候选人'.$index,
+                'phone' => '1380013810'.$index,
+                'email' => 'normal'.$index.'@example.com',
+                'status' => RcResumeStatus::Normal,
+            ]);
+        }
+
+        $promotedCandidate = User::factory()->create();
+        $promotedResume = Resume::query()->create([
+            'user_id' => $promotedCandidate->id,
+            'title' => '曝光简历',
+            'full_name' => '曝光候选人',
+            'phone' => '13800138103',
+            'email' => 'promoted@example.com',
+            'status' => RcResumeStatus::Normal,
+        ]);
+        $exposure = ResumeExposure::query()->create([
+            'resume_id' => $promotedResume->id,
+            'user_id' => $promotedCandidate->id,
+            'started_at' => now()->subHour(),
+            'expired_at' => now()->addWeek(),
+            'status' => RcResumeExposureStatus::Active,
+        ]);
+
+        $this->actingAs($recruiter, 'rc')
+            ->getJson('/rc/talent/resumes?per_page=3')
+            ->assertOk()
+            ->assertJsonCount(3, 'data.data')
+            ->assertJsonPath('data.data.2.id', $promotedResume->id)
+            ->assertJsonPath('data.data.2.is_promoted', true)
+            ->assertJsonPath('data.data.2.promotion_id', $exposure->id)
+            ->assertJsonPath('data.data.2.promotion_label', '推广');
+
+        $this->assertDatabaseHas('rc_resume_exposure_stats_daily', [
+            'exposure_id' => $exposure->id,
+            'resume_id' => $promotedResume->id,
+            'company_id' => $company->id,
+            'stat_date' => now()->toDateString(),
+            'impressions' => 1,
+        ]);
     }
 
     /**

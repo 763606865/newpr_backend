@@ -7,6 +7,7 @@ use App\Models\Rc\Resume;
 use App\Rc\Controllers\Controller;
 use App\Resources\Rc\RcResumePreviewResource;
 use App\Services\RcJobService;
+use App\Services\RcResumePromotionService;
 use App\Services\RcResumeSearchService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -27,19 +28,22 @@ class ResumeSearchController extends Controller
             return $this->error('请先切换为招聘方身份并绑定企业。', Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
+        $filters = array_merge($request->only([
+            'keyword',
+            'highest_education_level',
+            'current_city_code',
+            'is_fresh_graduate',
+            'work_years_min',
+            'work_years_max',
+        ]), [
+            'exclude_blacklisted_users_for_company_id' => $company->id,
+        ]);
+
         $paginator = RcResumeSearchService::make()->search(
             $this->getPerPage($request),
-            array_merge($request->only([
-                'keyword',
-                'highest_education_level',
-                'current_city_code',
-                'is_fresh_graduate',
-                'work_years_min',
-                'work_years_max',
-            ]), [
-                'exclude_blacklisted_users_for_company_id' => $company->id,
-            ]),
+            $filters,
         );
+        $paginator = RcResumePromotionService::make()->promote($paginator, $filters, $company);
 
         $paginator->getCollection()->transform(
             static fn (Resume $resume): array => (new RcResumePreviewResource($resume))->resolve($request),

@@ -29,7 +29,7 @@ class RcResumeSearchService extends Service
 
         $builder = $this->makeSearchBuilder($keyword, $filters);
 
-        return $builder
+        $builder = $builder
             ->query(function (EloquentBuilder $query) use ($filters): void {
                 $this->filterApplier->applyExclusionFilters($query, $filters);
 
@@ -40,9 +40,19 @@ class RcResumeSearchService extends Service
                     'educations' => static fn ($rel) => $rel->orderByDesc('sort')->orderByDesc('id'),
                     'intentions' => static fn ($rel) => $rel->orderByDesc('updated_at')->orderByDesc('id'),
                 ]);
-            })
-            ->orderBy($sortColumn, $sortDirection)
-            ->paginate($perPage);
+            });
+
+        if ($sortColumn !== 'refreshed_at') {
+            $builder->orderBy('refreshed_at', 'desc');
+        }
+
+        $builder->orderBy($sortColumn, $sortDirection);
+
+        if ($sortColumn === 'refreshed_at') {
+            $builder->orderBy('updated_at', 'desc');
+        }
+
+        return $builder->paginate($perPage);
     }
 
     /**

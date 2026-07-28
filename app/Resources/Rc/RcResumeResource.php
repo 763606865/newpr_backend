@@ -73,6 +73,7 @@ class RcResumeResource extends JsonResource
             'parsed_data' => $this->resource->parsed_data,
             'is_primary' => $this->resource->is_primary,
             'status' => $this->resource->status?->value ?? $this->resource->status,
+            'refreshed_at' => $this->resource->refreshed_at,
             'extra' => $this->resource->extra,
             'created_at' => $this->resource->created_at,
             'updated_at' => $this->resource->updated_at,
