@@ -2,6 +2,9 @@
 
 namespace App\Filament\Resources\Users\Tables;
 
+use App\Filament\Resources\Users\UserResource;
+use App\Models\User;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -89,6 +92,12 @@ class UsersTable
                 TrashedFilter::make(),
             ])
             ->recordActions([
+                Action::make('commerce')
+                    ->label('权益与订单')
+                    ->icon('heroicon-o-banknotes')
+                    ->color('success')
+                    ->authorize(fn (User $record): bool => UserResource::canView($record))
+                    ->url(fn (User $record): string => UserResource::getUrl('commerce', ['record' => $record])),
                 EditAction::make(),
                 DeleteAction::make(),
             ])
