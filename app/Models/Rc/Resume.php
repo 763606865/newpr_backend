@@ -149,6 +149,8 @@ class Resume extends Model
             if (blank($resume->resume_no)) {
                 $resume->resume_no = static::generateUniqueResumeNo((int) $resume->user_id);
             }
+
+            $resume->refreshed_at ??= now();
         });
 
         static::saving(function (self $resume): void {

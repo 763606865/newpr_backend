@@ -298,6 +298,9 @@ class ResumeControllerTest extends TestCase
             '/^RC\d{14}[A-Z0-9]{6}$/',
             (string) $response->json('data.resume_no'),
         );
+
+        $resume = Resume::query()->findOrFail((int) $response->json('data.id'));
+        $this->assertTrue($resume->refreshed_at->equalTo($resume->created_at));
     }
 
     public function test_store_accepts_personal_advantage(): void

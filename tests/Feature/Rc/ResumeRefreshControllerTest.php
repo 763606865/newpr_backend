@@ -8,6 +8,7 @@ use App\Enums\RcResumeRefreshQuotaType;
 use App\Models\Rc\AssetAccount;
 use App\Models\Rc\Resume;
 use App\Models\Rc\ResumeRefreshLog;
+use App\Models\Rc\ResumeWork;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Redis\Connections\Connection;
@@ -122,6 +123,33 @@ class ResumeRefreshControllerTest extends TestCase
 
         $this->assertTrue($resume->refresh()->refreshed_at->equalTo($firstRefreshedAt));
         $this->assertDatabaseCount('rc_resume_refresh_logs', 1);
+    }
+
+    public function test_resume_section_changes_use_the_same_daily_refresh_flow(): void
+    {
+        $user = User::factory()->create();
+        $resume = $this->createResume($user);
+
+        $work = ResumeWork::query()->create([
+            'resume_id' => $resume->id,
+            'user_id' => $user->id,
+            'company_name' => '示例科技有限公司',
+            'position' => '后端工程师',
+            'start_date' => '2024-01-01',
+        ]);
+        $firstRefreshedAt = $resume->refresh()->refreshed_at;
+
+        $this->travel(1)->hour();
+
+        $work->update(['position' => '高级后端工程师']);
+
+        $this->assertTrue($resume->refresh()->refreshed_at->equalTo($firstRefreshedAt));
+        $this->assertDatabaseCount('rc_resume_refresh_logs', 1);
+        $this->assertDatabaseHas('rc_resume_refresh_logs', [
+            'user_id' => $user->id,
+            'resume_id' => $resume->id,
+            'quota_type' => RcResumeRefreshQuotaType::FreeDaily->value,
+        ]);
     }
 
     private function createResume(User $user): Resume
