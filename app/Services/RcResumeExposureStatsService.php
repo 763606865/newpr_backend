@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Company;
 use App\Models\Rc\Resume;
+use App\Models\Rc\ResumeExposureStatsDaily;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Throwable;
@@ -28,7 +29,7 @@ class RcResumeExposureStatsService extends Service
                 }
 
                 $now = now();
-                DB::table('rc_resume_exposure_stats_daily')->insertOrIgnore([
+                ResumeExposureStatsDaily::insertOrIgnore([
                     [
                         'exposure_id' => $exposureId,
                         'resume_id' => $resume->id,
@@ -44,7 +45,7 @@ class RcResumeExposureStatsService extends Service
                     ],
                 ]);
 
-                DB::table('rc_resume_exposure_stats_daily')
+                ResumeExposureStatsDaily::query()
                     ->where('exposure_id', $exposureId)
                     ->where('company_id', $company->id)
                     ->where('stat_date', $now->toDateString())
