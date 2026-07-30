@@ -11,18 +11,106 @@ use App\Rc\Requests\ForgotPasswordRequest;
 use App\Rc\Requests\PhoneLoginRequest;
 use App\Rc\Requests\RefreshTokenRequest;
 use App\Rc\Requests\SendVerificationCodeRequest;
+use App\Rc\Requests\WechatAppLoginRequest;
+use App\Rc\Requests\WechatBindPhoneRequest;
+use App\Rc\Requests\WechatMiniLoginRequest;
 use App\Services\RcIdentityOrganizationService;
 use App\Services\UserService;
 use App\Services\VerificationCodeService;
+use App\Services\WechatAuthService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Passport\PersonalAccessTokenFactory;
 use Laravel\Passport\PersonalAccessTokenResult;
+use RuntimeException;
+use Throwable;
 
 class AuthController extends Controller
 {
+    /**
+     * 微信小程序登录。
+     *
+     * 使用 wx.login 凭证获取微信身份，并通过 getPhoneNumber 凭证获取可信手机号。
+     *
+     * POST /rc/auth/wechat-mini-login
+     */
+    public function wechatMiniLogin(WechatMiniLoginRequest $request, WechatAuthService $service): JsonResponse
+    {
+        try {
+            $user = $service->loginMini($request->validated());
+
+            return $this->respondWithToken($request, $user);
+        } catch (RuntimeException $exception) {
+            return $this->error($exception->getMessage(), Response::HTTP_UNPROCESSABLE_ENTITY);
+        } catch (Throwable $exception) {
+            report($exception);
+
+            return $this->error('微信服务暂时不可用，请稍后重试。', Response::HTTP_BAD_GATEWAY);
+        }
+    }
+
+    /**
+     * 微信 App 授权登录。
+     *
+     * 已绑定手机号时直接登录，否则返回短时 pending_token 进入手机号绑定流程。
+     *
+     * POST /rc/auth/wechat-app-login
+     */
+    public function wechatAppLogin(WechatAppLoginRequest $request, WechatAuthService $service): JsonResponse
+    {
+        try {
+            $result = $service->loginApp($request->validated());
+
+            if (! $result['user'] instanceof User) {
+                return $this->success([
+                    'status' => 'need_phone',
+                    'pending_token' => $result['pending_token'],
+                    'token_type' => null,
+                    'access_token' => null,
+                    'user' => null,
+                ]);
+            }
+
+            return $this->respondWithToken($request, $result['user'], status: 'ok');
+        } catch (RuntimeException $exception) {
+            return $this->error($exception->getMessage(), Response::HTTP_UNPROCESSABLE_ENTITY);
+        } catch (Throwable $exception) {
+            report($exception);
+
+            return $this->error('微信服务暂时不可用，请稍后重试。', Response::HTTP_BAD_GATEWAY);
+        }
+    }
+
+    /**
+     * 为微信 App 待登录身份绑定已验证手机号。
+     *
+     * POST /rc/auth/wechat-bind-phone
+     */
+    public function wechatBindPhone(WechatBindPhoneRequest $request, WechatAuthService $service): JsonResponse
+    {
+        $validated = $request->validated();
+        $phone = (string) $validated['phone'];
+        $pendingToken = (string) $validated['pending_token'];
+
+        if (! $service->hasPendingToken($pendingToken)) {
+            return $this->error('微信登录状态已失效，请重新授权。', Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        if (! VerificationCodeService::make()->verify('phone', $phone, 'bind', (string) $validated['code'])) {
+            return $this->error('验证码错误或已失效。', Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        try {
+            $user = $service->bindAppPhone($pendingToken, $phone);
+
+            return $this->respondWithToken($request, $user);
+        } catch (RuntimeException $exception) {
+            return $this->error($exception->getMessage(), Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+    }
+
     /**
      * 发送验证码接口
      *
@@ -270,8 +358,12 @@ class AuthController extends Controller
         $identity->forceFill(['is_default' => 1]);
     }
 
-    private function respondWithToken(Request $request, User $user, ?UserIdentity $loginIdentity = null): JsonResponse
-    {
+    private function respondWithToken(
+        Request $request,
+        User $user,
+        ?UserIdentity $loginIdentity = null,
+        ?string $status = null,
+    ): JsonResponse {
         $user->forceFill([
             'last_login_ip' => (string) $request->ip(),
             'last_login_at' => now(),
@@ -290,11 +382,12 @@ class AuthController extends Controller
             }
         }
 
-        return $this->success([
+        return $this->success(array_filter([
+            'status' => $status,
             'token_type' => 'Bearer',
             'access_token' => $tokenResult->accessToken,
             'user' => $this->userPayload($user, $userIdentity),
-        ]);
+        ], static fn (mixed $value): bool => $value !== null));
     }
 
     private function findUserByType(string $type, string $account): ?User

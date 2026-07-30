@@ -2,6 +2,7 @@
 
 namespace App\Rc\Controllers;
 
+use App\Rc\Requests\AvatarUploadRequest;
 use App\Rc\Requests\UploadStoreRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -11,6 +12,31 @@ use Illuminate\Support\Str;
 
 class UploadController extends Controller
 {
+    /**
+     * 上传登录前选择的微信头像。
+     *
+     * POST /rc/upload/avatar
+     */
+    public function avatar(AvatarUploadRequest $request): JsonResponse
+    {
+        $file = $request->validated('file');
+        $path = $this->generatePath('avatar', $file->extension());
+
+        try {
+            Storage::disk('oss')->put(
+                $path,
+                file_get_contents($file->getRealPath()),
+                ['ContentType' => $file->getMimeType()],
+            );
+
+            return $this->success(['url' => Storage::disk('oss')->url($path)]);
+        } catch (\Throwable $exception) {
+            report($exception);
+
+            return $this->error('头像上传失败。', Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
     /**
      * 上传文件到 OSS
      *

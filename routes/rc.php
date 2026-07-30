@@ -62,6 +62,10 @@ Route::post('/auth/send-verification-code', [AuthController::class, 'sendVerific
 Route::post('/auth/phone-login', [AuthController::class, 'phoneLogin']);
 Route::post('/auth/email-login', [AuthController::class, 'emailLogin']);
 Route::post('/auth/forgot-password', [AuthController::class, 'forgotPassword']);
+Route::post('/auth/wechat-mini-login', [AuthController::class, 'wechatMiniLogin']);
+Route::post('/auth/wechat-app-login', [AuthController::class, 'wechatAppLogin']);
+Route::post('/auth/wechat-bind-phone', [AuthController::class, 'wechatBindPhone']);
+Route::post('/upload/avatar', [UploadController::class, 'avatar']);
 
 // 微信、支付宝异步支付通知（通过平台签名鉴权）
 Route::post('/payments/notify/{channel}', [OrderController::class, 'notify'])

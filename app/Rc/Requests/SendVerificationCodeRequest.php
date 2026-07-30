@@ -21,7 +21,7 @@ class SendVerificationCodeRequest extends FormRequest
         return [
             'type' => ['required', 'string', Rule::in(['phone', 'email'])],
             'account' => ['required', 'string', 'max:100'],
-            'scene' => ['required', 'string', Rule::in(['login', 'forgot_password'])],
+            'scene' => ['required', 'string', Rule::in(['login', 'bind', 'forgot_password'])],
         ];
     }
 

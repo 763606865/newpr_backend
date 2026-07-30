@@ -132,6 +132,7 @@ class VerificationCodeService extends Service
         return match ($scene) {
             'forgot_password' => '重置密码',
             'change_phone' => '修改手机号',
+            'bind' => '绑定手机号',
             default => '登录',
         };
     }

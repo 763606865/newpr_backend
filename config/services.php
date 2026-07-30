@@ -39,4 +39,12 @@ return [
         'web_key' => env('AMAP_WEB_API_KEY'),
     ],
 
+    'wechat' => [
+        'mini_app_id' => env('WECHAT_MINI_APP_ID'),
+        'mini_app_secret' => env('WECHAT_MINI_APP_SECRET'),
+        'app_id' => env('WECHAT_APP_ID'),
+        'app_secret' => env('WECHAT_APP_SECRET'),
+        'pending_token_ttl' => (int) env('WECHAT_PENDING_TOKEN_TTL', 600),
+    ],
+
 ];
