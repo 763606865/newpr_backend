@@ -11,7 +11,7 @@
       "type": "streamable-http",
       "url": "https://www.showdoc.cc/mcp.php",
       "headers": {
-          "Authorization": "Bearer ${SHOWDOC_MCP_TOKEN}"
+        "Authorization": "Bearer ${SHOWDOC_MCP_TOKEN}"
       }
     }
   }
