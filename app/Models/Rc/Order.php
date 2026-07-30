@@ -37,6 +37,7 @@ use Illuminate\Support\Carbon;
 #[Table('rc_orders')]
 #[Fillable([
     'order_no',
+    'pending_key',
     'payer_type',
     'payer_id',
     'buyer_user_id',
@@ -87,5 +88,10 @@ class Order extends Model
     public function items(): HasMany
     {
         return $this->hasMany(OrderItem::class, 'order_id');
+    }
+
+    public function paymentTransactions(): HasMany
+    {
+        return $this->hasMany(PaymentTransaction::class, 'order_id');
     }
 }

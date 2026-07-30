@@ -30,6 +30,7 @@ use App\Rc\Controllers\ImQuickPhraseController;
 use App\Rc\Controllers\JobController;
 use App\Rc\Controllers\MetaController;
 use App\Rc\Controllers\NotificationController;
+use App\Rc\Controllers\OrderController;
 use App\Rc\Controllers\ReportController;
 use App\Rc\Controllers\ResumeCertificateController;
 use App\Rc\Controllers\ResumeController;
@@ -62,6 +63,10 @@ Route::post('/auth/phone-login', [AuthController::class, 'phoneLogin']);
 Route::post('/auth/email-login', [AuthController::class, 'emailLogin']);
 Route::post('/auth/forgot-password', [AuthController::class, 'forgotPassword']);
 
+// 微信、支付宝异步支付通知（通过平台签名鉴权）
+Route::post('/payments/notify/{channel}', [OrderController::class, 'notify'])
+    ->whereIn('channel', ['wechat', 'alipay']);
+
 // Discovery - 职位推荐 / 详情（可选登录）
 Route::get('/talent/jobs/recommend', [JobRecommendController::class, 'index']);
 Route::get('/talent/companies/recommend', [CompanyRecommendController::class, 'index']);
@@ -90,6 +95,12 @@ Route::middleware('auth:rc')->group(function (): void {
     Route::put('/users/company-blacklists/{id}', [UserCompanyBlacklistController::class, 'update'])->whereNumber('id');
     Route::patch('/users/company-blacklists/{id}', [UserCompanyBlacklistController::class, 'update'])->whereNumber('id');
     Route::delete('/users/company-blacklists/{id}', [UserCompanyBlacklistController::class, 'destroy'])->whereNumber('id');
+    // ==============================================================================
+
+    // RC 商品订单与支付
+    Route::post('/orders', [OrderController::class, 'store']);
+    Route::get('/orders/{id}', [OrderController::class, 'show'])->whereNumber('id');
+    Route::post('/orders/{id}/pay', [OrderController::class, 'pay'])->whereNumber('id');
     // ==============================================================================
 
     // 举报

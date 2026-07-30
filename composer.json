@@ -22,7 +22,8 @@
         "laravel/tinker": "^3.0",
         "sqids/sqids": "^0.5.0",
         "staudenmeir/laravel-adjacency-list": "^1.26",
-        "tc-net/tim": "^1.0"
+        "tc-net/tim": "^1.0",
+        "yansongda/pay": "^3.7"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
