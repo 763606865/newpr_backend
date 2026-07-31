@@ -4,6 +4,7 @@ use App\Http\Controllers\AdController;
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\BannerController;
+use App\Http\Controllers\ContactInquiryController;
 use App\Http\Controllers\FriendLinkController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MenuController;
@@ -13,6 +14,11 @@ use App\Http\Controllers\RecommendationController;
 use App\Http\Controllers\SchoolActivityController;
 use App\Http\Controllers\SiteConfigController;
 use Illuminate\Support\Facades\Route;
+
+// 联系我们（游客提交）
+Route::post('/contact-inquiries', [ContactInquiryController::class, 'store'])
+    ->middleware('throttle:5,1')
+    ->name('contact-inquiry.store');
 
 Route::middleware(['optional-rc-auth', 'cms-home-menu'])->group(function (): void {
     // 首页-展示页
