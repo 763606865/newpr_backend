@@ -20,25 +20,18 @@ class DepartmentsTable
     public static function configure(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(function (Builder $query): Builder {
-                return $query
-                    ->treeOf(fn (Builder $rootQuery): Builder => $rootQuery->where('parent_id', 0))
-                    ->depthFirst();
-            })
+            ->modifyQueryUsing(fn (Builder $query): Builder => $query
+                ->with('parent')
+                ->orderBy('company_id')
+                ->orderBy('parent_id')
+                ->orderBy('sort')
+                ->orderBy('id'))
             ->columns([
                 TextColumn::make('id')->label('ID'),
                 TextColumn::make('parent.name')->label('父级')->toggleable(),
-                TextColumn::make('tree_depth')
-                    ->label('层级')
-                    ->formatStateUsing(fn (mixed $state): int => ((int) $state) + 1)
-                    ->toggleable(),
                 TextColumn::make('name')
                     ->label('名称')
-                    ->formatStateUsing(function (string $state, mixed $record): string {
-                        $level = max(0, (int) ($record->tree_depth ?? 0));
-
-                        return str_repeat('|- ', $level).$state;
-                    }),
+                    ->searchable(),
                 SelectColumn::make('type')->options(DepartmentType::class)->label('类型')->disabled(),
             ])
             ->filters([
