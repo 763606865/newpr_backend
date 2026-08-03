@@ -18,13 +18,13 @@ class CompanyApprovalBenefitService extends Service
             $assetService->grantOnce(
                 ownerType: RcAssetOwnerType::Company,
                 ownerId: $company->id,
-                assetCode: RcAssetCode::FullTimeJobPosting->value,
-                assetName: (string) RcAssetCode::FullTimeJobPosting->getLabel(),
-                quantity: 1,
+                assetCode: RcAssetCode::JobPosting->value,
+                assetName: (string) RcAssetCode::JobPosting->getLabel(),
+                quantity: 35,
                 sourceType: RcAssetSourceType::System,
                 sourceId: $company->id,
-                bizNo: $this->bizNo($company, RcAssetCode::FullTimeJobPosting),
-                remark: '企业审批通过赠送社招全职职位发布权益',
+                bizNo: $this->bizNo($company, RcAssetCode::JobPosting),
+                remark: '企业审批通过赠送职位发布权益',
             );
 
             $assetService->grantOnce(
