@@ -31,6 +31,7 @@ class DatabaseSeeder extends Seeder
         $this->call(RcPositionSeeder::class);
         $this->call(AssetDefinitionSeeder::class);
         $this->call(MajorSeeder::class);
+        $this->call(DefaultCmsSeeder::class);
         $this->call(InitCmsTagSeeder::class);
         $this->call(ImSystemUserSeeder::class);
     }

@@ -21,7 +21,7 @@ class RcSchoolArticleService extends Service
     {
         $query = Article::query()
             ->where('school_code', $school->school_code)
-            ->with(['category'])
+            ->with(['category', 'tags'])
             ->orderByDesc('is_top')
             ->orderByDesc('published_at')
             ->orderByDesc('id');
