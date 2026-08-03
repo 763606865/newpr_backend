@@ -48,7 +48,7 @@ class RcSchoolActivityApplicationService extends Service
     {
         $query = SchoolActivityCompany::query()
             ->where('activity_id', $activity->id)
-            ->with(['company', 'activityBooth'])
+            ->with(['company', 'company.profile', 'activityBooth'])
             ->withCount('activityJobs')
             ->orderByDesc('apply_at')
             ->orderByDesc('id');
