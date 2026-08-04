@@ -27,3 +27,4 @@ Homestead.yaml
 Thumbs.db
 /.supervisor.local/
 /bootstrap/cache/
+/storage/logs/octane-server-state.json

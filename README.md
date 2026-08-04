@@ -152,6 +152,7 @@ php artisan migrate
 supervisorctl reread
 supervisorctl update
 supervisorctl restart newpr-backend-horizon:
+supervisorctl restart newpr-backend-octane:
 supervisorctl status
 ```
 
