@@ -9,6 +9,7 @@ use App\Rc\Controllers\CompanyController;
 use App\Rc\Controllers\CompanyInterviewController;
 use App\Rc\Controllers\CompanySchoolActivityController;
 use App\Rc\Controllers\Discovery\AnnouncementRecommendController;
+use App\Rc\Controllers\Discovery\AnnouncementDetailController;
 use App\Rc\Controllers\Discovery\AnnouncementSearchController;
 use App\Rc\Controllers\Discovery\CompanyDetailController;
 use App\Rc\Controllers\Discovery\CompanyFavoriteController;
@@ -75,6 +76,7 @@ Route::post('/payments/notify/{channel}', [OrderController::class, 'notify'])
 Route::get('/talent/jobs/recommend', [JobRecommendController::class, 'index']);
 Route::get('/talent/companies/recommend', [CompanyRecommendController::class, 'index']);
 Route::get('/talent/announcements/recommend', [AnnouncementRecommendController::class, 'index']);
+Route::get('/talent/announcements/{id}', [AnnouncementDetailController::class, 'show'])->whereNumber('id');
 Route::get('/talent/jobs/{id}', [JobDetailController::class, 'show'])->whereNumber('id');
 Route::get('/talent/companies/{id}', [CompanyDetailController::class, 'show'])->whereNumber('id');
 
