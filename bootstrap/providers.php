@@ -17,5 +17,6 @@ return [
     App\Libs\Oss\ServiceProvider::class,
     App\Libs\ThirdParty\Jucai\ServiceProvider::class,
     App\Libs\ThirdParty\JucaiDT\ServiceProvider::class,
+    App\Libs\ThirdParty\CJWL\ServiceProvider::class,
     App\Libs\IM\ServiceProvider::class,
 ];

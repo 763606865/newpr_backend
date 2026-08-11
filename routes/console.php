@@ -11,4 +11,5 @@ Artisan::command('inspire', function () {
 Schedule::command('attendance:generate-schedules')->dailyAt('00:05')->withoutOverlapping()->onOneServer();
 Schedule::command('rc:sync-view-stats')->dailyAt('00:30')->withoutOverlapping()->onOneServer();
 Schedule::command('rc:resumes:sync-from:jucai-dt')->dailyAt('01:00')->withoutOverlapping()->onOneServer();
+Schedule::command('rc:recruitment-details:sync-from:cjwl')->dailyAt('01:30')->withoutOverlapping()->onOneServer();
 Schedule::command('rc:orders:cancel-expired')->everyMinute()->withoutOverlapping()->onOneServer();

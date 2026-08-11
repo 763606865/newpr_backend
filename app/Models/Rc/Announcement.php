@@ -52,6 +52,8 @@ use Laravel\Scout\Searchable;
  * @property string|null $source_name 来源名称
  * @property string|null $source_url 来源地址
  * @property int $read_count 阅读人数
+ * @property string|null $ext_source 外部来源
+ * @property string|null $ext_id 外部公告ID
  * @property array<string, mixed>|null $extra 扩展字段
  * @property Carbon|null $created_at 创建时间
  * @property Carbon|null $updated_at 更新时间
@@ -90,6 +92,8 @@ use Laravel\Scout\Searchable;
     'source_name',
     'source_url',
     'read_count',
+    'ext_source',
+    'ext_id',
     'extra',
 ])]
 class Announcement extends Model
@@ -150,6 +154,8 @@ class Announcement extends Model
             'status' => CmsPublishStatus::class,
             'sort' => 'integer',
             'read_count' => 'integer',
+            'ext_source' => 'string',
+            'ext_id' => 'string',
             'extra' => 'array',
         ];
     }
