@@ -121,12 +121,13 @@ class AnnouncementSearchFilterApplier
 
         if (filled($filters['city_code'] ?? null)) {
             $cityCode = (string) $filters['city_code'];
+            $provinceCodePrefix = substr($cityCode, 0, 2).'%';
 
-            $query->where(function (Builder $subQuery) use ($cityCode): void {
+            $query->where(function (Builder $subQuery) use ($provinceCodePrefix): void {
                 $subQuery
                     ->where('is_nationwide', true)
-                    ->orWhereHas('cities', function (Builder $cityQuery) use ($cityCode): void {
-                        $cityQuery->where('city_code', $cityCode);
+                    ->orWhereHas('cities', function (Builder $cityQuery) use ($provinceCodePrefix): void {
+                        $cityQuery->whereLike('city_code', $provinceCodePrefix);
                     });
             });
         }

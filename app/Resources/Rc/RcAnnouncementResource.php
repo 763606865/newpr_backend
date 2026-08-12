@@ -28,10 +28,14 @@ class RcAnnouncementResource extends JsonResource
             'publisher_name' => $announcement->publisher_name,
             'publisher_type' => $announcement->publisher_type?->value,
             'publisher_type_label' => $announcement->publisher_type?->getLabel(),
+            'announcement_type' => $announcement->announcement_type?->value,
+            'announcement_type_label' => $announcement->announcement_type?->getLabel(),
             'cover' => $announcement->cover,
             'display_cover' => $announcement->cover,
             'summary' => $announcement->summary,
             'link_url' => $announcement->link_url,
+            'registration_url' => $announcement->registration_url,
+            'attachments' => $announcement->attachments ?? [],
             'employment_types' => $announcement->employment_types ?? [],
             'employment_type_labels' => $announcement->employmentTypeLabels(),
             'graduation_years' => $announcement->graduation_years ?? [],
@@ -39,6 +43,7 @@ class RcAnnouncementResource extends JsonResource
             'education_level' => $announcement->education_level?->value,
             'education_level_label' => $announcement->education_level?->getLabel(),
             'major_requirement' => $announcement->major_requirement,
+            'recruitment_count' => $announcement->recruitment_count,
             'is_nationwide' => $announcement->is_nationwide,
             'apply_start_at' => $this->formatDateTime($announcement->apply_start_at),
             'apply_end_at' => $this->formatDateTime($announcement->apply_end_at),
@@ -51,6 +56,7 @@ class RcAnnouncementResource extends JsonResource
             'source_name' => $announcement->source_name,
             'source_url' => $announcement->source_url,
             'read_count' => $announcement->read_count,
+            'display_fields' => $this->displayFields($announcement),
             'created_at' => $this->formatDateTime($announcement->created_at),
             'updated_at' => $this->formatDateTime($announcement->updated_at),
         ];
@@ -108,5 +114,15 @@ class RcAnnouncementResource extends JsonResource
         }
 
         return (string) $value;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function displayFields(Announcement $announcement): array
+    {
+        $displayFields = $announcement->extra['display'] ?? null;
+
+        return is_array($displayFields) ? $displayFields : [];
     }
 }

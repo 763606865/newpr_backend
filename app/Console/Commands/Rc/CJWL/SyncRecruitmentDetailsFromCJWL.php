@@ -5,7 +5,6 @@ namespace App\Console\Commands\Rc\CJWL;
 use App\Jobs\Rc\SyncRecruitmentDetailsFromCJWLJob;
 use App\Libs\Exceptions\BadRequestException;
 use App\Libs\Facades\CJWL;
-use Carbon\Carbon;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
@@ -24,9 +23,7 @@ class SyncRecruitmentDetailsFromCJWL extends Command
         $this->info('开始从橙就未来同步招考公告过来');
         $currentPage = 1;
 
-        $params = [
-            'recruit_start' => Carbon::tomorrow()->toDateTimeString(),
-        ];
+        $params = [];
 
         [$pagination, $data] = $this->resolveOpenApi($currentPage, $params);
 

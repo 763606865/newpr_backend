@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Services;
 
+use App\Models\Rc\Announcement;
 use App\Models\Rc\Job;
 use App\Models\Rc\Resume;
 use App\Models\Rc\ResumeStatsDaily;
@@ -63,6 +64,19 @@ class RcViewStatsServiceTest extends TestCase
             'views_total' => 18,
             'views_uv' => 7,
         ], $result);
+    }
+
+    public function test_record_announcement_view_increments_read_count(): void
+    {
+        $announcement = Announcement::query()->create([
+            'title' => '测试招聘公告',
+            'read_count' => 9,
+        ]);
+
+        RcViewStatsService::make()->recordAnnouncementView($announcement);
+
+        $this->assertSame(10, $announcement->read_count);
+        $this->assertSame(10, $announcement->refresh()->read_count);
     }
 
     public function test_get_resume_daily_views_defaults_missing_keys_to_zero(): void

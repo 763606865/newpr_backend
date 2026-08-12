@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Rc\Announcements\Tables;
 use App\Enums\CmsAnnouncementPublisherType;
 use App\Enums\CmsPublishStatus;
 use App\Enums\RcAnnouncementApplyDeadlineType;
+use App\Enums\RcAnnouncementType;
 use App\Enums\RcEducationLevel;
 use App\Filament\Resources\Cms\CmsTable;
 use App\Filament\Resources\Rc\RcTable;
@@ -22,6 +23,7 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Notifications\Notification;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Storage;
@@ -43,7 +45,13 @@ class AnnouncementsTable
                 TextColumn::make('publisher_name')
                     ->label('发布人')
                     ->searchable(),
+                RcTable::enumBadge('announcement_type', '公告类型', RcAnnouncementType::class),
                 RcTable::enumBadge('publisher_type', '发布人类型', CmsAnnouncementPublisherType::class),
+                TextColumn::make('recruitment_count')
+                    ->label('招聘人数')
+                    ->numeric()
+                    ->placeholder('-')
+                    ->sortable(),
                 TextColumn::make('employment_type_labels')
                     ->label('工作类型')
                     ->badge()
@@ -94,6 +102,12 @@ class AnnouncementsTable
                     ->sortable(),
             ])
             ->filters([
+                SelectFilter::make('announcement_type')
+                    ->label('公告类型')
+                    ->options(RcAnnouncementType::class),
+                SelectFilter::make('publisher_type')
+                    ->label('发布人类型')
+                    ->options(CmsAnnouncementPublisherType::class),
                 CmsTable::statusFilter(CmsPublishStatus::class),
                 TrashedFilter::make(),
             ])

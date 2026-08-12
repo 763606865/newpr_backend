@@ -5,6 +5,7 @@ namespace App\Models\Rc;
 use App\Enums\CmsAnnouncementPublisherType;
 use App\Enums\CmsPublishStatus;
 use App\Enums\RcAnnouncementApplyDeadlineType;
+use App\Enums\RcAnnouncementType;
 use App\Enums\RcEducationLevel;
 use App\Enums\RcJobEmploymentType;
 use App\Models\Cast\AliyunOss;
@@ -30,16 +31,20 @@ use Laravel\Scout\Searchable;
  * @property int|null $organization_id 发布机构多态ID
  * @property string|null $publisher_name 发布人名称
  * @property CmsAnnouncementPublisherType $publisher_type 发布人类型
+ * @property RcAnnouncementType|null $announcement_type 公告业务类型
  * @property string $title 公告标题
  * @property string|null $sub_title 公告副标题
  * @property string|null $cover 推广图
  * @property string|null $summary 公告摘要
  * @property string|null $content 公告正文
  * @property string|null $link_url 官网外链地址
+ * @property string|null $registration_url 报名入口地址
+ * @property list<array<string, mixed>>|null $attachments 公告附件列表
  * @property array<int, int>|null $employment_types 工作类型列表
  * @property RcEducationLevel|null $education_level 最低学历要求
  * @property array<int, int>|null $graduation_years 面向毕业年份
  * @property string|null $major_requirement 专业要求说明
+ * @property int|null $recruitment_count 招录或招聘人数
  * @property bool $is_nationwide 是否全国招聘
  * @property Carbon|null $apply_start_at 报名开始时间
  * @property Carbon|null $apply_end_at 报名截止时间
@@ -70,16 +75,20 @@ use Laravel\Scout\Searchable;
     'organization_id',
     'publisher_name',
     'publisher_type',
+    'announcement_type',
     'title',
     'sub_title',
     'cover',
     'summary',
     'content',
     'link_url',
+    'registration_url',
+    'attachments',
     'employment_types',
     'education_level',
     'graduation_years',
     'major_requirement',
+    'recruitment_count',
     'is_nationwide',
     'apply_start_at',
     'apply_end_at',
@@ -140,10 +149,13 @@ class Announcement extends Model
         return [
             'organization_id' => 'integer',
             'publisher_type' => CmsAnnouncementPublisherType::class,
+            'announcement_type' => RcAnnouncementType::class,
             'cover' => AliyunOss::class.':oss,public,3600',
             'employment_types' => 'array',
+            'attachments' => 'array',
             'education_level' => RcEducationLevel::class,
             'graduation_years' => 'array',
+            'recruitment_count' => 'integer',
             'is_nationwide' => 'boolean',
             'apply_start_at' => 'datetime:Y-m-d H:i:s',
             'apply_end_at' => 'datetime:Y-m-d H:i:s',

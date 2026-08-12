@@ -5,36 +5,23 @@ namespace Tests\Feature\Console;
 use App\Jobs\Rc\SyncRecruitmentDetailsFromCJWLJob;
 use App\Libs\Facades\CJWL;
 use App\Libs\ThirdParty\CJWL\Api\RecruitmentDetail;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Queue;
 use Mockery;
 use Tests\TestCase;
 
 class SyncRecruitmentDetailsFromCJWLCommandTest extends TestCase
 {
-    protected function tearDown(): void
-    {
-        Carbon::setTestNow();
-
-        parent::tearDown();
-    }
-
     public function test_it_fetches_each_page_without_requesting_a_page_after_the_last_page(): void
     {
         Queue::fake();
-        Carbon::setTestNow('2026-08-11 10:00:00');
-
         $api = Mockery::mock(RecruitmentDetail::class);
         $api->shouldReceive('query')->once()->ordered()->with([
-            'recruit_start' => '2026-08-12 00:00:00',
             'page' => 1,
         ])->andReturn($this->response(page: 1, total: 201, totalPages: 3));
         $api->shouldReceive('query')->once()->ordered()->with([
-            'recruit_start' => '2026-08-12 00:00:00',
             'page' => 2,
         ])->andReturn($this->response(page: 2, total: 201, totalPages: 3));
         $api->shouldReceive('query')->once()->ordered()->with([
-            'recruit_start' => '2026-08-12 00:00:00',
             'page' => 3,
         ])->andReturn($this->response(page: 3, total: 201, totalPages: 3));
 
@@ -50,11 +37,8 @@ class SyncRecruitmentDetailsFromCJWLCommandTest extends TestCase
     public function test_it_stops_after_the_first_request_when_there_are_no_records(): void
     {
         Queue::fake();
-        Carbon::setTestNow('2026-08-11 10:00:00');
-
         $api = Mockery::mock(RecruitmentDetail::class);
         $api->shouldReceive('query')->once()->with([
-            'recruit_start' => '2026-08-12 00:00:00',
             'page' => 1,
         ])->andReturn($this->response(page: 1, total: 0, totalPages: 0));
 

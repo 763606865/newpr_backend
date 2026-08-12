@@ -7,6 +7,7 @@ use App\Enums\CmsPublishStatus;
 use App\Enums\MajorLevel;
 use App\Enums\MajorStatus;
 use App\Enums\RcAnnouncementApplyDeadlineType;
+use App\Enums\RcAnnouncementType;
 use App\Enums\RcEducationLevel;
 use App\Enums\RcJobEmploymentType;
 use App\Filament\Resources\Rc\Announcements\Pages\CreateAnnouncement;
@@ -52,13 +53,23 @@ class RcAnnouncementFormTest extends TestCase
         Livewire::test(CreateAnnouncement::class)
             ->assertSuccessful()
             ->assertSee('官网外链')
+            ->assertSee('公告类型')
+            ->assertSee('报名入口')
+            ->assertSee('公告附件')
+            ->assertSee('招聘人数')
             ->assertSee('面向届别')
             ->assertSee('工作省份')
             ->fillForm([
                 'title' => '中粮集团2026届校园招聘',
                 'publisher_name' => '中粮集团有限公司',
                 'publisher_type' => CmsAnnouncementPublisherType::CentralEnterprise,
+                'announcement_type' => RcAnnouncementType::StateOwnedEnterpriseRecruitment,
                 'link_url' => 'https://cofco.example.com/campus',
+                'registration_url' => 'https://cofco.example.com/register',
+                'recruitment_count' => 25,
+                'attachments' => [
+                    ['name' => '招聘岗位表.xlsx', 'url' => 'https://cofco.example.com/jobs.xlsx'],
+                ],
                 'employment_types' => [
                     RcJobEmploymentType::Internship->value,
                     RcJobEmploymentType::Campus->value,
@@ -86,6 +97,13 @@ class RcAnnouncementFormTest extends TestCase
         $this->assertNotNull($announcement);
         $this->assertSame('中粮集团有限公司', $announcement->publisher_name);
         $this->assertSame('https://cofco.example.com/campus', $announcement->link_url);
+        $this->assertSame(RcAnnouncementType::StateOwnedEnterpriseRecruitment, $announcement->announcement_type);
+        $this->assertSame('https://cofco.example.com/register', $announcement->registration_url);
+        $this->assertSame(25, $announcement->recruitment_count);
+        $this->assertEquals(
+            [['name' => '招聘岗位表.xlsx', 'url' => 'https://cofco.example.com/jobs.xlsx']],
+            $announcement->attachments,
+        );
         $this->assertSame([3, 4], $announcement->employment_types);
         $this->assertSame([2026, 2027], $announcement->graduation_years);
         $this->assertSame(['360100'], $announcement->cities()->pluck('city_code')->all());

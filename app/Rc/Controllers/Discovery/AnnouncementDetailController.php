@@ -5,6 +5,7 @@ namespace App\Rc\Controllers\Discovery;
 use App\Models\Rc\Announcement;
 use App\Rc\Controllers\Controller;
 use App\Resources\Rc\RcAnnouncementResource;
+use App\Services\RcViewStatsService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -32,6 +33,8 @@ class AnnouncementDetailController extends Controller
         if (! $announcement instanceof Announcement) {
             return $this->error('招聘公告不存在或已下架。', Response::HTTP_NOT_FOUND);
         }
+
+        RcViewStatsService::make()->recordAnnouncementView($announcement);
 
         $data = (new RcAnnouncementResource($announcement))->resolve($request);
         $data['content'] = $announcement->content;

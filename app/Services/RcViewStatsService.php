@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Rc\Announcement;
 use App\Models\Rc\Job;
 use App\Models\Rc\JobStatsDaily;
 use App\Models\Rc\Resume;
@@ -14,6 +15,14 @@ use Throwable;
 
 class RcViewStatsService extends Service
 {
+    /**
+     * 记录招聘公告详情阅读量。
+     */
+    public function recordAnnouncementView(Announcement $announcement): void
+    {
+        $announcement->increment('read_count');
+    }
+
     /**
      * 记录职位详情浏览（PV + UV）。
      */

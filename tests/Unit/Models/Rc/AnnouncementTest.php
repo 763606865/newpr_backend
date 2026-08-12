@@ -4,6 +4,7 @@ namespace Tests\Unit\Models\Rc;
 
 use App\Enums\CmsPublishStatus;
 use App\Enums\RcAnnouncementApplyDeadlineType;
+use App\Enums\RcAnnouncementType;
 use App\Enums\RcJobEmploymentType;
 use App\Models\Area;
 use App\Models\Major;
@@ -14,6 +15,31 @@ use Tests\TestCase;
 class AnnouncementTest extends TestCase
 {
     use RefreshDatabase;
+
+    public function test_recruitment_display_fields_are_fillable_and_cast(): void
+    {
+        $announcement = Announcement::query()->create([
+            'title' => '江西省公务员招录公告',
+            'publisher_name' => '江西省公务员局',
+            'link_url' => 'https://example.com/announcement',
+            'announcement_type' => RcAnnouncementType::CivilServantRecruitment,
+            'recruitment_count' => 120,
+            'registration_url' => 'https://example.com/register',
+            'attachments' => [
+                ['name' => '职位表.xlsx', 'url' => 'https://example.com/positions.xlsx'],
+            ],
+        ]);
+
+        $announcement->refresh();
+
+        $this->assertSame(RcAnnouncementType::CivilServantRecruitment, $announcement->announcement_type);
+        $this->assertSame(120, $announcement->recruitment_count);
+        $this->assertSame('https://example.com/register', $announcement->registration_url);
+        $this->assertEquals(
+            [['name' => '职位表.xlsx', 'url' => 'https://example.com/positions.xlsx']],
+            $announcement->attachments,
+        );
+    }
 
     public function test_sync_city_and_major_codes(): void
     {

@@ -41,7 +41,7 @@ class RcAnnouncementSearchServiceTest extends TestCase
         $this->assertSame('中粮集团2026届校园招聘', $paginator->items()[0]->title);
     }
 
-    public function test_search_without_keyword_filters_by_city_via_database_when_elastic_driver(): void
+    public function test_search_without_keyword_filters_by_province_via_database_when_elastic_driver(): void
     {
         Config::set('scout.driver', 'elastic');
 
@@ -62,20 +62,33 @@ class RcAnnouncementSearchServiceTest extends TestCase
         ]);
         $suzhou->syncCityCodes(['320500']);
 
-        Announcement::query()->create([
+        $nanjing = Announcement::query()->create([
+            'title' => '南京事业单位招聘',
+            'publisher_name' => '南京市事业单位',
+            'link_url' => 'https://example.com/nanjing',
+            'status' => CmsPublishStatus::Published,
+            'published_at' => now(),
+        ]);
+        $nanjing->syncCityCodes(['320100']);
+
+        $jinan = Announcement::query()->create([
             'title' => '济南高速集团招聘',
             'publisher_name' => '山东高速集团',
             'link_url' => 'https://example.com/jinan',
             'status' => CmsPublishStatus::Published,
             'published_at' => now(),
         ]);
+        $jinan->syncCityCodes(['370100']);
 
         $paginator = RcAnnouncementSearchService::make()->search(15, [
             'city_code' => '320500',
         ]);
 
-        $this->assertSame(1, $paginator->total());
-        $this->assertSame('苏州地铁2026届招聘', $paginator->items()[0]->title);
+        $this->assertSame(2, $paginator->total());
+        $this->assertEqualsCanonicalizing(
+            ['苏州地铁2026届招聘', '南京事业单位招聘'],
+            collect($paginator->items())->pluck('title')->all(),
+        );
     }
 
     public function test_search_includes_nationwide_announcements_for_city_filter(): void

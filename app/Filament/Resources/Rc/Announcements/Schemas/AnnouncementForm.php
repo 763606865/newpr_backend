@@ -7,6 +7,7 @@ use App\Enums\CmsPublishStatus;
 use App\Enums\CmsTagCategory;
 use App\Enums\MajorLevel;
 use App\Enums\RcAnnouncementApplyDeadlineType;
+use App\Enums\RcAnnouncementType;
 use App\Enums\RcEducationLevel;
 use App\Enums\RcJobEmploymentType;
 use App\Models\Area;
@@ -14,6 +15,7 @@ use App\Models\Cms\Tag;
 use App\Models\Major;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -47,10 +49,37 @@ class AnnouncementForm
                     ->options(CmsAnnouncementPublisherType::class)
                     ->enum(CmsAnnouncementPublisherType::class)
                     ->required(),
+                Select::make('announcement_type')
+                    ->label('公告类型')
+                    ->options(RcAnnouncementType::class)
+                    ->enum(RcAnnouncementType::class)
+                    ->searchable(),
                 TextInput::make('link_url')
                     ->label('官网外链')
                     ->url()
                     ->required()
+                    ->columnSpanFull(),
+                TextInput::make('registration_url')
+                    ->label('报名入口')
+                    ->url()
+                    ->maxLength(255)
+                    ->columnSpanFull(),
+                Repeater::make('attachments')
+                    ->label('公告附件')
+                    ->schema([
+                        TextInput::make('name')
+                            ->label('附件名称')
+                            ->required()
+                            ->maxLength(255),
+                        TextInput::make('url')
+                            ->label('附件地址')
+                            ->url()
+                            ->required()
+                            ->maxLength(2048),
+                    ])
+                    ->defaultItems(0)
+                    ->addActionLabel('添加附件')
+                    ->columns(2)
                     ->columnSpanFull(),
                 FileUpload::make('cover')
                     ->label('推广图')
@@ -80,6 +109,11 @@ class AnnouncementForm
                     ->label('专业要求说明')
                     ->rows(2)
                     ->columnSpanFull(),
+                TextInput::make('recruitment_count')
+                    ->label('招聘人数')
+                    ->numeric()
+                    ->integer()
+                    ->minValue(0),
                 Select::make('major_codes')
                     ->label('专业筛选')
                     ->options(fn (): array => Major::query()
