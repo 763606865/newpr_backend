@@ -10,7 +10,7 @@
         "ext-redis": "*",
         "alibabacloud/ocr-api-20210707": "^3.1",
         "aliyuncs/oss-sdk-php": "^2.7",
-        "babenkoivan/elastic-scout-driver": "^6.0",
+        "babenkoivan/elastic-scout-driver": "^5.0",
         "bezhansalleh/filament-shield": "^4.2",
         "cheesegrits/filament-google-maps": "^5.0",
         "codewithdennis/filament-select-tree": "^4.0",
