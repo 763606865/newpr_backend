@@ -36,6 +36,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        if (! defined('LARAVEL_START')) {
+            define('LARAVEL_START', microtime(true));
+        }
         Relation::morphMap([
             'job' => Job::class,
             'resume' => Resume::class,
