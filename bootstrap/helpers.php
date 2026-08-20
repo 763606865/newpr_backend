@@ -64,12 +64,13 @@ if (! function_exists('api_response')) {
         if ($data === null) {
             $data = (object) [];
         }
+        $startedAt = defined('LARAVEL_START') ? LARAVEL_START : ($_SERVER['REQUEST_TIME_FLOAT'] ?? microtime(true));
         $rv = [
             'code' => $status,
             'data' => $data,
             'meta' => [
                 'timestamp' => $now,
-                'response_time' => $now - LARAVEL_START,
+                'response_time' => $now - $startedAt,
             ],
         ];
 
